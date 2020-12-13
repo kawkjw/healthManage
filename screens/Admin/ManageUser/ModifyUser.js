@@ -72,9 +72,11 @@ export default ModifyUser = ({ route }) => {
       );
     }
   };
+
   useEffect(() => {
     getMembership();
   }, []);
+
   return (
     <SafeAreaView>
       <Text>Modify User</Text>
