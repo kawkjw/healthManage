@@ -6,9 +6,9 @@ import {
     TouchableOpacity,
     ScrollView,
 } from "react-native";
-import { MyStyles } from "../../css/MyStyles";
+import { MyStyles } from "../../../css/MyStyles";
 
-export default Menu = ({ navigation }) => {
+export default Class = ({ navigation }) => {
     const { width } = Dimensions.get("screen");
     const widthButton = width - 40;
 
@@ -28,9 +28,9 @@ export default Menu = ({ navigation }) => {
                         MyStyles.buttonShadow,
                         { width: widthButton, marginBottom: 20 },
                     ]}
-                    onPress={() => navigation.navigate("Info")}
+                    onPress={() => navigation.navigate("PT")}
                 >
-                    <Text>Information</Text>
+                    <Text>PT</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -38,9 +38,11 @@ export default Menu = ({ navigation }) => {
                         MyStyles.buttonShadow,
                         { width: widthButton, marginBottom: 20 },
                     ]}
-                    onPress={() => navigation.navigate("Class")}
+                    onPress={() =>
+                        navigation.navigate("GX", { classname: "pilates" })
+                    }
                 >
-                    <Text>Reservation</Text>
+                    <Text>필라테스</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -48,9 +50,11 @@ export default Menu = ({ navigation }) => {
                         MyStyles.buttonShadow,
                         { width: widthButton, marginBottom: 20 },
                     ]}
-                    onPress={() => {}}
+                    onPress={() =>
+                        navigation.navigate("GX", { classname: "spinning" })
+                    }
                 >
-                    <Text>Blank</Text>
+                    <Text>스피닝</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -58,9 +62,11 @@ export default Menu = ({ navigation }) => {
                         MyStyles.buttonShadow,
                         { width: widthButton, marginBottom: 20 },
                     ]}
-                    onPress={() => {}}
+                    onPress={() =>
+                        navigation.navigate("GX", { classname: "squash" })
+                    }
                 >
-                    <Text>Blank</Text>
+                    <Text>스쿼시</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -68,29 +74,11 @@ export default Menu = ({ navigation }) => {
                         MyStyles.buttonShadow,
                         { width: widthButton, marginBottom: 20 },
                     ]}
-                    onPress={() => {}}
+                    onPress={() =>
+                        navigation.navigate("GX", { classname: "yoga" })
+                    }
                 >
-                    <Text>Blank</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
-                    ]}
-                    onPress={() => {}}
-                >
-                    <Text>Blank</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
-                    ]}
-                    onPress={() => {}}
-                >
-                    <Text>Blank</Text>
+                    <Text>요가</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -98,9 +86,11 @@ export default Menu = ({ navigation }) => {
                         MyStyles.buttonShadow,
                         { width: widthButton, marginBottom: 40 },
                     ]}
-                    onPress={() => {}}
+                    onPress={() =>
+                        navigation.navigate("GX", { classname: "zoomba" })
+                    }
                 >
-                    <Text>Blank</Text>
+                    <Text>줌바</Text>
                 </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>
