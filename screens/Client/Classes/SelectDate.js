@@ -99,13 +99,17 @@ export default SelectDate = ({ navigation, route }) => {
                         c["currentClient"] = data.currentClient;
                         c["maxClient"] = data.maxClient;
                         c["start"] =
-                            start.getHours() +
+                            (start.getHours() < 10
+                                ? "0" + start.getHours()
+                                : start.getHours()) +
                             ":" +
                             (start.getMinutes() === 0
                                 ? "00"
                                 : start.getMinutes());
                         c["end"] =
-                            end.getHours() +
+                            (end.getHours() < 10
+                                ? "0" + end.getHours()
+                                : end.getHours()) +
                             ":" +
                             (end.getMinutes() === 0 ? "00" : end.getMinutes());
                         list.push(c);
