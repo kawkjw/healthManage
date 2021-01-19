@@ -27,3 +27,4 @@ const myBase = firebase.initializeApp(firebaseConfig);
 export default myBase;
 export const db = myBase.firestore();
 export const arrayDelete = (d) => firebase.firestore.FieldValue.arrayRemove(d);
+export const arrayUnion = (d) => firebase.firestore.FieldValue.arrayUnion(d);

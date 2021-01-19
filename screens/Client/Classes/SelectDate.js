@@ -14,7 +14,7 @@ import {
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import { MyStyles } from "../../../css/MyStyles";
-import myBase, { db } from "../../../config/MyBase";
+import myBase, { arrayUnion, db } from "../../../config/MyBase";
 
 export default SelectDate = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -26,20 +26,30 @@ export default SelectDate = ({ navigation, route }) => {
     const [classList, setClassList] = useState([]);
 
     useEffect(() => {
-        const showCalendar = () => {
+        const showCalendar = async () => {
             let items = [
-                { id: "일", color: "red", pressable: false },
-                { id: "월", color: "black", pressable: false },
-                { id: "화", color: "black", pressable: false },
-                { id: "수", color: "black", pressable: false },
-                { id: "목", color: "black", pressable: false },
-                { id: "금", color: "black", pressable: false },
-                { id: "토", color: "blue", pressable: false },
+                { id: "일", color: "red", pressable: false, isHeader: true },
+                { id: "월", color: "black", pressable: false, isHeader: true },
+                { id: "화", color: "black", pressable: false, isHeader: true },
+                { id: "수", color: "black", pressable: false, isHeader: true },
+                { id: "목", color: "black", pressable: false, isHeader: true },
+                { id: "금", color: "black", pressable: false, isHeader: true },
+                { id: "토", color: "blue", pressable: false, isHeader: true },
             ];
             const firstDate = new Date(date + "-01");
             for (let i = 0; i < firstDate.getDay(); i++) {
-                items.push({ id: " ", pressable: false });
+                items.push({ id: " ", pressable: false, isHeader: true });
             }
+            let classDate = (
+                await db
+                    .collection("classes")
+                    .doc(classname)
+                    .collection("class")
+                    .doc(date)
+                    .get()
+            ).data().class;
+            classDate.push("-1");
+            let index = 0;
             const endDate = new Date(date.split("-")[0], date.split("-")[1], 0);
             for (let i = 1; i <= endDate.getDate(); i++) {
                 const d = new Date(date + "-" + (i < 10 ? "0" + i : i));
@@ -51,10 +61,16 @@ export default SelectDate = ({ navigation, route }) => {
                 } else {
                     item["color"] = "black";
                 }
+                if (i === Number(classDate[index])) {
+                    item["hasClass"] = true;
+                    index += 1;
+                } else {
+                    item["hasClass"] = false;
+                }
                 items.push(item);
             }
             for (let i = 0; i < 6 - endDate.getDay(); i++) {
-                items.push({ id: " ", pressable: false });
+                items.push({ id: " ", pressable: false, isHeader: true });
             }
             setData(items);
         };
@@ -112,7 +128,9 @@ export default SelectDate = ({ navigation, route }) => {
             .doc(date)
             .collection(selectDate.toString())
             .doc(cid);
-        const { currentClient, maxClient } = (await classInDB.get()).data();
+        const { currentClient, maxClient, start, end, trainer } = (
+            await classInDB.get()
+        ).data();
         if (currentClient >= maxClient) {
             Alert.alert("Error", "Full Class", [
                 {
@@ -131,11 +149,65 @@ export default SelectDate = ({ navigation, route }) => {
             ).data();
             await classInDB
                 .collection("clients")
-                .doc(uid)
-                .set({ uid: uid, name: name, phoneNumber: phoneNumber });
-            await classInDB.update({
-                currentClient: (await classInDB.get()).data().currentClient + 1,
-            });
+                .where("uid", "==", uid)
+                .limit(1)
+                .get()
+                .then(async (clients) => {
+                    if (clients.size === 0) {
+                        await classInDB.collection("clients").doc(uid).set({
+                            uid: uid,
+                            name: name,
+                            phoneNumber: phoneNumber,
+                        });
+                        await classInDB.update({
+                            currentClient: currentClient + 1,
+                        });
+                        await db
+                            .collection("users")
+                            .doc(myBase.auth().currentUser.uid)
+                            .collection("reservation")
+                            .doc(date)
+                            .collection(selectDate.toString())
+                            .doc(cid)
+                            .set({
+                                classId: cid,
+                                start: start,
+                                end: end,
+                                trainer: trainer,
+                                className: classname,
+                            });
+                        await db
+                            .collection("users")
+                            .doc(myBase.auth().currentUser.uid)
+                            .collection("reservation")
+                            .doc(date)
+                            .update({
+                                date: arrayUnion(selectDate.toString()),
+                            });
+                        Alert.alert("Success", "Reserved Class", [
+                            {
+                                text: "OK",
+                                onPress: () => {
+                                    navigation.replace("HomeScreen");
+                                },
+                            },
+                        ]);
+                    } else {
+                        clients.forEach((client) => {
+                            if (client.exists) {
+                                Alert.alert("Error", "Already Reserved", [
+                                    {
+                                        text: "OK",
+                                        onPress: () => {
+                                            setModalClass(false);
+                                            setSelectDate(0);
+                                        },
+                                    },
+                                ]);
+                            }
+                        });
+                    }
+                });
         }
     };
 
@@ -150,7 +222,14 @@ export default SelectDate = ({ navigation, route }) => {
                         style={{ flex: 1, flexDirection: "column", margin: 5 }}
                     >
                         <TouchableOpacity
-                            style={styles.day}
+                            style={[
+                                styles.day,
+                                item.isHeader
+                                    ? { backgroundColor: "white" }
+                                    : item.hasClass
+                                    ? { backgroundColor: "white" }
+                                    : { backgroundColor: "#b3b3b3" },
+                            ]}
                             onPress={() => {
                                 setModalClass(item.pressable);
                                 setSelectDate(Number(item.id));
@@ -264,7 +343,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         height: wp("14%"),
-        backgroundColor: "white",
+        backgroundColor: "grey",
         borderWidth: 1,
         borderRadius: 10,
     },
