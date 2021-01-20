@@ -40,14 +40,18 @@ export default SelectDate = ({ navigation, route }) => {
             for (let i = 0; i < firstDate.getDay(); i++) {
                 items.push({ id: " ", pressable: false, isHeader: true });
             }
-            let classDate = (
-                await db
-                    .collection("classes")
-                    .doc(classname)
-                    .collection("class")
-                    .doc(date)
-                    .get()
-            ).data().class;
+            let classDate = [];
+            await db
+                .collection("classes")
+                .doc(classname)
+                .collection("class")
+                .doc(date)
+                .get()
+                .then((snapshot) => {
+                    if (snapshot.exists) {
+                        classDate = snapshot.data().class;
+                    }
+                });
             classDate.push("-1");
             let index = 0;
             const endDate = new Date(date.split("-")[0], date.split("-")[1], 0);
@@ -217,7 +221,6 @@ export default SelectDate = ({ navigation, route }) => {
 
     return (
         <SafeAreaView>
-            <Text>{date}</Text>
             <FlatList
                 data={data}
                 windowSize={1}

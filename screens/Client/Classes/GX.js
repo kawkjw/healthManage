@@ -7,7 +7,6 @@ import {
     ScrollView,
 } from "react-native";
 import { MyStyles } from "../../../css/MyStyles";
-import { db } from "../../../config/MyBase";
 
 export default GX = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -54,6 +53,9 @@ export default GX = ({ navigation, route }) => {
                                 MyStyles.phoneButton,
                                 MyStyles.buttonShadow,
                                 { width: widthButton, marginBottom: 20 },
+                                i === sixDate.length - 1
+                                    ? { marginBottom: 40 }
+                                    : undefined,
                             ]}
                             onPress={() =>
                                 navigation.navigate("SelectDate", {

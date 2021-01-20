@@ -118,8 +118,8 @@ const MyStack = () => {
             .catch((error) => console.log(error));
     };
     const setEmailVerified = () => {
-        if (user.emailVerified === true) {
-            setIsVerified(user.emailVerified);
+        if (myBase.auth().currentUser.emailVerified === true) {
+            setIsVerified(true);
         } else {
             Alert.alert("Failure", "You don't verify your email");
         }

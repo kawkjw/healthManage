@@ -33,6 +33,7 @@
     "react-native-gesture-handler": "~1.8.0",
     "react-native-keyboard-aware-scroll-view": "^0.9.3",
     "react-native-modal-datetime-picker": "^9.1.0",
+    "react-native-month-year-picker": "^1.6.3",
     "react-native-qrcode-svg": "^6.0.6",
     "react-native-responsive-screen": "^1.4.1",
     "react-native-screens": "~2.15.0",

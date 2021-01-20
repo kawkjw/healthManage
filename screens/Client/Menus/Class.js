@@ -85,7 +85,15 @@ export default Class = ({ navigation }) => {
                     ]}
                     onPress={() => goClassReservation("pt")}
                 >
-                    <Text>PT</Text>
+                    <Text
+                        style={
+                            memberships.indexOf("pt") === -1
+                                ? { color: "red" }
+                                : { color: "black" }
+                        }
+                    >
+                        PT
+                    </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -95,7 +103,15 @@ export default Class = ({ navigation }) => {
                     ]}
                     onPress={() => goClassReservation("pilates")}
                 >
-                    <Text>필라테스</Text>
+                    <Text
+                        style={
+                            memberships.indexOf("pilates") === -1
+                                ? { color: "red" }
+                                : { color: "black" }
+                        }
+                    >
+                        필라테스
+                    </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -105,7 +121,15 @@ export default Class = ({ navigation }) => {
                     ]}
                     onPress={() => goClassReservation("spinning")}
                 >
-                    <Text>스피닝</Text>
+                    <Text
+                        style={
+                            memberships.indexOf("spinning") === -1
+                                ? { color: "red" }
+                                : { color: "black" }
+                        }
+                    >
+                        스피닝
+                    </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -115,7 +139,15 @@ export default Class = ({ navigation }) => {
                     ]}
                     onPress={() => goClassReservation("squash")}
                 >
-                    <Text>스쿼시</Text>
+                    <Text
+                        style={
+                            memberships.indexOf("squash") === -1
+                                ? { color: "red" }
+                                : { color: "black" }
+                        }
+                    >
+                        스쿼시
+                    </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -125,7 +157,15 @@ export default Class = ({ navigation }) => {
                     ]}
                     onPress={() => goClassReservation("yoga")}
                 >
-                    <Text>요가</Text>
+                    <Text
+                        style={
+                            memberships.indexOf("yoga") === -1
+                                ? { color: "red" }
+                                : { color: "black" }
+                        }
+                    >
+                        요가
+                    </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -135,7 +175,15 @@ export default Class = ({ navigation }) => {
                     ]}
                     onPress={() => goClassReservation("zoomba")}
                 >
-                    <Text>줌바</Text>
+                    <Text
+                        style={
+                            memberships.indexOf("zoomba") === -1
+                                ? { color: "red" }
+                                : { color: "black" }
+                        }
+                    >
+                        줌바
+                    </Text>
                 </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>

@@ -128,7 +128,7 @@ const MyStack = () => {
                                     height: "60%",
                                 }}
                             >
-                                <Text>
+                                <Text style={{ fontSize: 17 }}>
                                     {userInfo
                                         ? userInfo.data().name
                                         : undefined}
@@ -149,11 +149,11 @@ const MyStack = () => {
                                 Alert.alert("Membership", membershipInfo);
                             }}
                         >
-                            <Text>
+                            <Text style={{ fontSize: 17 }}>
                                 {mloading ? undefined : membershipString}
                             </Text>
                             {mloading ? undefined : endDate !== "" ? (
-                                <Text>{endDate}</Text>
+                                <Text style={{ fontSize: 17 }}>{endDate}</Text>
                             ) : undefined}
                         </TouchableOpacity>
                     ),
@@ -198,7 +198,7 @@ const MyStack = () => {
                 name="SelectDate"
                 component={SelectDate}
                 options={({ route }) => ({
-                    title: enToKo(route.params.classname),
+                    title: route.params.date,
                 })}
             />
         </Stack.Navigator>
