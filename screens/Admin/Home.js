@@ -73,7 +73,7 @@ export default Home = ({ navigation, route }) => {
         if (className === "Need to Set Up") {
             Alert.alert("Error", "Need to set up your class");
         } else if (className.split(".")[0] === "pt") {
-            navigation.navigate("PT");
+            navigation.navigate("PT", { limit: className.split(".").slice(1) });
         } else if (className.split(".")[0] === "gx") {
             navigation.navigate("GX", {
                 className: className.split(".").slice(1),

@@ -401,7 +401,7 @@ export default GX = ({ navigation, route }) => {
                                 Platform.OS === "ios"
                                     ? getStatusBarHeight() + 10
                                     : 0,
-                            left: width / 2.3,
+                            left: width / 2.15,
                             fontSize: 20,
                         }}
                     >

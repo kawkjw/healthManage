@@ -6,14 +6,22 @@ import {
     TouchableOpacity,
     FlatList,
     StyleSheet,
+    Modal,
+    Dimensions,
+    ScrollView,
 } from "react-native";
 import myBase, { db } from "../../../config/MyBase";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import SegmentedPicker from "react-native-segmented-picker";
 import { MaterialIcons } from "@expo/vector-icons";
+import { getStatusBarHeight } from "react-native-status-bar-height";
+import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
-export default PT = ({ navigation }) => {
+export default PT = ({ navigation, route }) => {
+    const { width } = Dimensions.get("screen");
     const uid = myBase.auth().currentUser.uid;
+    const startLimit = route.params.limit[0];
+    const endLimit = route.params.limit[1];
     const today = new Date();
     const [data, setData] = useState([]);
     const [change, setChange] = useState(true);
@@ -26,6 +34,9 @@ export default PT = ({ navigation }) => {
         year: today.getFullYear().toString(),
         month: (today.getMonth() + 1).toString(),
     });
+    const [modalTimeTable, setModalTimeTable] = useState(false);
+    const [selectedDate, setSelectedDate] = useState(0);
+    const [availTimeList, setAvailTimeList] = useState([]);
 
     useEffect(() => {
         const showCalendar = async () => {
@@ -64,7 +75,22 @@ export default PT = ({ navigation }) => {
             const endDate = new Date(selectedYear, selectedMonth, 0);
             for (let i = 1; i <= endDate.getDate(); i++) {
                 const d = new Date(yearMonthStr + "-" + (i < 10 ? "0" + i : i));
-                let item = { id: i.toString(), pressable: true };
+                let item = {
+                    id: i.toString(),
+                    pressable:
+                        d >=
+                            new Date(
+                                today.getFullYear(),
+                                today.getMonth(),
+                                today.getDate()
+                            ) &&
+                        d <= //limit 20 days
+                            new Date(
+                                today.getFullYear(),
+                                today.getMonth(),
+                                today.getDate() + 20
+                            ),
+                };
                 if (d.getDay() === 0) {
                     item["color"] = "red";
                 } else if (d.getDay() === 6) {
@@ -115,6 +141,24 @@ export default PT = ({ navigation }) => {
         };
         setListForPicker();
     }, []);
+
+    useEffect(() => {
+        const showTimeTable = () => {
+            let timeList = [];
+            for (let i = Number(startLimit); i < Number(endLimit); i++) {
+                let s =
+                    (i < 10 ? "0" + i : i) +
+                    ":00 ~ " +
+                    (i + 1 < 10 ? "0" + (i + 1) : i + 1) +
+                    ":00";
+                timeList.push(s);
+            }
+            setAvailTimeList(timeList);
+        };
+        if (selectedDate !== 0) {
+            showTimeTable();
+        }
+    }, [selectedDate]);
 
     const goPreMonth = () => {
         if (selectedMonth === 1) {
@@ -206,8 +250,8 @@ export default PT = ({ navigation }) => {
                                     : { backgroundColor: "#b3b3b3" },
                             ]}
                             onPress={() => {
-                                //setModalClassInfo(item.pressable);
-                                //setSelectedDate(Number(item.id));
+                                setModalTimeTable(item.pressable);
+                                setSelectedDate(Number(item.id));
                             }}
                             disabled={!item.pressable}
                         >
@@ -248,6 +292,87 @@ export default PT = ({ navigation }) => {
                     },
                 ]}
             />
+            <Modal
+                animationType="slide"
+                visible={modalTimeTable}
+                transparent={true}
+            >
+                <SafeAreaView
+                    style={{
+                        flex: 1,
+                        backgroundColor: "white",
+                        //justifyContent: "center",
+                    }}
+                >
+                    <TouchableOpacity
+                        style={{
+                            position: "absolute",
+                            top:
+                                Platform.OS === "ios"
+                                    ? getStatusBarHeight()
+                                    : 0,
+                            left: 5,
+                            margin: 10,
+                            padding: 5,
+                            zIndex: 1,
+                        }}
+                        onPress={() => {
+                            setModalTimeTable(false);
+                            setSelectedDate(0);
+                        }}
+                    >
+                        <Text style={{ fontSize: 17 }}>Close</Text>
+                    </TouchableOpacity>
+                    <View style={{ height: 30 }}></View>
+                    <Text
+                        style={{
+                            position: "absolute",
+                            top:
+                                Platform.OS === "ios"
+                                    ? getStatusBarHeight() + 10
+                                    : 0,
+                            left: width / 2.15,
+                            fontSize: 20,
+                        }}
+                    >
+                        {selectedDate + "일"}
+                    </Text>
+                    <ScrollView
+                        style={{
+                            flex: 10,
+                            paddingTop: 20,
+                            alignSelf: "stretch",
+                        }}
+                        contentContainerStyle={{ alignItems: "center" }}
+                    >
+                        {availTimeList.map((availTime, index) => (
+                            <View
+                                key={index}
+                                style={[
+                                    {
+                                        flex: 1,
+                                        width: width,
+                                        height: hp("10%"),
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: "grey",
+                                        justifyContent: "center",
+                                    },
+                                    index === 0
+                                        ? {
+                                              borderTopWidth: 1,
+                                              borderTopColor: "grey",
+                                          }
+                                        : undefined,
+                                ]}
+                            >
+                                <Text style={{ fontSize: 20 }}>
+                                    {availTime}
+                                </Text>
+                            </View>
+                        ))}
+                    </ScrollView>
+                </SafeAreaView>
+            </Modal>
         </SafeAreaView>
     );
 };
