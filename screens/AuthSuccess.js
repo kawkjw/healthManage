@@ -117,13 +117,6 @@ const MyStack = () => {
             })
             .catch((error) => console.log(error));
     };
-    const setEmailVerified = () => {
-        if (myBase.auth().currentUser.emailVerified === true) {
-            setIsVerified(true);
-        } else {
-            Alert.alert("Failure", "You don't verify your email");
-        }
-    };
     const VerifyEmail = () => {
         return (
             <>
@@ -157,9 +150,9 @@ const MyStack = () => {
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={[AuthStyles.authButton, { marginLeft: 5 }]}
-                            onPress={setEmailVerified}
+                            onPress={signOut}
                         >
-                            <Text>인증 확인</Text>
+                            <Text>로그아웃</Text>
                         </TouchableOpacity>
                     </View>
                 </View>

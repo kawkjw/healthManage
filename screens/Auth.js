@@ -208,14 +208,25 @@ export default function Auth({ navigation, route }) {
                                             .update({
                                                 className: "Need to Set Up",
                                             });
+                                        const today = new Date();
                                         db.collection("users")
                                             .doc(currentUser.id)
                                             .collection("classes")
-                                            .doc("dummy")
-                                            .set({ class: [] });
+                                            .doc(
+                                                today.getFullYear() +
+                                                    "-" +
+                                                    (today.getMonth() + 1 < 10
+                                                        ? "0" +
+                                                          (today.getMonth() + 1)
+                                                        : today.getMonth() + 1)
+                                            )
+                                            .set({ date: [] });
                                         db.collection("adminTokens")
                                             .doc(currentUser.id)
-                                            .set({ expoToken: [] });
+                                            .set({
+                                                expoToken: [],
+                                                name: currentUser.name,
+                                            });
                                     }
                                 }
                             })

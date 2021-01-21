@@ -17,6 +17,7 @@ import myBase, { db } from "../../../config/MyBase";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import SegmentedPicker from "react-native-segmented-picker";
 import { getStatusBarHeight } from "react-native-status-bar-height";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default GX = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -259,8 +260,12 @@ export default GX = ({ navigation, route }) => {
                         paddingLeft: 10,
                     }}
                 >
-                    <TouchableOpacity activeOpacity={0} onPress={goPreMonth}>
-                        <Text style={{ fontSize: 17 }}>pre</Text>
+                    <TouchableOpacity activeOpacity={0.5} onPress={goPreMonth}>
+                        <MaterialIcons
+                            name="chevron-left"
+                            size={30}
+                            color="black"
+                        />
                     </TouchableOpacity>
                 </View>
                 <View
@@ -288,8 +293,12 @@ export default GX = ({ navigation, route }) => {
                         paddingRight: 10,
                     }}
                 >
-                    <TouchableOpacity activeOpacity={0} onPress={goNextMonth}>
-                        <Text style={{ fontSize: 17 }}>next</Text>
+                    <TouchableOpacity activeOpacity={0.5} onPress={goNextMonth}>
+                        <MaterialIcons
+                            name="chevron-right"
+                            size={30}
+                            color="black"
+                        />
                     </TouchableOpacity>
                 </View>
             </View>
