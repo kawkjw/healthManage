@@ -5327,7 +5327,7 @@ promise@^8.0.3:
   dependencies:
     asap "~2.0.6"
 
-prop-types@^15.5.10, prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2:
+"prop-types@>= 15.0.0", prop-types@^15.5.10, prop-types@^15.6.0, prop-types@^15.6.2, prop-types@^15.7.2:
   version "15.7.2"
   resolved "https://registry.yarnpkg.com/prop-types/-/prop-types-15.7.2.tgz#52c41e75b8c87e72b9d9360e0206b99dcbffa6c5"
   integrity sha512-8QQikdH7//R2vurIJSutZ1smHYTcLpRWEOlHnzcWHmBYrOGUysKwSsrC89BCiFj3CbrfJ/nXFdJepOVrY1GCHQ==
@@ -5458,6 +5458,13 @@ react-is@^17.0.1:
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-17.0.1.tgz#5b3531bd76a645a4c9fb6e693ed36419e3301339"
   integrity sha512-NAnt2iGDXohE5LI7uBnLnqvLQMtzhkiAOLXTmv+qnF9Ky7xAPcX8Up/xWIhxvLVGJvuLiNc4xQLtuqDRzb4fSA==
 
+react-native-animatable@^1.3.0:
+  version "1.3.3"
+  resolved "https://registry.yarnpkg.com/react-native-animatable/-/react-native-animatable-1.3.3.tgz#a13a4af8258e3bb14d0a9d839917e9bb9274ec8a"
+  integrity sha512-2ckIxZQAsvWn25Ho+DK3d1mXIgj7tITkrS4pYDvx96WyOttSvzzFeQnM2od0+FUMzILbdHDsDEqZvnz1DYNQ1w==
+  dependencies:
+    prop-types "^15.7.2"
+
 react-native-calendars@^1.826.0:
   version "1.826.0"
   resolved "https://registry.yarnpkg.com/react-native-calendars/-/react-native-calendars-1.826.0.tgz#3548a09de630d30b78c07562d3f5f56340a89e02"
@@ -5515,14 +5522,6 @@ react-native-modal-datetime-picker@^9.1.0:
   dependencies:
     prop-types "^15.7.2"
 
-react-native-month-year-picker@^1.6.3:
-  version "1.6.3"
-  resolved "https://registry.yarnpkg.com/react-native-month-year-picker/-/react-native-month-year-picker-1.6.3.tgz#9717ae901950f43329f66703f735de1b178e0c13"
-  integrity sha512-nVsyzq9YpOKqkU2LjAxX9YjNMY+pBnKhJCBUIf3vaAN7peZBP52qUnKP52KTPEpgDWtdRXR5t0q6XaG4v4Gsvw==
-  dependencies:
-    invariant "^2.2.4"
-    moment "^2.24.0"
-
 react-native-qrcode-svg@^6.0.6:
   version "6.0.6"
   resolved "https://registry.yarnpkg.com/react-native-qrcode-svg/-/react-native-qrcode-svg-6.0.6.tgz#bd4756cc0d76eeb3d162dca2f55eea80e3ebbe97"
@@ -5545,6 +5544,14 @@ react-native-screens@~2.15.0:
   version "2.15.0"
   resolved "https://registry.yarnpkg.com/react-native-screens/-/react-native-screens-2.15.0.tgz#9b97c1881c4fcdf304bf363f0013225901625f44"
   integrity sha512-qTSQPy0WKHtlb8xt5gY0Gt6sdvfQUQAnFSqgsggW9UEvySbkHzpqOrOYNA79Ca8oXO0dCFwp6X8buIiDefa7+Q==
+
+react-native-segmented-picker@^2.0.2:
+  version "2.0.2"
+  resolved "https://registry.yarnpkg.com/react-native-segmented-picker/-/react-native-segmented-picker-2.0.2.tgz#1d62e2407d355bfc79bb5a4f41ad7a8c718f83d2"
+  integrity sha512-Bfl88lenFNPEYnA7mwGrPEdNOOXqY9pfOy1IDxxUF9smmqgQVREsTLxJ8M4iVjPGU68TIzQFm5+kKr/OatyKAA==
+  dependencies:
+    prop-types ">= 15.0.0"
+    react-native-animatable "^1.3.0"
 
 react-native-status-bar-height@^2.6.0:
   version "2.6.0"

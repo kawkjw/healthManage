@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
     Text,
     SafeAreaView,
@@ -9,29 +9,23 @@ import {
 } from "react-native";
 import myBase, { db } from "../../../config/MyBase";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
-import MonthPicker from "react-native-month-year-picker";
+import SegmentedPicker from "react-native-segmented-picker";
 
 export default GX = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
     const classList = route.params.className;
-    const [date, setDate] = useState(new Date());
-    const [show, setShow] = useState(false);
+    const today = new Date();
     const [data, setData] = useState([]);
-    const [selectedYear, setSelectedYear] = useState(date.getFullYear());
-    const [selectedMonth, setSelectedMonth] = useState(date.getMonth() + 1);
-
-    const showPicker = useCallback((value) => setShow(value), []);
-
-    const onDateChange = useCallback(
-        (event, newDate) => {
-            const selectedDate = newDate || date;
-            showPicker(false);
-            setDate(selectedDate);
-            setSelectedYear(selectedDate.getFullYear());
-            setSelectedMonth(selectedDate.getMonth() + 1);
-        },
-        [date, showPicker]
-    );
+    const [change, setChange] = useState(true);
+    const [selectedYear, setSelectedYear] = useState(today.getFullYear());
+    const [selectedMonth, setSelectedMonth] = useState(today.getMonth() + 1);
+    const picker = useRef();
+    const [yearList, setYearList] = useState([]);
+    const [monthList, setMonthList] = useState([]);
+    const [selections, setSelections] = useState({
+        year: today.getFullYear().toString(),
+        month: (today.getMonth() + 1).toString(),
+    });
 
     useEffect(() => {
         const showCalendar = async () => {
@@ -58,9 +52,12 @@ export default GX = ({ navigation, route }) => {
                 .collection("users")
                 .doc(uid)
                 .collection("classes")
+                .doc(yearMonthStr)
                 .get()
-                .then((snapshots) => {
-                    snapshots.forEach((snapshot) => {});
+                .then((snapshot) => {
+                    if (snapshot.exists) {
+                        classDate = snapshot.data().date;
+                    }
                 });
             classDate.push("-1");
             let index = 0;
@@ -89,7 +86,32 @@ export default GX = ({ navigation, route }) => {
             setData(items);
         };
         showCalendar();
-    }, [selectedMonth]);
+    }, [change]);
+
+    useEffect(() => {
+        let list = [];
+        for (
+            let i = today.getFullYear() - 10;
+            i <= today.getFullYear() + 10;
+            i++
+        ) {
+            list.push({
+                label: i.toString(),
+                value: i.toString(),
+                key: i.toString(),
+            });
+        }
+        setYearList(list);
+        list = [];
+        for (let i = 1; i <= 12; i++) {
+            list.push({
+                label: i.toString(),
+                value: i.toString(),
+                key: i.toString(),
+            });
+        }
+        setMonthList(list);
+    }, []);
 
     const goPreMonth = () => {
         if (selectedMonth === 1) {
@@ -98,6 +120,7 @@ export default GX = ({ navigation, route }) => {
         } else {
             setSelectedMonth(selectedMonth - 1);
         }
+        setChange(!change);
     };
 
     const goNextMonth = () => {
@@ -107,6 +130,7 @@ export default GX = ({ navigation, route }) => {
         } else {
             setSelectedMonth(selectedMonth + 1);
         }
+        setChange(!change);
     };
 
     return (
@@ -131,7 +155,7 @@ export default GX = ({ navigation, route }) => {
                         justifyContent: "center",
                     }}
                 >
-                    <TouchableOpacity onPress={() => showPicker(true)}>
+                    <TouchableOpacity onPress={() => picker.current.show()}>
                         <Text style={{ fontSize: 20 }}>
                             {selectedYear +
                                 "-" +
@@ -140,9 +164,6 @@ export default GX = ({ navigation, route }) => {
                                     : selectedMonth)}
                         </Text>
                     </TouchableOpacity>
-                    {show && (
-                        <MonthPicker onChange={onDateChange} value={date} />
-                    )}
                 </View>
                 <View
                     style={{
@@ -195,6 +216,27 @@ export default GX = ({ navigation, route }) => {
                 )}
                 numColumns={7}
                 keyExtractor={(item, index) => index}
+            />
+            <SegmentedPicker
+                ref={picker}
+                onConfirm={(select) => {
+                    console.log(select);
+                    setSelections(select);
+                    setSelectedYear(Number(select.year));
+                    setSelectedMonth(Number(select.month));
+                    setChange(!change);
+                }}
+                defaultSelections={selections}
+                options={[
+                    {
+                        key: "year",
+                        items: yearList,
+                    },
+                    {
+                        key: "month",
+                        items: monthList,
+                    },
+                ]}
             />
         </SafeAreaView>
     );
