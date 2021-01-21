@@ -150,51 +150,60 @@ export default Profile = ({ navigation }) => {
                 today.getFullYear() +
                 "-" +
                 (todayMonth < 10 ? "0" + todayMonth : todayMonth);
-            const reserveDate = (
-                await thisuser.collection("reservation").doc(monthString).get()
-            ).data().date;
-            let reserved = [];
-            await reserveDate.sort().forEach(async (d) => {
-                if (today.getDate() <= Number(d)) {
+            try {
+                const reserveDate = (
                     await thisuser
                         .collection("reservation")
                         .doc(monthString)
-                        .collection(d)
-                        .orderBy("start", "asc")
                         .get()
-                        .then((reservations) => {
-                            reservations.forEach((reservation) => {
-                                const data = reservation.data();
-                                const start = data.start.toDate();
-                                const end = data.end.toDate();
-                                let c = {};
-                                c["cid"] = data.classId;
-                                c["className"] = data.className;
-                                c["classDate"] =
-                                    monthString + "-" + (d < 10 ? "0" + d : d);
-                                c["trainer"] = data.trainer;
-                                c["startTime"] =
-                                    (start.getHours() < 10
-                                        ? "0" + start.getHours()
-                                        : start.getHours()) +
-                                    ":" +
-                                    (start.getMinutes() === 0
-                                        ? "00"
-                                        : start.getMinutes());
-                                c["endTime"] =
-                                    (end.getHours() < 10
-                                        ? "0" + end.getHours()
-                                        : end.getHours()) +
-                                    ":" +
-                                    (end.getMinutes() === 0
-                                        ? "00"
-                                        : end.getMinutes());
-                                reserved.push(c);
+                ).data().date;
+                let reserved = [];
+                await reserveDate.sort().forEach(async (d) => {
+                    if (today.getDate() <= Number(d)) {
+                        await thisuser
+                            .collection("reservation")
+                            .doc(monthString)
+                            .collection(d)
+                            .orderBy("start", "asc")
+                            .get()
+                            .then((reservations) => {
+                                reservations.forEach((reservation) => {
+                                    const data = reservation.data();
+                                    const start = data.start.toDate();
+                                    const end = data.end.toDate();
+                                    let c = {};
+                                    c["cid"] = data.classId;
+                                    c["className"] = data.className;
+                                    c["classDate"] =
+                                        monthString +
+                                        "-" +
+                                        (d < 10 ? "0" + d : d);
+                                    c["trainer"] = data.trainer;
+                                    c["startTime"] =
+                                        (start.getHours() < 10
+                                            ? "0" + start.getHours()
+                                            : start.getHours()) +
+                                        ":" +
+                                        (start.getMinutes() === 0
+                                            ? "00"
+                                            : start.getMinutes());
+                                    c["endTime"] =
+                                        (end.getHours() < 10
+                                            ? "0" + end.getHours()
+                                            : end.getHours()) +
+                                        ":" +
+                                        (end.getMinutes() === 0
+                                            ? "00"
+                                            : end.getMinutes());
+                                    reserved.push(c);
+                                });
                             });
-                        });
-                }
-            });
-            setTimeout(() => setReservedClasses(reserved), 300);
+                    }
+                });
+                setTimeout(() => setReservedClasses(reserved), 300);
+            } catch (error) {
+                console.log(error.code, error.message);
+            }
         }
     };
 

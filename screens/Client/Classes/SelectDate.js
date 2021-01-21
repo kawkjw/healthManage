@@ -191,6 +191,13 @@ export default SelectDate = ({ navigation, route }) => {
                             .doc(date)
                             .update({
                                 date: arrayUnion(selectDate.toString()),
+                            })
+                            .catch((error) => {
+                                db.collection("users")
+                                    .doc(myBase.auth().currentUser.uid)
+                                    .collection("reservation")
+                                    .doc(date)
+                                    .set({ date: [selectDate.toString()] });
                             });
                         Alert.alert("Success", "Reserved Class", [
                             {
