@@ -9,8 +9,11 @@ import {
     Modal,
     Dimensions,
     ScrollView,
+    Platform,
+    Alert,
+    Image,
 } from "react-native";
-import myBase, { db } from "../../../config/MyBase";
+import myBase, { arrayUnion, db } from "../../../config/MyBase";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import SegmentedPicker from "react-native-segmented-picker";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -37,6 +40,8 @@ export default PT = ({ navigation, route }) => {
     const [modalTimeTable, setModalTimeTable] = useState(false);
     const [selectedDate, setSelectedDate] = useState(0);
     const [availTimeList, setAvailTimeList] = useState([]);
+    const [alreadySetUp, setAlreadySetUp] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const showCalendar = async () => {
@@ -59,17 +64,17 @@ export default PT = ({ navigation, route }) => {
                 items.push({ id: " ", pressable: false, isHeader: true });
             }
             let classDate = [];
-            /*await db
-                .collection("users")
-                .doc(uid)
+            await db
                 .collection("classes")
+                .doc("pt")
+                .collection(uid)
                 .doc(yearMonthStr)
                 .get()
                 .then((snapshot) => {
                     if (snapshot.exists) {
-                        classDate = snapshot.data().date;
+                        classDate = snapshot.data().class;
                     }
-                });*/
+                });
             classDate.push("-1");
             let index = 0;
             const endDate = new Date(selectedYear, selectedMonth, 0);
@@ -90,6 +95,10 @@ export default PT = ({ navigation, route }) => {
                                 today.getMonth(),
                                 today.getDate() + 20
                             ),
+                    isToday:
+                        i === today.getDate() &&
+                        selectedMonth === today.getMonth() + 1 &&
+                        selectedYear === today.getFullYear(),
                 };
                 if (d.getDay() === 0) {
                     item["color"] = "red";
@@ -143,17 +152,53 @@ export default PT = ({ navigation, route }) => {
     }, []);
 
     useEffect(() => {
-        const showTimeTable = () => {
+        const showTimeTable = async () => {
+            setLoading(true);
+            let finishSetUp = true;
             let timeList = [];
+            const yearMonthStr =
+                selectedYear +
+                "-" +
+                (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
             for (let i = Number(startLimit); i < Number(endLimit); i++) {
                 let s =
                     (i < 10 ? "0" + i : i) +
                     ":00 ~ " +
                     (i + 1 < 10 ? "0" + (i + 1) : i + 1) +
                     ":00";
-                timeList.push(s);
+                let obj = {};
+                obj["str"] = s;
+                await db
+                    .collection("classes")
+                    .doc("pt")
+                    .collection(uid)
+                    .doc(yearMonthStr)
+                    .collection(selectedDate.toString())
+                    .doc(s)
+                    .get()
+                    .then((bool) => {
+                        if (bool.exists) {
+                            obj["submit"] = true;
+                            obj["isAvail"] = bool.data().isAvail;
+                            obj["hasReserve"] = bool.data().hasReservation;
+                        } else {
+                            obj["submit"] = false;
+                            finishSetUp = false;
+                        }
+                    });
+                timeList.push(obj);
             }
             setAvailTimeList(timeList);
+            setAlreadySetUp(finishSetUp);
+            if (finishSetUp) {
+                await db
+                    .collection("classes")
+                    .doc("pt")
+                    .collection(uid)
+                    .doc(yearMonthStr)
+                    .update({ class: arrayUnion(selectedDate.toString()) });
+            }
+            setLoading(false);
         };
         if (selectedDate !== 0) {
             showTimeTable();
@@ -178,6 +223,60 @@ export default PT = ({ navigation, route }) => {
             setSelectedMonth(selectedMonth + 1);
         }
         setChange(!change);
+    };
+
+    const setAvailableTime = async (availTime, i) => {
+        const yearMonthStr =
+            selectedYear +
+            "-" +
+            (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
+        await db
+            .collection("classes")
+            .doc("pt")
+            .collection(uid)
+            .doc(yearMonthStr)
+            .collection(selectedDate.toString())
+            .doc(availTime)
+            .set({ isAvail: true, hasReservation: false });
+        const backup = selectedDate;
+        setSelectedDate(0);
+        setSelectedDate(backup);
+    };
+
+    const setUnAvailabeTime = async (availTime, i) => {
+        const yearMonthStr =
+            selectedYear +
+            "-" +
+            (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
+        await db
+            .collection("classes")
+            .doc("pt")
+            .collection(uid)
+            .doc(yearMonthStr)
+            .collection(selectedDate.toString())
+            .doc(availTime)
+            .set({ isAvail: false });
+        const backup = selectedDate;
+        setSelectedDate(0);
+        setSelectedDate(backup);
+    };
+
+    const resetAvailTime = async (availTime) => {
+        const yearMonthStr =
+            selectedYear +
+            "-" +
+            (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
+        await db
+            .collection("classes")
+            .doc("pt")
+            .collection(uid)
+            .doc(yearMonthStr)
+            .collection(selectedDate.toString())
+            .doc(availTime)
+            .delete();
+        const backup = selectedDate;
+        setSelectedDate(0);
+        setSelectedDate(backup);
     };
 
     return (
@@ -255,17 +354,32 @@ export default PT = ({ navigation, route }) => {
                             }}
                             disabled={!item.pressable}
                         >
-                            <Text
+                            <View
                                 style={
-                                    item.color === "black"
-                                        ? { color: "black" }
-                                        : item.color === "blue"
-                                        ? { color: "blue" }
-                                        : { color: "red" }
+                                    item.isToday
+                                        ? {
+                                              backgroundColor: "#99ddff",
+                                              borderRadius: 50,
+                                              width: wp("8%"),
+                                              height: wp("8%"),
+                                              alignItems: "center",
+                                              justifyContent: "center",
+                                          }
+                                        : undefined
                                 }
                             >
-                                {item.id}
-                            </Text>
+                                <Text
+                                    style={
+                                        item.color === "black"
+                                            ? { color: "black" }
+                                            : item.color === "blue"
+                                            ? { color: "blue" }
+                                            : { color: "red" }
+                                    }
+                                >
+                                    {item.id}
+                                </Text>
+                            </View>
                         </TouchableOpacity>
                     </View>
                 )}
@@ -317,8 +431,26 @@ export default PT = ({ navigation, route }) => {
                             zIndex: 1,
                         }}
                         onPress={() => {
-                            setModalTimeTable(false);
-                            setSelectedDate(0);
+                            if (alreadySetUp) {
+                                setModalTimeTable(false);
+                                setSelectedDate(0);
+                                setChange(!change);
+                            } else {
+                                Alert.alert(
+                                    "Warning",
+                                    "You don't finish setting up time\nDo you want to go Back?",
+                                    [
+                                        { text: "Cancel" },
+                                        {
+                                            text: "OK",
+                                            onPress: () => {
+                                                setModalTimeTable(false);
+                                                setSelectedDate(0);
+                                            },
+                                        },
+                                    ]
+                                );
+                            }
                         }}
                     >
                         <Text style={{ fontSize: 17 }}>Close</Text>
@@ -337,40 +469,182 @@ export default PT = ({ navigation, route }) => {
                     >
                         {selectedDate + "일"}
                     </Text>
-                    <ScrollView
-                        style={{
-                            flex: 10,
-                            paddingTop: 20,
-                            alignSelf: "stretch",
-                        }}
-                        contentContainerStyle={{ alignItems: "center" }}
-                    >
-                        {availTimeList.map((availTime, index) => (
-                            <View
-                                key={index}
-                                style={[
-                                    {
-                                        flex: 1,
-                                        width: width,
-                                        height: hp("10%"),
-                                        borderBottomWidth: 1,
-                                        borderBottomColor: "grey",
-                                        justifyContent: "center",
-                                    },
-                                    index === 0
-                                        ? {
-                                              borderTopWidth: 1,
-                                              borderTopColor: "grey",
-                                          }
-                                        : undefined,
-                                ]}
-                            >
-                                <Text style={{ fontSize: 20 }}>
-                                    {availTime}
-                                </Text>
-                            </View>
-                        ))}
-                    </ScrollView>
+                    {loading ? (
+                        <View
+                            style={{
+                                flex: 1,
+                                alignItems: "center",
+                                justifyContent: "center",
+                            }}
+                        >
+                            <Image
+                                style={{ width: 50, height: 50 }}
+                                source={require("../../../assets/loading.gif")}
+                            />
+                        </View>
+                    ) : (
+                        <ScrollView
+                            style={{
+                                flex: 10,
+                                paddingTop: 20,
+                                alignSelf: "stretch",
+                                marginHorizontal: 10,
+                            }}
+                            contentContainerStyle={{ alignItems: "center" }}
+                        >
+                            {availTimeList.map((availTime, index) => (
+                                <View
+                                    key={index}
+                                    style={[
+                                        {
+                                            flex: 1,
+                                            width: width,
+                                            height: hp("10%"),
+                                            borderBottomWidth: 1,
+                                            borderBottomColor: "grey",
+                                            flexDirection: "row",
+                                            paddingHorizontal: 10,
+                                        },
+                                        index === 0
+                                            ? {
+                                                  borderTopWidth: 1,
+                                                  borderTopColor: "grey",
+                                              }
+                                            : undefined,
+                                    ]}
+                                >
+                                    <View
+                                        style={{
+                                            flex: 1,
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            paddingLeft: 10,
+                                        }}
+                                    >
+                                        <Text
+                                            style={{
+                                                fontSize: width / 25.5,
+                                            }}
+                                        >
+                                            {availTime.str}
+                                        </Text>
+                                    </View>
+                                    <View
+                                        style={{
+                                            flex: 3,
+                                            flexDirection: "row",
+                                            marginLeft: 10,
+                                            paddingHorizontal: 10,
+                                            marginBottom: 15,
+                                            marginTop: 10,
+                                        }}
+                                    >
+                                        {availTime.submit === false ? (
+                                            <>
+                                                <TouchableOpacity
+                                                    style={[
+                                                        styles.availButton,
+                                                        {
+                                                            marginRight: 7,
+                                                            backgroundColor:
+                                                                "#66ccff",
+                                                        },
+                                                    ]}
+                                                    onPress={() =>
+                                                        setAvailableTime(
+                                                            availTime.str,
+                                                            index
+                                                        )
+                                                    }
+                                                >
+                                                    <Text>Available</Text>
+                                                </TouchableOpacity>
+                                                <TouchableOpacity
+                                                    style={[
+                                                        styles.availButton,
+                                                        {
+                                                            marginLeft: 7,
+                                                            backgroundColor:
+                                                                "#ff9999",
+                                                        },
+                                                    ]}
+                                                    onPress={() =>
+                                                        setUnAvailabeTime(
+                                                            availTime.str,
+                                                            index
+                                                        )
+                                                    }
+                                                >
+                                                    <Text>Unavailable</Text>
+                                                </TouchableOpacity>
+                                            </>
+                                        ) : (
+                                            <View
+                                                style={{
+                                                    flex: 1,
+                                                    flexDirection: "row",
+                                                    alignItems: "center",
+                                                }}
+                                            >
+                                                {availTime.isAvail ? (
+                                                    <View
+                                                        style={{
+                                                            flex: 3,
+                                                            alignItems:
+                                                                "center",
+                                                        }}
+                                                    >
+                                                        {availTime.hasReserve ? (
+                                                            <Text>
+                                                                Client 1
+                                                            </Text>
+                                                        ) : (
+                                                            <Text>
+                                                                No Reservation
+                                                            </Text>
+                                                        )}
+                                                    </View>
+                                                ) : (
+                                                    <View
+                                                        style={{
+                                                            flex: 3,
+                                                            alignItems:
+                                                                "center",
+                                                        }}
+                                                    >
+                                                        <Text
+                                                            style={{
+                                                                color: "red",
+                                                            }}
+                                                        >
+                                                            Unavailable
+                                                        </Text>
+                                                    </View>
+                                                )}
+                                                <TouchableOpacity
+                                                    style={[
+                                                        styles.availButton,
+                                                        {
+                                                            backgroundColor:
+                                                                "white",
+                                                            height: hp("7%"),
+                                                        },
+                                                    ]}
+                                                    onPress={() =>
+                                                        resetAvailTime(
+                                                            availTime.str
+                                                        )
+                                                    }
+                                                >
+                                                    <Text>Reset</Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                        )}
+                                    </View>
+                                </View>
+                            ))}
+                        </ScrollView>
+                    )}
                 </SafeAreaView>
             </Modal>
         </SafeAreaView>
@@ -386,5 +660,23 @@ const styles = StyleSheet.create({
         backgroundColor: "grey",
         borderWidth: 1,
         borderRadius: 10,
+    },
+    availButton: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+        borderWidth: 1,
+        borderRadius: 20,
+        borderColor: "grey",
+        ...Platform.select({
+            ios: {
+                shadowColor: "#c6c6c6",
+                shadowOffset: { width: 5, height: 5 },
+                shadowOpacity: 5,
+            },
+            android: {
+                elevation: 10,
+            },
+        }),
     },
 });
