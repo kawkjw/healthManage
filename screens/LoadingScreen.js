@@ -1,21 +1,32 @@
 import React from "react";
-import { View, Text, StyleSheet, StatusBar } from "react-native";
+import { View, StyleSheet, StatusBar, Image } from "react-native";
 
 export default LoadingScreen = () => {
-  return (
-    <View style={styles.container}>
-      <StatusBar
-        barStyle={Platform.OS === "ios" ? "dark-content" : "default"}
-      />
-      <Text>Loading...</Text>
-    </View>
-  );
+    return (
+        <View style={styles.container}>
+            <StatusBar
+                barStyle={Platform.OS === "ios" ? "dark-content" : "default"}
+            />
+            <View
+                style={{
+                    flex: 1,
+                    alignItems: "center",
+                    justifyContent: "center",
+                }}
+            >
+                <Image
+                    style={{ width: 50, height: 50 }}
+                    source={require("../assets/loading.gif")}
+                />
+            </View>
+        </View>
+    );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
+    container: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+    },
 });

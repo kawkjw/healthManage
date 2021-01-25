@@ -291,6 +291,7 @@ export default function Auth({ navigation, route }) {
                         <Stack.Screen
                             name="Loading"
                             component={LoadingScreen}
+                            options={{ title: " " }}
                         />
                     ) : state.userToken == null ? (
                         <>
