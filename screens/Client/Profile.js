@@ -195,6 +195,9 @@ export default Profile = ({ navigation }) => {
                                         (end.getMinutes() === 0
                                             ? "00"
                                             : end.getMinutes());
+                                    if (data.className === "pt") {
+                                        c["confirm"] = data.confirm;
+                                    }
                                     reserved.push(c);
                                 });
                             });
@@ -791,6 +794,11 @@ export default Profile = ({ navigation }) => {
                                     {reservedClass.startTime +
                                         "~" +
                                         reservedClass.endTime}
+                                    {reservedClass.className === "pt"
+                                        ? reservedClass.confirm
+                                            ? " (승인완료)"
+                                            : " (승인대기중)"
+                                        : null}
                                 </Text>
                             ))}
                         </View>

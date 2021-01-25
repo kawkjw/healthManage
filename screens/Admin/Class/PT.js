@@ -12,13 +12,20 @@ import {
     Platform,
     Alert,
     Image,
+    Linking,
 } from "react-native";
-import myBase, { arrayUnion, db } from "../../../config/MyBase";
+import myBase, {
+    arrayDelete,
+    arrayUnion,
+    db,
+    fieldDelete,
+} from "../../../config/MyBase";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import SegmentedPicker from "react-native-segmented-picker";
 import { MaterialIcons } from "@expo/vector-icons";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
+import { pushNotificationsToClient } from "../../../config/MyExpo";
 
 export default PT = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -42,6 +49,16 @@ export default PT = ({ navigation, route }) => {
     const [availTimeList, setAvailTimeList] = useState([]);
     const [alreadySetUp, setAlreadySetUp] = useState(false);
     const [loading, setLoading] = useState(true);
+
+    useEffect(() => {
+        if (route.params.year && route.params.month && route.params.date) {
+            setSelectedYear(route.params.year);
+            setSelectedMonth(route.params.month);
+            setChange(!change);
+            setSelectedDate(route.params.date);
+            setModalTimeTable(true);
+        }
+    }, []);
 
     useEffect(() => {
         const showCalendar = async () => {
@@ -84,17 +101,11 @@ export default PT = ({ navigation, route }) => {
                     id: i.toString(),
                     pressable:
                         d >=
-                            new Date(
-                                today.getFullYear(),
-                                today.getMonth(),
-                                today.getDate()
-                            ) &&
-                        d <= //limit 20 days
-                            new Date(
-                                today.getFullYear(),
-                                today.getMonth(),
-                                today.getDate() + 20
-                            ),
+                        new Date(
+                            today.getFullYear(),
+                            today.getMonth(),
+                            today.getDate()
+                        ),
                     isToday:
                         i === today.getDate() &&
                         selectedMonth === today.getMonth() + 1 &&
@@ -151,55 +162,68 @@ export default PT = ({ navigation, route }) => {
         setListForPicker();
     }, []);
 
-    useEffect(() => {
-        const showTimeTable = async () => {
-            setLoading(true);
-            let finishSetUp = true;
-            let timeList = [];
-            const yearMonthStr =
-                selectedYear +
-                "-" +
-                (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
-            for (let i = Number(startLimit); i < Number(endLimit); i++) {
-                let s =
-                    (i < 10 ? "0" + i : i) +
-                    ":00 ~ " +
-                    (i + 1 < 10 ? "0" + (i + 1) : i + 1) +
-                    ":00";
-                let obj = {};
-                obj["str"] = s;
-                await db
-                    .collection("classes")
-                    .doc("pt")
-                    .collection(uid)
-                    .doc(yearMonthStr)
-                    .collection(selectedDate.toString())
-                    .doc(s)
-                    .get()
-                    .then((bool) => {
-                        if (bool.exists) {
-                            obj["submit"] = true;
-                            obj["isAvail"] = bool.data().isAvail;
-                            obj["hasReserve"] = bool.data().hasReservation;
-                        } else {
-                            obj["submit"] = false;
-                            finishSetUp = false;
+    const showTimeTable = async () => {
+        setLoading(true);
+        let finishSetUp = true;
+        let timeList = [];
+        const yearMonthStr =
+            selectedYear +
+            "-" +
+            (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
+        for (let i = Number(startLimit); i < Number(endLimit); i++) {
+            let s =
+                (i < 10 ? "0" + i : i) +
+                ":00 ~ " +
+                (i + 1 < 10 ? "0" + (i + 1) : i + 1) +
+                ":00";
+            let obj = {};
+            obj["str"] = s;
+            await db
+                .collection("classes")
+                .doc("pt")
+                .collection(uid)
+                .doc(yearMonthStr)
+                .collection(selectedDate.toString())
+                .doc(s)
+                .get()
+                .then(async (bool) => {
+                    if (bool.exists) {
+                        obj["submit"] = true;
+                        obj["isAvail"] = bool.data().isAvail;
+                        obj["hasReserve"] = bool.data().hasReservation;
+                        if (bool.data().hasReservation) {
+                            const { name, phoneNumber } = (
+                                await db
+                                    .collection("users")
+                                    .doc(bool.data().clientUid)
+                                    .get()
+                            ).data();
+                            obj["clientName"] = name;
+                            obj["clientPhone"] = phoneNumber;
+                            obj["clientUid"] = bool.data().clientUid;
+                            obj["confirm"] = bool.data().confirm;
                         }
-                    });
-                timeList.push(obj);
-            }
-            setAvailTimeList(timeList);
-            setAlreadySetUp(finishSetUp);
-            if (finishSetUp) {
-                await db
-                    .collection("classes")
-                    .doc("pt")
-                    .collection(uid)
-                    .doc(yearMonthStr)
-                    .update({ class: arrayUnion(selectedDate.toString()) });
-            }
-            setLoading(false);
-        };
+                    } else {
+                        obj["submit"] = false;
+                        finishSetUp = false;
+                    }
+                });
+            timeList.push(obj);
+        }
+        setAvailTimeList(timeList);
+        setAlreadySetUp(finishSetUp);
+        if (finishSetUp) {
+            await db
+                .collection("classes")
+                .doc("pt")
+                .collection(uid)
+                .doc(yearMonthStr)
+                .update({ class: arrayUnion(selectedDate.toString()) });
+        }
+        setLoading(false);
+    };
+
+    useEffect(() => {
         if (selectedDate !== 0) {
             showTimeTable();
         }
@@ -225,7 +249,7 @@ export default PT = ({ navigation, route }) => {
         setChange(!change);
     };
 
-    const setAvailableTime = async (availTime, i) => {
+    const setAvailableTime = async (availTime) => {
         const yearMonthStr =
             selectedYear +
             "-" +
@@ -243,7 +267,7 @@ export default PT = ({ navigation, route }) => {
         setSelectedDate(backup);
     };
 
-    const setUnAvailabeTime = async (availTime, i) => {
+    const setUnAvailabeTime = async (availTime) => {
         const yearMonthStr =
             selectedYear +
             "-" +
@@ -277,6 +301,153 @@ export default PT = ({ navigation, route }) => {
         const backup = selectedDate;
         setSelectedDate(0);
         setSelectedDate(backup);
+    };
+
+    const confirmClass = async (clientUid, availTime) => {
+        const yearMonthStr =
+            selectedYear +
+            "-" +
+            (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
+        const { hasReservation } = (
+            await db
+                .collection("classes")
+                .doc("pt")
+                .collection(uid)
+                .doc(yearMonthStr)
+                .collection(selectedDate.toString())
+                .doc(availTime)
+                .get()
+        ).data();
+        if (hasReservation) {
+            await db
+                .collection("classes")
+                .doc("pt")
+                .collection(uid)
+                .doc(yearMonthStr)
+                .collection(selectedDate.toString())
+                .doc(availTime)
+                .update({ confirm: true });
+            await db
+                .collection("users")
+                .doc(uid)
+                .collection("classes")
+                .doc(yearMonthStr)
+                .update({ date: arrayUnion(selectedDate.toString()) });
+            await db
+                .collection("users")
+                .doc(uid)
+                .collection("classes")
+                .doc(yearMonthStr)
+                .collection(selectedDate.toString())
+                .doc(availTime)
+                .set({ clientUid: clientUid });
+            await db
+                .collection("users")
+                .doc(clientUid)
+                .collection("reservation")
+                .doc(yearMonthStr)
+                .collection(selectedDate.toString())
+                .doc(availTime)
+                .update({ confirm: true });
+        }
+        Alert.alert("Success", "Confirm Class", [
+            {
+                text: "OK",
+                onPress: async () => {
+                    await pushNotificationsToClient(
+                        clientUid,
+                        "Confirmed Reservation",
+                        "Check your Reservation",
+                        { navigation: "Profile" }
+                    );
+                    const backup = selectedDate;
+                    setSelectedDate(0);
+                    setSelectedDate(backup);
+                },
+            },
+        ]);
+    };
+
+    const cancelClass = async (clientUid, availTime) => {
+        const yearMonthStr =
+            selectedYear +
+            "-" +
+            (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
+        const { hasReservation } = (
+            await db
+                .collection("classes")
+                .doc("pt")
+                .collection(uid)
+                .doc(yearMonthStr)
+                .collection(selectedDate.toString())
+                .doc(availTime)
+                .get()
+        ).data();
+        if (hasReservation) {
+            await db
+                .collection("classes")
+                .doc("pt")
+                .collection(uid)
+                .doc(yearMonthStr)
+                .collection(selectedDate.toString())
+                .doc(availTime)
+                .update({
+                    clientUid: fieldDelete(),
+                    confirm: fieldDelete(),
+                    hasReservation: false,
+                });
+            await db
+                .collection("users")
+                .doc(uid)
+                .collection("classes")
+                .doc(yearMonthStr)
+                .update({ date: arrayDelete(selectedDate.toString()) });
+            await db
+                .collection("users")
+                .doc(uid)
+                .collection("classes")
+                .doc(yearMonthStr)
+                .collection(selectedDate.toString())
+                .doc(availTime)
+                .delete();
+            await db
+                .collection("users")
+                .doc(clientUid)
+                .collection("reservation")
+                .doc(yearMonthStr)
+                .collection(selectedDate.toString())
+                .doc(availTime)
+                .delete();
+            await db
+                .collection("users")
+                .doc(clientUid)
+                .collection("reservation")
+                .doc(yearMonthStr)
+                .collection(selectedDate.toString())
+                .get()
+                .then(async (snapshots) => {
+                    if (snapshots.size === 0) {
+                        await db
+                            .collection("users")
+                            .doc(clientUid)
+                            .collection("reservation")
+                            .doc(yearMonthStr)
+                            .update({
+                                date: arrayDelete(selectedDate.toString()),
+                            });
+                    }
+                });
+        }
+        Alert.alert("Success", "Cancel Class", [
+            {
+                text: "OK",
+                onPress: () => {
+                    const backup = selectedDate;
+                    setSelectedDate(0);
+                    setSelectedDate(backup);
+                },
+            },
+        ]);
     };
 
     return (
@@ -415,7 +586,6 @@ export default PT = ({ navigation, route }) => {
                     style={{
                         flex: 1,
                         backgroundColor: "white",
-                        //justifyContent: "center",
                     }}
                 >
                     <TouchableOpacity
@@ -552,8 +722,7 @@ export default PT = ({ navigation, route }) => {
                                                     ]}
                                                     onPress={() =>
                                                         setAvailableTime(
-                                                            availTime.str,
-                                                            index
+                                                            availTime.str
                                                         )
                                                     }
                                                 >
@@ -570,8 +739,7 @@ export default PT = ({ navigation, route }) => {
                                                     ]}
                                                     onPress={() =>
                                                         setUnAvailabeTime(
-                                                            availTime.str,
-                                                            index
+                                                            availTime.str
                                                         )
                                                     }
                                                 >
@@ -588,16 +756,43 @@ export default PT = ({ navigation, route }) => {
                                             >
                                                 {availTime.isAvail ? (
                                                     <View
-                                                        style={{
-                                                            flex: 3,
-                                                            alignItems:
-                                                                "center",
-                                                        }}
+                                                        style={[
+                                                            {
+                                                                alignItems:
+                                                                    "center",
+                                                            },
+                                                            availTime.hasReserve &&
+                                                            !availTime.confirm
+                                                                ? { flex: 2 }
+                                                                : { flex: 3 },
+                                                        ]}
                                                     >
                                                         {availTime.hasReserve ? (
-                                                            <Text>
-                                                                Client 1
-                                                            </Text>
+                                                            <>
+                                                                <Text>
+                                                                    {
+                                                                        availTime.clientName
+                                                                    }
+                                                                </Text>
+                                                                <TouchableOpacity
+                                                                    onPress={() =>
+                                                                        Linking.openURL(
+                                                                            `tel:${availTime.clientPhone}`
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    <Text
+                                                                        style={{
+                                                                            color:
+                                                                                "blue",
+                                                                        }}
+                                                                    >
+                                                                        {
+                                                                            availTime.clientPhone
+                                                                        }
+                                                                    </Text>
+                                                                </TouchableOpacity>
+                                                            </>
                                                         ) : (
                                                             <Text>
                                                                 No Reservation
@@ -621,23 +816,144 @@ export default PT = ({ navigation, route }) => {
                                                         </Text>
                                                     </View>
                                                 )}
-                                                <TouchableOpacity
-                                                    style={[
-                                                        styles.availButton,
-                                                        {
-                                                            backgroundColor:
-                                                                "white",
-                                                            height: hp("7%"),
-                                                        },
-                                                    ]}
-                                                    onPress={() =>
-                                                        resetAvailTime(
-                                                            availTime.str
-                                                        )
-                                                    }
-                                                >
-                                                    <Text>Reset</Text>
-                                                </TouchableOpacity>
+                                                {availTime.hasReserve ? (
+                                                    availTime.confirm ? (
+                                                        <TouchableOpacity
+                                                            style={[
+                                                                styles.availButton,
+                                                                {
+                                                                    backgroundColor:
+                                                                        "white",
+                                                                    height: hp(
+                                                                        "7%"
+                                                                    ),
+                                                                },
+                                                            ]}
+                                                            onPress={() =>
+                                                                Alert.alert(
+                                                                    "Cancel",
+                                                                    "Are you sure?",
+                                                                    [
+                                                                        {
+                                                                            text:
+                                                                                "Cancel",
+                                                                        },
+                                                                        {
+                                                                            text:
+                                                                                "OK",
+                                                                            onPress: () =>
+                                                                                cancelClass(
+                                                                                    availTime.clientUid,
+                                                                                    availTime.str
+                                                                                ),
+                                                                        },
+                                                                    ]
+                                                                )
+                                                            }
+                                                        >
+                                                            <Text>Cancel</Text>
+                                                        </TouchableOpacity>
+                                                    ) : (
+                                                        <>
+                                                            <TouchableOpacity
+                                                                style={[
+                                                                    styles.availButton,
+                                                                    {
+                                                                        backgroundColor:
+                                                                            "white",
+                                                                        height: hp(
+                                                                            "7%"
+                                                                        ),
+                                                                        marginRight: 3,
+                                                                    },
+                                                                ]}
+                                                                onPress={() =>
+                                                                    Alert.alert(
+                                                                        "Confirm",
+                                                                        "Are you sure?",
+                                                                        [
+                                                                            {
+                                                                                text:
+                                                                                    "Cancel",
+                                                                            },
+                                                                            {
+                                                                                text:
+                                                                                    "OK",
+                                                                                onPress: () =>
+                                                                                    confirmClass(
+                                                                                        availTime.clientUid,
+                                                                                        availTime.str
+                                                                                    ),
+                                                                            },
+                                                                        ]
+                                                                    )
+                                                                }
+                                                            >
+                                                                <Text>
+                                                                    Confirm
+                                                                </Text>
+                                                            </TouchableOpacity>
+                                                            <TouchableOpacity
+                                                                style={[
+                                                                    styles.availButton,
+                                                                    {
+                                                                        backgroundColor:
+                                                                            "white",
+                                                                        height: hp(
+                                                                            "7%"
+                                                                        ),
+                                                                        marginLeft: 3,
+                                                                    },
+                                                                ]}
+                                                                onPress={() =>
+                                                                    Alert.alert(
+                                                                        "Cancel",
+                                                                        "Are you sure?",
+                                                                        [
+                                                                            {
+                                                                                text:
+                                                                                    "Cancel",
+                                                                            },
+                                                                            {
+                                                                                text:
+                                                                                    "OK",
+                                                                                onPress: () =>
+                                                                                    cancelClass(
+                                                                                        availTime.clientUid,
+                                                                                        availTime.str
+                                                                                    ),
+                                                                            },
+                                                                        ]
+                                                                    )
+                                                                }
+                                                            >
+                                                                <Text>
+                                                                    Cancel
+                                                                </Text>
+                                                            </TouchableOpacity>
+                                                        </>
+                                                    )
+                                                ) : (
+                                                    <TouchableOpacity
+                                                        style={[
+                                                            styles.availButton,
+                                                            {
+                                                                backgroundColor:
+                                                                    "white",
+                                                                height: hp(
+                                                                    "7%"
+                                                                ),
+                                                            },
+                                                        ]}
+                                                        onPress={() =>
+                                                            resetAvailTime(
+                                                                availTime.str
+                                                            )
+                                                        }
+                                                    >
+                                                        <Text>Reset</Text>
+                                                    </TouchableOpacity>
+                                                )}
                                             </View>
                                         )}
                                     </View>

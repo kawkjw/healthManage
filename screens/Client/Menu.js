@@ -52,56 +52,6 @@ export default Menu = ({ navigation }) => {
                 >
                     <Text>Blank</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
-                    ]}
-                    onPress={() => {}}
-                >
-                    <Text>Blank</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
-                    ]}
-                    onPress={() => {}}
-                >
-                    <Text>Blank</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
-                    ]}
-                    onPress={() => {}}
-                >
-                    <Text>Blank</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
-                    ]}
-                    onPress={() => {}}
-                >
-                    <Text>Blank</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 40 },
-                    ]}
-                    onPress={() => {}}
-                >
-                    <Text>Blank</Text>
-                </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>
     );

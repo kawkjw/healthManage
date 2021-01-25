@@ -14,8 +14,9 @@ import { useCollection, useDocument } from "react-firebase-hooks/firestore";
 import moment from "moment";
 import Class from "./Menus/Class";
 import PT from "./Classes/PT";
-import GX from "./Classes/GX";
 import SelectDate from "./Classes/SelectDate";
+import GX from "./Classes/GX";
+import SelectTrainer from "./Classes/SelectTrainer";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
@@ -185,21 +186,34 @@ const MyStack = () => {
             <Stack.Screen name="Info" component={Info} />
             <Stack.Screen name="QRScan" component={QRScan} />
             <Stack.Screen name="Test" component={Test} />
-            <Stack.Screen name="Class" component={Class} />
-            <Stack.Screen name="PT" component={PT} />
+            <Stack.Screen
+                name="Class"
+                component={Class}
+                options={{ title: "예약" }}
+            />
+            <Stack.Screen
+                name="PT"
+                component={PT}
+                options={({ route }) => ({ title: route.params.trainerName })}
+            />
             <Stack.Screen
                 name="GX"
                 component={GX}
                 options={({ route }) => ({
-                    title: enToKo(route.params.classname),
+                    title: route.params.date,
                 })}
             />
             <Stack.Screen
                 name="SelectDate"
                 component={SelectDate}
                 options={({ route }) => ({
-                    title: route.params.date,
+                    title: enToKo(route.params.classname),
                 })}
+            />
+            <Stack.Screen
+                name="SelectTrainer"
+                component={SelectTrainer}
+                options={{ title: "트레이너" }}
             />
         </Stack.Navigator>
     );

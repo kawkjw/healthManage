@@ -38,13 +38,34 @@ export default Home = ({ navigation, route }) => {
                 if (data.navigation) {
                     if (data.datas) {
                         const { datas } = data;
-                        navigation.reset({
-                            index: 1,
-                            routes: [
-                                { name: "HomeScreen" },
-                                { name: data.navigation, params: datas },
-                            ],
-                        });
+                        const { className } = (
+                            await db.collection("users").doc(uid).get()
+                        ).data();
+                        if (data.navigation !== "PT") {
+                            navigation.reset({
+                                index: 1,
+                                routes: [
+                                    { name: "HomeScreen" },
+                                    { name: data.navigation, params: datas },
+                                ],
+                            });
+                        } else {
+                            navigation.reset({
+                                index: 1,
+                                routes: [
+                                    { name: "HomeScreen" },
+                                    {
+                                        name: "PT",
+                                        params: {
+                                            ...datas,
+                                            limit: className
+                                                .split(".")
+                                                .slice(1),
+                                        },
+                                    },
+                                ],
+                            });
+                        }
                     } else {
                         navigation.reset({
                             index: 1,
@@ -97,9 +118,9 @@ export default Home = ({ navigation, route }) => {
                         MyStyles.buttonShadow,
                         { width: widthButton, marginBottom: 20 },
                     ]}
-                    onPress={() => navigation.navigate("Calendar")}
+                    onPress={() => navigation.navigate("Profile")}
                 >
-                    <Text>Calendar</Text>
+                    <Text>Profile</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -107,9 +128,9 @@ export default Home = ({ navigation, route }) => {
                         MyStyles.buttonShadow,
                         { width: widthButton, marginBottom: 20 },
                     ]}
-                    onPress={() => navigation.navigate("WeekCalendar")}
+                    onPress={() => goMyClass()}
                 >
-                    <Text>Week Calendar</Text>
+                    <Text>Class Info</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -127,39 +148,9 @@ export default Home = ({ navigation, route }) => {
                         MyStyles.buttonShadow,
                         { width: widthButton, marginBottom: 20 },
                     ]}
-                    onPress={() => navigation.navigate("Profile")}
-                >
-                    <Text>Profile</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
-                    ]}
-                    onPress={() => navigation.navigate("GetData")}
-                >
-                    <Text>Get Data</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
-                    ]}
                     onPress={() => navigation.navigate("FindUser")}
                 >
                     <Text>Manage User</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
-                    ]}
-                    onPress={() => goMyClass()}
-                >
-                    <Text>Class Info</Text>
                 </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>

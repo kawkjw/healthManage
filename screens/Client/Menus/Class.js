@@ -60,9 +60,9 @@ export default Class = ({ navigation }) => {
             ]);
         } else {
             if (classname === "pt") {
-                navigation.navigate("PT");
+                navigation.navigate("SelectTrainer");
             } else {
-                navigation.navigate("GX", { classname: classname });
+                navigation.navigate("SelectDate", { classname: classname });
             }
         }
     };

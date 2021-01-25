@@ -111,6 +111,7 @@ export default GX = ({ navigation, route }) => {
                     index += 1;
                 } else {
                     item["hasClass"] = false;
+                    item["pressable"] = false;
                 }
                 items.push(item);
             }
@@ -166,7 +167,7 @@ export default GX = ({ navigation, route }) => {
                 .collection("date")
                 .doc(selectedDate.toString())
                 .get()
-                .then((doc) => {
+                .then(async (doc) => {
                     let classId = [];
                     switch (className) {
                         case "pilates":
@@ -187,7 +188,7 @@ export default GX = ({ navigation, route }) => {
                         default:
                             Alert.alert("Error", "Wrong Class Name");
                     }
-                    classId.forEach(async (id) => {
+                    await classId.forEach(async (id) => {
                         const classForId = db
                             .collection("classes")
                             .doc(className)
@@ -370,7 +371,6 @@ export default GX = ({ navigation, route }) => {
                     style={{
                         flex: 1,
                         backgroundColor: "white",
-                        //justifyContent: "center",
                     }}
                 >
                     <TouchableOpacity

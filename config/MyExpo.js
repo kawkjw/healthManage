@@ -85,4 +85,102 @@ export const pushNotificationsToAdmin = async (
         });
 };
 
+export const pushNotificationsToTrainer = async (
+    trainerUid,
+    inputTitle,
+    inputBody,
+    inputData = {}
+) => {
+    let messages = [];
+    let tokens = [];
+    await db
+        .collection("adminTokens")
+        .doc(trainerUid)
+        .get()
+        .then(async (trainer) => {
+            const expoTokens = trainer.data().expoToken;
+            for (let expoToken of expoTokens) {
+                tokens.push(expoToken);
+            }
+
+            for (let token of tokens) {
+                if (!Expo.isExpoPushToken(token)) {
+                    console.log(`Error: ${token} is not expo token`);
+                    return;
+                }
+                messages.push({
+                    to: token,
+                    sound: "default",
+                    title: inputTitle,
+                    body: inputBody,
+                    data: inputData,
+                    badge: 1,
+                });
+            }
+
+            let chunks = MyExpo.chunkPushNotifications(messages);
+            let tickets = [];
+            for (let chunk of chunks) {
+                try {
+                    const ticketChunk = await MyExpo.sendPushNotificationsAsync(
+                        chunk
+                    );
+                    console.log(ticketChunk);
+                    tickets.push(...ticketChunk);
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        });
+};
+
+export const pushNotificationsToClient = async (
+    clientUid,
+    inputTitle,
+    inputBody,
+    inputData = {}
+) => {
+    let messages = [];
+    let tokens = [];
+    await db
+        .collection("users")
+        .doc(clientUid)
+        .get()
+        .then(async (client) => {
+            const expoTokens = client.data().expoToken;
+            for (let expoToken of expoTokens) {
+                tokens.push(expoToken);
+            }
+
+            for (let token of tokens) {
+                if (!Expo.isExpoPushToken(token)) {
+                    console.log(`Error: ${token} is not expo token`);
+                    return;
+                }
+                messages.push({
+                    to: token,
+                    sound: "default",
+                    title: inputTitle,
+                    body: inputBody,
+                    data: inputData,
+                    badge: 1,
+                });
+            }
+
+            let chunks = MyExpo.chunkPushNotifications(messages);
+            let tickets = [];
+            for (let chunk of chunks) {
+                try {
+                    const ticketChunk = await MyExpo.sendPushNotificationsAsync(
+                        chunk
+                    );
+                    console.log(ticketChunk);
+                    tickets.push(...ticketChunk);
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+        });
+};
+
 export default MyExpo;
