@@ -18,6 +18,7 @@ import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import SegmentedPicker from "react-native-segmented-picker";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import { MaterialIcons } from "@expo/vector-icons";
+import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
 
 export default GX = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -157,8 +158,7 @@ export default GX = ({ navigation, route }) => {
             "-" +
             (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
         let allList = {};
-        await classNameList.forEach(async (className) => {
-            let list = [];
+        const exec = classNameList.map(async (className) => {
             await db
                 .collection("users")
                 .doc(uid)
@@ -188,7 +188,11 @@ export default GX = ({ navigation, route }) => {
                         default:
                             Alert.alert("Error", "Wrong Class Name");
                     }
-                    await classId.forEach(async (id) => {
+                    return classId;
+                })
+                .then(async (classId) => {
+                    let list = [];
+                    const promises = classId.map(async (id) => {
                         const classForId = db
                             .collection("classes")
                             .doc(className)
@@ -213,18 +217,24 @@ export default GX = ({ navigation, route }) => {
                             return a.info.start.seconds - b.info.start.seconds;
                         });
                     });
+                    await Promise.all(promises);
+                    allList[className] = list;
                 });
-            allList[className] = list;
         });
-        setTimeout(() => {
-            setClassList(allList);
+        await Promise.all(exec);
+        return allList;
+    };
+
+    const setList = async () => {
+        await getMyClass().then((list) => {
+            setClassList(list);
             setLoading(false);
-        }, 2500);
+        });
     };
 
     useEffect(() => {
         if (selectedDate !== 0) {
-            getMyClass();
+            setList();
         } else {
             setClassList({});
         }

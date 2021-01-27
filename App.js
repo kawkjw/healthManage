@@ -5,16 +5,16 @@ import * as Notifications from "expo-notifications";
 import { registerForPushNotificationAsync } from "./config/MyExpo";
 
 Notifications.setNotificationHandler({
-  handleNotification: async () => ({
-    shouldShowAlert: true,
-    shouldPlaySound: true,
-    shouldSetBadge: true,
-  }),
+    handleNotification: async () => ({
+        shouldShowAlert: true,
+        shouldPlaySound: true,
+        shouldSetBadge: true,
+    }),
 });
 
 export default function App({ navigation, route }) {
-  useEffect(() => {
-    registerForPushNotificationAsync();
-  }, []);
-  return <Auth />;
+    useEffect(() => {
+        //registerForPushNotificationAsync();
+    }, []);
+    return <Auth />;
 }

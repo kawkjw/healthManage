@@ -21,6 +21,7 @@ import SegmentedPicker from "react-native-segmented-picker";
 import { MaterialIcons } from "@expo/vector-icons";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import { pushNotificationsToTrainer } from "../../../config/MyExpo";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 export default PT = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -42,7 +43,6 @@ export default PT = ({ navigation, route }) => {
     const [modalTimeTable, setModalTimeTable] = useState(false);
     const [availTimeList, setAvailTimeList] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [hasClassAtThisDate, setHasClassAtThisDate] = useState(false);
 
     useEffect(() => {
         const showCalendar = async () => {
@@ -154,7 +154,6 @@ export default PT = ({ navigation, route }) => {
             selectedYear +
             "-" +
             (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
-        setHasClassAtThisDate(false);
         await db
             .collection("classes")
             .doc("pt")
@@ -172,7 +171,6 @@ export default PT = ({ navigation, route }) => {
                         if (snapshot.data().hasReservation) {
                             if (snapshot.data().clientUid === uid) {
                                 ptClass["isMe"] = true;
-                                setHasClassAtThisDate(true);
                             }
                         }
                     }
@@ -455,7 +453,7 @@ export default PT = ({ navigation, route }) => {
                             setSelectedDate(0);
                         }}
                     >
-                        <Text style={{ fontSize: 17 }}>Close</Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>Close</Text>
                     </TouchableOpacity>
                     <View style={{ height: 30 }}></View>
                     <Text
@@ -466,7 +464,7 @@ export default PT = ({ navigation, route }) => {
                                     ? getStatusBarHeight() + 10
                                     : 0,
                             left: width / 2.15,
-                            fontSize: 20,
+                            fontSize: RFPercentage(2.5),
                         }}
                     >
                         {selectedDate + "일"}
@@ -525,7 +523,7 @@ export default PT = ({ navigation, route }) => {
                                     >
                                         <Text
                                             style={{
-                                                fontSize: width / 25.5,
+                                                fontSize: RFPercentage(2),
                                             }}
                                         >
                                             {availTime.timeStr}
@@ -592,9 +590,6 @@ export default PT = ({ navigation, route }) => {
                                                             ]
                                                         );
                                                     }}
-                                                    disabled={
-                                                        hasClassAtThisDate
-                                                    }
                                                 >
                                                     <Text>Reserve</Text>
                                                 </TouchableOpacity>

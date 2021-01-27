@@ -60,6 +60,6 @@ const MyStack = () => {
     );
 };
 
-export default AuthSuccess = ({ navigation, route }) => {
+export default ANavigator = ({ navigation, route }) => {
     return <MyStack />;
 };

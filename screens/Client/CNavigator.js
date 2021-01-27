@@ -17,6 +17,7 @@ import PT from "./Classes/PT";
 import SelectDate from "./Classes/SelectDate";
 import GX from "./Classes/GX";
 import SelectTrainer from "./Classes/SelectTrainer";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
@@ -129,7 +130,7 @@ const MyStack = () => {
                                     height: "60%",
                                 }}
                             >
-                                <Text style={{ fontSize: 17 }}>
+                                <Text style={{ fontSize: RFPercentage(2) }}>
                                     {userInfo
                                         ? userInfo.data().name
                                         : undefined}
@@ -150,11 +151,13 @@ const MyStack = () => {
                                 Alert.alert("Membership", membershipInfo);
                             }}
                         >
-                            <Text style={{ fontSize: 17 }}>
+                            <Text style={{ fontSize: RFPercentage(2) }}>
                                 {mloading ? undefined : membershipString}
                             </Text>
                             {mloading ? undefined : endDate !== "" ? (
-                                <Text style={{ fontSize: 17 }}>{endDate}</Text>
+                                <Text style={{ fontSize: RFPercentage(2) }}>
+                                    {endDate}
+                                </Text>
                             ) : undefined}
                         </TouchableOpacity>
                     ),
@@ -219,6 +222,6 @@ const MyStack = () => {
     );
 };
 
-export default AuthSuccess = ({ navigation, route }) => {
+export default CNavigator = ({ navigation, route }) => {
     return <MyStack />;
 };

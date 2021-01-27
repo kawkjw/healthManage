@@ -24,6 +24,7 @@ import { getStatusBarHeight } from "react-native-status-bar-height";
 import firebase from "firebase";
 import moment from "moment";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 export default Profile = ({ navigation }) => {
     const [data, setData] = useState("");
@@ -472,10 +473,13 @@ export default Profile = ({ navigation }) => {
                 <View
                     style={[
                         MyStyles.buttonShadow,
-                        { width: widthButton, height: "45%" },
+                        { width: widthButton, height: "40%" },
                     ]}
                 >
-                    <ScrollView style={{ padding: 15 }}>
+                    <ScrollView
+                        style={{ padding: 15 }}
+                        showsVerticalScrollIndicator={false}
+                    >
                         <Modal
                             animationType="slide"
                             transparent={true}
@@ -712,7 +716,10 @@ export default Profile = ({ navigation }) => {
                         <Text
                             style={[
                                 MyStyles.profileText,
-                                { fontWeight: "bold", fontSize: 20 },
+                                {
+                                    fontWeight: "bold",
+                                    fontSize: RFPercentage(2.5),
+                                },
                             ]}
                         >
                             회원권 정보
@@ -754,7 +761,9 @@ export default Profile = ({ navigation }) => {
                                                 key={i}
                                                 style={[
                                                     {
-                                                        fontSize: 17,
+                                                        fontSize: RFPercentage(
+                                                            2
+                                                        ),
                                                         marginLeft: 3,
                                                     },
                                                     i === 0
@@ -773,7 +782,10 @@ export default Profile = ({ navigation }) => {
                             <Text
                                 style={[
                                     MyStyles.profileText,
-                                    { fontWeight: "bold", fontSize: 20 },
+                                    {
+                                        fontWeight: "bold",
+                                        fontSize: RFPercentage(2.5),
+                                    },
                                 ]}
                             >
                                 이번 달 수업 예약 정보
@@ -784,7 +796,10 @@ export default Profile = ({ navigation }) => {
                             {reservedClasses.map((reservedClass, index) => (
                                 <Text
                                     key={index}
-                                    style={{ fontSize: 17, marginBottom: 3 }}
+                                    style={{
+                                        fontSize: RFPercentage(2),
+                                        marginBottom: 3,
+                                    }}
                                 >
                                     {enToKo(reservedClass.className) +
                                         "(강사 " +
@@ -796,12 +811,13 @@ export default Profile = ({ navigation }) => {
                                         reservedClass.endTime}
                                     {reservedClass.className === "pt"
                                         ? reservedClass.confirm
-                                            ? " (승인완료)"
-                                            : " (승인대기중)"
+                                            ? " (승인O)"
+                                            : " (승인X)"
                                         : null}
                                 </Text>
                             ))}
                         </View>
+                        <View style={{ height: 30 }}></View>
                     </ScrollView>
                 </View>
             </View>

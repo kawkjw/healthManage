@@ -26,6 +26,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { pushNotificationsToClient } from "../../../config/MyExpo";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 export default PT = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -120,6 +121,9 @@ export default PT = ({ navigation, route }) => {
                 }
                 if (i === Number(classDate[index])) {
                     item["hasClass"] = true;
+                    if (item["pressable"] === false) {
+                        item["pressable"] = true;
+                    }
                     index += 1;
                 } else {
                     item["hasClass"] = false;
@@ -191,6 +195,7 @@ export default PT = ({ navigation, route }) => {
                         obj["submit"] = true;
                         obj["isAvail"] = bool.data().isAvail;
                         obj["hasReserve"] = bool.data().hasReservation;
+                        obj["notEditable"] = today.getDate() >= selectedDate;
                         if (bool.data().hasReservation) {
                             const { name, phoneNumber } = (
                                 await db
@@ -218,7 +223,16 @@ export default PT = ({ navigation, route }) => {
                 .doc("pt")
                 .collection(uid)
                 .doc(yearMonthStr)
-                .update({ class: arrayUnion(selectedDate.toString()) });
+                .update({ class: arrayUnion(selectedDate.toString()) })
+                .then()
+                .catch(async () => {
+                    await db
+                        .collection("classes")
+                        .doc("pt")
+                        .collection(uid)
+                        .doc(yearMonthStr)
+                        .set({ class: [selectedDate.toString()] });
+                });
         }
         setLoading(false);
     };
@@ -477,7 +491,7 @@ export default PT = ({ navigation, route }) => {
                     }}
                 >
                     <TouchableOpacity onPress={() => picker.current.show()}>
-                        <Text style={{ fontSize: 20 }}>
+                        <Text style={{ fontSize: RFPercentage(2.5) }}>
                             {selectedYear +
                                 "-" +
                                 (selectedMonth < 10
@@ -933,7 +947,7 @@ export default PT = ({ navigation, route }) => {
                                                             </TouchableOpacity>
                                                         </>
                                                     )
-                                                ) : (
+                                                ) : availTime.notEditable ? null : (
                                                     <TouchableOpacity
                                                         style={[
                                                             styles.availButton,
@@ -982,7 +996,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         borderWidth: 1,
-        borderRadius: 20,
+        borderRadius: RFPercentage(2.5),
         borderColor: "grey",
         ...Platform.select({
             ios: {

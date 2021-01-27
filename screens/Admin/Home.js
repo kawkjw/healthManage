@@ -92,7 +92,17 @@ export default Home = ({ navigation, route }) => {
             await db.collection("users").doc(uid).get()
         ).data();
         if (className === "Need to Set Up") {
-            Alert.alert("Error", "Need to set up your class");
+            Alert.alert(
+                "Error",
+                "Need to set up your class\nPlease set up in Profile",
+                [
+                    {
+                        text: "OK",
+                        onPress: () =>
+                            navigation.navigate("Profile", { showModal: true }),
+                    },
+                ]
+            );
         } else if (className.split(".")[0] === "pt") {
             navigation.navigate("PT", { limit: className.split(".").slice(1) });
         } else if (className.split(".")[0] === "gx") {

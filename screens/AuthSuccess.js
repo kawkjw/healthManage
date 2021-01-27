@@ -80,10 +80,18 @@ const MyStack = () => {
         };
         const storeAdminNotificationToken = async () => {
             let notificationToken = null;
+            let num = 0;
             while (notificationToken === null) {
+                num = num + 1;
                 notificationToken = await AsyncStorage.getItem(
                     "notificationToken"
                 );
+                if (num === 100) {
+                    break;
+                }
+            }
+            if (num === 100) {
+                return;
             }
             await db
                 .collection("adminTokens")

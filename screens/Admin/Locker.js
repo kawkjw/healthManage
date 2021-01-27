@@ -10,6 +10,7 @@ import {
 import { db } from "../../config/MyBase";
 import Dialog from "react-native-dialog";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 export default Locker = () => {
     const [data, setData] = useState();
@@ -247,7 +248,7 @@ export default Locker = () => {
                             <Text
                                 style={{
                                     color: item.occupied ? "red" : "blue",
-                                    fontSize: 30,
+                                    fontSize: RFPercentage(3),
                                 }}
                             >
                                 {item.id}
