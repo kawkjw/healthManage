@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import myBase, { db } from "../config/MyBase";
-import ANavigator from "./Admin/ANavigator";
+import TNavigator from "./Trainer/TNavigator";
 import CNavigator from "./Client/CNavigator";
 import LoadingScreen from "./LoadingScreen";
 import { Alert, StatusBar, Text, View, TouchableOpacity } from "react-native";
@@ -10,12 +10,14 @@ import { AuthContext } from "./Auth";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { AuthStyles } from "../css/MyStyles";
 import { registerForPushNotificationAsync } from "../config/MyExpo";
+import ANavigator from "./Admin/ANavigator";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
     const [user, loading, error] = useAuthState(myBase.auth());
     const [isLoading, setIsLoading] = useState(true);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [isTrainer, setIsTrainer] = useState(false);
     const [isVerified, setIsVerified] = useState(false);
     const { signOut } = useContext(AuthContext);
     useEffect(() => {
@@ -29,6 +31,7 @@ const MyStack = () => {
                     if (userDoc.exists) {
                         const data = userDoc.data();
                         setIsAdmin(data.permission === 0 ? true : false);
+                        setIsTrainer(data.permission === 1 ? true : false);
                         if (user.email !== data.email) {
                             await db
                                 .collection("emails")
@@ -177,6 +180,12 @@ const MyStack = () => {
                 <Stack.Screen
                     name="Admin"
                     component={ANavigator}
+                    options={{ headerShown: false }}
+                />
+            ) : isTrainer ? (
+                <Stack.Screen
+                    name="Trainer"
+                    component={TNavigator}
                     options={{ headerShown: false }}
                 />
             ) : (

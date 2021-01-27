@@ -10,7 +10,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import SignIn from "./Auth/SignIn";
 import SignUp from "./Auth/SignUp";
 import ResetPw from "./Auth/ResetPw";
-import { ADMIN_CODE } from "@env";
+import { ADMIN_CODE, TRAINER_CODE } from "@env";
 import { useAuthState } from "react-firebase-hooks/auth";
 import { pushNotificationsToAdmin } from "../config/MyExpo";
 
@@ -166,6 +166,7 @@ export default function Auth({ navigation, route }) {
             signUp: async (data) => {
                 const { name, phoneNumber, email, password, adminCode } = data;
                 const isAdmin = adminCode === ADMIN_CODE ? true : false;
+                const isTrainer = adminCode === TRAINER_CODE ? true : false;
                 await myBase
                     .auth()
                     .createUserWithEmailAndPassword(email, password)
@@ -175,7 +176,7 @@ export default function Auth({ navigation, route }) {
                             email: email,
                             name: name,
                             phoneNumber: phoneNumber,
-                            permission: isAdmin ? 0 : 2,
+                            permission: isAdmin ? 0 : isTrainer ? 1 : 2,
                             emailVerified: userCredential.user.emailVerified,
                         };
 
@@ -202,7 +203,7 @@ export default function Auth({ navigation, route }) {
                                         .set({
                                             email: currentUser.email,
                                         });
-                                    if (isAdmin) {
+                                    if (isTrainer) {
                                         db.collection("users")
                                             .doc(currentUser.id)
                                             .update({
@@ -221,6 +222,13 @@ export default function Auth({ navigation, route }) {
                                                         : today.getMonth() + 1)
                                             )
                                             .set({ date: [] });
+                                        db.collection("adminTokens")
+                                            .doc(currentUser.id)
+                                            .set({
+                                                expoToken: [],
+                                                name: currentUser.name,
+                                            });
+                                    } else if (isAdmin) {
                                         db.collection("adminTokens")
                                             .doc(currentUser.id)
                                             .set({

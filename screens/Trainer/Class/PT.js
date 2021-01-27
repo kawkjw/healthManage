@@ -212,7 +212,8 @@ export default PT = ({ navigation, route }) => {
                         obj["submit"] = false;
                         finishSetUp = false;
                     }
-                });
+                })
+                .catch((error) => console.log(error.message));
             timeList.push(obj);
         }
         setAvailTimeList(timeList);
@@ -225,7 +226,7 @@ export default PT = ({ navigation, route }) => {
                 .doc(yearMonthStr)
                 .update({ class: arrayUnion(selectedDate.toString()) })
                 .then()
-                .catch(async () => {
+                .catch(async (error) => {
                     await db
                         .collection("classes")
                         .doc("pt")

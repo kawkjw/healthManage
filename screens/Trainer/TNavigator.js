@@ -4,10 +4,11 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./Home";
 import Profile from "./Profile";
 import { AuthContext } from "../Auth";
-import Locker from "./Locker";
-import FindUser from "./ManageUser/FindUser";
-import SelectUser from "./ManageUser/SelectUser";
-import ModifyUser from "./ManageUser/ModifyUser";
+import GetData from "./GetData";
+import MyCalendar from "./MyCalendar";
+import WeekCalendar from "./WeekCalendar";
+import GX from "./Class/GX";
+import PT from "./Class/PT";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
@@ -42,14 +43,15 @@ const MyStack = () => {
                     ),
                 }}
             />
-            <Stack.Screen name="Locker" component={Locker} />
-            <Stack.Screen name="FindUser" component={FindUser} />
-            <Stack.Screen name="SelectUser" component={SelectUser} />
-            <Stack.Screen name="ModifyUser" component={ModifyUser} />
+            <Stack.Screen name="Calendar" component={MyCalendar} />
+            <Stack.Screen name="GetData" component={GetData} />
+            <Stack.Screen name="WeekCalendar" component={WeekCalendar} />
+            <Stack.Screen name="GX" component={GX} />
+            <Stack.Screen name="PT" component={PT} />
         </Stack.Navigator>
     );
 };
 
-export default ANavigator = ({ navigation, route }) => {
+export default TNavigator = ({ navigation, route }) => {
     return <MyStack />;
 };

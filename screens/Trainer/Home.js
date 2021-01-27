@@ -87,6 +87,31 @@ export default Home = ({ navigation, route }) => {
         };
     }, []);
 
+    const goMyClass = async () => {
+        const { className } = (
+            await db.collection("users").doc(uid).get()
+        ).data();
+        if (className === "Need to Set Up") {
+            Alert.alert(
+                "Error",
+                "Need to set up your class\nPlease set up in Profile",
+                [
+                    {
+                        text: "OK",
+                        onPress: () =>
+                            navigation.navigate("Profile", { showModal: true }),
+                    },
+                ]
+            );
+        } else if (className.split(".")[0] === "pt") {
+            navigation.navigate("PT", { limit: className.split(".").slice(1) });
+        } else if (className.split(".")[0] === "gx") {
+            navigation.navigate("GX", {
+                className: className.split(".").slice(1),
+            });
+        }
+    };
+
     return (
         <SafeAreaView style={MyStyles.container}>
             <StatusBar
@@ -113,29 +138,9 @@ export default Home = ({ navigation, route }) => {
                         MyStyles.buttonShadow,
                         { width: widthButton, marginBottom: 20 },
                     ]}
-                    onPress={() => {}}
+                    onPress={() => goMyClass()}
                 >
                     <Text>Class Info</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
-                    ]}
-                    onPress={() => navigation.navigate("Locker")}
-                >
-                    <Text>Locker</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
-                    ]}
-                    onPress={() => navigation.navigate("FindUser")}
-                >
-                    <Text>Manage User</Text>
                 </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>
