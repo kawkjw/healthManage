@@ -3,6 +3,7 @@ import {
     Alert,
     Dimensions,
     Keyboard,
+    Linking,
     SafeAreaView,
     Text,
     TextInput,
@@ -20,11 +21,13 @@ import RadioForm, {
     RadioButtonLabel,
 } from "react-native-simple-radio-button";
 import { RFPercentage } from "react-native-responsive-fontsize";
-import CheckBox from "../../config/CheckBox";
+import moment from "moment";
+import { MaterialIcons } from "@expo/vector-icons";
 
 export default Profile = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
     const widthButton = width - 40;
+    const today = new Date();
 
     const { signOut } = useContext(AuthContext);
     const uid = myBase.auth().currentUser.uid;
@@ -51,6 +54,23 @@ export default Profile = ({ navigation, route }) => {
         { label: "GX(요가, 줌바)", value: "yoga.zoomba" },
     ];
     const [radioGxSelected, setRadioGxSelected] = useState(-1);
+    const [todayClassInfo, setTodayClassInfo] = useState({
+        pt: [],
+        pilates: [],
+        spinning: [],
+        squash: [],
+        yoga: [],
+        zoomba: [],
+    });
+    const [tomorrowClassInfo, setTomorrowClassInfo] = useState({
+        pt: [],
+        pilates: [],
+        spinning: [],
+        squash: [],
+        yoga: [],
+        zoomba: [],
+    });
+    const [loading, setLoading] = useState(true);
 
     const enToKo = (s) => {
         switch (s) {
@@ -73,33 +93,178 @@ export default Profile = ({ navigation, route }) => {
             case "yoga.zoomba":
                 return "(요가, 줌바)";
             default:
-                return "Please Click This to Set up";
+                return "Please Click Here to Set up";
         }
+    };
+
+    const getPTClass = async (date) => {
+        let list = [];
+        let tempList = [];
+        await db
+            .collection("users")
+            .doc(uid)
+            .collection("classes")
+            .doc(moment(today).format("YYYY-MM"))
+            .collection(date)
+            .get()
+            .then((snapshots) => {
+                snapshots.forEach((snapshot) => {
+                    let temp = {};
+                    const { clientUid } = snapshot.data();
+                    temp["time"] = snapshot.id;
+                    temp["clientUid"] = clientUid;
+                    tempList.push(temp);
+                });
+            });
+        const promises = tempList.map(async (value) => {
+            const { clientUid } = value;
+            let temp = { ...value };
+            const { name, phoneNumber } = (
+                await db.collection("users").doc(clientUid).get()
+            ).data();
+            temp["clientName"] = name;
+            temp["clientPhone"] = phoneNumber;
+            list.push(temp);
+        });
+        await Promise.all(promises);
+        return list;
+    };
+
+    const getGXClass = async (date, classList) => {
+        const yearMonthStr = moment(today).format("YYYY-MM");
+        let allList = {};
+        const exec = classList.map(async (className) => {
+            await db
+                .collection("users")
+                .doc(uid)
+                .collection("classes")
+                .doc(yearMonthStr)
+                .collection("date")
+                .doc(date)
+                .get()
+                .then(async (doc) => {
+                    let classId = [];
+                    switch (className) {
+                        case "pilates":
+                            classId = doc.data().pilates;
+                            break;
+                        case "spinning":
+                            classId = doc.data().spinning;
+                            break;
+                        case "squash":
+                            classId = doc.data().squash;
+                            break;
+                        case "yoga":
+                            classId = doc.data().yoga;
+                            break;
+                        case "zoomba":
+                            classId = doc.data().zoomba;
+                            break;
+                        default:
+                            Alert.alert("Error", "Wrong Class Name");
+                    }
+                    return classId;
+                })
+                .then(async (classId) => {
+                    let list = [];
+                    const promises = classId.map(async (id) => {
+                        const classForId = db
+                            .collection("classes")
+                            .doc(className)
+                            .collection("class")
+                            .doc(yearMonthStr)
+                            .collection(date)
+                            .doc(id);
+                        let classInfo = {};
+                        classInfo["info"] = (await classForId.get()).data();
+                        list.push(classInfo);
+                        list.sort((a, b) => {
+                            return a.info.start.seconds - b.info.start.seconds;
+                        });
+                    });
+                    await Promise.all(promises);
+                    allList[className] = list;
+                });
+        });
+        await Promise.all(exec);
+        return allList;
     };
 
     const getUserData = async () => {
         if (uid !== null) {
+            setLoading(true);
             const thisuser = db.collection("users").doc(uid);
-            await thisuser.get().then((user) => {
-                if (user.exists) {
-                    const userData = user.data();
-                    if (userData.permission === 2) {
-                        signOut();
-                    } else {
+            await thisuser
+                .get()
+                .then((user) => {
+                    if (user.exists) {
+                        const userData = user.data();
+                        if (userData.permission === 2) {
+                            signOut();
+                        } else {
+                            setUserInfo({
+                                ...userInfo,
+                                permission: userData.permission,
+                            });
+                        }
                         setUserInfo({
                             ...userInfo,
-                            permission: userData.permission,
+                            name: userData.name,
+                            phoneNumber: userData.phoneNumber,
+                            email: userData.email,
+                            className: userData.className.split("."),
                         });
                     }
-                    setUserInfo({
-                        ...userInfo,
-                        name: userData.name,
-                        phoneNumber: userData.phoneNumber,
-                        email: userData.email,
-                        className: userData.className.split("."),
-                    });
-                }
-            });
+                    return user.data().className.split(".");
+                })
+                .then(async (classNameList) => {
+                    await thisuser
+                        .collection("classes")
+                        .doc(moment(today).format("YYYY-MM"))
+                        .get()
+                        .then(async (doc) => {
+                            const { date } = doc.data();
+                            if (
+                                date.indexOf(today.getDate().toString()) !== -1
+                            ) {
+                                if (classNameList[0] === "pt") {
+                                    setTodayClassInfo({
+                                        pt: await getPTClass(
+                                            today.getDate().toString()
+                                        ),
+                                    });
+                                } else if (classNameList[0] === "gx") {
+                                    setTodayClassInfo(
+                                        await getGXClass(
+                                            today.getDate().toString(),
+                                            classNameList.slice(1)
+                                        )
+                                    );
+                                }
+                            }
+                            if (
+                                date.indexOf(
+                                    (today.getDate() + 1).toString()
+                                ) !== -1
+                            ) {
+                                if (classNameList[0] === "pt") {
+                                    setTomorrowClassInfo({
+                                        pt: await getPTClass(
+                                            (today.getDate() + 1).toString()
+                                        ),
+                                    });
+                                } else if (classNameList[0] === "gx") {
+                                    setTomorrowClassInfo(
+                                        await getGXClass(
+                                            (today.getDate() + 1).toString(),
+                                            classNameList.slice(1)
+                                        )
+                                    );
+                                }
+                            }
+                        });
+                })
+                .then(() => setLoading(false));
         }
     };
 
@@ -542,8 +707,236 @@ export default Profile = ({ navigation, route }) => {
                     </Modal>
                 </View>
                 <View>
-                    <Text>오늘 수업</Text>
-                    <Text>내일 수업</Text>
+                    <Text style={{ fontSize: RFPercentage(2) }}>오늘 수업</Text>
+                    {loading ? (
+                        <Text
+                            style={{
+                                marginBottom: 5,
+                                marginLeft: 7,
+                                fontSize: RFPercentage(2),
+                            }}
+                        >
+                            Loading
+                        </Text>
+                    ) : className[0] === "pt" ? (
+                        todayClassInfo["pt"].length === 0 ? (
+                            <Text
+                                style={{
+                                    marginBottom: 5,
+                                    marginLeft: 7,
+                                    fontSize: RFPercentage(2),
+                                }}
+                            >
+                                No Class
+                            </Text>
+                        ) : (
+                            todayClassInfo["pt"].map((value, index) => (
+                                <View
+                                    key={index}
+                                    style={{
+                                        flexDirection: "row",
+                                        marginBottom: 5,
+                                        marginLeft: 7,
+                                    }}
+                                >
+                                    <MaterialIcons
+                                        name="circle"
+                                        size={RFPercentage(1.5)}
+                                        color="black"
+                                        style={{ alignSelf: "center" }}
+                                    />
+                                    <Text
+                                        style={{
+                                            fontSize: RFPercentage(2),
+                                            marginLeft: 5,
+                                        }}
+                                    >
+                                        {value.time +
+                                            " " +
+                                            value.clientName +
+                                            " "}
+                                    </Text>
+                                    <TouchableOpacity
+                                        onPress={() =>
+                                            Linking.openURL(
+                                                `tel:${value.clientPhone}`
+                                            )
+                                        }
+                                    >
+                                        <Text
+                                            style={{
+                                                fontSize: RFPercentage(2),
+                                                color: "blue",
+                                            }}
+                                        >
+                                            {value.clientPhone}
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                            ))
+                        )
+                    ) : todayClassInfo[className[1]].length === 0 ? (
+                        <Text
+                            style={{
+                                marginBottom: 5,
+                                marginLeft: 7,
+                                fontSize: RFPercentage(2),
+                            }}
+                        >
+                            No Class
+                        </Text>
+                    ) : (
+                        todayClassInfo[className[1]].map((value, index) => (
+                            <View
+                                key={index}
+                                style={{
+                                    flexDirection: "row",
+                                    marginBottom: 5,
+                                    marginLeft: 7,
+                                }}
+                            >
+                                <MaterialIcons
+                                    name="circle"
+                                    size={RFPercentage(1.5)}
+                                    color="black"
+                                    style={{ alignSelf: "center" }}
+                                />
+                                <Text
+                                    style={{
+                                        fontSize: RFPercentage(2),
+                                        marginLeft: 5,
+                                    }}
+                                >
+                                    {moment(value.info.start.toDate()).format(
+                                        "HH:mm"
+                                    ) +
+                                        " ~ " +
+                                        moment(value.info.end.toDate()).format(
+                                            "HH:mm"
+                                        ) +
+                                        " " +
+                                        value.info.currentClient +
+                                        "/" +
+                                        value.info.maxClient}
+                                </Text>
+                            </View>
+                        ))
+                    )}
+                    <Text style={{ fontSize: RFPercentage(2) }}>내일 수업</Text>
+                    {loading ? (
+                        <Text
+                            style={{
+                                marginBottom: 5,
+                                marginLeft: 7,
+                                fontSize: RFPercentage(2),
+                            }}
+                        >
+                            Loading
+                        </Text>
+                    ) : className[0] === "pt" ? (
+                        tomorrowClassInfo["pt"].length === 0 ? (
+                            <Text
+                                style={{
+                                    marginBottom: 5,
+                                    marginLeft: 7,
+                                    fontSize: RFPercentage(2),
+                                }}
+                            >
+                                No Class
+                            </Text>
+                        ) : (
+                            tomorrowClassInfo["pt"].map((value, index) => (
+                                <View
+                                    key={index}
+                                    style={{
+                                        flexDirection: "row",
+                                        marginBottom: 5,
+                                        marginLeft: 7,
+                                    }}
+                                >
+                                    <MaterialIcons
+                                        name="circle"
+                                        size={RFPercentage(1.5)}
+                                        color="black"
+                                        style={{ alignSelf: "center" }}
+                                    />
+                                    <Text
+                                        style={{
+                                            fontSize: RFPercentage(2),
+                                            marginLeft: 5,
+                                        }}
+                                    >
+                                        {value.time +
+                                            " " +
+                                            value.clientName +
+                                            " "}
+                                    </Text>
+                                    <TouchableOpacity
+                                        onPress={() =>
+                                            Linking.openURL(
+                                                `tel:${value.clientPhone}`
+                                            )
+                                        }
+                                    >
+                                        <Text
+                                            style={{
+                                                fontSize: RFPercentage(2),
+                                                color: "blue",
+                                            }}
+                                        >
+                                            {value.clientPhone}
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                            ))
+                        )
+                    ) : tomorrowClassInfo[className[1]].length === 0 ? (
+                        <Text
+                            style={{
+                                marginBottom: 5,
+                                marginLeft: 7,
+                                fontSize: RFPercentage(2),
+                            }}
+                        >
+                            No Class
+                        </Text>
+                    ) : (
+                        tomorrowClassInfo[className[1]].map((value, index) => (
+                            <View
+                                key={index}
+                                style={{
+                                    flexDirection: "row",
+                                    marginBottom: 5,
+                                    marginLeft: 7,
+                                }}
+                            >
+                                <MaterialIcons
+                                    name="circle"
+                                    size={RFPercentage(1.5)}
+                                    color="black"
+                                    style={{ alignSelf: "center" }}
+                                />
+                                <Text
+                                    style={{
+                                        fontSize: RFPercentage(2),
+                                        marginLeft: 5,
+                                    }}
+                                >
+                                    {moment(value.info.start.toDate()).format(
+                                        "HH:mm"
+                                    ) +
+                                        " ~ " +
+                                        moment(value.info.end.toDate()).format(
+                                            "HH:mm"
+                                        ) +
+                                        " " +
+                                        value.info.currentClient +
+                                        "/" +
+                                        value.info.maxClient}
+                                </Text>
+                            </View>
+                        ))
+                    )}
                 </View>
             </View>
         </SafeAreaView>

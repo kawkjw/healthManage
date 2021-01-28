@@ -128,14 +128,15 @@ export default Profile = ({ navigation }) => {
                         let stringTemp = enToKo(kind) + " : ";
                         if (kind === "pt") {
                             stringTemp =
-                                stringTemp +
-                                `${temp[kind].count}번 남음 (트레이너: ${temp[kind].trainer})`;
+                                stringTemp + `${temp[kind].count}번 남음`;
                         } else {
                             stringTemp =
                                 stringTemp +
-                                `${temp[kind].month}개월권 (${moment(
-                                    temp[kind].end.toDate()
-                                ).format("YYYY. MM. DD.")} 까지)`;
+                                (temp[kind].end.toDate() < new Date()
+                                    ? "Expired"
+                                    : `${temp[kind].month}개월권 (${moment(
+                                          temp[kind].end.toDate()
+                                      ).format("YYYY. MM. DD.")} 까지)`);
                         }
                         info = info + stringTemp + "\n";
                     });
@@ -159,7 +160,7 @@ export default Profile = ({ navigation }) => {
                         .get()
                 ).data().date;
                 let reserved = [];
-                await reserveDate.sort().forEach(async (d) => {
+                const promises = reserveDate.sort().map(async (d) => {
                     if (today.getDate() <= Number(d)) {
                         await thisuser
                             .collection("reservation")
@@ -204,7 +205,8 @@ export default Profile = ({ navigation }) => {
                             });
                     }
                 });
-                setTimeout(() => setReservedClasses(reserved), 300);
+                await Promise.all(promises);
+                setReservedClasses(reserved);
             } catch (error) {
                 console.log(error.code, error.message);
             }

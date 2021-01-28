@@ -452,6 +452,21 @@ export default PT = ({ navigation, route }) => {
                             });
                     }
                 });
+            await db
+                .collection("users")
+                .doc(clientUid)
+                .collection("memberships")
+                .doc("pt")
+                .get()
+                .then(async (doc) => {
+                    const { count } = doc.data();
+                    await db
+                        .collection("users")
+                        .doc(clientUid)
+                        .collection("memberships")
+                        .doc("pt")
+                        .update({ count: count + 1 });
+                });
         }
         Alert.alert("Success", "Cancel Class", [
             {

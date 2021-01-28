@@ -209,93 +209,122 @@ export default PT = ({ navigation, route }) => {
     };
 
     const reservePTClass = async (timeStr) => {
-        const yearMonthStr =
-            selectedYear +
-            "-" +
-            (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
-        const classDBInTimeStr = db
-            .collection("classes")
-            .doc("pt")
-            .collection(trainerUid)
-            .doc(yearMonthStr)
-            .collection(selectedDate.toString())
-            .doc(timeStr);
-        await classDBInTimeStr.get().then(async (snapshot) => {
-            if (!snapshot.data().hasReservation) {
-                await classDBInTimeStr.update({
-                    hasReservation: true,
-                    confirm: false,
-                    clientUid: uid,
-                });
-                const startDate = new Date(
-                    selectedYear,
-                    selectedMonth - 1,
-                    selectedDate,
-                    timeStr.substr(0, 2)
-                );
-                const endDate = new Date(
-                    selectedYear,
-                    selectedMonth - 1,
-                    selectedDate,
-                    timeStr.substr(8, 2)
-                );
-                await db
-                    .collection("users")
-                    .doc(uid)
-                    .collection("reservation")
-                    .doc(yearMonthStr)
-                    .collection(selectedDate.toString())
-                    .doc(timeStr)
-                    .set({
-                        classId: "pt",
-                        className: "pt",
-                        start: startDate,
-                        end: endDate,
-                        trainer: trainerName,
+        const { count } = (
+            await db
+                .collection("users")
+                .doc(uid)
+                .collection("memberships")
+                .doc("pt")
+                .get()
+        ).data();
+        if (count <= 0) {
+            Alert.alert("Error", "No remained PT count", [
+                {
+                    text: "OK",
+                    onPress: () => {
+                        navigation.reset({
+                            index: 1,
+                            routes: [{ name: "HomeScreen" }],
+                        });
+                    },
+                },
+            ]);
+            return;
+        } else {
+            const yearMonthStr =
+                selectedYear +
+                "-" +
+                (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
+            const classDBInTimeStr = db
+                .collection("classes")
+                .doc("pt")
+                .collection(trainerUid)
+                .doc(yearMonthStr)
+                .collection(selectedDate.toString())
+                .doc(timeStr);
+            await classDBInTimeStr.get().then(async (snapshot) => {
+                if (!snapshot.data().hasReservation) {
+                    await classDBInTimeStr.update({
+                        hasReservation: true,
                         confirm: false,
+                        clientUid: uid,
                     });
-                await db
-                    .collection("users")
-                    .doc(uid)
-                    .collection("reservation")
-                    .doc(yearMonthStr)
-                    .update({ date: arrayUnion(selectedDate.toString()) });
-                Alert.alert("Success", "Reserved Class", [
-                    {
-                        text: "OK",
-                        onPress: async () => {
-                            await pushNotificationsToTrainer(
-                                trainerUid,
-                                "New Reservation",
-                                "Please Check Reservation",
-                                {
-                                    navigation: "PT",
-                                    datas: {
-                                        year: selectedYear,
-                                        month: selectedMonth,
-                                        date: selectedDate,
-                                    },
-                                }
-                            );
-                            const backup = selectedDate;
-                            setSelectedDate(0);
-                            setSelectedDate(backup);
+                    const startDate = new Date(
+                        selectedYear,
+                        selectedMonth - 1,
+                        selectedDate,
+                        timeStr.substr(0, 2)
+                    );
+                    const endDate = new Date(
+                        selectedYear,
+                        selectedMonth - 1,
+                        selectedDate,
+                        timeStr.substr(8, 2)
+                    );
+                    await db
+                        .collection("users")
+                        .doc(uid)
+                        .collection("reservation")
+                        .doc(yearMonthStr)
+                        .collection(selectedDate.toString())
+                        .doc(timeStr)
+                        .set({
+                            classId: "pt",
+                            className: "pt",
+                            start: startDate,
+                            end: endDate,
+                            trainer: trainerName,
+                            confirm: false,
+                        });
+                    await db
+                        .collection("users")
+                        .doc(uid)
+                        .collection("reservation")
+                        .doc(yearMonthStr)
+                        .update({ date: arrayUnion(selectedDate.toString()) });
+                    await db
+                        .collection("users")
+                        .doc(uid)
+                        .collection("memberships")
+                        .doc("pt")
+                        .update({ count: count - 1 });
+                    Alert.alert("Success", "Reserved Class", [
+                        {
+                            text: "OK",
+                            onPress: async () => {
+                                await pushNotificationsToTrainer(
+                                    trainerUid,
+                                    "New Reservation",
+                                    "Please Check Reservation",
+                                    {
+                                        navigation: "PT",
+                                        datas: {
+                                            year: selectedYear,
+                                            month: selectedMonth,
+                                            date: selectedDate,
+                                        },
+                                    }
+                                );
+                                const backup = selectedDate;
+                                setSelectedDate(0);
+                                setSelectedDate(backup);
+                            },
                         },
-                    },
-                ]);
-            } else {
-                Alert.alert("Failure", "Already Reserved", [
-                    {
-                        text: "OK",
-                        onPress: () => {
-                            const backup = selectedDate;
-                            setSelectedDate(0);
-                            setSelectedDate(backup);
+                    ]);
+                } else {
+                    Alert.alert("Failure", "Already Reserved", [
+                        {
+                            text: "OK",
+                            onPress: () => {
+                                const backup = selectedDate;
+                                setSelectedDate(0);
+                                setSelectedDate(backup);
+                            },
                         },
-                    },
-                ]);
-            }
-        });
+                    ]);
+                }
+            });
+        }
     };
 
     return (

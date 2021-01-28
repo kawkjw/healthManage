@@ -25,7 +25,6 @@
     "moment": "^2.29.1",
     "react": "16.13.1",
     "react-dom": "16.13.1",
-    "react-firebase-hooks": "^2.2.0",
     "react-native": "https://github.com/expo/react-native/archive/sdk-40.0.1.tar.gz",
     "react-native-calendars": "^1.826.0",
     "react-native-dialog": "^6.1.2",

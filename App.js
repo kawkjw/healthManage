@@ -1,8 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Auth from "./screens/Auth";
 import "./config/fixtimer";
 import * as Notifications from "expo-notifications";
-import { registerForPushNotificationAsync } from "./config/MyExpo";
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -13,8 +12,5 @@ Notifications.setNotificationHandler({
 });
 
 export default function App({ navigation, route }) {
-    useEffect(() => {
-        //registerForPushNotificationAsync();
-    }, []);
     return <Auth />;
 }

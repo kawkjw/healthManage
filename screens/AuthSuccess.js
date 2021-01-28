@@ -7,14 +7,13 @@ import CNavigator from "./Client/CNavigator";
 import LoadingScreen from "./LoadingScreen";
 import { Alert, StatusBar, Text, View, TouchableOpacity } from "react-native";
 import { AuthContext } from "./Auth";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { AuthStyles } from "../css/MyStyles";
 import { registerForPushNotificationAsync } from "../config/MyExpo";
 import ANavigator from "./Admin/ANavigator";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
-    const [user, loading, error] = useAuthState(myBase.auth());
+    const user = myBase.auth().currentUser;
     const [isLoading, setIsLoading] = useState(true);
     const [isAdmin, setIsAdmin] = useState(false);
     const [isTrainer, setIsTrainer] = useState(false);
@@ -42,7 +41,7 @@ const MyStack = () => {
                                 .doc(user.uid)
                                 .update({ email: user.email });
                         }
-                        if (data.permission === 0) {
+                        if (data.permission === 0 || data.permission === 1) {
                             await storeAdminNotificationToken();
                         }
                         setIsLoading(false);

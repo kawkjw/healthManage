@@ -9,8 +9,6 @@ import Info from "./Menus/Info";
 import QRScan from "./Infos/QRScan";
 import Test from "./Infos/Test";
 import myBase, { db } from "../../config/MyBase";
-import { useAuthState } from "react-firebase-hooks/auth";
-import { useCollection, useDocument } from "react-firebase-hooks/firestore";
 import moment from "moment";
 import Class from "./Menus/Class";
 import PT from "./Classes/PT";
@@ -22,17 +20,9 @@ import { RFPercentage } from "react-native-responsive-fontsize";
 const Stack = createStackNavigator();
 const MyStack = () => {
     const { signOut } = useContext(AuthContext);
-    const [user] = useAuthState(myBase.auth());
-    const [userInfo, loading] = useDocument(
-        db.doc(user !== null ? "users/" + user.uid : "dummy/dummy")
-    );
-    const [memberships, mloading] = useCollection(
-        user !== null
-            ? db
-                  .collection("users/" + user.uid + "/memberships")
-                  .orderBy("end", "asc")
-            : db.collection("dummy")
-    );
+    const uid = myBase.auth().currentUser.uid;
+    const [name, setName] = useState("");
+    const [loading, setLoading] = useState(true);
     const [endDate, setEndDate] = useState("");
     const [membershipString, setMembershipString] = useState("");
     const [membershipInfo, setMembershipInfo] = useState("");
@@ -56,60 +46,103 @@ const MyStack = () => {
         }
     };
 
+    const getClientName = async () => {
+        const clientName = (await db.collection("users").doc(uid).get()).data()
+            .name;
+        setName(clientName);
+    };
+
+    const getMemberships = async () => {
+        await db
+            .collection("users")
+            .doc(uid)
+            .collection("memberships")
+            .orderBy("end", "asc")
+            .get()
+            .then((memberships) => {
+                let kinds = [];
+                let temp = {};
+                memberships.forEach((membership) => {
+                    if (membership.id === "pt") {
+                        const { count } = membership.data();
+                        if (count <= 0) {
+                            Alert.alert("Warning", "No Remained PT Count");
+                        } else {
+                            kinds.push(membership.id);
+                            temp[membership.id] = membership.data();
+                        }
+                    } else {
+                        const { end } = membership.data();
+                        const today = new Date();
+                        if (end.toDate() < today) {
+                            Alert.alert(
+                                "Warning",
+                                `Expired ${enToKo(membership.id)} Membership`
+                            );
+                        } else {
+                            kinds.push(membership.id);
+                            temp[membership.id] = membership.data();
+                        }
+                    }
+                });
+                if (kinds[0] === "dummy") {
+                    return;
+                }
+                if (kinds.length === 0) {
+                    setMembershipString("No Membership");
+                }
+                if (kinds.length >= 1) {
+                    let string = enToKo(kinds[0]);
+                    if (kinds[0] === "pt") {
+                        setEndDate(temp[kinds[0]].count + "번 남음");
+                    } else {
+                        setEndDate(
+                            moment(temp[kinds[0]].end.toDate()).format(
+                                "YYYY. MM. DD."
+                            ) + " 까지"
+                        );
+                    }
+                    if (kinds.length >= 2) {
+                        string = string + ", " + enToKo(kinds[1]);
+                    }
+                    if (kinds.length >= 3) {
+                        string = string + ", 등";
+                    }
+                    setMembershipString(string);
+                }
+                let info = "";
+                kinds.map((kind) => {
+                    let stringTemp = enToKo(kind) + ": ";
+                    if (kind === "pt") {
+                        stringTemp = stringTemp + `${temp[kind].count}번 남음`;
+                    } else {
+                        stringTemp =
+                            stringTemp +
+                            `${temp[kind].month}개월권 (${moment(
+                                temp[kind].end.toDate()
+                            ).format("YYYY. MM. DD.")} 까지)`;
+                    }
+                    info = info + stringTemp + "\n";
+                });
+                setMembershipInfo(
+                    info ? info.substring(0, info.length - 1) : "No Membership"
+                );
+            });
+    };
+
+    const execPromise = async () => {
+        await getClientName()
+            .then(async () => {
+                await getMemberships();
+            })
+            .then(() => {
+                setLoading(false);
+            });
+    };
+
     useEffect(() => {
-        if (mloading === false) {
-            let kinds = [];
-            let temp = {};
-            memberships.docs.map((doc) => {
-                kinds.push(doc.id);
-                temp[doc.id] = doc.data();
-            });
-            if (kinds[0] === "dummy") {
-                return;
-            }
-            if (kinds.length === 0) {
-                setMembershipString("No Membership");
-            }
-            if (kinds.length >= 1) {
-                let string = enToKo(kinds[0]);
-                if (kinds[0] === "pt") {
-                    setEndDate(temp[kinds[0]].count + "번 남음");
-                } else {
-                    setEndDate(
-                        moment(temp[kinds[0]].end.toDate()).format(
-                            "YYYY. MM. DD."
-                        ) + " 까지"
-                    );
-                }
-                if (kinds.length >= 2) {
-                    string = string + ", " + enToKo(kinds[1]);
-                }
-                if (kinds.length >= 3) {
-                    string = string + ", 등";
-                }
-                setMembershipString(string);
-            }
-            let info = "";
-            kinds.map((kind) => {
-                let stringTemp = enToKo(kind) + ": ";
-                if (kind === "pt") {
-                    stringTemp =
-                        stringTemp +
-                        `${temp[kind].count}번 남음 (트레이너: ${temp[kind].trainer})`;
-                } else {
-                    stringTemp =
-                        stringTemp +
-                        `${temp[kind].month}개월권 (${moment(
-                            temp[kind].end.toDate()
-                        ).format("YYYY. MM. DD.")} 까지)`;
-                }
-                info = info + stringTemp + "\n";
-            });
-            setMembershipInfo(
-                info ? info.substring(0, info.length - 1) : "No Membership"
-            );
-        }
-    }, [mloading]);
+        execPromise();
+    }, []);
 
     return (
         <Stack.Navigator initialRouteName="HomeScreen">
@@ -131,10 +164,7 @@ const MyStack = () => {
                                 }}
                             >
                                 <Text style={{ fontSize: RFPercentage(2) }}>
-                                    {userInfo
-                                        ? userInfo.data().name
-                                        : undefined}
-                                    님
+                                    {name}님
                                 </Text>
                             </View>
                         ),
@@ -152,9 +182,9 @@ const MyStack = () => {
                             }}
                         >
                             <Text style={{ fontSize: RFPercentage(2) }}>
-                                {mloading ? undefined : membershipString}
+                                {loading ? undefined : membershipString}
                             </Text>
-                            {mloading ? undefined : endDate !== "" ? (
+                            {loading ? undefined : endDate !== "" ? (
                                 <Text style={{ fontSize: RFPercentage(2) }}>
                                     {endDate}
                                 </Text>

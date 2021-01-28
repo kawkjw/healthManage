@@ -11,7 +11,6 @@ import SignIn from "./Auth/SignIn";
 import SignUp from "./Auth/SignUp";
 import ResetPw from "./Auth/ResetPw";
 import { ADMIN_CODE, TRAINER_CODE } from "@env";
-import { useAuthState } from "react-firebase-hooks/auth";
 import { pushNotificationsToAdmin } from "../config/MyExpo";
 
 const Stack = createStackNavigator();
@@ -19,7 +18,6 @@ const Stack = createStackNavigator();
 export const AuthContext = React.createContext();
 
 export default function Auth({ navigation, route }) {
-    const [user, loading, error] = useAuthState(myBase.auth());
     const [state, dispatch] = React.useReducer(
         (prevState, action) => {
             switch (action.type) {
@@ -143,14 +141,13 @@ export default function Auth({ navigation, route }) {
                     .collection("users")
                     .doc(myBase.auth().currentUser.uid)
                     .update({ expoToken: arrayDelete(token) });
-                if (
-                    (
-                        await db
-                            .collection("users")
-                            .doc(myBase.auth().currentUser.uid)
-                            .get()
-                    ).data().permission === 0
-                ) {
+                const { permission } = (
+                    await db
+                        .collection("users")
+                        .doc(myBase.auth().currentUser.uid)
+                        .get()
+                ).data();
+                if (permission === 0 || permission === 1) {
                     await db
                         .collection("adminTokens")
                         .doc(myBase.auth().currentUser.uid)
@@ -295,7 +292,7 @@ export default function Auth({ navigation, route }) {
         <AuthContext.Provider value={authContext}>
             <NavigationContainer>
                 <Stack.Navigator>
-                    {state.isLoading || loading ? (
+                    {state.isLoading ? (
                         <Stack.Screen
                             name="Loading"
                             component={LoadingScreen}

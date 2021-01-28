@@ -25,7 +25,7 @@ export default SelectTrainer = ({ navigation, route }) => {
                 .then((snapshot) => {
                     uidList = snapshot.data().trainerList;
                 });
-            uidList.map(async (data) => {
+            const promises = uidList.map(async (data) => {
                 await db
                     .collection("adminTokens")
                     .doc(data)
@@ -37,7 +37,8 @@ export default SelectTrainer = ({ navigation, route }) => {
                         list.push(temp);
                     });
             });
-            setTimeout(() => setTrainerList(list), 300);
+            await Promise.all(promises);
+            setTrainerList(list);
         };
         getPTTrainer();
     }, []);

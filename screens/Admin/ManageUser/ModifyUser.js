@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaView, Text, View } from "react-native";
 import { db } from "../../../config/MyBase";
+import moment from "moment";
 
 export default ModifyUser = ({ route }) => {
     const { user } = route.params;
@@ -52,7 +53,9 @@ export default ModifyUser = ({ route }) => {
                     <Text>{enToKo(kind)}</Text>
                     <Text>
                         Start Date:{" "}
-                        {membership[kind].start.toDate().toLocaleString()}
+                        {moment(membership[kind].start.toDate()).format(
+                            "YYYY. MM. DD."
+                        )}
                     </Text>
                     <Text>Trainer: {membership[kind].trainer}</Text>
                     <Text>Count: {membership[kind].count}</Text>
@@ -67,11 +70,15 @@ export default ModifyUser = ({ route }) => {
                     </Text>
                     <Text>
                         Start Date:{" "}
-                        {membership[kind].start.toDate().toLocaleString()}
+                        {moment(membership[kind].start.toDate()).format(
+                            "YYYY. MM. DD."
+                        )}
                     </Text>
                     <Text>
                         End Date:{" "}
-                        {membership[kind].end.toDate().toLocaleString()}
+                        {moment(membership[kind].end.toDate()).format(
+                            "YYYY. MM. DD."
+                        )}
                     </Text>
                 </View>
             );

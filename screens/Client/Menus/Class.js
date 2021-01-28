@@ -42,7 +42,12 @@ export default Class = ({ navigation }) => {
                         let availabeClass = [];
                         snapshots.forEach((snapshot) => {
                             const end = snapshot.data().end.toDate();
-                            if (today < end) {
+                            if (snapshot.id === "pt") {
+                                const { count } = snapshot.data();
+                                if (count > 0) {
+                                    availabeClass.push(snapshot.id);
+                                }
+                            } else if (today < end) {
                                 availabeClass.push(snapshot.id);
                             }
                         });
