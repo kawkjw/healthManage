@@ -13,14 +13,13 @@ import ANavigator from "./Admin/ANavigator";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
-    const user = myBase.auth().currentUser;
     const [isLoading, setIsLoading] = useState(true);
     const [isAdmin, setIsAdmin] = useState(false);
     const [isTrainer, setIsTrainer] = useState(false);
     const [isVerified, setIsVerified] = useState(false);
     const { signOut } = useContext(AuthContext);
     useEffect(() => {
-        const getData = async () => {
+        const getData = async (user) => {
             setIsVerified(user.emailVerified);
             await db
                 .collection("users")
@@ -44,7 +43,7 @@ const MyStack = () => {
                         if (data.permission === 0 || data.permission === 1) {
                             await storeAdminNotificationToken();
                         }
-                        setIsLoading(false);
+                        //setIsLoading(false);
                     } else {
                         signOut();
                     }
@@ -56,7 +55,7 @@ const MyStack = () => {
                     }
                 });
         };
-        const storeNotificationToken = async () => {
+        const storeNotificationToken = async (user) => {
             let notificationToken = null;
             while (notificationToken === null) {
                 notificationToken = await AsyncStorage.getItem(
@@ -80,7 +79,7 @@ const MyStack = () => {
                     }
                 });
         };
-        const storeAdminNotificationToken = async () => {
+        const storeAdminNotificationToken = async (user) => {
             let notificationToken = null;
             let num = 0;
             while (notificationToken === null) {
@@ -113,9 +112,14 @@ const MyStack = () => {
                     }
                 });
         };
-        registerForPushNotificationAsync();
-        getData();
-        storeNotificationToken();
+        myBase.auth().onAuthStateChanged((user) => {
+            if (user) {
+                registerForPushNotificationAsync(user);
+                getData(user);
+                storeNotificationToken(user);
+                setIsLoading(false);
+            }
+        });
     }, []);
     const reSendVerification = () => {
         user.sendEmailVerification()

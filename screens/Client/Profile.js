@@ -46,6 +46,7 @@ export default Profile = ({ navigation }) => {
     const thisuser = db.collection("users").doc(uid);
     const [membershipInfo, setMembershipInfo] = useState("");
     const [reservedClasses, setReservedClasses] = useState([]);
+    const [canGenQR, setCanGenQR] = useState(false);
 
     const enToKo = (s) => {
         switch (s) {
@@ -76,26 +77,37 @@ export default Profile = ({ navigation }) => {
                         thisuser.update({
                             random: rcode,
                         });
+                        console.log(rcode);
+                        setData(uid + " " + rcode);
                     }
                 })
                 .catch((error) => console.log(error));
         }
     };
-    const getRandom = async () => {
+
+    const resetRandom = async () => {
         if (uid !== null) {
-            await thisuser.get().then((user) => {
-                if (user.exists) {
-                    console.log(user.data().random);
-                    setData(uid + " " + user.data().random);
-                }
-            });
+            await thisuser
+                .get()
+                .then((user) => {
+                    if (user.exists) {
+                        if (user.data().random !== " ") {
+                            thisuser.update({
+                                random: " ",
+                            });
+                        }
+                    }
+                })
+                .catch((error) => console.log(error));
         }
     };
+
     const getUserData = async () => {
         if (uid !== null) {
             const storage_uid = await AsyncStorage.getItem("userToken");
             if (uid !== storage_uid) {
                 signOut();
+                return;
             }
             let kinds = [];
             let temp = {};
@@ -145,6 +157,9 @@ export default Profile = ({ navigation }) => {
                             ? info.substring(0, info.length - 1)
                             : "회원권이 없습니다."
                     );
+                    if (info) {
+                        setCanGenQR(true);
+                    }
                 });
             const today = new Date();
             const todayMonth = today.getMonth() + 1;
@@ -216,27 +231,12 @@ export default Profile = ({ navigation }) => {
     useEffect(() => {
         if (isRun) {
             createRandom();
-            setTimeout(getRandom, 700);
+        } else {
+            setTimeout(() => resetRandom(), delay);
         }
     }, [isRun]);
 
     useEffect(() => {
-        const resetRandom = async () => {
-            if (uid !== null) {
-                await thisuser
-                    .get()
-                    .then((user) => {
-                        if (user.exists) {
-                            if (user.data().random !== " ") {
-                                thisuser.update({
-                                    random: " ",
-                                });
-                            }
-                        }
-                    })
-                    .catch((error) => console.log(error));
-            }
-        };
         getUserData();
         return () => {
             if (myBase.auth().currentUser) resetRandom();
@@ -245,18 +245,15 @@ export default Profile = ({ navigation }) => {
 
     useInterval(
         () => {
+            setCount(15);
             createRandom();
-            setTimeout(getRandom, 700);
-            setTimeout(() => {
-                setCount(15);
-            }, 700);
         },
         isRun ? delay : null
     );
 
     useInterval(
         () => {
-            setCount(count - 1);
+            setCount(count === 0 ? 15 : count - 1);
         },
         isRun ? 1000 : null
     );
@@ -426,9 +423,14 @@ export default Profile = ({ navigation }) => {
                         { width: widthButton, marginBottom: 20 },
                     ]}
                     onPress={() => {
-                        setIsRun(!isRun);
-                        setCount(15);
+                        if (canGenQR) {
+                            setIsRun(!isRun);
+                            setCount(15);
+                        } else {
+                            Alert.alert("Error", "No Memberships");
+                        }
                     }}
+                    //disabled={!canGenQR}
                 >
                     {isRun ? (
                         <>
@@ -438,12 +440,15 @@ export default Profile = ({ navigation }) => {
                                     alignItems: "center",
                                 }}
                             >
-                                <QRCode
-                                    value={data.length > 0 ? data : "a"}
-                                    size={200}
-                                    bgColor="#000000"
-                                    fgColor="#FFFFFF"
-                                />
+                                {data.length > 0 ? (
+                                    <QRCode
+                                        value={data}
+                                        size={200}
+                                        bgColor="#000000"
+                                        fgColor="#FFFFFF"
+                                    />
+                                ) : undefined}
+
                                 <Text style={{ marginTop: 10 }}>
                                     유효시간 {isRun ? count : 0}초
                                 </Text>
