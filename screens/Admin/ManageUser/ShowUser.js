@@ -57,7 +57,6 @@ export default ModifyUser = ({ route }) => {
                             "YYYY. MM. DD."
                         )}
                     </Text>
-                    <Text>Trainer: {membership[kind].trainer}</Text>
                     <Text>Count: {membership[kind].count}</Text>
                 </View>
             );

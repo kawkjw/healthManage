@@ -136,11 +136,15 @@ export default Profile = ({ navigation }) => {
                         temp[snapshot.id] = snapshot.data();
                     });
                     let info = "";
+                    let expiredNum = 0;
                     kinds.map((kind) => {
                         let stringTemp = enToKo(kind) + " : ";
                         if (kind === "pt") {
                             stringTemp =
                                 stringTemp + `${temp[kind].count}번 남음`;
+                            if (temp[kind].count <= 0) {
+                                expiredNum = expiredNum + 1;
+                            }
                         } else {
                             stringTemp =
                                 stringTemp +
@@ -149,6 +153,9 @@ export default Profile = ({ navigation }) => {
                                     : `${temp[kind].month}개월권 (${moment(
                                           temp[kind].end.toDate()
                                       ).format("YYYY. MM. DD.")} 까지)`);
+                            if (temp[kind].end.toDate() < new Date()) {
+                                expiredNum = expiredNum + 1;
+                            }
                         }
                         info = info + stringTemp + "\n";
                     });
@@ -157,7 +164,7 @@ export default Profile = ({ navigation }) => {
                             ? info.substring(0, info.length - 1)
                             : "회원권이 없습니다."
                     );
-                    if (info) {
+                    if (info && kinds.length !== expiredNum) {
                         setCanGenQR(true);
                     }
                 });

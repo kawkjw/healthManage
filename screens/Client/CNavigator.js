@@ -85,9 +85,6 @@ const MyStack = () => {
                         }
                     }
                 });
-                if (kinds[0] === "dummy") {
-                    return;
-                }
                 if (kinds.length === 0) {
                     setMembershipString("No Membership");
                 }

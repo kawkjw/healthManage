@@ -1,14 +1,12 @@
 import React, { useEffect } from "react";
 import {
     SafeAreaView,
-    View,
     Text,
     TouchableOpacity,
     Dimensions,
     StatusBar,
     Platform,
     ScrollView,
-    Alert,
 } from "react-native";
 import { MyStyles } from "../../css/MyStyles";
 import * as Notifications from "expo-notifications";
@@ -133,9 +131,9 @@ export default Home = ({ navigation, route }) => {
                         MyStyles.buttonShadow,
                         { width: widthButton, marginBottom: 20 },
                     ]}
-                    onPress={() => navigation.navigate("FindUser")}
+                    onPress={() => navigation.navigate("ClientInfoMenu")}
                 >
-                    <Text>Manage User</Text>
+                    <Text>Client Info Menu</Text>
                 </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>

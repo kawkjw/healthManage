@@ -1,16 +1,25 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import {
+    FlatList,
+    Image,
+    SafeAreaView,
+    StyleSheet,
+    Text,
+    View,
+} from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { db } from "../../../config/MyBase";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 
 export default SelectUser = ({ navigation, route }) => {
     const [findUsers, setFindUsers] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const getUserInfo = async () => {
             const { name, phoneNumber } = route.params;
             let users = [];
+            setLoading(true);
             if (name !== "" && phoneNumber !== "") {
                 (
                     await db
@@ -38,6 +47,7 @@ export default SelectUser = ({ navigation, route }) => {
                 });
             }
             setFindUsers(users);
+            setLoading(false);
         };
         getUserInfo();
     }, []);
@@ -49,7 +59,20 @@ export default SelectUser = ({ navigation, route }) => {
                 findUsers.length === 0 ? { alignItems: "center" } : undefined,
             ]}
         >
-            {findUsers.length !== 0 ? (
+            {loading ? (
+                <View
+                    style={{
+                        flex: 1,
+                        alignItems: "center",
+                        justifyContent: "center",
+                    }}
+                >
+                    <Image
+                        style={{ width: 50, height: 50 }}
+                        source={require("../../../assets/loading.gif")}
+                    />
+                </View>
+            ) : findUsers.length !== 0 ? (
                 <FlatList
                     data={findUsers}
                     renderItem={({ item }) => (
@@ -57,7 +80,7 @@ export default SelectUser = ({ navigation, route }) => {
                             <TouchableOpacity
                                 style={styles.item}
                                 onPress={() =>
-                                    navigation.replace("ModifyUser", {
+                                    navigation.replace("ShowUser", {
                                         user: item,
                                     })
                                 }

@@ -153,7 +153,7 @@ export default function Auth({ navigation, route }) {
                         .doc(myBase.auth().currentUser.uid)
                         .update({ expoToken: arrayDelete(token) });
                 }
-                firebase.auth().signOut();
+                myBase.auth().signOut();
                 await AsyncStorage.multiRemove([
                     "userToken",
                     "notificationToken",

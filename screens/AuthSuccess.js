@@ -18,109 +18,124 @@ const MyStack = () => {
     const [isTrainer, setIsTrainer] = useState(false);
     const [isVerified, setIsVerified] = useState(false);
     const { signOut } = useContext(AuthContext);
-    useEffect(() => {
-        const getData = async (user) => {
-            setIsVerified(user.emailVerified);
-            await db
-                .collection("users")
-                .doc(user.uid)
-                .get()
-                .then(async (userDoc) => {
-                    if (userDoc.exists) {
-                        const data = userDoc.data();
-                        setIsAdmin(data.permission === 0 ? true : false);
-                        setIsTrainer(data.permission === 1 ? true : false);
-                        if (user.email !== data.email) {
-                            await db
-                                .collection("emails")
-                                .doc(user.uid)
-                                .update({ email: user.email });
-                            await db
-                                .collection("users")
-                                .doc(user.uid)
-                                .update({ email: user.email });
-                        }
-                        if (data.permission === 0 || data.permission === 1) {
-                            await storeAdminNotificationToken();
-                        }
-                        //setIsLoading(false);
-                    } else {
-                        signOut();
-                    }
-                })
-                .catch((error) => {
-                    if (error.code === "permission-denied") {
-                        alert("권한 거부");
-                        signOut();
-                    }
-                });
-        };
-        const storeNotificationToken = async (user) => {
-            let notificationToken = null;
-            while (notificationToken === null) {
-                notificationToken = await AsyncStorage.getItem(
-                    "notificationToken"
-                );
-            }
-            db.collection("users")
-                .doc(user.uid)
-                .get()
-                .then(async (userDoc) => {
-                    const tokenArray = userDoc.data().expoToken;
-                    if (
-                        tokenArray.indexOf(notificationToken) === -1 &&
-                        notificationToken !== null
-                    ) {
-                        tokenArray.push(notificationToken);
+
+    const getData = async (user) => {
+        setIsVerified(user.emailVerified);
+        await db
+            .collection("users")
+            .doc(user.uid)
+            .get()
+            .then(async (userDoc) => {
+                if (userDoc.exists) {
+                    const data = userDoc.data();
+                    setIsAdmin(data.permission === 0 ? true : false);
+                    setIsTrainer(data.permission === 1 ? true : false);
+                    if (user.email !== data.email) {
+                        await db
+                            .collection("emails")
+                            .doc(user.uid)
+                            .update({ email: user.email });
                         await db
                             .collection("users")
                             .doc(user.uid)
-                            .update({ expoToken: tokenArray });
+                            .update({ email: user.email });
                     }
-                });
-        };
-        const storeAdminNotificationToken = async (user) => {
-            let notificationToken = null;
-            let num = 0;
-            while (notificationToken === null) {
-                num = num + 1;
-                notificationToken = await AsyncStorage.getItem(
-                    "notificationToken"
-                );
-                if (num === 100) {
-                    break;
+                    if (data.permission === 0 || data.permission === 1) {
+                        await storeAdminNotificationToken();
+                    }
+                    //setIsLoading(false);
+                } else {
+                    signOut();
                 }
-            }
+            })
+            .catch((error) => {
+                if (error.code === "permission-denied") {
+                    alert("권한 거부");
+                    signOut();
+                }
+            });
+    };
+    const storeNotificationToken = async (user) => {
+        let notificationToken = null;
+        let num = 0;
+        while (notificationToken === null) {
+            num = num + 1;
+            notificationToken = await AsyncStorage.getItem("notificationToken");
             if (num === 100) {
-                return;
+                break;
             }
-            await db
-                .collection("adminTokens")
-                .doc(user.uid)
-                .get()
-                .then(async (token) => {
-                    const tokenArray = token.data().expoToken;
-                    if (
-                        tokenArray.indexOf(notificationToken) === -1 &&
-                        notificationToken !== null
-                    ) {
-                        tokenArray.push(notificationToken);
-                        await db
-                            .collection("adminTokens")
-                            .doc(user.uid)
-                            .update({ expoToken: tokenArray });
-                    }
+        }
+        if (num === 100) {
+            return;
+        }
+        db.collection("users")
+            .doc(user.uid)
+            .get()
+            .then(async (userDoc) => {
+                const tokenArray = userDoc.data().expoToken;
+                if (
+                    tokenArray.indexOf(notificationToken) === -1 &&
+                    notificationToken !== null
+                ) {
+                    tokenArray.push(notificationToken);
+                    await db
+                        .collection("users")
+                        .doc(user.uid)
+                        .update({ expoToken: tokenArray });
+                }
+            });
+    };
+    const storeAdminNotificationToken = async (user) => {
+        let notificationToken = null;
+        let num = 0;
+        while (notificationToken === null) {
+            num = num + 1;
+            notificationToken = await AsyncStorage.getItem("notificationToken");
+            if (num === 100) {
+                break;
+            }
+        }
+        if (num === 100) {
+            return;
+        }
+        await db
+            .collection("adminTokens")
+            .doc(user.uid)
+            .get()
+            .then(async (token) => {
+                const tokenArray = token.data().expoToken;
+                if (
+                    tokenArray.indexOf(notificationToken) === -1 &&
+                    notificationToken !== null
+                ) {
+                    tokenArray.push(notificationToken);
+                    await db
+                        .collection("adminTokens")
+                        .doc(user.uid)
+                        .update({ expoToken: tokenArray });
+                }
+            });
+    };
+
+    const execPromise = async (user) => {
+        await registerForPushNotificationAsync().then(async () => {
+            await getData(user).then(async () => {
+                await storeNotificationToken(user).then(() => {
+                    setIsLoading(false);
                 });
-        };
-        myBase.auth().onAuthStateChanged((user) => {
+            });
+        });
+    };
+
+    useEffect(() => {
+        myBase.auth().onAuthStateChanged(async (user) => {
             if (user) {
-                registerForPushNotificationAsync(user);
-                getData(user);
-                storeNotificationToken(user);
-                setIsLoading(false);
+                const tempUid = await AsyncStorage.getItem("userToken");
+                if (tempUid === user.uid) await execPromise(user);
             }
         });
     }, []);
+
     const reSendVerification = () => {
         user.sendEmailVerification()
             .then(() => {
@@ -131,6 +146,7 @@ const MyStack = () => {
             })
             .catch((error) => console.log(error));
     };
+
     const VerifyEmail = () => {
         return (
             <>

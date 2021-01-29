@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
     StyleSheet,
     View,
@@ -7,10 +7,11 @@ import {
     TouchableOpacity,
     Alert,
 } from "react-native";
-import { db } from "../../config/MyBase";
+import myBase, { db } from "../../config/MyBase";
 import Dialog from "react-native-dialog";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import { AuthContext } from "../Auth";
 
 export default Locker = () => {
     const [data, setData] = useState();
@@ -18,6 +19,26 @@ export default Locker = () => {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [visible, setVisible] = useState(false);
     const [changed, setChanged] = useState(true);
+    const { signOut } = useContext(AuthContext);
+
+    useEffect(() => {
+        const checkAdmin = async () => {
+            await db
+                .collection("users")
+                .doc(myBase.auth().currentUser.uid)
+                .get()
+                .then((user) => {
+                    if (!user.exists) {
+                        navigation.goBack();
+                    } else {
+                        if (user.data().permission !== 0) {
+                            signOut();
+                        }
+                    }
+                });
+        };
+        checkAdmin();
+    }, []);
 
     useEffect(() => {
         const getLockers = async () => {
