@@ -53,6 +53,7 @@ export default GX = ({ navigation, route }) => {
                         classDate = snapshot.data().class;
                     }
                 });
+            classDate.sort();
             classDate.push("-1");
             let index = 0;
             const endDate = new Date(date.split("-")[0], date.split("-")[1], 0);

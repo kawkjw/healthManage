@@ -76,6 +76,7 @@ export default PT = ({ navigation, route }) => {
                         classDate = snapshot.data().class;
                     }
                 });
+            classDate.sort();
             classDate.push("-1");
             let index = 0;
             const endDate = new Date(selectedYear, selectedMonth, 0);

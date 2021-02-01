@@ -2,7 +2,7 @@ import { Expo } from "expo-server-sdk";
 import * as Notifications from "expo-notifications";
 import { db } from "./MyBase";
 import * as Permissions from "expo-permissions";
-import { Alert, Platform } from "react-native";
+import { Alert, Linking, Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const MyExpo = new Expo();
@@ -20,7 +20,9 @@ export const registerForPushNotificationAsync = async () => {
         finalStatus = status;
     }
     if (finalStatus !== "granted") {
-        Alert.alert("Fail", "Failed for Notifications");
+        Alert.alert("Fail", "Failed for Notifications", [
+            { text: "OK", onPress: () => Linking.openSettings() },
+        ]);
         return null;
     }
     token = (await Notifications.getExpoPushTokenAsync()).data;

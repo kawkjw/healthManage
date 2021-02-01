@@ -94,6 +94,7 @@ export default GX = ({ navigation, route }) => {
                         classDate = snapshot.data().date;
                     }
                 });
+            classDate.sort();
             classDate.push("-1");
             let index = 0;
             const endDate = new Date(selectedYear, selectedMonth, 0);

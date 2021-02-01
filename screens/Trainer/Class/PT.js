@@ -20,11 +20,13 @@ import myBase, {
     db,
     fieldDelete,
 } from "../../../config/MyBase";
-import { widthPercentageToDP as wp } from "react-native-responsive-screen";
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 import SegmentedPicker from "react-native-segmented-picker";
 import { MaterialIcons } from "@expo/vector-icons";
 import { getStatusBarHeight } from "react-native-status-bar-height";
-import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { pushNotificationsToClient } from "../../../config/MyExpo";
 import { RFPercentage } from "react-native-responsive-fontsize";
 
@@ -93,6 +95,7 @@ export default PT = ({ navigation, route }) => {
                         classDate = snapshot.data().class;
                     }
                 });
+            classDate.sort();
             classDate.push("-1");
             let index = 0;
             const endDate = new Date(selectedYear, selectedMonth, 0);
@@ -232,7 +235,10 @@ export default PT = ({ navigation, route }) => {
                         .doc("pt")
                         .collection(uid)
                         .doc(yearMonthStr)
-                        .set({ class: [selectedDate.toString()] });
+                        .set({
+                            class: [selectedDate.toString()],
+                            hasClass: [],
+                        });
                 });
         }
         setLoading(false);
@@ -342,6 +348,12 @@ export default PT = ({ navigation, route }) => {
                 .collection(selectedDate.toString())
                 .doc(availTime)
                 .update({ confirm: true });
+            await db
+                .collection("classes")
+                .doc("pt")
+                .collection(uid)
+                .doc(yearMonthStr)
+                .update({ hasClass: arrayUnion(selectedDate.toString()) });
             await db
                 .collection("users")
                 .doc(uid)
@@ -662,7 +674,7 @@ export default PT = ({ navigation, route }) => {
                             top:
                                 Platform.OS === "ios"
                                     ? getStatusBarHeight() + 10
-                                    : 0,
+                                    : 10,
                             left: width / 2.15,
                             fontSize: 20,
                         }}

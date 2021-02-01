@@ -12,6 +12,10 @@ import SelectMembership from "./ClientInfo/SelectMembership";
 import ClientInfoMenu from "./ClientInfoMenu";
 import ClientsbyMembership from "./ClientInfo/ClientsbyMembership";
 import ShowUser from "./ManageUser/ShowUser";
+import ClassInfoMenu from "./ClassInfoMenu";
+import GxInfo from "./ClassInfo/GxInfo";
+import PtInfo from "./ClassInfo/PtInfo";
+import TimeTable from "../../config/TimeTable";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
@@ -100,6 +104,21 @@ const MyStack = () => {
                 options={({ route }) => ({
                     headerTitle: enToKo(route.params.membershipName),
                 })}
+            />
+            <Stack.Screen
+                name="ClassInfoMenu"
+                component={ClassInfoMenu}
+                options={{ headerTitle: "메뉴" }}
+            />
+            <Stack.Screen
+                name="GxInfo"
+                component={GxInfo}
+                options={{ headerTitle: "GX" }}
+            />
+            <Stack.Screen
+                name="PtInfo"
+                component={PtInfo}
+                options={{ headerTitle: "PT" }}
             />
         </Stack.Navigator>
     );
