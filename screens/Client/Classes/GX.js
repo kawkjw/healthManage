@@ -15,6 +15,7 @@ import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import { MyStyles } from "../../../css/MyStyles";
 import myBase, { arrayUnion, db } from "../../../config/MyBase";
+import moment from "moment";
 
 export default GX = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -117,20 +118,8 @@ export default GX = ({ navigation, route }) => {
                         c["trainer"] = data.trainer;
                         c["currentClient"] = data.currentClient;
                         c["maxClient"] = data.maxClient;
-                        c["start"] =
-                            (start.getHours() < 10
-                                ? "0" + start.getHours()
-                                : start.getHours()) +
-                            ":" +
-                            (start.getMinutes() === 0
-                                ? "00"
-                                : start.getMinutes());
-                        c["end"] =
-                            (end.getHours() < 10
-                                ? "0" + end.getHours()
-                                : end.getHours()) +
-                            ":" +
-                            (end.getMinutes() === 0 ? "00" : end.getMinutes());
+                        c["start"] = moment(start).format("HH:mm");
+                        c["end"] = moment(end).format("HH:mm");
                         c["isToday"] = today.getDate() === selectDate;
                         list.push(c);
                     });
@@ -317,7 +306,7 @@ export default GX = ({ navigation, route }) => {
                                 Platform.OS === "ios"
                                     ? getStatusBarHeight()
                                     : 0,
-                            left: 5,
+                            left: 0,
                             margin: 10,
                             padding: 5,
                             zIndex: 1,

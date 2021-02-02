@@ -15,7 +15,6 @@ import ShowUser from "./ManageUser/ShowUser";
 import ClassInfoMenu from "./ClassInfoMenu";
 import GxInfo from "./ClassInfo/GxInfo";
 import PtInfo from "./ClassInfo/PtInfo";
-import TimeTable from "../../config/TimeTable";
 
 const Stack = createStackNavigator();
 const MyStack = () => {

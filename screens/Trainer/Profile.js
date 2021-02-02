@@ -718,7 +718,7 @@ export default Profile = ({ navigation, route }) => {
                                 fontSize: RFPercentage(2),
                             }}
                         >
-                            Loading
+                            로딩 중
                         </Text>
                     ) : className[0] === "pt" ? (
                         todayClassInfo["pt"].length === 0 ? (
@@ -729,7 +729,7 @@ export default Profile = ({ navigation, route }) => {
                                     fontSize: RFPercentage(2),
                                 }}
                             >
-                                No Class
+                                수업이 없습니다.
                             </Text>
                         ) : (
                             todayClassInfo["pt"].map((value, index) => (
@@ -785,7 +785,7 @@ export default Profile = ({ navigation, route }) => {
                                 fontSize: RFPercentage(2),
                             }}
                         >
-                            No Class
+                            수업이 없습니다.
                         </Text>
                     ) : (
                         todayClassInfo[className[1]].map((value, index) => (
@@ -833,7 +833,7 @@ export default Profile = ({ navigation, route }) => {
                                 fontSize: RFPercentage(2),
                             }}
                         >
-                            Loading
+                            로딩 중
                         </Text>
                     ) : className[0] === "pt" ? (
                         tomorrowClassInfo["pt"].length === 0 ? (
@@ -844,7 +844,7 @@ export default Profile = ({ navigation, route }) => {
                                     fontSize: RFPercentage(2),
                                 }}
                             >
-                                No Class
+                                수업이 없습니다.
                             </Text>
                         ) : (
                             tomorrowClassInfo["pt"].map((value, index) => (
@@ -900,7 +900,7 @@ export default Profile = ({ navigation, route }) => {
                                 fontSize: RFPercentage(2),
                             }}
                         >
-                            No Class
+                            수업이 없습니다.
                         </Text>
                     ) : (
                         tomorrowClassInfo[className[1]].map((value, index) => (

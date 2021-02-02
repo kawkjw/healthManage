@@ -203,22 +203,10 @@ export default Profile = ({ navigation }) => {
                                         "-" +
                                         (d < 10 ? "0" + d : d);
                                     c["trainer"] = data.trainer;
-                                    c["startTime"] =
-                                        (start.getHours() < 10
-                                            ? "0" + start.getHours()
-                                            : start.getHours()) +
-                                        ":" +
-                                        (start.getMinutes() === 0
-                                            ? "00"
-                                            : start.getMinutes());
-                                    c["endTime"] =
-                                        (end.getHours() < 10
-                                            ? "0" + end.getHours()
-                                            : end.getHours()) +
-                                        ":" +
-                                        (end.getMinutes() === 0
-                                            ? "00"
-                                            : end.getMinutes());
+                                    c["startTime"] = moment(start).format(
+                                        "HH:mm"
+                                    );
+                                    c["endTime"] = moment(end).format("HH:mm");
                                     if (data.className === "pt") {
                                         c["confirm"] = data.confirm;
                                     }
@@ -512,7 +500,7 @@ export default Profile = ({ navigation }) => {
                                             Platform.OS === "ios"
                                                 ? getStatusBarHeight()
                                                 : 0,
-                                        left: 5,
+                                        left: 0,
                                         margin: 10,
                                         padding: 5,
                                         zIndex: 1,
@@ -593,7 +581,7 @@ export default Profile = ({ navigation }) => {
                                             Platform.OS === "ios"
                                                 ? getStatusBarHeight()
                                                 : 0,
-                                        left: 5,
+                                        left: 0,
                                         margin: 10,
                                         padding: 5,
                                         zIndex: 1,
@@ -756,7 +744,7 @@ export default Profile = ({ navigation }) => {
                                         />
                                         <Text
                                             style={{
-                                                fontSize: 17,
+                                                fontSize: RFPercentage(2),
                                                 marginLeft: 3,
                                             }}
                                         >

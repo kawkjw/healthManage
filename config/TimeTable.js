@@ -147,7 +147,7 @@ export default TimeTable = ({ classData, kind = "pt", style, ...props }) => {
                                 key={index}
                                 style={[
                                     {
-                                        width: wp("27%"),
+                                        width: wp("35%"),
                                         alignItems: "center",
                                     },
                                     index !== data.length - 1

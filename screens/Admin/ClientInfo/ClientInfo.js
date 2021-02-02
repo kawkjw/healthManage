@@ -1,14 +1,26 @@
 import React, { useEffect, useState } from "react";
-import { Image, SafeAreaView, Text, View } from "react-native";
+import {
+    Image,
+    SafeAreaView,
+    Text,
+    View,
+    TouchableOpacity,
+} from "react-native";
 import { db } from "../../../config/MyBase";
 import { MyStyles } from "../../../css/MyStyles";
 import { RFPercentage } from "react-native-responsive-fontsize";
-import { widthPercentageToDP as wp } from "react-native-responsive-screen";
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 import moment from "moment";
+import Modal from "react-native-modal";
 
 export default ClientInfo = ({ navigation, route }) => {
     const [clientsInfo, setClientsInfo] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [modalMemberships, setModalMemberships] = useState(false);
+    const [selectedIndex, setSelectedIndex] = useState(-1);
 
     const enToKo = (s) => {
         switch (s) {
@@ -93,59 +105,127 @@ export default ClientInfo = ({ navigation, route }) => {
                 </View>
             ) : (
                 clientsInfo.map((client, index) => (
-                    <View
+                    <TouchableOpacity
                         key={index}
-                        style={[
-                            MyStyles.buttonShadow,
-                            { padding: 10, width: wp("95%"), marginBottom: 15 },
-                            index === 0 ? { marginTop: 10 } : undefined,
-                        ]}
+                        onPress={() => {
+                            setSelectedIndex(index);
+                            setModalMemberships(true);
+                        }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2) }}>
-                            이름 : {client.info.name}
-                        </Text>
-                        <Text style={{ fontSize: RFPercentage(2) }}>
-                            이메일 : {client.info.email}
-                        </Text>
-                        <Text style={{ fontSize: RFPercentage(2) }}>
-                            휴대폰번호 : {client.info.phoneNumber}
-                        </Text>
+                        <View
+                            style={[
+                                MyStyles.buttonShadow,
+                                {
+                                    padding: 10,
+                                    width: wp("95%"),
+                                    marginBottom: 15,
+                                },
+                                index === 0 ? { marginTop: 10 } : undefined,
+                            ]}
+                        >
+                            <Text style={{ fontSize: RFPercentage(2) }}>
+                                이름 : {client.info.name}
+                            </Text>
+                            <Text style={{ fontSize: RFPercentage(2) }}>
+                                이메일 : {client.info.email}
+                            </Text>
+                            <Text style={{ fontSize: RFPercentage(2) }}>
+                                휴대폰번호 : {client.info.phoneNumber}
+                            </Text>
+                        </View>
+                    </TouchableOpacity>
+                ))
+            )}
+            <Modal
+                isVisible={modalMemberships}
+                style={{ justifyContent: "flex-end", margin: 0 }}
+                onBackdropPress={() => setModalMemberships(false)}
+            >
+                <View
+                    style={{
+                        backgroundColor: "white",
+                        height: hp("30%"),
+                    }}
+                >
+                    <TouchableOpacity
+                        style={{
+                            width: wp("15%"),
+                            alignItems: "center",
+                            padding: 10,
+                        }}
+                        onPress={() => setModalMemberships(false)}
+                    >
+                        <Text style={{ fontSize: RFPercentage(2) }}>닫기</Text>
+                    </TouchableOpacity>
+                    <View
+                        style={{
+                            borderWidth: "0.5",
+                            marginHorizontal: 5,
+                            borderColor: "grey",
+                        }}
+                    />
+                    <View style={{ padding: 7 }}>
                         <Text
                             style={{
-                                fontSize: RFPercentage(2),
+                                fontSize: RFPercentage(2.5),
                                 fontWeight: "bold",
                             }}
                         >
                             이용권 정보
                         </Text>
-                        {client.membership.kinds.map((v, index) => (
-                            <View
-                                key={index}
-                                style={{
-                                    paddingLeft: 10,
-                                    flexDirection: "row",
-                                }}
-                            >
-                                <Text style={{ flex: 1 }}>{enToKo(v)}</Text>
-                                <Text style={{ flex: 8 }}>
-                                    {" : " +
-                                        (v === "pt"
-                                            ? client.membership[v].count +
-                                              "번 남음"
-                                            : client.membership[v].month +
-                                              "개월권(" +
-                                              moment(
-                                                  client.membership[
-                                                      v
-                                                  ].end.toDate()
-                                              ).format("YYYY. MM. DD.") +
-                                              " 까지)")}
-                                </Text>
-                            </View>
-                        ))}
+                        {selectedIndex === -1 ? (
+                            <Text>Error</Text>
+                        ) : (
+                            clientsInfo[selectedIndex].membership.kinds.map(
+                                (v, index) => (
+                                    <View
+                                        key={index}
+                                        style={{
+                                            paddingLeft: 10,
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        <Text
+                                            style={{
+                                                flex: 1,
+                                                fontSize: RFPercentage(2),
+                                            }}
+                                        >
+                                            {enToKo(v)}
+                                        </Text>
+                                        <Text
+                                            style={{
+                                                flex: 6,
+                                                fontSize: RFPercentage(2),
+                                            }}
+                                        >
+                                            {" : " +
+                                                (v === "pt"
+                                                    ? clientsInfo[selectedIndex]
+                                                          .membership[v].count +
+                                                      "번 남음"
+                                                    : clientsInfo[selectedIndex]
+                                                          .membership[v].month +
+                                                      "개월권 (" +
+                                                      moment(
+                                                          clientsInfo[
+                                                              selectedIndex
+                                                          ].membership[
+                                                              v
+                                                          ].end.toDate()
+                                                      ).format(
+                                                          "YYYY. MM. DD."
+                                                      ) +
+                                                      " 까지)")}
+                                        </Text>
+                                    </View>
+                                )
+                            )
+                        )}
                     </View>
-                ))
-            )}
+                </View>
+            </Modal>
         </SafeAreaView>
     );
 };

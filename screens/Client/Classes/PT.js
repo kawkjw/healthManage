@@ -473,7 +473,7 @@ export default PT = ({ navigation, route }) => {
                                 Platform.OS === "ios"
                                     ? getStatusBarHeight()
                                     : 0,
-                            left: 5,
+                            left: 0,
                             margin: 10,
                             padding: 5,
                             zIndex: 1,

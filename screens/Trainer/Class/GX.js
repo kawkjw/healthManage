@@ -18,7 +18,8 @@ import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import SegmentedPicker from "react-native-segmented-picker";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import { MaterialIcons } from "@expo/vector-icons";
-import { get } from "react-native/Libraries/TurboModule/TurboModuleRegistry";
+import { RFPercentage } from "react-native-responsive-fontsize";
+import moment from "moment";
 
 export default GX = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -288,7 +289,7 @@ export default GX = ({ navigation, route }) => {
                     }}
                 >
                     <TouchableOpacity onPress={() => picker.current.show()}>
-                        <Text style={{ fontSize: 20 }}>
+                        <Text style={{ fontSize: RFPercentage(2.5) }}>
                             {selectedYear +
                                 "-" +
                                 (selectedMonth < 10
@@ -374,7 +375,7 @@ export default GX = ({ navigation, route }) => {
                 ]}
             />
             <Modal
-                animationType="slide"
+                animationType="fade"
                 visible={modalClassInfo}
                 transparent={true}
             >
@@ -391,7 +392,7 @@ export default GX = ({ navigation, route }) => {
                                 Platform.OS === "ios"
                                     ? getStatusBarHeight()
                                     : 0,
-                            left: 5,
+                            left: 0,
                             margin: 10,
                             padding: 5,
                             zIndex: 1,
@@ -402,22 +403,19 @@ export default GX = ({ navigation, route }) => {
                             setLoading(true);
                         }}
                     >
-                        <Text style={{ fontSize: 17 }}>Close</Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>Close</Text>
                     </TouchableOpacity>
-                    <View style={{ height: 30 }}></View>
-                    <Text
+                    <View
                         style={{
-                            position: "absolute",
-                            top:
-                                Platform.OS === "ios"
-                                    ? getStatusBarHeight() + 10
-                                    : 0,
-                            left: width / 2.15,
-                            fontSize: 20,
+                            height: 40,
+                            alignItems: "center",
+                            justifyContent: "center",
                         }}
                     >
-                        {selectedDate + "일"}
-                    </Text>
+                        <Text style={{ fontSize: RFPercentage(2.5) }}>
+                            {selectedDate + "일"}
+                        </Text>
+                    </View>
                     {loading ? (
                         <View
                             style={{
@@ -458,43 +456,13 @@ export default GX = ({ navigation, route }) => {
                                                 }}
                                             >
                                                 <Text>
-                                                    {(item.info.start
-                                                        .toDate()
-                                                        .getHours() < 10
-                                                        ? "0" +
-                                                          item.info.start
-                                                              .toDate()
-                                                              .getHours()
-                                                        : item.info.start
-                                                              .toDate()
-                                                              .getHours()) +
-                                                        ":" +
-                                                        (item.info.start
-                                                            .toDate()
-                                                            .getMinutes() === 0
-                                                            ? "00"
-                                                            : item.info.start
-                                                                  .toDate()
-                                                                  .getMinutes())}
+                                                    {moment(
+                                                        item.info.start.toDate()
+                                                    ).format("HH:mm")}
                                                     ~
-                                                    {(item.info.end
-                                                        .toDate()
-                                                        .getHours() < 10
-                                                        ? "0" +
-                                                          item.info.end
-                                                              .toDate()
-                                                              .getHours()
-                                                        : item.info.end
-                                                              .toDate()
-                                                              .getHours()) +
-                                                        ":" +
-                                                        (item.info.end
-                                                            .toDate()
-                                                            .getMinutes() === 0
-                                                            ? "00"
-                                                            : item.info.end
-                                                                  .toDate()
-                                                                  .getMinutes())}
+                                                    {moment(
+                                                        item.info.end.toDate()
+                                                    ).format("HH:mm")}
                                                 </Text>
                                                 <Text>
                                                     {item.info.currentClient +
@@ -513,7 +481,7 @@ export default GX = ({ navigation, route }) => {
                 </SafeAreaView>
             </Modal>
             <Modal
-                animationType="slide"
+                animationType="fade"
                 visible={modalClientInfo}
                 transparent={true}
             >
@@ -531,7 +499,7 @@ export default GX = ({ navigation, route }) => {
                                 Platform.OS === "ios"
                                     ? getStatusBarHeight()
                                     : 0,
-                            left: 5,
+                            left: 0,
                             margin: 10,
                             padding: 5,
                             zIndex: 1,
@@ -542,18 +510,55 @@ export default GX = ({ navigation, route }) => {
                             setLoading(true);
                         }}
                     >
-                        <Text style={{ fontSize: 17 }}>Close</Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>Close</Text>
                     </TouchableOpacity>
                     <View style={{ height: 50 }}></View>
                     <View style={{ paddingHorizontal: 10 }}>
-                        <Text style={{ fontSize: 25 }}>Client List</Text>
+                        <Text
+                            style={{
+                                fontSize: RFPercentage(3),
+                                marginBottom: 5,
+                            }}
+                        >
+                            고객 명단
+                        </Text>
                         {clientList.map((client, index) => (
-                            <View key={index} style={{ flexDirection: "row" }}>
-                                <Text style={{ flex: 1, fontSize: 17 }}>
-                                    {client.name}
-                                </Text>
+                            <View
+                                key={index}
+                                style={{
+                                    flexDirection: "row",
+                                    paddingLeft: 10,
+                                }}
+                            >
+                                <View
+                                    style={{
+                                        width: wp("4%"),
+                                        alignItems: "flex-end",
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            fontSize: RFPercentage(2),
+                                        }}
+                                    >
+                                        {(index + 1).toString() + ". "}
+                                    </Text>
+                                </View>
+                                <View
+                                    style={{
+                                        width: wp("15%"),
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <Text
+                                        style={{
+                                            fontSize: RFPercentage(2),
+                                        }}
+                                    >
+                                        {client.name}
+                                    </Text>
+                                </View>
                                 <TouchableOpacity
-                                    style={{ flex: 5 }}
                                     onPress={() =>
                                         Linking.openURL(
                                             `tel:${client.phoneNumber}`
@@ -561,7 +566,10 @@ export default GX = ({ navigation, route }) => {
                                     }
                                 >
                                     <Text
-                                        style={{ color: "blue", fontSize: 17 }}
+                                        style={{
+                                            color: "blue",
+                                            fontSize: RFPercentage(2),
+                                        }}
                                     >
                                         {client.phoneNumber}
                                     </Text>

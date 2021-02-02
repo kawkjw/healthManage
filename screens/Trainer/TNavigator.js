@@ -4,9 +4,6 @@ import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./Home";
 import Profile from "./Profile";
 import { AuthContext } from "../Auth";
-import GetData from "./GetData";
-import MyCalendar from "./MyCalendar";
-import WeekCalendar from "./WeekCalendar";
 import GX from "./Class/GX";
 import PT from "./Class/PT";
 
@@ -43,9 +40,6 @@ const MyStack = () => {
                     ),
                 }}
             />
-            <Stack.Screen name="Calendar" component={MyCalendar} />
-            <Stack.Screen name="GetData" component={GetData} />
-            <Stack.Screen name="WeekCalendar" component={WeekCalendar} />
             <Stack.Screen name="GX" component={GX} />
             <Stack.Screen name="PT" component={PT} />
         </Stack.Navigator>

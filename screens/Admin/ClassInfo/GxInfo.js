@@ -3,8 +3,10 @@ import {
     Dimensions,
     FlatList,
     Image,
+    Linking,
     Modal,
     SafeAreaView,
+    ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -19,6 +21,7 @@ import SegmentedPicker from "react-native-segmented-picker";
 import { MaterialIcons } from "@expo/vector-icons";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import myBase, { db } from "../../../config/MyBase";
+import moment from "moment";
 
 export default ClassInfo = ({ navigation }) => {
     const { width } = Dimensions.get("screen");
@@ -39,7 +42,42 @@ export default ClassInfo = ({ navigation }) => {
     const [modalClassInfo, setModalClassInfo] = useState(false);
     const [selectedDate, setSelectedDate] = useState(0);
     const [loadingInModal, setLoadingInModal] = useState(true);
-    const [classData, setClassData] = useState([]);
+    const gxList = ["pilates", "spinning", "squash", "yoga", "zoomba"];
+    const [classData, setClassData] = useState({
+        pilates: [],
+        spinning: [],
+        squash: [],
+        yoga: [],
+        zoomba: [],
+    });
+    const [selectedClass, setSelectedClass] = useState({
+        trainer: "",
+        start: "",
+        end: "",
+        clients: [],
+        currentClient: 0,
+        maxClient: 0,
+    });
+    const [modalClientsInfo, setModalClientsInfo] = useState(false);
+
+    const enToKo = (s) => {
+        switch (s) {
+            case "health":
+                return "헬스";
+            case "spinning":
+                return "스피닝";
+            case "yoga":
+                return "요가";
+            case "zoomba":
+                return "줌바";
+            case "squash":
+                return "스쿼시";
+            case "pilates":
+                return "필라테스";
+            case "pt":
+                return "PT";
+        }
+    };
 
     useEffect(() => {
         const showCalendar = async () => {
@@ -127,10 +165,57 @@ export default ClassInfo = ({ navigation }) => {
 
     useEffect(() => {
         const getClassData = async () => {
+            setLoadingInModal(true);
             const yearMonthStr =
                 selectedYear +
                 "-" +
                 (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
+            let obj = {};
+            const promises = gxList.map(async (gxName, index) => {
+                if (index === 0) {
+                    obj[gxName] = [];
+                }
+                await db
+                    .collection("classes")
+                    .doc(gxName)
+                    .collection("class")
+                    .doc(yearMonthStr)
+                    .collection(selectedDate.toString())
+                    .orderBy("start", "asc")
+                    .get()
+                    .then((docs) => {
+                        let list = [];
+                        docs.forEach((doc) => {
+                            let data = doc.data();
+                            list.push({ ...data, path: doc.ref.path });
+                        });
+                        return list;
+                    })
+                    .then(async (list) => {
+                        let temp = list;
+                        const clientPromises = list.map(async (d, index) => {
+                            temp[index]["clients"] = [];
+                            if (d.currentClient >= 1) {
+                                await db
+                                    .collection(d.path + "/clients")
+                                    .orderBy("name", "asc")
+                                    .get()
+                                    .then((clients) => {
+                                        clients.forEach((client) => {
+                                            temp[index]["clients"].push(
+                                                client.data()
+                                            );
+                                        });
+                                    });
+                            }
+                        });
+                        await Promise.all(clientPromises);
+                        obj[gxName] = temp;
+                    });
+            });
+            await Promise.all(promises);
+            setClassData({ ...classData, ...obj });
+            setLoadingInModal(false);
         };
         if (selectedDate !== 0) {
             getClassData();
@@ -332,7 +417,7 @@ export default ClassInfo = ({ navigation }) => {
                 ]}
             />
             <Modal
-                animationType="slide"
+                animationType="fade"
                 visible={modalClassInfo}
                 transparent={true}
             >
@@ -349,7 +434,7 @@ export default ClassInfo = ({ navigation }) => {
                                 Platform.OS === "ios"
                                     ? getStatusBarHeight()
                                     : 0,
-                            left: 5,
+                            left: 0,
                             margin: 10,
                             padding: 5,
                             zIndex: 1,
@@ -359,7 +444,7 @@ export default ClassInfo = ({ navigation }) => {
                             setSelectedDate(0);
                         }}
                     >
-                        <Text style={{ fontSize: 17 }}>Close</Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>Close</Text>
                     </TouchableOpacity>
                     <View style={{ height: 30 }}></View>
                     <Text
@@ -370,11 +455,12 @@ export default ClassInfo = ({ navigation }) => {
                                     ? getStatusBarHeight() + 10
                                     : 10,
                             left: width / 2.15,
-                            fontSize: 20,
+                            fontSize: RFPercentage(2.5),
                         }}
                     >
                         {selectedDate + "일"}
                     </Text>
+                    <View style={{ height: hp("2%") }} />
                     {loadingInModal ? (
                         <View
                             style={{
@@ -389,8 +475,233 @@ export default ClassInfo = ({ navigation }) => {
                             />
                         </View>
                     ) : (
-                        <Text>undefined</Text>
+                        <ScrollView>
+                            {gxList.map((gxName, index) => (
+                                <View key={index} style={{ marginBottom: 5 }}>
+                                    {classData[gxName].length === 0 ? null : (
+                                        <Text
+                                            style={{
+                                                fontSize: RFPercentage(2.5),
+                                                marginLeft: 20,
+                                            }}
+                                        >
+                                            {enToKo(gxName)}
+                                        </Text>
+                                    )}
+                                    <View
+                                        style={{
+                                            paddingHorizontal: 10,
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        {classData[gxName].length === 0
+                                            ? null
+                                            : classData[gxName].map(
+                                                  (value, index) => (
+                                                      <View
+                                                          key={index}
+                                                          style={{
+                                                              width: wp("80%"),
+                                                              height: hp("7%"),
+                                                              margin: 5,
+                                                          }}
+                                                      >
+                                                          <TouchableOpacity
+                                                              style={[
+                                                                  styles.availButton,
+                                                              ]}
+                                                              onPress={() => {
+                                                                  setSelectedClass(
+                                                                      {
+                                                                          ...value,
+                                                                          start: moment(
+                                                                              value.start.toDate()
+                                                                          ).format(
+                                                                              "HH:mm"
+                                                                          ),
+                                                                          end: moment(
+                                                                              value.end.toDate()
+                                                                          ).format(
+                                                                              "HH:mm"
+                                                                          ),
+                                                                      }
+                                                                  );
+                                                                  setModalClassInfo(
+                                                                      false
+                                                                  );
+                                                                  setModalClientsInfo(
+                                                                      true
+                                                                  );
+                                                              }}
+                                                          >
+                                                              <View
+                                                                  style={{
+                                                                      flexDirection:
+                                                                          "row",
+                                                                  }}
+                                                              >
+                                                                  <Text
+                                                                      style={{
+                                                                          fontSize: RFPercentage(
+                                                                              2.2
+                                                                          ),
+                                                                      }}
+                                                                  >
+                                                                      {moment(
+                                                                          value.start.toDate()
+                                                                      ).format(
+                                                                          "HH:mm"
+                                                                      ) +
+                                                                          " ~ " +
+                                                                          moment(
+                                                                              value.end.toDate()
+                                                                          ).format(
+                                                                              "HH:mm"
+                                                                          )}
+                                                                  </Text>
+                                                                  <Text
+                                                                      style={{
+                                                                          fontSize: RFPercentage(
+                                                                              2.2
+                                                                          ),
+                                                                      }}
+                                                                  >
+                                                                      {" 강사 " +
+                                                                          value.trainer +
+                                                                          " (" +
+                                                                          value.currentClient +
+                                                                          "/" +
+                                                                          value.maxClient +
+                                                                          ")"}
+                                                                  </Text>
+                                                              </View>
+                                                          </TouchableOpacity>
+                                                      </View>
+                                                  )
+                                              )}
+                                    </View>
+                                </View>
+                            ))}
+                        </ScrollView>
                     )}
+                </SafeAreaView>
+            </Modal>
+            <Modal
+                animationType="fade"
+                visible={modalClientsInfo}
+                transparent={true}
+            >
+                <SafeAreaView
+                    style={{
+                        flex: 1,
+                        backgroundColor: "white",
+                    }}
+                >
+                    <TouchableOpacity
+                        style={{
+                            position: "absolute",
+                            top:
+                                Platform.OS === "ios"
+                                    ? getStatusBarHeight()
+                                    : 0,
+                            left: 0,
+                            margin: 10,
+                            padding: 5,
+                            zIndex: 1,
+                        }}
+                        onPress={() => {
+                            setModalClientsInfo(false);
+                            setModalClassInfo(true);
+                        }}
+                    >
+                        <Text style={{ fontSize: RFPercentage(2) }}>Close</Text>
+                    </TouchableOpacity>
+                    <View
+                        style={{
+                            height: 40,
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }}
+                    >
+                        <Text style={{ fontSize: RFPercentage(2.5) }}>
+                            고객 정보
+                        </Text>
+                    </View>
+                    <View style={{ padding: 10 }}>
+                        <Text style={{ fontSize: RFPercentage(2.5) }}>
+                            {selectedDate}일 {selectedClass.start} ~{" "}
+                            {selectedClass.end} (강사 {selectedClass.trainer})
+                        </Text>
+                        <View style={{ marginTop: 10 }} />
+                        {selectedClass.clients.length === 0 ? (
+                            <Text
+                                style={{
+                                    paddingLeft: 10,
+                                    color: "red",
+                                    fontSize: RFPercentage(2.3),
+                                }}
+                            >
+                                No Client
+                            </Text>
+                        ) : (
+                            selectedClass.clients.map((client, index) => (
+                                <View
+                                    key={index}
+                                    style={{
+                                        paddingLeft: 10,
+                                        flexDirection: "row",
+                                    }}
+                                >
+                                    <View
+                                        style={{
+                                            marginRight: 5,
+                                            width: wp("4%"),
+                                            alignItems: "flex-end",
+                                        }}
+                                    >
+                                        <Text
+                                            style={{
+                                                fontSize: RFPercentage(2),
+                                            }}
+                                        >
+                                            {(index + 1).toString() + ". "}
+                                        </Text>
+                                    </View>
+                                    <View
+                                        style={{
+                                            marginRight: 5,
+                                            width: wp("11%"),
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        <Text
+                                            style={{
+                                                fontSize: RFPercentage(2),
+                                            }}
+                                        >
+                                            {client.name}
+                                        </Text>
+                                    </View>
+                                    <TouchableOpacity
+                                        onPress={() =>
+                                            Linking.openURL(
+                                                `tel:${client.phoneNumber}`
+                                            )
+                                        }
+                                    >
+                                        <Text
+                                            style={{
+                                                color: "#3399ff",
+                                                fontSize: RFPercentage(2),
+                                            }}
+                                        >
+                                            {client.phoneNumber}
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                            ))
+                        )}
+                    </View>
                 </SafeAreaView>
             </Modal>
         </SafeAreaView>
@@ -411,6 +722,7 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
+        backgroundColor: "white",
         borderWidth: 1,
         borderRadius: RFPercentage(2.5),
         borderColor: "grey",

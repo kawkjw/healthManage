@@ -637,7 +637,7 @@ export default PT = ({ navigation, route }) => {
                                 Platform.OS === "ios"
                                     ? getStatusBarHeight()
                                     : 0,
-                            left: 5,
+                            left: 0,
                             margin: 10,
                             padding: 5,
                             zIndex: 1,
@@ -665,22 +665,19 @@ export default PT = ({ navigation, route }) => {
                             }
                         }}
                     >
-                        <Text style={{ fontSize: 17 }}>Close</Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>Close</Text>
                     </TouchableOpacity>
-                    <View style={{ height: 30 }}></View>
-                    <Text
+                    <View
                         style={{
-                            position: "absolute",
-                            top:
-                                Platform.OS === "ios"
-                                    ? getStatusBarHeight() + 10
-                                    : 10,
-                            left: width / 2.15,
-                            fontSize: 20,
+                            height: 40,
+                            alignItems: "center",
+                            justifyContent: "center",
                         }}
                     >
-                        {selectedDate + "일"}
-                    </Text>
+                        <Text style={{ fontSize: RFPercentage(2.5) }}>
+                            {selectedDate + "일"}
+                        </Text>
+                    </View>
                     {loading ? (
                         <View
                             style={{
@@ -735,7 +732,7 @@ export default PT = ({ navigation, route }) => {
                                     >
                                         <Text
                                             style={{
-                                                fontSize: width / 25.5,
+                                                fontSize: RFPercentage(2.2),
                                             }}
                                         >
                                             {availTime.str}

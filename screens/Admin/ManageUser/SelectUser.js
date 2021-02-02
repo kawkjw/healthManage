@@ -10,6 +10,7 @@ import {
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { db } from "../../../config/MyBase";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 export default SelectUser = ({ navigation, route }) => {
     const [findUsers, setFindUsers] = useState([]);
@@ -26,13 +27,18 @@ export default SelectUser = ({ navigation, route }) => {
                         .collection("users")
                         .where("name", "==", name)
                         .where("phoneNumber", "==", phoneNumber)
+                        .where("permission", "==", 2)
                         .get()
                 ).forEach((doc) => {
                     users.push(doc.data());
                 });
             } else if (name !== "") {
                 (
-                    await db.collection("users").where("name", "==", name).get()
+                    await db
+                        .collection("users")
+                        .where("name", "==", name)
+                        .where("permission", "==", 2)
+                        .get()
                 ).forEach((doc) => {
                     users.push(doc.data());
                 });
@@ -41,6 +47,7 @@ export default SelectUser = ({ navigation, route }) => {
                     await db
                         .collection("users")
                         .where("phoneNumber", "==", phoneNumber)
+                        .where("permission", "==", 2)
                         .get()
                 ).forEach((doc) => {
                     users.push(doc.data());
@@ -94,7 +101,9 @@ export default SelectUser = ({ navigation, route }) => {
                     keyExtractor={(item, index) => index}
                 />
             ) : (
-                <Text style={{ fontSize: 25 }}>Not Found Client</Text>
+                <Text style={{ fontSize: RFPercentage(3) }}>
+                    Not Found Client
+                </Text>
             )}
         </SafeAreaView>
     );
