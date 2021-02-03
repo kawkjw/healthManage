@@ -132,7 +132,10 @@ const MyStack = () => {
         myBase.auth().onAuthStateChanged(async (user) => {
             if (user) {
                 const tempUid = await AsyncStorage.getItem("userToken");
-                if (tempUid === user.uid) await execPromise(user);
+                if (tempUid === user.uid) {
+                    await execPromise(user);
+                    //user.updateProfile({displayName:""})
+                }
             }
         });
     }, []);

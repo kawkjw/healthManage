@@ -75,7 +75,11 @@ export default Home = ({ navigation, route }) => {
                     style={[
                         MyStyles.profileButton,
                         MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
+                        {
+                            width: widthButton,
+                            marginBottom: 20,
+                            justifyContent: "center",
+                        },
                     ]}
                     onPress={() => navigation.navigate("Profile")}
                 >

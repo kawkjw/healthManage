@@ -30,7 +30,6 @@ export const MyStyles = StyleSheet.create({
     },
     image: {
         aspectRatio: 1,
-        marginTop: 10,
         resizeMode: "stretch",
     },
     phoneButton: {

@@ -21,7 +21,6 @@ const Stack = createStackNavigator();
 const MyStack = () => {
     const { signOut } = useContext(AuthContext);
     const uid = myBase.auth().currentUser.uid;
-    const [name, setName] = useState("");
     const [loading, setLoading] = useState(true);
     const [endDate, setEndDate] = useState("");
     const [membershipString, setMembershipString] = useState("");
@@ -44,12 +43,6 @@ const MyStack = () => {
             case "pt":
                 return "PT";
         }
-    };
-
-    const getClientName = async () => {
-        const clientName = (await db.collection("users").doc(uid).get()).data()
-            .name;
-        setName(clientName);
     };
 
     const getMemberships = async () => {
@@ -128,13 +121,9 @@ const MyStack = () => {
     };
 
     const execPromise = async () => {
-        await getClientName()
-            .then(async () => {
-                await getMemberships();
-            })
-            .then(() => {
-                setLoading(false);
-            });
+        await getMemberships().then(() => {
+            setLoading(false);
+        });
     };
 
     useEffect(() => {
@@ -161,7 +150,7 @@ const MyStack = () => {
                                 }}
                             >
                                 <Text style={{ fontSize: RFPercentage(2) }}>
-                                    {name}님
+                                    {myBase.auth().currentUser.displayName}님
                                 </Text>
                             </View>
                         ),

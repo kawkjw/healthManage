@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
     Text,
     View,
@@ -14,12 +14,20 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { AuthContext } from "../Auth";
 import { AuthStyles } from "../../css/MyStyles";
 import CheckBox from "../../config/CheckBox";
-import { db } from "../../config/MyBase";
+import myBase, { db } from "../../config/MyBase";
+import firebase from "firebase";
+import {
+    FirebaseRecaptchaVerifierModal,
+    FirebaseRecaptchaBanner,
+} from "expo-firebase-recaptcha";
 import { RFPercentage } from "react-native-responsive-fontsize";
 
 export default SignUp = ({ navigation }) => {
+    const appVerifier = useRef(null);
     const [name, setName] = useState("");
     const [phoneNumber, setPhoneNumber] = useState("");
+    const [verificationId, setVerificationId] = useState("");
+    const [verifyCode, setVerifyCode] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [chkPassword, setChkPassword] = useState("");
@@ -131,8 +139,30 @@ export default SignUp = ({ navigation }) => {
         }
     };
 
+    const sendCode = async () => {
+        let profilePhone = "";
+        if (phoneNumber[0] === "0") {
+            profilePhone = "+82" + phoneNumber.split("-").join("").slice(1);
+        } else if (phoneNumber[0] === "1") {
+            //test phone number
+            profilePhone = "+" + phoneNumber.split("-").join("");
+        }
+        const phoneProvider = new firebase.auth.PhoneAuthProvider();
+        await phoneProvider
+            .verifyPhoneNumber(profilePhone, appVerifier.current)
+            .then((id) => {
+                setVerificationId(id);
+                Alert.alert("Send Code", "Check your message");
+            });
+    };
+
     return (
         <SafeAreaView style={AuthStyles.container}>
+            <FirebaseRecaptchaVerifierModal
+                ref={appVerifier}
+                firebaseConfig={myBase.options}
+                attemptInvisibleVerification={true}
+            />
             <KeyboardAwareScrollView
                 style={{ alignSelf: "stretch", marginTop: 20 }}
                 keyboardShouldPersistTaps="always"
@@ -154,19 +184,6 @@ export default SignUp = ({ navigation }) => {
                             textContentType="name"
                             value={name}
                             onChangeText={setName}
-                        />
-                    </View>
-                    <View style={AuthStyles.textView}>
-                        <Text style={AuthStyles.text}>Enter Phone Number</Text>
-                        <TextInput
-                            style={AuthStyles.textInput}
-                            placeholder="010-0000-0000"
-                            autoCompleteType="tel"
-                            keyboardType="phone-pad"
-                            textContentType="telephoneNumber"
-                            maxLength={13}
-                            value={phoneNumber}
-                            onChangeText={setPhoneNumber}
                         />
                     </View>
                     <View style={AuthStyles.textView}>
@@ -247,7 +264,10 @@ export default SignUp = ({ navigation }) => {
                             text=" Are you admin?"
                             textStyle={{ fontSize: RFPercentage(2) }}
                             size={RFPercentage(2.5)}
-                            style={{ marginBottom: 10 }}
+                            style={[
+                                { width: "40%" },
+                                selected && { marginBottom: 10 },
+                            ]}
                         />
                         {selected ? (
                             <>
@@ -265,6 +285,50 @@ export default SignUp = ({ navigation }) => {
                             </>
                         ) : null}
                     </View>
+                    <View style={AuthStyles.textView}>
+                        <Text style={AuthStyles.text}>Enter Phone Number</Text>
+                        <View style={{ marginBottom: 5, flexDirection: "row" }}>
+                            <TextInput
+                                style={[
+                                    AuthStyles.textInput,
+                                    { flex: 3, marginRight: 7 },
+                                ]}
+                                placeholder="010-0000-0000"
+                                autoCompleteType="tel"
+                                keyboardType="phone-pad"
+                                textContentType="telephoneNumber"
+                                maxLength={13}
+                                value={phoneNumber}
+                                onChangeText={setPhoneNumber}
+                            />
+                            <TouchableOpacity
+                                style={AuthStyles.authButton}
+                                onPress={sendCode}
+                            >
+                                <Text>Send</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View>
+                            {verificationId !== "" && (
+                                <Text style={{ marginBottom: 5 }}>
+                                    Sended Code
+                                </Text>
+                            )}
+                            <TextInput
+                                style={AuthStyles.textInput}
+                                placeholder="123456"
+                                keyboardType="phone-pad"
+                                maxLength={6}
+                                value={verifyCode}
+                                onChangeText={setVerifyCode}
+                                onChange={(e) => {
+                                    if (e.nativeEvent.text.length === 6) {
+                                        Keyboard.dismiss();
+                                    }
+                                }}
+                            />
+                        </View>
+                    </View>
                     <View style={{ height: 35 }}>
                         <TouchableOpacity
                             style={AuthStyles.authButton}
@@ -276,7 +340,9 @@ export default SignUp = ({ navigation }) => {
                                 !chkPassword ||
                                 !chkUsedEmail ||
                                 password !== chkPassword ||
-                                !correctPw
+                                !correctPw ||
+                                !verifyCode ||
+                                !verificationId
                             }
                             onPress={async () => {
                                 await signUp({
@@ -285,9 +351,15 @@ export default SignUp = ({ navigation }) => {
                                     email,
                                     password,
                                     adminCode,
-                                }).then(() => {
-                                    navigation.goBack();
-                                });
+                                    verifyCode,
+                                    verificationId,
+                                })
+                                    .then(() => {
+                                        navigation.goBack();
+                                    })
+                                    .catch((error) => {
+                                        console.log(error);
+                                    });
                             }}
                         >
                             <Text style={AuthStyles.authText}>Sign Up</Text>
@@ -295,6 +367,9 @@ export default SignUp = ({ navigation }) => {
                     </View>
                 </TouchableOpacity>
             </KeyboardAwareScrollView>
+            <View style={{ width: "90%", alignItems: "center" }}>
+                <FirebaseRecaptchaBanner />
+            </View>
         </SafeAreaView>
     );
 };

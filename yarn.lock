@@ -2972,6 +2972,18 @@ expo-file-system@~9.3.0:
   dependencies:
     uuid "^3.4.0"
 
+expo-firebase-core@~1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/expo-firebase-core/-/expo-firebase-core-1.3.0.tgz#83da7f6454b710d55c0ddc3dfb3d9dd8506086ed"
+  integrity sha512-aSJymsdPU1qkq5f6hU+B+K+xOMMCKjnXnHWQ/2gdPcNvuoQdwMn6RYseIZ43/IXjL6LEnHY7VlANMtYEH2Wx5Q==
+
+expo-firebase-recaptcha@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/expo-firebase-recaptcha/-/expo-firebase-recaptcha-1.3.0.tgz#de9b1b66723335657cabf256b927eb173910ed50"
+  integrity sha512-YBNdI8CtOK5yRTJ60UGrxZwYVWrcO09XyDYdh5n5hrcVJ5aANWSr32Vo3MeIlWSIudeEIWMUhT/4xk931glK+A==
+  dependencies:
+    expo-firebase-core "~1.3.0"
+
 expo-font@~8.4.0:
   version "8.4.0"
   resolved "https://registry.yarnpkg.com/expo-font/-/expo-font-8.4.0.tgz#7cb4cc9d852dd8d0977ce425146b94221b40c1d5"

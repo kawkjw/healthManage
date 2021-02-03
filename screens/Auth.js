@@ -61,54 +61,6 @@ export default function Auth({ navigation, route }) {
     }, []);
     const authContext = React.useMemo(
         () => ({
-            verifyCode: async (data) => {
-                const {
-                    phoneNumber,
-                    verificationId,
-                    verificationCode,
-                    adminCode,
-                } = data;
-                const credential = firebase.auth.PhoneAuthProvider.credential(
-                    verificationId,
-                    verificationCode
-                );
-                try {
-                    const isAdmin = adminCode === ADMIN_CODE ? true : false;
-                    const response = await firebase
-                        .auth()
-                        .signInWithCredential(credential);
-                    if (response.user.uid) {
-                        await db
-                            .collection("users")
-                            .doc(response.user.uid)
-                            .get()
-                            .then((user) => {
-                                if (!user.exists) {
-                                    const data = {
-                                        uid: response.user.uid,
-                                        phoneNumber: phoneNumber,
-                                        permission: isAdmin ? 0 : 2,
-                                        random: " ",
-                                    };
-                                    db.collection("users")
-                                        .doc(response.user.uid)
-                                        .set(data);
-                                }
-                            })
-                            .catch((error) => console.log(error));
-                        AsyncStorage.setItem("userToken", response.user.uid);
-                    }
-                } catch (error) {
-                    console.log(error);
-                    if (error.code === "auth/invalid-verification-code") {
-                        alert("잘못된 인증코드를 입력하였습니다.");
-                    } else {
-                        alert(error.message);
-                    }
-                }
-                const userToken = await AsyncStorage.getItem("userToken");
-                dispatch({ type: "SIGN_IN", token: userToken });
-            },
             signIn: async (data) => {
                 const { email, password } = data;
                 try {
@@ -161,7 +113,15 @@ export default function Auth({ navigation, route }) {
                 dispatch({ type: "SIGN_OUT" });
             },
             signUp: async (data) => {
-                const { name, phoneNumber, email, password, adminCode } = data;
+                const {
+                    name,
+                    phoneNumber,
+                    email,
+                    password,
+                    adminCode,
+                    verificationId,
+                    verifyCode,
+                } = data;
                 const isAdmin = adminCode === ADMIN_CODE ? true : false;
                 const isTrainer = adminCode === TRAINER_CODE ? true : false;
                 await myBase
@@ -176,6 +136,22 @@ export default function Auth({ navigation, route }) {
                             permission: isAdmin ? 0 : isTrainer ? 1 : 2,
                             emailVerified: userCredential.user.emailVerified,
                         };
+
+                        const phoneCredential = firebase.auth.PhoneAuthProvider.credential(
+                            verificationId,
+                            verifyCode
+                        );
+                        await userCredential.user
+                            .updatePhoneNumber(phoneCredential)
+                            .then()
+                            .catch((error) => {
+                                userCredential.user.delete();
+                                throw Error(error.code);
+                            });
+
+                        await userCredential.user.updateProfile({
+                            displayName: currentUser.name,
+                        });
 
                         await db
                             .collection("users")
@@ -278,9 +254,27 @@ export default function Auth({ navigation, route }) {
                                 { text: "OK" },
                             ]);
                         } else {
-                            Alert.alert("Error", errorMessage, [
-                                { text: "OK" },
-                            ]);
+                            if (
+                                errorMessage ===
+                                "auth/invalid-verification-code"
+                            ) {
+                                Alert.alert("Error", "Wrong Code");
+                            } else if (
+                                errorMessage ===
+                                "auth/credential-already-in-use"
+                            ) {
+                                Alert.alert(
+                                    "Error",
+                                    "Already Signed Up Phone Number"
+                                );
+                            } else {
+                                Alert.alert(
+                                    "Error",
+                                    errorCode + "\n" + errorMessage,
+                                    [{ text: "OK" }]
+                                );
+                            }
+                            throw Error(errorMessage);
                         }
                         console.log(error);
                     });
