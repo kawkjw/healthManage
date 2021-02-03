@@ -79,7 +79,7 @@ export const AuthStyles = StyleSheet.create({
         fontSize: RFPercentage(2.5),
     },
     text: {
-        fontSize: 17,
+        fontSize: RFPercentage(2),
         marginBottom: 5,
     },
     textView: {
@@ -106,7 +106,7 @@ export const AuthStyles = StyleSheet.create({
         }),
     },
     authText: {
-        fontSize: 17,
+        fontSize: RFPercentage(2),
         color: "#1e90ff",
     },
 });

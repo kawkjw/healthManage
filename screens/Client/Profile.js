@@ -425,7 +425,6 @@ export default Profile = ({ navigation }) => {
                             Alert.alert("Error", "No Memberships");
                         }
                     }}
-                    //disabled={!canGenQR}
                 >
                     {isRun ? (
                         <>

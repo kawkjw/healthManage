@@ -245,7 +245,9 @@ export default SignUp = ({ navigation }) => {
                                 setSelected(!selected);
                             }}
                             text=" Are you admin?"
-                            textStyle={{ fontSize: RFPercentage(2.5) }}
+                            textStyle={{ fontSize: RFPercentage(2) }}
+                            size={RFPercentage(2.5)}
+                            style={{ marginBottom: 10 }}
                         />
                         {selected ? (
                             <>
@@ -254,7 +256,7 @@ export default SignUp = ({ navigation }) => {
                                 </Text>
                                 <TextInput
                                     style={AuthStyles.textInput}
-                                    placeholder="12345678"
+                                    placeholder="00000000"
                                     keyboardType="phone-pad"
                                     maxLength={8}
                                     value={adminCode}
