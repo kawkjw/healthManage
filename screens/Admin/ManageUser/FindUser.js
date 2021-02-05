@@ -6,10 +6,10 @@ import {
     TouchableOpacity,
     View,
     Keyboard,
+    KeyboardAvoidingView,
+    Platform,
 } from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { AuthStyles } from "../../../css/MyStyles";
-import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 export default FindUser = ({ navigation, route }) => {
     const [inputName, setInputName] = useState("");
@@ -39,11 +39,9 @@ export default FindUser = ({ navigation, route }) => {
 
     return (
         <SafeAreaView style={AuthStyles.container}>
-            <KeyboardAwareScrollView
-                style={{ alignSelf: "stretch" }}
-                keyboardShouldPersistTaps="always"
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ height: hp("90%") }}
+            <KeyboardAvoidingView
+                behavior={Platform.OS === "ios" ? "padding" : "height"}
+                style={{ flex: 1, alignSelf: "stretch" }}
             >
                 <TouchableOpacity
                     key="keyboard"
@@ -95,7 +93,7 @@ export default FindUser = ({ navigation, route }) => {
                         </TouchableOpacity>
                     </View>
                 </TouchableOpacity>
-            </KeyboardAwareScrollView>
+            </KeyboardAvoidingView>
         </SafeAreaView>
     );
 };

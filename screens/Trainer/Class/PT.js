@@ -27,7 +27,7 @@ import {
 import SegmentedPicker from "react-native-segmented-picker";
 import { MaterialIcons } from "@expo/vector-icons";
 import { getStatusBarHeight } from "react-native-status-bar-height";
-import { pushNotificationsToClient } from "../../../config/MyExpo";
+import { pushNotificationsToPerson } from "../../../config/MyExpo";
 import { RFPercentage } from "react-native-responsive-fontsize";
 
 export default PT = ({ navigation, route }) => {
@@ -381,7 +381,8 @@ export default PT = ({ navigation, route }) => {
             {
                 text: "OK",
                 onPress: async () => {
-                    await pushNotificationsToClient(
+                    await pushNotificationsToPerson(
+                        myBase.auth().currentUser.displayName,
                         clientUid,
                         "Confirmed Reservation",
                         "Check your Reservation",

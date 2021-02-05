@@ -128,6 +128,8 @@ export default Profile = ({ navigation }) => {
                     setName(user.data().name);
                 }
             });
+            //setPhoneNumber(myBase.auth().currentUser.phoneNumber);
+            //setName(myBase.auth().currentUser.displayName);
             await db
                 .collection("lockers")
                 .where("uid", "==", uid)
@@ -648,7 +650,7 @@ export default Profile = ({ navigation }) => {
                                                     keyboardType="phone-pad"
                                                     maxLength={6}
                                                     editable={
-                                                        changePhone !== ""
+                                                        verificationId !== ""
                                                     }
                                                     value={verifyCode}
                                                     onChangeText={setVerifyCode}

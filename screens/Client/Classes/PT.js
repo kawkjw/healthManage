@@ -20,7 +20,7 @@ import myBase, { arrayUnion, db } from "../../../config/MyBase";
 import SegmentedPicker from "react-native-segmented-picker";
 import { MaterialIcons } from "@expo/vector-icons";
 import { getStatusBarHeight } from "react-native-status-bar-height";
-import { pushNotificationsToTrainer } from "../../../config/MyExpo";
+import { pushNotificationsToPerson } from "../../../config/MyExpo";
 import { RFPercentage } from "react-native-responsive-fontsize";
 
 export default PT = ({ navigation, route }) => {
@@ -293,7 +293,8 @@ export default PT = ({ navigation, route }) => {
                         {
                             text: "OK",
                             onPress: async () => {
-                                await pushNotificationsToTrainer(
+                                await pushNotificationsToPerson(
+                                    myBase.auth().currentUser.displayName,
                                     trainerUid,
                                     "New Reservation",
                                     "Please Check Reservation",

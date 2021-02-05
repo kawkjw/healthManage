@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Alert, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Linking, Text, TouchableOpacity, View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./Home";
 import Profile from "./Profile";
@@ -16,15 +16,28 @@ import SelectDate from "./Classes/SelectDate";
 import GX from "./Classes/GX";
 import SelectTrainer from "./Classes/SelectTrainer";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
+import { MaterialIcons } from "@expo/vector-icons";
+import * as Permissions from "expo-permissions";
+import Modal from "react-native-modal";
+import * as Notifications from "expo-notifications";
 
 const Stack = createStackNavigator();
-const MyStack = () => {
+const MyStack = ({ navigation }) => {
     const { signOut } = useContext(AuthContext);
     const uid = myBase.auth().currentUser.uid;
     const [loading, setLoading] = useState(true);
     const [endDate, setEndDate] = useState("");
     const [membershipString, setMembershipString] = useState("");
     const [membershipInfo, setMembershipInfo] = useState("");
+    const [notificationAvail, setNotificationAvail] = useState(false);
+    const [messages, setMessages] = useState([]);
+    const [modalNotification, setModalNotification] = useState(false);
+    const [unread, setUnread] = useState(false);
+    const [notificationNum, setNotificationNum] = useState(0);
 
     const enToKo = (s) => {
         switch (s) {
@@ -120,9 +133,72 @@ const MyStack = () => {
             });
     };
 
+    const getNotifications = async () => {
+        const { status: existingStatus } = await Permissions.getAsync(
+            Permissions.NOTIFICATIONS
+        );
+        if (existingStatus === "granted") {
+            setNotificationAvail(true);
+            setUnread(false);
+            const today = new Date();
+            await db
+                .collection("notifications")
+                .doc(uid)
+                .collection("messages")
+                .where(
+                    "sendDate",
+                    ">=",
+                    new Date(
+                        today.getFullYear(),
+                        today.getMonth(),
+                        today.getDate() - 7
+                    )
+                )
+                .orderBy("sendDate", "asc")
+                .get()
+                .then(async (messages) => {
+                    let list = [];
+                    let num = 0;
+                    messages.forEach((message) => {
+                        const obj = message.data();
+                        list.push({ id: message.id, ...obj });
+                        if (!obj.isRead) {
+                            num = num + 1;
+                            setUnread(true);
+                        }
+                    });
+                    setMessages(list);
+                    setNotificationNum(num);
+                    await Notifications.setBadgeCountAsync(num);
+                });
+        }
+    };
+
+    const checkNotification = async (id) => {
+        await db
+            .collection("notifications")
+            .doc(uid)
+            .collection("messages")
+            .doc(id)
+            .update({ isRead: true });
+        let temp = messages;
+        temp.find((d) => d.id === id).isRead = true;
+        setMessages(temp);
+        if (notificationNum - 1 === 0) {
+            setUnread(false);
+            setNotificationNum(0);
+            await Notifications.setBadgeCountAsync(0);
+        } else {
+            await Notifications.setBadgeCountAsync(notificationNum - 1);
+            setNotificationNum(notificationNum - 1);
+        }
+    };
+
     const execPromise = async () => {
-        await getMemberships().then(() => {
-            setLoading(false);
+        await getMemberships().then(async () => {
+            await getNotifications().then(() => {
+                setLoading(false);
+            });
         });
     };
 
@@ -136,7 +212,7 @@ const MyStack = () => {
                 name="HomeScreen"
                 component={Home}
                 options={{
-                    title: "Home",
+                    title: myBase.auth().currentUser.displayName + "님",
                     headerTitleAlign: "center",
                     headerLeft: () =>
                         loading ? undefined : (
@@ -149,9 +225,237 @@ const MyStack = () => {
                                     height: "60%",
                                 }}
                             >
-                                <Text style={{ fontSize: RFPercentage(2) }}>
-                                    {myBase.auth().currentUser.displayName}님
-                                </Text>
+                                <TouchableOpacity
+                                    style={{ width: wp("8%") }}
+                                    onPress={() => {
+                                        if (notificationAvail) {
+                                            setModalNotification(true);
+                                        } else {
+                                            Linking.openSettings();
+                                        }
+                                    }}
+                                >
+                                    <View
+                                        style={[
+                                            {
+                                                borderRadius: 100,
+                                                position: "absolute",
+                                                width: 10,
+                                                height: 10,
+                                                top: 0,
+                                                right: 0,
+                                            },
+                                            unread
+                                                ? { backgroundColor: "red" }
+                                                : { backgroundColor: "white" },
+                                        ]}
+                                    />
+                                    <MaterialIcons
+                                        name={
+                                            notificationAvail
+                                                ? "notifications"
+                                                : "notifications-off"
+                                        }
+                                        size={RFPercentage(3.5)}
+                                        color="black"
+                                    />
+                                </TouchableOpacity>
+                                <Modal
+                                    isVisible={modalNotification}
+                                    style={{
+                                        justifyContent: "flex-end",
+                                        margin: 0,
+                                    }}
+                                    swipeDirection={["down"]}
+                                    onSwipeComplete={() =>
+                                        setModalNotification(false)
+                                    }
+                                    onBackdropPress={() =>
+                                        setModalNotification(false)
+                                    }
+                                >
+                                    <View
+                                        style={{
+                                            height: hp("80%"),
+                                            backgroundColor: "white",
+                                        }}
+                                    >
+                                        <TouchableOpacity
+                                            style={{
+                                                padding: 5,
+                                                width: wp("13%"),
+                                                alignItems: "center",
+                                            }}
+                                            onPress={() =>
+                                                setModalNotification(false)
+                                            }
+                                        >
+                                            <Text
+                                                style={{
+                                                    margin: 7,
+                                                    fontSize: RFPercentage(2),
+                                                }}
+                                            >
+                                                닫기
+                                            </Text>
+                                        </TouchableOpacity>
+                                        <View style={{ borderWidth: "0.5" }} />
+                                        <View>
+                                            {messages.length === 0 ? (
+                                                <View style={{ padding: 10 }}>
+                                                    <Text
+                                                        style={{
+                                                            fontSize: RFPercentage(
+                                                                2.5
+                                                            ),
+                                                        }}
+                                                    >
+                                                        알림 없음
+                                                    </Text>
+                                                </View>
+                                            ) : (
+                                                messages.map(
+                                                    (message, index) => (
+                                                        <View
+                                                            key={index}
+                                                            style={{
+                                                                padding: 10,
+                                                                borderWidth: 1,
+                                                                margin: 10,
+                                                            }}
+                                                        >
+                                                            <TouchableOpacity
+                                                                onPress={() => {
+                                                                    setModalNotification(
+                                                                        false
+                                                                    );
+                                                                    if (
+                                                                        !message.isRead
+                                                                    ) {
+                                                                        checkNotification(
+                                                                            message.id
+                                                                        );
+                                                                    }
+                                                                    if (
+                                                                        message
+                                                                            .data
+                                                                            .navigation
+                                                                    ) {
+                                                                        navigation.navigate(
+                                                                            message
+                                                                                .data
+                                                                                .navigation
+                                                                        );
+                                                                    }
+                                                                }}
+                                                            >
+                                                                <View
+                                                                    style={{
+                                                                        flexDirection:
+                                                                            "row",
+                                                                    }}
+                                                                >
+                                                                    <View
+                                                                        style={{
+                                                                            flex: 1,
+                                                                        }}
+                                                                    >
+                                                                        <Text
+                                                                            style={[
+                                                                                message.isRead
+                                                                                    ? {
+                                                                                          color:
+                                                                                              "grey",
+                                                                                      }
+                                                                                    : {
+                                                                                          color:
+                                                                                              "black",
+                                                                                      },
+                                                                            ]}
+                                                                        >
+                                                                            {message.sendFrom +
+                                                                                " 로부터"}
+                                                                        </Text>
+                                                                    </View>
+                                                                    <View
+                                                                        style={{
+                                                                            alignItems:
+                                                                                "flex-end",
+                                                                            flex: 1,
+                                                                        }}
+                                                                    >
+                                                                        <Text
+                                                                            style={[
+                                                                                message.isRead
+                                                                                    ? {
+                                                                                          color:
+                                                                                              "grey",
+                                                                                      }
+                                                                                    : {
+                                                                                          color:
+                                                                                              "black",
+                                                                                      },
+                                                                            ]}
+                                                                        >
+                                                                            {moment(
+                                                                                message.sendDate.toDate()
+                                                                            ).format(
+                                                                                "MM.DD. HH:mm"
+                                                                            ) +
+                                                                                " 에 보냄"}
+                                                                        </Text>
+                                                                    </View>
+                                                                </View>
+                                                                <Text
+                                                                    style={[
+                                                                        message.isRead
+                                                                            ? {
+                                                                                  color:
+                                                                                      "grey",
+                                                                              }
+                                                                            : {
+                                                                                  color:
+                                                                                      "black",
+                                                                              },
+                                                                        {
+                                                                            fontWeight:
+                                                                                "bold",
+                                                                            marginBottom: 5,
+                                                                        },
+                                                                    ]}
+                                                                >
+                                                                    {
+                                                                        message.title
+                                                                    }
+                                                                </Text>
+                                                                <Text
+                                                                    style={[
+                                                                        message.isRead
+                                                                            ? {
+                                                                                  color:
+                                                                                      "grey",
+                                                                              }
+                                                                            : {
+                                                                                  color:
+                                                                                      "black",
+                                                                              },
+                                                                        {
+                                                                            marginLeft: 7,
+                                                                        },
+                                                                    ]}
+                                                                >
+                                                                    {
+                                                                        message.body
+                                                                    }
+                                                                </Text>
+                                                            </TouchableOpacity>
+                                                        </View>
+                                                    )
+                                                )
+                                            )}
+                                        </View>
+                                    </View>
+                                </Modal>
                             </View>
                         ),
                     headerRight: () => (
@@ -239,5 +543,5 @@ const MyStack = () => {
 };
 
 export default CNavigator = ({ navigation, route }) => {
-    return <MyStack />;
+    return <MyStack navigation={navigation} />;
 };

@@ -70,7 +70,7 @@ export const AuthStyles = StyleSheet.create({
         flex: 1,
         alignSelf: "stretch",
         justifyContent: "center",
-        paddingHorizontal: 40,
+        paddingHorizontal: 30,
     },
     textInput: {
         borderWidth: 1,

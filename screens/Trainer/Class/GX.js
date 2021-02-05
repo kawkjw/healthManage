@@ -207,10 +207,26 @@ export default GX = ({ navigation, route }) => {
                         await classForId
                             .collection("clients")
                             .get()
-                            .then((clients) => {
-                                let clientList = [];
+                            .then(async (clients) => {
+                                let clientUids = [];
                                 clients.forEach((client) => {
-                                    clientList.push(client.data());
+                                    clientUids.push(client.data().uid);
+                                });
+                                let clientList = [];
+                                const clientPromise = clientUids.map(
+                                    async (uid) => {
+                                        const { name, phoneNumber } = (
+                                            await db
+                                                .collection("users")
+                                                .doc(uid)
+                                                .get()
+                                        ).data();
+                                        clientList.push({ name, phoneNumber });
+                                    }
+                                );
+                                await Promise.all(clientPromise);
+                                clientList.sort((a, b) => {
+                                    return a.name - b.name;
                                 });
                                 classInfo["clients"] = clientList;
                             });

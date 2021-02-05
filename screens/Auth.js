@@ -90,21 +90,9 @@ export default function Auth({ navigation, route }) {
             signOut: async () => {
                 const token = await AsyncStorage.getItem("notificationToken");
                 await db
-                    .collection("users")
+                    .collection("notifications")
                     .doc(myBase.auth().currentUser.uid)
                     .update({ expoToken: arrayDelete(token) });
-                const { permission } = (
-                    await db
-                        .collection("users")
-                        .doc(myBase.auth().currentUser.uid)
-                        .get()
-                ).data();
-                if (permission === 0 || permission === 1) {
-                    await db
-                        .collection("adminTokens")
-                        .doc(myBase.auth().currentUser.uid)
-                        .update({ expoToken: arrayDelete(token) });
-                }
                 myBase.auth().signOut();
                 await AsyncStorage.multiRemove([
                     "userToken",
@@ -157,7 +145,7 @@ export default function Auth({ navigation, route }) {
                             .collection("users")
                             .doc(currentUser.id)
                             .get()
-                            .then((user) => {
+                            .then(async (user) => {
                                 if (!user.exists) {
                                     const data = {
                                         uid: currentUser.id,
@@ -166,7 +154,6 @@ export default function Auth({ navigation, route }) {
                                         email: currentUser.email,
                                         permission: currentUser.permission,
                                         random: " ",
-                                        expoToken: [],
                                     };
                                     db.collection("users")
                                         .doc(currentUser.id)
@@ -175,6 +162,12 @@ export default function Auth({ navigation, route }) {
                                         .doc(currentUser.id)
                                         .set({
                                             email: currentUser.email,
+                                        });
+                                    db.collection("notifications")
+                                        .doc(currentUser.id)
+                                        .set({
+                                            name: currentUser.name,
+                                            expoToken: [],
                                         });
                                     if (isTrainer) {
                                         db.collection("users")
@@ -195,19 +188,13 @@ export default function Auth({ navigation, route }) {
                                                         : today.getMonth() + 1)
                                             )
                                             .set({ date: [] });
-                                        db.collection("adminTokens")
-                                            .doc(currentUser.id)
-                                            .set({
-                                                expoToken: [],
-                                                name: currentUser.name,
-                                            });
-                                    } else if (isAdmin) {
-                                        db.collection("adminTokens")
-                                            .doc(currentUser.id)
-                                            .set({
-                                                expoToken: [],
-                                                name: currentUser.name,
-                                            });
+                                    } else if (!isTrainer && !isAdmin) {
+                                        const phoneId = currentUser.phoneNumber
+                                            .split("-")
+                                            .slice(1)
+                                            .join("");
+                                        console.log(phoneId);
+                                        //await db.collection();
                                     }
                                 }
                             })

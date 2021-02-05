@@ -3,14 +3,11 @@ import {
     Text,
     View,
     TextInput,
-    Button,
     TouchableOpacity,
     SafeAreaView,
-    StatusBar,
     Keyboard,
     Alert,
 } from "react-native";
-import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { AuthContext } from "../Auth";
 import { AuthStyles } from "../../css/MyStyles";
 import CheckBox from "../../config/CheckBox";
@@ -21,6 +18,8 @@ import {
     FirebaseRecaptchaBanner,
 } from "expo-firebase-recaptcha";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import { heightPercentageToDP as hp } from "react-native-responsive-screen";
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
 export default SignUp = ({ navigation }) => {
     const appVerifier = useRef(null);
@@ -164,9 +163,12 @@ export default SignUp = ({ navigation }) => {
                 attemptInvisibleVerification={true}
             />
             <KeyboardAwareScrollView
-                style={{ alignSelf: "stretch", marginTop: 20 }}
+                style={{ alignSelf: "stretch" }}
+                contentContainerStyle={{ height: hp("90%") }}
                 keyboardShouldPersistTaps="always"
                 showsVerticalScrollIndicator={false}
+                scrollEnabled={false}
+                extraScrollHeight={80}
             >
                 <TouchableOpacity
                     style={AuthStyles.touchScreen}
@@ -188,29 +190,30 @@ export default SignUp = ({ navigation }) => {
                     </View>
                     <View style={AuthStyles.textView}>
                         <Text style={AuthStyles.text}>Enter Email</Text>
-                        <TextInput
-                            style={[
-                                AuthStyles.textInput,
-                                email
-                                    ? checkEmail
-                                        ? { backgroundColor: "green" }
-                                        : { backgroundColor: "red" }
-                                    : undefined,
-                            ]}
-                            placeholder="examples@example.com"
-                            autoCompleteType="email"
-                            keyboardType="email-address"
-                            textContentType="emailAddress"
-                            value={email}
-                            onChangeText={setEmail}
-                        />
-                        <View style={{ height: 35, marginTop: 10 }}>
+                        <View style={{ flexDirection: "row" }}>
+                            <TextInput
+                                style={[
+                                    AuthStyles.textInput,
+                                    email
+                                        ? checkEmail
+                                            ? { backgroundColor: "green" }
+                                            : { backgroundColor: "red" }
+                                        : undefined,
+                                    { flex: 3, marginRight: 10 },
+                                ]}
+                                placeholder="examples@example.com"
+                                autoCompleteType="email"
+                                keyboardType="email-address"
+                                textContentType="emailAddress"
+                                value={email}
+                                onChangeText={setEmail}
+                            />
                             <TouchableOpacity
                                 style={AuthStyles.authButton}
                                 onPress={checkUsedEmail}
                             >
                                 <Text style={AuthStyles.authText}>
-                                    Email Used?
+                                    중복확인
                                 </Text>
                             </TouchableOpacity>
                         </View>
@@ -260,6 +263,7 @@ export default SignUp = ({ navigation }) => {
                             selected={selected}
                             onPress={() => {
                                 setSelected(!selected);
+                                Keyboard.dismiss();
                             }}
                             text=" Are you admin?"
                             textStyle={{ fontSize: RFPercentage(2) }}
@@ -303,9 +307,13 @@ export default SignUp = ({ navigation }) => {
                             />
                             <TouchableOpacity
                                 style={AuthStyles.authButton}
-                                onPress={sendCode}
+                                onPress={() => {
+                                    Keyboard.dismiss();
+                                    sendCode();
+                                }}
+                                disabled={phoneNumber.length === 0}
                             >
-                                <Text>Send</Text>
+                                <Text style={AuthStyles.authText}>Send</Text>
                             </TouchableOpacity>
                         </View>
                         <View>
@@ -319,6 +327,7 @@ export default SignUp = ({ navigation }) => {
                                 placeholder="123456"
                                 keyboardType="phone-pad"
                                 maxLength={6}
+                                editable={verificationId !== ""}
                                 value={verifyCode}
                                 onChangeText={setVerifyCode}
                                 onChange={(e) => {
@@ -365,11 +374,17 @@ export default SignUp = ({ navigation }) => {
                             <Text style={AuthStyles.authText}>Sign Up</Text>
                         </TouchableOpacity>
                     </View>
+                    <View
+                        style={{
+                            width: "100%",
+                            alignItems: "center",
+                            marginTop: 10,
+                        }}
+                    >
+                        <FirebaseRecaptchaBanner />
+                    </View>
                 </TouchableOpacity>
             </KeyboardAwareScrollView>
-            <View style={{ width: "90%", alignItems: "center" }}>
-                <FirebaseRecaptchaBanner />
-            </View>
         </SafeAreaView>
     );
 };

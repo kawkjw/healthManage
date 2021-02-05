@@ -55,17 +55,29 @@ export default Locker = () => {
                 .collection("lockers")
                 .get()
                 .then((lockers) => {
+                    let uidList = [];
                     lockers.forEach((locker) => {
-                        const { name, phoneNumber, uid } = locker.data();
+                        uidList.push({ uid: locker.data().uid, id: locker.id });
+                    });
+                    return uidList;
+                })
+                .then(async (list) => {
+                    const promise = list.map(async (locker) => {
+                        const { name, phoneNumber } = (
+                            await db.collection("users").doc(locker.uid).get()
+                        ).data();
                         items[Number(locker.id) - 1]["name"] = name;
                         items[Number(locker.id) - 1][
                             "phoneNumber"
                         ] = phoneNumber;
-                        items[Number(locker.id) - 1]["uid"] = uid;
+                        items[Number(locker.id) - 1]["uid"] = locker.uid;
                         items[Number(locker.id) - 1]["occupied"] = true;
                     });
+                    await Promise.all(promise);
+                })
+                .then(() => {
+                    setData(items);
                 });
-            setData(items);
         };
         getLockers();
     }, [changed]);

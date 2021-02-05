@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { createStackNavigator } from "@react-navigation/stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import myBase, { db } from "../config/MyBase";
+import myBase, { arrayUnion, db } from "../config/MyBase";
 import TNavigator from "./Trainer/TNavigator";
 import CNavigator from "./Client/CNavigator";
 import LoadingScreen from "./LoadingScreen";
@@ -41,9 +41,6 @@ const MyStack = () => {
                             .doc(user.uid)
                             .update({ email: user.email });
                     }
-                    if (data.permission === 0 || data.permission === 1) {
-                        await storeAdminNotificationToken();
-                    }
                     //setIsLoading(false);
                 } else {
                     signOut();
@@ -69,53 +66,12 @@ const MyStack = () => {
         if (num === 100) {
             return;
         }
-        db.collection("users")
-            .doc(user.uid)
-            .get()
-            .then(async (userDoc) => {
-                const tokenArray = userDoc.data().expoToken;
-                if (
-                    tokenArray.indexOf(notificationToken) === -1 &&
-                    notificationToken !== null
-                ) {
-                    tokenArray.push(notificationToken);
-                    await db
-                        .collection("users")
-                        .doc(user.uid)
-                        .update({ expoToken: tokenArray });
-                }
-            });
-    };
-    const storeAdminNotificationToken = async (user) => {
-        let notificationToken = null;
-        let num = 0;
-        while (notificationToken === null) {
-            num = num + 1;
-            notificationToken = await AsyncStorage.getItem("notificationToken");
-            if (num === 100) {
-                break;
-            }
+        if (notificationToken !== null) {
+            await db
+                .collection("notifications")
+                .doc(user.uid)
+                .update({ expoToken: arrayUnion(notificationToken) });
         }
-        if (num === 100) {
-            return;
-        }
-        await db
-            .collection("adminTokens")
-            .doc(user.uid)
-            .get()
-            .then(async (token) => {
-                const tokenArray = token.data().expoToken;
-                if (
-                    tokenArray.indexOf(notificationToken) === -1 &&
-                    notificationToken !== null
-                ) {
-                    tokenArray.push(notificationToken);
-                    await db
-                        .collection("adminTokens")
-                        .doc(user.uid)
-                        .update({ expoToken: tokenArray });
-                }
-            });
     };
 
     const execPromise = async (user) => {
@@ -134,7 +90,7 @@ const MyStack = () => {
                 const tempUid = await AsyncStorage.getItem("userToken");
                 if (tempUid === user.uid) {
                     await execPromise(user);
-                    //user.updateProfile({displayName:""})
+                    //user.updateProfile({ displayName: "" });
                 }
             }
         });

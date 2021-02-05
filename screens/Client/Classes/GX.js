@@ -16,6 +16,7 @@ import { getStatusBarHeight } from "react-native-status-bar-height";
 import { MyStyles } from "../../../css/MyStyles";
 import myBase, { arrayUnion, db } from "../../../config/MyBase";
 import moment from "moment";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 export default GX = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -169,8 +170,6 @@ export default GX = ({ navigation, route }) => {
                     if (clients.size === 0) {
                         await classInDB.collection("clients").doc(uid).set({
                             uid: uid,
-                            name: name,
-                            phoneNumber: phoneNumber,
                         });
                         await classInDB.update({
                             currentClient: currentClient + 1,
@@ -316,7 +315,7 @@ export default GX = ({ navigation, route }) => {
                             setSelectDate(0);
                         }}
                     >
-                        <Text style={{ fontSize: 17 }}>Close</Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>Close</Text>
                     </TouchableOpacity>
                     <View style={{ height: 30 }}></View>
                     <ScrollView

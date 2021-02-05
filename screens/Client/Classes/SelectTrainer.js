@@ -27,7 +27,7 @@ export default SelectTrainer = ({ navigation, route }) => {
                 });
             const promises = uidList.map(async (data) => {
                 await db
-                    .collection("adminTokens")
+                    .collection("notifications")
                     .doc(data)
                     .get()
                     .then((snapshot) => {
