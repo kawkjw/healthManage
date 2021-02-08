@@ -24,7 +24,7 @@ export default SelectDate = ({ navigation, route }) => {
         let year = today.getFullYear();
         let month = today.getMonth() + 1;
         let array = [getDateString(year, month)];
-        for (let i = 0; i < 6; i++) {
+        for (let i = 0; i < 5; i++) {
             month = month + 1;
             if (month > 12) {
                 month = month - 12;

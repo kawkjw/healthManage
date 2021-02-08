@@ -170,26 +170,7 @@ export default GX = ({ navigation, route }) => {
                 .doc(selectedDate.toString())
                 .get()
                 .then(async (doc) => {
-                    let classId = [];
-                    switch (className) {
-                        case "pilates":
-                            classId = doc.data().pilates;
-                            break;
-                        case "spinning":
-                            classId = doc.data().spinning;
-                            break;
-                        case "squash":
-                            classId = doc.data().squash;
-                            break;
-                        case "yoga":
-                            classId = doc.data().yoga;
-                            break;
-                        case "zoomba":
-                            classId = doc.data().zoomba;
-                            break;
-                        default:
-                            Alert.alert("Error", "Wrong Class Name");
-                    }
+                    let classId = doc.data().list;
                     return classId;
                 })
                 .then(async (classId) => {

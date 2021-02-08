@@ -59,7 +59,7 @@ export default PT = ({ navigation, route }) => {
             setSelectedMonth(route.params.month);
             setChange(!change);
             setSelectedDate(route.params.date);
-            setModalTimeTable(true);
+            setTimeout(() => setModalTimeTable(true), 500);
         }
     }, []);
 
@@ -95,7 +95,9 @@ export default PT = ({ navigation, route }) => {
                         classDate = snapshot.data().class;
                     }
                 });
-            classDate.sort();
+            classDate.sort((a, b) => {
+                return Number(a) - Number(b);
+            });
             classDate.push("-1");
             let index = 0;
             const endDate = new Date(selectedYear, selectedMonth, 0);
@@ -359,7 +361,15 @@ export default PT = ({ navigation, route }) => {
                 .doc(uid)
                 .collection("classes")
                 .doc(yearMonthStr)
-                .update({ date: arrayUnion(selectedDate.toString()) });
+                .update({ date: arrayUnion(selectedDate.toString()) })
+                .catch(async () => {
+                    await db
+                        .collection("users")
+                        .doc(uid)
+                        .collection("classes")
+                        .doc(yearMonthStr)
+                        .set({ date: [selectedDate.toString()] });
+                });
             await db
                 .collection("users")
                 .doc(uid)
@@ -385,7 +395,7 @@ export default PT = ({ navigation, route }) => {
                         myBase.auth().currentUser.displayName,
                         clientUid,
                         "Confirmed Reservation",
-                        "Check your Reservation",
+                        `${selectedDate}일 ${availTime}`,
                         { navigation: "Profile" }
                     );
                     const backup = selectedDate;

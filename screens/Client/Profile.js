@@ -64,6 +64,8 @@ export default Profile = ({ navigation }) => {
                 return "헬스";
             case "spinning":
                 return "스피닝";
+            case "GX":
+                return "GX";
             case "yoga":
                 return "요가";
             case "zoomba":
@@ -108,7 +110,7 @@ export default Profile = ({ navigation }) => {
                         }
                     }
                 })
-                .catch((error) => console.log(error));
+                .catch((error) => console.log("reset random", error.code));
         }
     };
 
@@ -195,7 +197,10 @@ export default Profile = ({ navigation }) => {
                         .get()
                 ).data().date;
                 let reserved = [];
-                const promises = reserveDate.sort().map(async (d) => {
+                reserveDate.sort((a, b) => {
+                    return Number(a) - Number(b);
+                });
+                const promises = reserveDate.map(async (d) => {
                     if (today.getDate() <= Number(d)) {
                         await thisuser
                             .collection("reservation")
@@ -537,404 +542,374 @@ export default Profile = ({ navigation }) => {
                             />
                         </View>
                     ) : (
-                        <ScrollView
-                            style={{ padding: 15 }}
-                            showsVerticalScrollIndicator={false}
-                        >
-                            <Modal
-                                animationType="slide"
-                                transparent={true}
-                                visible={modalPhoneVisible}
+                        <View style={{ paddingBottom: 15 }}>
+                            <ScrollView
+                                style={{ padding: 15 }}
+                                showsVerticalScrollIndicator={false}
                             >
-                                <SafeAreaView
-                                    style={{
-                                        flex: 1,
-                                        backgroundColor: "white",
-                                    }}
+                                <Modal
+                                    animationType="slide"
+                                    transparent={true}
+                                    visible={modalPhoneVisible}
                                 >
-                                    <FirebaseRecaptchaVerifierModal
-                                        ref={appVerifier}
-                                        firebaseConfig={myBase.options}
-                                        attemptInvisibleVerification={true}
-                                    />
-                                    <TouchableOpacity
+                                    <SafeAreaView
                                         style={{
-                                            position: "absolute",
-                                            top:
-                                                Platform.OS === "ios"
-                                                    ? getStatusBarHeight()
-                                                    : 0,
-                                            left: 0,
-                                            margin: 10,
-                                            padding: 5,
-                                            zIndex: 1,
-                                        }}
-                                        onPress={() => {
-                                            setChangePhone("");
-                                            setModalPhoneVisible(
-                                                !modalPhoneVisible
-                                            );
+                                            flex: 1,
+                                            backgroundColor: "white",
                                         }}
                                     >
-                                        <Text style={{ fontSize: 17 }}>
-                                            Close
-                                        </Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        style={{ flex: 1 }}
-                                        onPress={Keyboard.dismiss}
-                                        accessible={false}
-                                        activeOpacity={1}
-                                    >
-                                        <View
-                                            style={{
-                                                flex: 1,
-                                            }}
+                                        <FirebaseRecaptchaVerifierModal
+                                            ref={appVerifier}
+                                            firebaseConfig={myBase.options}
+                                            attemptInvisibleVerification={true}
                                         />
-                                        <View
+                                        <TouchableOpacity
                                             style={{
-                                                flex: 8,
-                                                paddingHorizontal: 30,
+                                                position: "absolute",
+                                                top:
+                                                    Platform.OS === "ios"
+                                                        ? getStatusBarHeight()
+                                                        : 0,
+                                                left: 0,
+                                                margin: 10,
+                                                padding: 5,
+                                                zIndex: 1,
+                                            }}
+                                            onPress={() => {
+                                                setChangePhone("");
+                                                setModalPhoneVisible(
+                                                    !modalPhoneVisible
+                                                );
                                             }}
                                         >
-                                            <Text style={AuthStyles.text}>
-                                                Enter Change Phone Number
+                                            <Text style={{ fontSize: 17 }}>
+                                                Close
                                             </Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            style={{ flex: 1 }}
+                                            onPress={Keyboard.dismiss}
+                                            accessible={false}
+                                            activeOpacity={1}
+                                        >
                                             <View
                                                 style={{
-                                                    flexDirection: "row",
-                                                    marginBottom: 10,
+                                                    flex: 1,
+                                                }}
+                                            />
+                                            <View
+                                                style={{
+                                                    flex: 8,
+                                                    paddingHorizontal: 30,
                                                 }}
                                             >
-                                                <TextInput
+                                                <Text style={AuthStyles.text}>
+                                                    Enter Change Phone Number
+                                                </Text>
+                                                <View
+                                                    style={{
+                                                        flexDirection: "row",
+                                                        marginBottom: 10,
+                                                    }}
+                                                >
+                                                    <TextInput
+                                                        style={[
+                                                            AuthStyles.textInput,
+                                                            {
+                                                                flex: 3,
+                                                                marginRight: 7,
+                                                            },
+                                                        ]}
+                                                        placeholder="010-0000-0000"
+                                                        keyboardType="phone-pad"
+                                                        autoCompleteType="tel"
+                                                        textContentType="telephoneNumber"
+                                                        value={changePhone}
+                                                        onChangeText={
+                                                            setChangePhone
+                                                        }
+                                                        maxLength={13}
+                                                    />
+                                                    <TouchableOpacity
+                                                        style={
+                                                            AuthStyles.authButton
+                                                        }
+                                                        onPress={() =>
+                                                            sendCode()
+                                                        }
+                                                        disabled={!changePhone}
+                                                    >
+                                                        <Text>Send</Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                                <View
+                                                    style={{ marginBottom: 10 }}
+                                                >
+                                                    {verificationId !== "" && (
+                                                        <Text
+                                                            style={{
+                                                                marginBottom: 5,
+                                                            }}
+                                                        >
+                                                            Sended Code
+                                                        </Text>
+                                                    )}
+                                                    <TextInput
+                                                        style={
+                                                            AuthStyles.textInput
+                                                        }
+                                                        placeholder="123456"
+                                                        keyboardType="phone-pad"
+                                                        maxLength={6}
+                                                        editable={
+                                                            verificationId !==
+                                                            ""
+                                                        }
+                                                        value={verifyCode}
+                                                        onChangeText={
+                                                            setVerifyCode
+                                                        }
+                                                        onChange={(e) => {
+                                                            if (
+                                                                e.nativeEvent
+                                                                    .text
+                                                                    .length ===
+                                                                6
+                                                            ) {
+                                                                Keyboard.dismiss();
+                                                            }
+                                                        }}
+                                                    />
+                                                </View>
+                                                <TouchableOpacity
                                                     style={[
-                                                        AuthStyles.textInput,
+                                                        MyStyles.buttonShadow,
                                                         {
-                                                            flex: 3,
-                                                            marginRight: 7,
+                                                            height: hp("5%"),
+                                                            alignItems:
+                                                                "center",
+                                                            justifyContent:
+                                                                "center",
+                                                            borderRadius: 10,
                                                         },
                                                     ]}
-                                                    placeholder="010-0000-0000"
-                                                    keyboardType="phone-pad"
-                                                    autoCompleteType="tel"
-                                                    textContentType="telephoneNumber"
-                                                    value={changePhone}
-                                                    onChangeText={
-                                                        setChangePhone
-                                                    }
-                                                    maxLength={13}
-                                                />
-                                                <TouchableOpacity
-                                                    style={
-                                                        AuthStyles.authButton
-                                                    }
-                                                    onPress={() => sendCode()}
-                                                    disabled={!changePhone}
-                                                >
-                                                    <Text>Send</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                            <View style={{ marginBottom: 10 }}>
-                                                {verificationId !== "" && (
-                                                    <Text
-                                                        style={{
-                                                            marginBottom: 5,
-                                                        }}
-                                                    >
-                                                        Sended Code
-                                                    </Text>
-                                                )}
-                                                <TextInput
-                                                    style={AuthStyles.textInput}
-                                                    placeholder="123456"
-                                                    keyboardType="phone-pad"
-                                                    maxLength={6}
-                                                    editable={
-                                                        verificationId !== ""
-                                                    }
-                                                    value={verifyCode}
-                                                    onChangeText={setVerifyCode}
-                                                    onChange={(e) => {
+                                                    onPress={() => {
                                                         if (
-                                                            e.nativeEvent.text
-                                                                .length === 6
+                                                            verificationId !==
+                                                            ""
                                                         ) {
-                                                            Keyboard.dismiss();
+                                                            dbChangePhone();
+                                                        } else {
+                                                            Alert.alert(
+                                                                "Error",
+                                                                "Please Send Code to verify",
+                                                                [{ text: "OK" }]
+                                                            );
                                                         }
                                                     }}
-                                                />
-                                            </View>
-                                            <TouchableOpacity
-                                                style={[
-                                                    MyStyles.buttonShadow,
-                                                    {
-                                                        height: hp("5%"),
-                                                        alignItems: "center",
-                                                        justifyContent:
-                                                            "center",
-                                                        borderRadius: 10,
-                                                    },
-                                                ]}
-                                                onPress={() => {
-                                                    if (verificationId !== "") {
-                                                        dbChangePhone();
-                                                    } else {
-                                                        Alert.alert(
-                                                            "Error",
-                                                            "Please Send Code to verify",
-                                                            [{ text: "OK" }]
-                                                        );
+                                                    disabled={
+                                                        !verificationId ||
+                                                        !changePhone ||
+                                                        !verifyCode
                                                     }
-                                                }}
-                                                disabled={
-                                                    !verificationId ||
-                                                    !changePhone ||
-                                                    !verifyCode
-                                                }
-                                            >
-                                                <Text>Submit</Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                    </TouchableOpacity>
-                                    <View
-                                        style={{
-                                            width: "90%",
-                                            alignItems: "center",
-                                        }}
-                                    >
-                                        <FirebaseRecaptchaBanner />
-                                    </View>
-                                </SafeAreaView>
-                            </Modal>
-                            <Modal
-                                animationType="slide"
-                                transparent={true}
-                                visible={modalEmailVisible}
-                            >
-                                <SafeAreaView
-                                    style={{
-                                        flex: 1,
-                                        backgroundColor: "white",
-                                        justifyContent: "center",
-                                    }}
-                                >
-                                    <TouchableOpacity
-                                        style={{
-                                            position: "absolute",
-                                            top:
-                                                Platform.OS === "ios"
-                                                    ? getStatusBarHeight()
-                                                    : 0,
-                                            left: 0,
-                                            margin: 10,
-                                            padding: 5,
-                                            zIndex: 1,
-                                        }}
-                                        onPress={() => {
-                                            setChangeEmail("");
-                                            setChkUsedEmail(false);
-                                            setModalEmailVisible(
-                                                !modalEmailVisible
-                                            );
-                                        }}
-                                    >
-                                        <Text style={{ fontSize: 17 }}>
-                                            Close
-                                        </Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        style={{ flex: 1 }}
-                                        onPress={Keyboard.dismiss}
-                                        accessible={false}
-                                        activeOpacity={1}
-                                    >
-                                        <View style={{ flex: 1 }} />
+                                                >
+                                                    <Text>Submit</Text>
+                                                </TouchableOpacity>
+                                            </View>
+                                        </TouchableOpacity>
                                         <View
                                             style={{
-                                                flex: 8,
-                                                paddingHorizontal: 30,
+                                                width: "90%",
+                                                alignItems: "center",
                                             }}
                                         >
-                                            <View style={AuthStyles.textView}>
-                                                <Text style={AuthStyles.text}>
-                                                    Enter Change Email
-                                                </Text>
-                                                <TextInput
-                                                    style={[
-                                                        AuthStyles.textInput,
-                                                        changeEmail
-                                                            ? checkEmail
-                                                                ? {
-                                                                      backgroundColor:
-                                                                          "green",
-                                                                  }
-                                                                : {
-                                                                      backgroundColor:
-                                                                          "red",
-                                                                  }
-                                                            : undefined,
-                                                    ]}
-                                                    placeholder="examples@example.com"
-                                                    keyboardType="email-address"
-                                                    autoCompleteType="email"
-                                                    textContentType="emailAddress"
-                                                    value={changeEmail}
-                                                    onChangeText={
-                                                        setChangeEmail
+                                            <FirebaseRecaptchaBanner />
+                                        </View>
+                                    </SafeAreaView>
+                                </Modal>
+                                <Modal
+                                    animationType="slide"
+                                    transparent={true}
+                                    visible={modalEmailVisible}
+                                >
+                                    <SafeAreaView
+                                        style={{
+                                            flex: 1,
+                                            backgroundColor: "white",
+                                            justifyContent: "center",
+                                        }}
+                                    >
+                                        <TouchableOpacity
+                                            style={{
+                                                position: "absolute",
+                                                top:
+                                                    Platform.OS === "ios"
+                                                        ? getStatusBarHeight()
+                                                        : 0,
+                                                left: 0,
+                                                margin: 10,
+                                                padding: 5,
+                                                zIndex: 1,
+                                            }}
+                                            onPress={() => {
+                                                setChangeEmail("");
+                                                setChkUsedEmail(false);
+                                                setModalEmailVisible(
+                                                    !modalEmailVisible
+                                                );
+                                            }}
+                                        >
+                                            <Text style={{ fontSize: 17 }}>
+                                                Close
+                                            </Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            style={{ flex: 1 }}
+                                            onPress={Keyboard.dismiss}
+                                            accessible={false}
+                                            activeOpacity={1}
+                                        >
+                                            <View style={{ flex: 1 }} />
+                                            <View
+                                                style={{
+                                                    flex: 8,
+                                                    paddingHorizontal: 30,
+                                                }}
+                                            >
+                                                <View
+                                                    style={AuthStyles.textView}
+                                                >
+                                                    <Text
+                                                        style={AuthStyles.text}
+                                                    >
+                                                        Enter Change Email
+                                                    </Text>
+                                                    <TextInput
+                                                        style={[
+                                                            AuthStyles.textInput,
+                                                            changeEmail
+                                                                ? checkEmail
+                                                                    ? {
+                                                                          backgroundColor:
+                                                                              "green",
+                                                                      }
+                                                                    : {
+                                                                          backgroundColor:
+                                                                              "red",
+                                                                      }
+                                                                : undefined,
+                                                        ]}
+                                                        placeholder="examples@example.com"
+                                                        keyboardType="email-address"
+                                                        autoCompleteType="email"
+                                                        textContentType="emailAddress"
+                                                        value={changeEmail}
+                                                        onChangeText={
+                                                            setChangeEmail
+                                                        }
+                                                    />
+                                                </View>
+                                                <Button
+                                                    title="Check Email"
+                                                    onPress={checkUsedEmail}
+                                                />
+                                                <View
+                                                    style={AuthStyles.textView}
+                                                >
+                                                    <Text
+                                                        style={AuthStyles.text}
+                                                    >
+                                                        Enter Password
+                                                    </Text>
+                                                    <TextInput
+                                                        style={
+                                                            AuthStyles.textInput
+                                                        }
+                                                        placeholder="Input password"
+                                                        secureTextEntry={true}
+                                                        value={password}
+                                                        onChangeText={
+                                                            setPassword
+                                                        }
+                                                    />
+                                                </View>
+                                                <Button
+                                                    title="Submit"
+                                                    onPress={dbChangeEmail}
+                                                    disabled={
+                                                        !changeEmail ||
+                                                        !password ||
+                                                        !chkUsedEmail
                                                     }
                                                 />
                                             </View>
-                                            <Button
-                                                title="Check Email"
-                                                onPress={checkUsedEmail}
-                                            />
-                                            <View style={AuthStyles.textView}>
-                                                <Text style={AuthStyles.text}>
-                                                    Enter Password
-                                                </Text>
-                                                <TextInput
-                                                    style={AuthStyles.textInput}
-                                                    placeholder="Input password"
-                                                    secureTextEntry={true}
-                                                    value={password}
-                                                    onChangeText={setPassword}
-                                                />
-                                            </View>
-                                            <Button
-                                                title="Submit"
-                                                onPress={dbChangeEmail}
-                                                disabled={
-                                                    !changeEmail ||
-                                                    !password ||
-                                                    !chkUsedEmail
-                                                }
-                                            />
-                                        </View>
+                                        </TouchableOpacity>
+                                    </SafeAreaView>
+                                </Modal>
+                                <Text style={MyStyles.profileText}>
+                                    이름 : {name}
+                                </Text>
+                                <View style={{ flexDirection: "row" }}>
+                                    <Text
+                                        style={[
+                                            MyStyles.profileText,
+                                            { flex: 9 },
+                                        ]}
+                                    >
+                                        휴대폰번호 : {phoneNumber}
+                                    </Text>
+                                    <TouchableOpacity
+                                        style={{ flex: 1 }}
+                                        onPress={() => {
+                                            setModalPhoneVisible(true);
+                                        }}
+                                    >
+                                        <Text
+                                            style={[
+                                                MyStyles.profileText,
+                                                {
+                                                    textAlign: "right",
+                                                    color: "#1e90ff",
+                                                },
+                                            ]}
+                                        >
+                                            변경
+                                        </Text>
                                     </TouchableOpacity>
-                                </SafeAreaView>
-                            </Modal>
-                            <Text style={MyStyles.profileText}>
-                                이름 : {name}
-                            </Text>
-                            <View style={{ flexDirection: "row" }}>
-                                <Text
-                                    style={[MyStyles.profileText, { flex: 9 }]}
-                                >
-                                    휴대폰번호 : {phoneNumber}
-                                </Text>
-                                <TouchableOpacity
-                                    style={{ flex: 1 }}
-                                    onPress={() => {
-                                        setModalPhoneVisible(true);
-                                    }}
-                                >
-                                    <Text
-                                        style={[
-                                            MyStyles.profileText,
-                                            {
-                                                textAlign: "right",
-                                                color: "#1e90ff",
-                                            },
-                                        ]}
-                                    >
-                                        변경
-                                    </Text>
-                                </TouchableOpacity>
-                            </View>
-                            <View style={{ flexDirection: "row" }}>
-                                <Text
-                                    style={[MyStyles.profileText, { flex: 9 }]}
-                                >
-                                    이메일 : {myBase.auth().currentUser.email}
-                                </Text>
-                                <TouchableOpacity
-                                    style={{ flex: 1 }}
-                                    onPress={() => {
-                                        setModalEmailVisible(true);
-                                    }}
-                                >
-                                    <Text
-                                        style={[
-                                            MyStyles.profileText,
-                                            {
-                                                textAlign: "right",
-                                                color: "#1e90ff",
-                                            },
-                                        ]}
-                                    >
-                                        변경
-                                    </Text>
-                                </TouchableOpacity>
-                            </View>
-                            <Text style={MyStyles.profileText}>
-                                보관함 번호 : {locker !== 0 ? locker : "없음"}
-                            </Text>
-                            <Text
-                                style={[
-                                    MyStyles.profileText,
-                                    {
-                                        fontWeight: "bold",
-                                        fontSize: RFPercentage(2.5),
-                                    },
-                                ]}
-                            >
-                                회원권 정보
-                            </Text>
-                            {membershipInfo.split("\n").map((info, index) => (
-                                <View
-                                    key={index}
-                                    style={{
-                                        flexDirection: "row",
-                                        alignItems: "center",
-                                        marginBottom: 1,
-                                    }}
-                                >
-                                    {info === "회원권이 없습니다." ? (
-                                        <>
-                                            <MaterialCommunityIcons
-                                                name="close-circle-outline"
-                                                size={20}
-                                                color="black"
-                                            />
-                                            <Text
-                                                style={{
-                                                    fontSize: RFPercentage(2),
-                                                    marginLeft: 3,
-                                                }}
-                                            >
-                                                {info}
-                                            </Text>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <MaterialCommunityIcons
-                                                name="check-circle-outline"
-                                                size={20}
-                                                color="black"
-                                            />
-                                            {info.split(":").map((s, i) => (
-                                                <Text
-                                                    key={i}
-                                                    style={[
-                                                        {
-                                                            fontSize: RFPercentage(
-                                                                2
-                                                            ),
-                                                            marginLeft: 3,
-                                                        },
-                                                        i === 0
-                                                            ? { width: 52 }
-                                                            : undefined,
-                                                    ]}
-                                                >
-                                                    {(i === 1 ? ":" : "") + s}
-                                                </Text>
-                                            ))}
-                                        </>
-                                    )}
                                 </View>
-                            ))}
-                            <View style={{ marginTop: 3 }}>
+                                <View style={{ flexDirection: "row" }}>
+                                    <Text
+                                        style={[
+                                            MyStyles.profileText,
+                                            { flex: 9 },
+                                        ]}
+                                    >
+                                        이메일 :{" "}
+                                        {myBase.auth().currentUser.email}
+                                    </Text>
+                                    <TouchableOpacity
+                                        style={{ flex: 1 }}
+                                        onPress={() => {
+                                            setModalEmailVisible(true);
+                                        }}
+                                    >
+                                        <Text
+                                            style={[
+                                                MyStyles.profileText,
+                                                {
+                                                    textAlign: "right",
+                                                    color: "#1e90ff",
+                                                },
+                                            ]}
+                                        >
+                                            변경
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                                <Text style={MyStyles.profileText}>
+                                    보관함 번호 :{" "}
+                                    {locker !== 0 ? locker : "없음"}
+                                </Text>
                                 <Text
                                     style={[
                                         MyStyles.profileText,
@@ -944,37 +919,119 @@ export default Profile = ({ navigation }) => {
                                         },
                                     ]}
                                 >
-                                    이번 달 수업 예약 정보
+                                    회원권 정보
                                 </Text>
-                                {reservedClasses.length === 0 ? (
-                                    <Text> 예약된 수업이 없습니다.</Text>
-                                ) : null}
-                                {reservedClasses.map((reservedClass, index) => (
+                                {membershipInfo
+                                    .split("\n")
+                                    .map((info, index) => (
+                                        <View
+                                            key={index}
+                                            style={{
+                                                flexDirection: "row",
+                                                alignItems: "center",
+                                                marginBottom: 1,
+                                            }}
+                                        >
+                                            {info === "회원권이 없습니다." ? (
+                                                <>
+                                                    <MaterialCommunityIcons
+                                                        name="close-circle-outline"
+                                                        size={20}
+                                                        color="black"
+                                                    />
+                                                    <Text
+                                                        style={{
+                                                            fontSize: RFPercentage(
+                                                                2
+                                                            ),
+                                                            marginLeft: 3,
+                                                        }}
+                                                    >
+                                                        {info}
+                                                    </Text>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <MaterialCommunityIcons
+                                                        name="check-circle-outline"
+                                                        size={20}
+                                                        color="black"
+                                                    />
+                                                    {info
+                                                        .split(":")
+                                                        .map((s, i) => (
+                                                            <Text
+                                                                key={i}
+                                                                style={[
+                                                                    {
+                                                                        fontSize: RFPercentage(
+                                                                            2
+                                                                        ),
+                                                                        marginLeft: 3,
+                                                                    },
+                                                                    i === 0
+                                                                        ? {
+                                                                              width: 52,
+                                                                          }
+                                                                        : undefined,
+                                                                ]}
+                                                            >
+                                                                {(i === 1
+                                                                    ? ":"
+                                                                    : "") + s}
+                                                            </Text>
+                                                        ))}
+                                                </>
+                                            )}
+                                        </View>
+                                    ))}
+                                <View style={{ marginTop: 3 }}>
                                     <Text
-                                        key={index}
-                                        style={{
-                                            fontSize: RFPercentage(2),
-                                            marginBottom: 3,
-                                        }}
+                                        style={[
+                                            MyStyles.profileText,
+                                            {
+                                                fontWeight: "bold",
+                                                fontSize: RFPercentage(2.5),
+                                            },
+                                        ]}
                                     >
-                                        {enToKo(reservedClass.className) +
-                                            "(강사 " +
-                                            reservedClass.trainer +
-                                            ")"}{" "}
-                                        {reservedClass.classDate}{" "}
-                                        {reservedClass.startTime +
-                                            "~" +
-                                            reservedClass.endTime}
-                                        {reservedClass.className === "pt"
-                                            ? reservedClass.confirm
-                                                ? " (승인O)"
-                                                : " (승인X)"
-                                            : null}
+                                        이번 달 수업 예약 정보
                                     </Text>
-                                ))}
-                            </View>
-                            <View style={{ height: 30 }}></View>
-                        </ScrollView>
+                                    {reservedClasses.length === 0 ? (
+                                        <Text> 예약된 수업이 없습니다.</Text>
+                                    ) : null}
+                                    {reservedClasses.map(
+                                        (reservedClass, index) => (
+                                            <Text
+                                                key={index}
+                                                style={{
+                                                    fontSize: RFPercentage(2),
+                                                    marginBottom: 3,
+                                                }}
+                                            >
+                                                {enToKo(
+                                                    reservedClass.className
+                                                ) +
+                                                    "(강사 " +
+                                                    reservedClass.trainer +
+                                                    ")"}{" "}
+                                                {reservedClass.classDate}{" "}
+                                                {reservedClass.startTime +
+                                                    "~" +
+                                                    reservedClass.endTime}
+                                                {reservedClass.className ===
+                                                "pt"
+                                                    ? reservedClass.confirm
+                                                        ? " (승인O)"
+                                                        : " (승인X)"
+                                                    : null}
+                                            </Text>
+                                        )
+                                    )}
+                                </View>
+                                <View style={{ height: 30 }}></View>
+                            </ScrollView>
+                        </View>
                     )}
                 </View>
             </View>

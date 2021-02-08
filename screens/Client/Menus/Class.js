@@ -59,7 +59,15 @@ export default Class = ({ navigation }) => {
     }, []);
 
     const goClassReservation = (classname) => {
-        if (memberships.indexOf(classname) === -1) {
+        if (classname === "yoga" || classname === "zoomba") {
+            if (memberships.indexOf("GX") === -1) {
+                Alert.alert("Error", `You don't have GX membership`, [
+                    { text: "OK" },
+                ]);
+            } else {
+                navigation.navigate("SelectDate", { classname: classname });
+            }
+        } else if (memberships.indexOf(classname) === -1) {
             Alert.alert("Error", `You don't have ${classname} membership`, [
                 { text: "OK" },
             ]);
@@ -164,7 +172,7 @@ export default Class = ({ navigation }) => {
                 >
                     <Text
                         style={
-                            memberships.indexOf("yoga") === -1
+                            memberships.indexOf("GX") === -1
                                 ? { color: "red" }
                                 : { color: "black" }
                         }
@@ -182,7 +190,7 @@ export default Class = ({ navigation }) => {
                 >
                     <Text
                         style={
-                            memberships.indexOf("zoomba") === -1
+                            memberships.indexOf("GX") === -1
                                 ? { color: "red" }
                                 : { color: "black" }
                         }

@@ -168,6 +168,7 @@ export default function Auth({ navigation, route }) {
                                         .set({
                                             name: currentUser.name,
                                             expoToken: [],
+                                            admin: isAdmin === true,
                                         });
                                     if (isTrainer) {
                                         db.collection("users")
@@ -180,12 +181,7 @@ export default function Auth({ navigation, route }) {
                                             .doc(currentUser.id)
                                             .collection("classes")
                                             .doc(
-                                                today.getFullYear() +
-                                                    "-" +
-                                                    (today.getMonth() + 1 < 10
-                                                        ? "0" +
-                                                          (today.getMonth() + 1)
-                                                        : today.getMonth() + 1)
+                                                moment(today).format("YYYY-MM")
                                             )
                                             .set({ date: [] });
                                     } else if (!isTrainer && !isAdmin) {
@@ -193,8 +189,42 @@ export default function Auth({ navigation, route }) {
                                             .split("-")
                                             .slice(1)
                                             .join("");
-                                        console.log(phoneId);
-                                        //await db.collection();
+                                        await db
+                                            .collection("temporary")
+                                            .doc(phoneId)
+                                            .get()
+                                            .then(async (temp) => {
+                                                const data = temp.data();
+                                                const promises = [
+                                                    "health",
+                                                    "pilates",
+                                                    "spinning",
+                                                    "squash",
+                                                    "GX",
+                                                    "pt",
+                                                ].map(async (className) => {
+                                                    if (
+                                                        data.memberships[
+                                                            className
+                                                        ] !== undefined
+                                                    ) {
+                                                        await db
+                                                            .collection("users")
+                                                            .doc(currentUser.id)
+                                                            .collection(
+                                                                "memberships"
+                                                            )
+                                                            .doc(className)
+                                                            .set(
+                                                                data
+                                                                    .memberships[
+                                                                    className
+                                                                ]
+                                                            );
+                                                    }
+                                                });
+                                                await Promise.all(promises);
+                                            });
                                     }
                                 }
                             })
@@ -214,6 +244,7 @@ export default function Auth({ navigation, route }) {
                                             onPress: () => {
                                                 if (!isAdmin) {
                                                     pushNotificationsToAdmin(
+                                                        name,
                                                         "New Client",
                                                         "Signed Up",
                                                         {

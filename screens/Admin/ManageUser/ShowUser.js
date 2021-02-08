@@ -60,6 +60,8 @@ export default ShowUser = ({ route }) => {
                 return "헬스";
             case "spinning":
                 return "스피닝";
+            case "GX":
+                return "GX";
             case "yoga":
                 return "요가";
             case "zoomba":

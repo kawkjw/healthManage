@@ -76,7 +76,9 @@ export default PT = ({ navigation, route }) => {
                         classDate = snapshot.data().class;
                     }
                 });
-            classDate.sort();
+            classDate.sort((a, b) => {
+                return Number(a) - Number(b);
+            });
             classDate.push("-1");
             let index = 0;
             const endDate = new Date(selectedYear, selectedMonth, 0);
@@ -282,7 +284,15 @@ export default PT = ({ navigation, route }) => {
                         .doc(uid)
                         .collection("reservation")
                         .doc(yearMonthStr)
-                        .update({ date: arrayUnion(selectedDate.toString()) });
+                        .update({ date: arrayUnion(selectedDate.toString()) })
+                        .catch(async (error) => {
+                            await db
+                                .collection("users")
+                                .doc(uid)
+                                .collection("reservation")
+                                .doc(yearMonthStr)
+                                .set({ date: [selectedDate.toString()] });
+                        });
                     await db
                         .collection("users")
                         .doc(uid)
@@ -297,7 +307,7 @@ export default PT = ({ navigation, route }) => {
                                     myBase.auth().currentUser.displayName,
                                     trainerUid,
                                     "New Reservation",
-                                    "Please Check Reservation",
+                                    `${selectedDate}일 ${timeStr}`,
                                     {
                                         navigation: "PT",
                                         datas: {

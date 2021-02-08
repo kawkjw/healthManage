@@ -46,11 +46,11 @@ export default Menu = ({ navigation }) => {
                     style={[
                         MyStyles.phoneButton,
                         MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
+                        { width: widthButton, marginBottom: 40 },
                     ]}
-                    onPress={() => {}}
+                    onPress={() => navigation.navigate("ExtendDate")}
                 >
-                    <Text>Blank</Text>
+                    <Text>Extend Membership</Text>
                 </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>

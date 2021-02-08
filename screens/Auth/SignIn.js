@@ -78,7 +78,7 @@ export default SignIn = ({ navigation }) => {
                         ]}
                     >
                         <ScrollView
-                            style={{ height: hp("10%"), padding: 5 }}
+                            style={{ height: hp("13%"), padding: 5 }}
                             keyboardShouldPersistTaps="handled"
                         >
                             {mailList.map((mail, index) => (

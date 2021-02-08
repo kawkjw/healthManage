@@ -79,7 +79,7 @@ export default SelectMembership = ({ navigation, route }) => {
                         MyStyles.buttonShadow,
                         { width: widthButton, marginBottom: 20 },
                     ]}
-                    onPress={() => goClientsbyMembership("yogaZoomba")}
+                    onPress={() => goClientsbyMembership("GX")}
                 >
                     <Text>GX(요가, 줌바)</Text>
                 </TouchableOpacity>

@@ -40,19 +40,21 @@ export const registerForPushNotificationAsync = async () => {
 };
 
 export const pushNotificationsToAdmin = async (
+    sendFrom,
     inputTitle,
     inputBody,
     inputData = {}
 ) => {
+    const sendDate = new Date();
     let messages = [];
     let tokens = [];
     await db
         .collection("notifications")
-        .where("name", "==", "admin")
+        .where("admin", "==", true)
         .get()
         .then(async (adminUsers) => {
-            adminUsers.forEach((adminUser) => {
-                const expoTokens = adminUser.data().expoToken;
+            adminUsers.forEach((admin) => {
+                const expoTokens = admin.data().expoToken;
                 for (let expoToken of expoTokens) {
                     tokens.push(expoToken);
                 }
@@ -60,16 +62,16 @@ export const pushNotificationsToAdmin = async (
             for (let token of tokens) {
                 if (!Expo.isExpoPushToken(token)) {
                     console.log(`Error: ${token} is not expo token`);
-                    return;
+                } else {
+                    messages.push({
+                        to: token,
+                        sound: "default",
+                        title: inputTitle,
+                        body: inputBody,
+                        data: inputData,
+                        badge: 1,
+                    });
                 }
-                messages.push({
-                    to: token,
-                    sound: "default",
-                    title: inputTitle,
-                    body: inputBody,
-                    data: inputData,
-                    badge: 1,
-                });
             }
 
             let chunks = MyExpo.chunkPushNotifications(messages);
@@ -85,6 +87,29 @@ export const pushNotificationsToAdmin = async (
                     console.log(error);
                 }
             }
+            return adminUsers;
+        })
+        .then(async (list) => {
+            let uidList = [];
+            list.forEach((admin) => {
+                uidList.push(admin.id);
+            });
+
+            const savePromises = uidList.map(async (uid) => {
+                await db
+                    .collection("notifications")
+                    .doc(uid)
+                    .collection("messages")
+                    .add({
+                        sendDate: sendDate,
+                        title: inputTitle,
+                        body: inputBody,
+                        data: inputData,
+                        sendFrom: sendFrom,
+                        isRead: false,
+                    });
+            });
+            await Promise.all(savePromises);
         });
 };
 
@@ -111,16 +136,16 @@ export const pushNotificationsToPerson = async (
             for (let token of tokens) {
                 if (!Expo.isExpoPushToken(token)) {
                     console.log(`Error: ${token} is not expo token`);
-                    return;
+                } else {
+                    messages.push({
+                        to: token,
+                        sound: "default",
+                        title: inputTitle,
+                        body: inputBody,
+                        data: inputData,
+                        badge: 1,
+                    });
                 }
-                messages.push({
-                    to: token,
-                    sound: "default",
-                    title: inputTitle,
-                    body: inputBody,
-                    data: inputData,
-                    badge: 1,
-                });
             }
 
             let chunks = MyExpo.chunkPushNotifications(messages);
