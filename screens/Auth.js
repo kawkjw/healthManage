@@ -63,29 +63,33 @@ export default function Auth({ navigation, route }) {
         () => ({
             signIn: async (data) => {
                 const { email, password } = data;
-                try {
-                    const response = await myBase
-                        .auth()
-                        .signInWithEmailAndPassword(email, password);
-                    AsyncStorage.setItem("userToken", response.user.uid);
-                    dispatch({ type: "SIGN_IN", token: response.user.uid });
-                } catch (error) {
-                    if (error.code === "auth/wrong-password") {
-                        Alert.alert("Error", "Wrong Password", [
-                            { text: "OK" },
-                        ]);
-                    } else if (error.code === "auth/invalid-email") {
-                        Alert.alert("Error", "Input correct email", [
-                            { text: "OK" },
-                        ]);
-                    } else if (error.code === "auth/user-not-found") {
-                        Alert.alert("Error", "User not found", [
-                            { text: "OK" },
-                        ]);
-                    } else {
-                        Alert.alert("Error", error.message, [{ text: "OK" }]);
-                    }
-                }
+                await myBase
+                    .auth()
+                    .signInWithEmailAndPassword(email, password)
+                    .then((response) => {
+                        AsyncStorage.setItem("userToken", response.user.uid);
+                        dispatch({ type: "SIGN_IN", token: response.user.uid });
+                    })
+                    .catch((error) => {
+                        if (error.code === "auth/wrong-password") {
+                            Alert.alert("Error", "Wrong Password", [
+                                { text: "OK" },
+                            ]);
+                        } else if (error.code === "auth/invalid-email") {
+                            Alert.alert("Error", "Input correct email", [
+                                { text: "OK" },
+                            ]);
+                        } else if (error.code === "auth/user-not-found") {
+                            Alert.alert("Error", "User not found", [
+                                { text: "OK" },
+                            ]);
+                        } else {
+                            Alert.alert("Error", error.message, [
+                                { text: "OK" },
+                            ]);
+                        }
+                        throw Error();
+                    });
             },
             signOut: async () => {
                 const token = await AsyncStorage.getItem("notificationToken");
@@ -292,9 +296,8 @@ export default function Auth({ navigation, route }) {
                                     [{ text: "OK" }]
                                 );
                             }
-                            throw Error(errorMessage);
                         }
-                        console.log(error);
+                        throw Error(errorMessage);
                     });
             },
         }),

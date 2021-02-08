@@ -101,16 +101,6 @@ export default Home = ({ navigation, route }) => {
                         MyStyles.buttonShadow,
                         { width: widthButton, marginBottom: 20 },
                     ]}
-                    onPress={() => navigation.navigate("Profile")}
-                >
-                    <Text>Profile</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
-                    ]}
                     onPress={() => navigation.navigate("ClassInfoMenu")}
                 >
                     <Text>Class Info</Text>

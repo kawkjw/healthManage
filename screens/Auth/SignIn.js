@@ -10,6 +10,7 @@ import {
     Platform,
     ScrollView,
     Image,
+    ActivityIndicator,
 } from "react-native";
 import { AuthContext } from "../Auth";
 import { AuthStyles, MyStyles } from "../../css/MyStyles";
@@ -34,6 +35,7 @@ export default SignIn = ({ navigation }) => {
         "nate.com",
     ];
     const [mailBoxDisplay, setMailBoxDisplay] = useState(true);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         setMailBoxDisplay(true);
@@ -47,6 +49,16 @@ export default SignIn = ({ navigation }) => {
             setMailBoxDisplay(false);
         }
     }, [mailAddress]);
+
+    const login = () => {
+        setLoading(true);
+        signIn({
+            email: id + "@" + mailAddress,
+            password,
+        }).catch(() => {
+            setLoading(false);
+        });
+    };
 
     return (
         <SafeAreaView style={AuthStyles.container}>
@@ -229,23 +241,22 @@ export default SignIn = ({ navigation }) => {
                         <TouchableOpacity
                             style={[AuthStyles.authButton, { marginRight: 5 }]}
                             disabled={!id || !mailAddress || !password}
-                            onPress={() =>
-                                signIn({
-                                    email: id + "@" + mailAddress,
-                                    password,
-                                })
-                            }
+                            onPress={() => login()}
                         >
-                            <Text
-                                style={[
-                                    AuthStyles.authText,
-                                    !id || !mailAddress || !password
-                                        ? { color: "#a9a9a9" }
-                                        : undefined,
-                                ]}
-                            >
-                                Sign In
-                            </Text>
+                            {loading ? (
+                                <ActivityIndicator />
+                            ) : (
+                                <Text
+                                    style={[
+                                        AuthStyles.authText,
+                                        !id || !mailAddress || !password
+                                            ? { color: "#a9a9a9" }
+                                            : undefined,
+                                    ]}
+                                >
+                                    Sign In
+                                </Text>
+                            )}
                         </TouchableOpacity>
                         <TouchableOpacity
                             style={[AuthStyles.authButton, { marginLeft: 5 }]}

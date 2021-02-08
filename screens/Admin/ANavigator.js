@@ -2,7 +2,6 @@ import React, { useContext, useEffect, useState } from "react";
 import { Text, TouchableOpacity, View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./Home";
-import Profile from "./Profile";
 import { AuthContext } from "../Auth";
 import Locker from "./Locker";
 import FindUser from "./ManageUser/FindUser";
@@ -430,14 +429,6 @@ const MyStack = ({ navigation }) => {
                                 </Modal>
                             </View>
                         ),
-                }}
-            />
-            <Stack.Screen
-                name="Profile"
-                component={Profile}
-                options={{
-                    title: "사용자 정보",
-                    headerLeft: () => {},
                     headerRight: () => (
                         <TouchableOpacity
                             style={{

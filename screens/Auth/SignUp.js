@@ -7,6 +7,7 @@ import {
     SafeAreaView,
     Keyboard,
     Alert,
+    ActivityIndicator,
 } from "react-native";
 import { AuthContext } from "../Auth";
 import { AuthStyles } from "../../css/MyStyles";
@@ -38,6 +39,7 @@ export default SignUp = ({ navigation }) => {
     const [correctPw, setCorrectPw] = useState(false);
 
     const { signUp } = useContext(AuthContext);
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         if (password && password === chkPassword) {
@@ -152,6 +154,26 @@ export default SignUp = ({ navigation }) => {
             .then((id) => {
                 setVerificationId(id);
                 Alert.alert("Send Code", "Check your message");
+            });
+    };
+
+    const submit = async () => {
+        setLoading(true);
+        await signUp({
+            name,
+            phoneNumber,
+            email,
+            password,
+            adminCode,
+            verifyCode,
+            verificationId,
+        })
+            .then(() => {
+                navigation.goBack();
+            })
+            .catch((error) => {
+                setLoading(false);
+                console.log(error);
             });
     };
 
@@ -353,25 +375,13 @@ export default SignUp = ({ navigation }) => {
                                 !verifyCode ||
                                 !verificationId
                             }
-                            onPress={async () => {
-                                await signUp({
-                                    name,
-                                    phoneNumber,
-                                    email,
-                                    password,
-                                    adminCode,
-                                    verifyCode,
-                                    verificationId,
-                                })
-                                    .then(() => {
-                                        navigation.goBack();
-                                    })
-                                    .catch((error) => {
-                                        console.log(error);
-                                    });
-                            }}
+                            onPress={() => submit()}
                         >
-                            <Text style={AuthStyles.authText}>Sign Up</Text>
+                            {loading ? (
+                                <ActivityIndicator />
+                            ) : (
+                                <Text style={AuthStyles.authText}>Sign Up</Text>
+                            )}
                         </TouchableOpacity>
                     </View>
                     <View
