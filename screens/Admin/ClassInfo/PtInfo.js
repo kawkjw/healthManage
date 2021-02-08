@@ -47,9 +47,7 @@ export default ClassInfo = ({ navigation }) => {
         const showCalendar = async () => {
             setLoading(true);
             const yearMonthStr =
-                selectedYear +
-                "-" +
-                (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
+                selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
 
             let items = [
                 { id: "일", color: "red", pressable: false, isHeader: true },
@@ -139,15 +137,11 @@ export default ClassInfo = ({ navigation }) => {
         const getClassData = async () => {
             setLoadingInModal(true);
             const yearMonthStr =
-                selectedYear +
-                "-" +
-                (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
+                selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
             let dataList = [];
             const promisesForUid = ptUid.map(async (uid) => {
                 let temp = {};
-                const { name } = (
-                    await db.collection("users").doc(uid).get()
-                ).data();
+                const { name } = (await db.collection("users").doc(uid).get()).data();
                 temp["name"] = name;
                 await db
                     .collection("classes")
@@ -173,10 +167,7 @@ export default ClassInfo = ({ navigation }) => {
                         const promises = list.map(async (v, index) => {
                             if (v !== -1) {
                                 const { name } = (
-                                    await db
-                                        .collection("users")
-                                        .doc(v.clientUid)
-                                        .get()
+                                    await db.collection("users").doc(v.clientUid).get()
                                 ).data();
                                 const { count } = (
                                     await db
@@ -207,11 +198,7 @@ export default ClassInfo = ({ navigation }) => {
     useEffect(() => {
         const setListForPicker = () => {
             let list = [];
-            for (
-                let i = today.getFullYear() - 10;
-                i <= today.getFullYear() + 10;
-                i++
-            ) {
+            for (let i = today.getFullYear() - 10; i <= today.getFullYear() + 10; i++) {
                 list.push({
                     label: i.toString(),
                     value: i.toString(),
@@ -264,11 +251,7 @@ export default ClassInfo = ({ navigation }) => {
                     }}
                 >
                     <TouchableOpacity activeOpacity={0.5} onPress={goPreMonth}>
-                        <MaterialIcons
-                            name="chevron-left"
-                            size={30}
-                            color="black"
-                        />
+                        <MaterialIcons name="chevron-left" size={30} color="black" />
                     </TouchableOpacity>
                 </View>
                 <View
@@ -282,9 +265,7 @@ export default ClassInfo = ({ navigation }) => {
                         <Text style={{ fontSize: RFPercentage(2.5) }}>
                             {selectedYear +
                                 "-" +
-                                (selectedMonth < 10
-                                    ? "0" + selectedMonth
-                                    : selectedMonth)}
+                                (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth)}
                         </Text>
                     </TouchableOpacity>
                 </View>
@@ -297,11 +278,7 @@ export default ClassInfo = ({ navigation }) => {
                     }}
                 >
                     <TouchableOpacity activeOpacity={0.5} onPress={goNextMonth}>
-                        <MaterialIcons
-                            name="chevron-right"
-                            size={30}
-                            color="black"
-                        />
+                        <MaterialIcons name="chevron-right" size={30} color="black" />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -398,11 +375,7 @@ export default ClassInfo = ({ navigation }) => {
                     },
                 ]}
             />
-            <Modal
-                animationType="slide"
-                visible={modalClassInfo}
-                transparent={true}
-            >
+            <Modal animationType="slide" visible={modalClassInfo} transparent={true}>
                 <SafeAreaView
                     style={{
                         flex: 1,
@@ -412,10 +385,7 @@ export default ClassInfo = ({ navigation }) => {
                     <TouchableOpacity
                         style={{
                             position: "absolute",
-                            top:
-                                Platform.OS === "ios"
-                                    ? getStatusBarHeight()
-                                    : 0,
+                            top: Platform.OS === "ios" ? getStatusBarHeight() : 0,
                             left: 0,
                             margin: 10,
                             padding: 5,
@@ -435,9 +405,7 @@ export default ClassInfo = ({ navigation }) => {
                             justifyContent: "center",
                         }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2.5) }}>
-                            {selectedDate + "일"}
-                        </Text>
+                        <Text style={{ fontSize: RFPercentage(2.5) }}>{selectedDate + "일"}</Text>
                     </View>
                     {loadingInModal ? (
                         <View
@@ -453,11 +421,7 @@ export default ClassInfo = ({ navigation }) => {
                             />
                         </View>
                     ) : (
-                        <TimeTable
-                            kind="pt"
-                            classData={classData}
-                            style={{ marginTop: 10 }}
-                        />
+                        <TimeTable kind="pt" classData={classData} style={{ marginTop: 10 }} />
                     )}
                 </SafeAreaView>
             </Modal>

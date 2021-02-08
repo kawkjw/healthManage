@@ -80,13 +80,8 @@ export default ResetPw = () => {
                         />
                     </View>
                     <View style={{ height: 35 }}>
-                        <TouchableOpacity
-                            style={AuthStyles.authButton}
-                            onPress={sendResetMail}
-                        >
-                            <Text style={AuthStyles.authText}>
-                                Send Reset Password Mail
-                            </Text>
+                        <TouchableOpacity style={AuthStyles.authButton} onPress={sendResetMail}>
+                            <Text style={AuthStyles.authText}>Send Reset Password Mail</Text>
                         </TouchableOpacity>
                     </View>
                 </TouchableOpacity>

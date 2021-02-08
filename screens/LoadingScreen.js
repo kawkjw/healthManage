@@ -4,9 +4,7 @@ import { View, StyleSheet, StatusBar, Image } from "react-native";
 export default LoadingScreen = () => {
     return (
         <View style={styles.container}>
-            <StatusBar
-                barStyle={Platform.OS === "ios" ? "dark-content" : "default"}
-            />
+            <StatusBar barStyle={Platform.OS === "ios" ? "dark-content" : "default"} />
             <View
                 style={{
                     flex: 1,

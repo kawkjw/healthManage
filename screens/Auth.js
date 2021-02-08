@@ -72,21 +72,13 @@ export default function Auth({ navigation, route }) {
                     })
                     .catch((error) => {
                         if (error.code === "auth/wrong-password") {
-                            Alert.alert("Error", "Wrong Password", [
-                                { text: "OK" },
-                            ]);
+                            Alert.alert("Error", "Wrong Password", [{ text: "OK" }]);
                         } else if (error.code === "auth/invalid-email") {
-                            Alert.alert("Error", "Input correct email", [
-                                { text: "OK" },
-                            ]);
+                            Alert.alert("Error", "Input correct email", [{ text: "OK" }]);
                         } else if (error.code === "auth/user-not-found") {
-                            Alert.alert("Error", "User not found", [
-                                { text: "OK" },
-                            ]);
+                            Alert.alert("Error", "User not found", [{ text: "OK" }]);
                         } else {
-                            Alert.alert("Error", error.message, [
-                                { text: "OK" },
-                            ]);
+                            Alert.alert("Error", error.message, [{ text: "OK" }]);
                         }
                         throw Error();
                     });
@@ -98,10 +90,7 @@ export default function Auth({ navigation, route }) {
                     .doc(myBase.auth().currentUser.uid)
                     .update({ expoToken: arrayDelete(token) });
                 myBase.auth().signOut();
-                await AsyncStorage.multiRemove([
-                    "userToken",
-                    "notificationToken",
-                ]);
+                await AsyncStorage.multiRemove(["userToken", "notificationToken"]);
                 dispatch({ type: "SIGN_OUT" });
             },
             signUp: async (data) => {
@@ -159,14 +148,10 @@ export default function Auth({ navigation, route }) {
                                         permission: currentUser.permission,
                                         random: " ",
                                     };
-                                    db.collection("users")
-                                        .doc(currentUser.id)
-                                        .set(data);
-                                    db.collection("emails")
-                                        .doc(currentUser.id)
-                                        .set({
-                                            email: currentUser.email,
-                                        });
+                                    db.collection("users").doc(currentUser.id).set(data);
+                                    db.collection("emails").doc(currentUser.id).set({
+                                        email: currentUser.email,
+                                    });
                                     db.collection("notifications")
                                         .doc(currentUser.id)
                                         .set({
@@ -175,18 +160,14 @@ export default function Auth({ navigation, route }) {
                                             admin: isAdmin === true,
                                         });
                                     if (isTrainer) {
-                                        db.collection("users")
-                                            .doc(currentUser.id)
-                                            .update({
-                                                className: "Need to Set Up",
-                                            });
+                                        db.collection("users").doc(currentUser.id).update({
+                                            className: "Need to Set Up",
+                                        });
                                         const today = new Date();
                                         db.collection("users")
                                             .doc(currentUser.id)
                                             .collection("classes")
-                                            .doc(
-                                                moment(today).format("YYYY-MM")
-                                            )
+                                            .doc(moment(today).format("YYYY-MM"))
                                             .set({ date: [] });
                                     } else if (!isTrainer && !isAdmin) {
                                         const phoneId = currentUser.phoneNumber
@@ -207,24 +188,13 @@ export default function Auth({ navigation, route }) {
                                                     "GX",
                                                     "pt",
                                                 ].map(async (className) => {
-                                                    if (
-                                                        data.memberships[
-                                                            className
-                                                        ] !== undefined
-                                                    ) {
+                                                    if (data.memberships[className] !== undefined) {
                                                         await db
                                                             .collection("users")
                                                             .doc(currentUser.id)
-                                                            .collection(
-                                                                "memberships"
-                                                            )
+                                                            .collection("memberships")
                                                             .doc(className)
-                                                            .set(
-                                                                data
-                                                                    .memberships[
-                                                                    className
-                                                                ]
-                                                            );
+                                                            .set(data.memberships[className]);
                                                     }
                                                 });
                                                 await Promise.all(promises);
@@ -252,8 +222,7 @@ export default function Auth({ navigation, route }) {
                                                         "New Client",
                                                         "Signed Up",
                                                         {
-                                                            navigation:
-                                                                "FindUser",
+                                                            navigation: "FindUser",
                                                             datas: {
                                                                 name: name,
                                                                 phoneNumber: phoneNumber,
@@ -272,29 +241,16 @@ export default function Auth({ navigation, route }) {
                         const errorCode = error.code;
                         const errorMessage = error.message;
                         if (errorCode === "auth/email-already-in-use") {
-                            Alert.alert("Error", "Already used Email", [
-                                { text: "OK" },
-                            ]);
+                            Alert.alert("Error", "Already used Email", [{ text: "OK" }]);
                         } else {
-                            if (
-                                errorMessage ===
-                                "auth/invalid-verification-code"
-                            ) {
+                            if (errorMessage === "auth/invalid-verification-code") {
                                 Alert.alert("Error", "Wrong Code");
-                            } else if (
-                                errorMessage ===
-                                "auth/credential-already-in-use"
-                            ) {
-                                Alert.alert(
-                                    "Error",
-                                    "Already Signed Up Phone Number"
-                                );
+                            } else if (errorMessage === "auth/credential-already-in-use") {
+                                Alert.alert("Error", "Already Signed Up Phone Number");
                             } else {
-                                Alert.alert(
-                                    "Error",
-                                    errorCode + "\n" + errorMessage,
-                                    [{ text: "OK" }]
-                                );
+                                Alert.alert("Error", errorCode + "\n" + errorMessage, [
+                                    { text: "OK" },
+                                ]);
                             }
                         }
                         throw Error(errorMessage);
@@ -320,9 +276,7 @@ export default function Auth({ navigation, route }) {
                                 component={SignIn}
                                 options={{
                                     title: "Sign In",
-                                    animationTypeForReplace: state.isSignout
-                                        ? "pop"
-                                        : "push",
+                                    animationTypeForReplace: state.isSignout ? "pop" : "push",
                                 }}
                             />
                             <Stack.Screen
@@ -331,9 +285,7 @@ export default function Auth({ navigation, route }) {
                                 options={{
                                     title: "Reset Password",
                                     gestureEnabled: false,
-                                    animationTypeForReplace: state.isSignout
-                                        ? "pop"
-                                        : "push",
+                                    animationTypeForReplace: state.isSignout ? "pop" : "push",
                                 }}
                             />
                             <Stack.Screen
@@ -342,9 +294,7 @@ export default function Auth({ navigation, route }) {
                                 options={{
                                     title: "Sign Up",
                                     gestureEnabled: false,
-                                    animationTypeForReplace: state.isSignout
-                                        ? "pop"
-                                        : "push",
+                                    animationTypeForReplace: state.isSignout ? "pop" : "push",
                                 }}
                             />
                         </>

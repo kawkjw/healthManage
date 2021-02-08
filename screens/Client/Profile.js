@@ -25,10 +25,7 @@ import firebase from "firebase";
 import moment from "moment";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { RFPercentage } from "react-native-responsive-fontsize";
-import {
-    FirebaseRecaptchaVerifierModal,
-    FirebaseRecaptchaBanner,
-} from "expo-firebase-recaptcha";
+import { FirebaseRecaptchaVerifierModal, FirebaseRecaptchaBanner } from "expo-firebase-recaptcha";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 export default Profile = ({ navigation }) => {
@@ -155,8 +152,7 @@ export default Profile = ({ navigation }) => {
                     kinds.map((kind) => {
                         let stringTemp = enToKo(kind) + " : ";
                         if (kind === "pt") {
-                            stringTemp =
-                                stringTemp + `${temp[kind].count}번 남음`;
+                            stringTemp = stringTemp + `${temp[kind].count}번 남음`;
                             if (temp[kind].count <= 0) {
                                 expiredNum = expiredNum + 1;
                             }
@@ -175,9 +171,7 @@ export default Profile = ({ navigation }) => {
                         info = info + stringTemp + "\n";
                     });
                     setMembershipInfo(
-                        info
-                            ? info.substring(0, info.length - 1)
-                            : "회원권이 없습니다."
+                        info ? info.substring(0, info.length - 1) : "회원권이 없습니다."
                     );
                     if (info && kinds.length !== expiredNum) {
                         setCanGenQR(true);
@@ -186,15 +180,10 @@ export default Profile = ({ navigation }) => {
             const today = new Date();
             const todayMonth = today.getMonth() + 1;
             const monthString =
-                today.getFullYear() +
-                "-" +
-                (todayMonth < 10 ? "0" + todayMonth : todayMonth);
+                today.getFullYear() + "-" + (todayMonth < 10 ? "0" + todayMonth : todayMonth);
             try {
                 const reserveDate = (
-                    await thisuser
-                        .collection("reservation")
-                        .doc(monthString)
-                        .get()
+                    await thisuser.collection("reservation").doc(monthString).get()
                 ).data().date;
                 let reserved = [];
                 reserveDate.sort((a, b) => {
@@ -216,14 +205,9 @@ export default Profile = ({ navigation }) => {
                                     let c = {};
                                     c["cid"] = data.classId;
                                     c["className"] = data.className;
-                                    c["classDate"] =
-                                        monthString +
-                                        "-" +
-                                        (d < 10 ? "0" + d : d);
+                                    c["classDate"] = monthString + "-" + (d < 10 ? "0" + d : d);
                                     c["trainer"] = data.trainer;
-                                    c["startTime"] = moment(start).format(
-                                        "HH:mm"
-                                    );
+                                    c["startTime"] = moment(start).format("HH:mm");
                                     c["endTime"] = moment(end).format("HH:mm");
                                     if (data.className === "pt") {
                                         c["confirm"] = data.confirm;
@@ -276,10 +260,7 @@ export default Profile = ({ navigation }) => {
         setChangePhone(
             changePhone
                 .replace(/[^0-9]/g, "")
-                .replace(
-                    /(^02|^0505|^1[0-9]{3}|^0[0-9]{2})([0-9]+)?([0-9]{4})$/,
-                    "$1-$2-$3"
-                )
+                .replace(/(^02|^0505|^1[0-9]{3}|^0[0-9]{2})([0-9]+)?([0-9]{4})$/, "$1-$2-$3")
                 .replace("--", "-")
         );
     }, [changePhone]);
@@ -293,12 +274,10 @@ export default Profile = ({ navigation }) => {
             profilePhone = "+" + changePhone.split("-").join("");
         }
         const phoneProvider = new firebase.auth.PhoneAuthProvider();
-        await phoneProvider
-            .verifyPhoneNumber(profilePhone, appVerifier.current)
-            .then((id) => {
-                setVerificationId(id);
-                Alert.alert("Send Code", "Check your message");
-            });
+        await phoneProvider.verifyPhoneNumber(profilePhone, appVerifier.current).then((id) => {
+            setVerificationId(id);
+            Alert.alert("Send Code", "Check your message");
+        });
     };
 
     const dbChangePhone = async () => {
@@ -412,10 +391,7 @@ export default Profile = ({ navigation }) => {
                             }
                         })
                         .then(async () => {
-                            await db
-                                .collection("emails")
-                                .doc(uid)
-                                .set({ email: changeEmail });
+                            await db.collection("emails").doc(uid).set({ email: changeEmail });
                             await thisuser.get().then(async (user) => {
                                 if (user.exists) {
                                     await thisuser.update({
@@ -499,9 +475,7 @@ export default Profile = ({ navigation }) => {
                         </>
                     ) : (
                         <>
-                            <Text style={{ fontSize: RFPercentage(2.5) }}>
-                                입장 코드 생성
-                            </Text>
+                            <Text style={{ fontSize: RFPercentage(2.5) }}>입장 코드 생성</Text>
                             <Image
                                 style={[MyStyles.image, { width: widthImage }]}
                                 source={require("../../assets/qrcode-test.png")}
@@ -509,11 +483,7 @@ export default Profile = ({ navigation }) => {
                         </>
                     )}
                     <TouchableOpacity
-                        style={[
-                            MyStyles.backButton,
-                            MyStyles.buttonShadow,
-                            { borderRadius: 10 },
-                        ]}
+                        style={[MyStyles.backButton, MyStyles.buttonShadow, { borderRadius: 10 }]}
                         onPress={() => {
                             setIsRun(false);
                             navigation.goBack();
@@ -522,12 +492,7 @@ export default Profile = ({ navigation }) => {
                         <Text>뒤로가기</Text>
                     </TouchableOpacity>
                 </TouchableOpacity>
-                <View
-                    style={[
-                        MyStyles.buttonShadow,
-                        { width: widthButton, height: "40%" },
-                    ]}
-                >
+                <View style={[MyStyles.buttonShadow, { width: widthButton, height: "40%" }]}>
                     {loading ? (
                         <View
                             style={{
@@ -577,14 +542,10 @@ export default Profile = ({ navigation }) => {
                                             }}
                                             onPress={() => {
                                                 setChangePhone("");
-                                                setModalPhoneVisible(
-                                                    !modalPhoneVisible
-                                                );
+                                                setModalPhoneVisible(!modalPhoneVisible);
                                             }}
                                         >
-                                            <Text style={{ fontSize: 17 }}>
-                                                Close
-                                            </Text>
+                                            <Text style={{ fontSize: 17 }}>Close</Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity
                                             style={{ flex: 1 }}
@@ -625,26 +586,18 @@ export default Profile = ({ navigation }) => {
                                                         autoCompleteType="tel"
                                                         textContentType="telephoneNumber"
                                                         value={changePhone}
-                                                        onChangeText={
-                                                            setChangePhone
-                                                        }
+                                                        onChangeText={setChangePhone}
                                                         maxLength={13}
                                                     />
                                                     <TouchableOpacity
-                                                        style={
-                                                            AuthStyles.authButton
-                                                        }
-                                                        onPress={() =>
-                                                            sendCode()
-                                                        }
+                                                        style={AuthStyles.authButton}
+                                                        onPress={() => sendCode()}
                                                         disabled={!changePhone}
                                                     >
                                                         <Text>Send</Text>
                                                     </TouchableOpacity>
                                                 </View>
-                                                <View
-                                                    style={{ marginBottom: 10 }}
-                                                >
+                                                <View style={{ marginBottom: 10 }}>
                                                     {verificationId !== "" && (
                                                         <Text
                                                             style={{
@@ -655,27 +608,15 @@ export default Profile = ({ navigation }) => {
                                                         </Text>
                                                     )}
                                                     <TextInput
-                                                        style={
-                                                            AuthStyles.textInput
-                                                        }
+                                                        style={AuthStyles.textInput}
                                                         placeholder="123456"
                                                         keyboardType="phone-pad"
                                                         maxLength={6}
-                                                        editable={
-                                                            verificationId !==
-                                                            ""
-                                                        }
+                                                        editable={verificationId !== ""}
                                                         value={verifyCode}
-                                                        onChangeText={
-                                                            setVerifyCode
-                                                        }
+                                                        onChangeText={setVerifyCode}
                                                         onChange={(e) => {
-                                                            if (
-                                                                e.nativeEvent
-                                                                    .text
-                                                                    .length ===
-                                                                6
-                                                            ) {
+                                                            if (e.nativeEvent.text.length === 6) {
                                                                 Keyboard.dismiss();
                                                             }
                                                         }}
@@ -686,18 +627,13 @@ export default Profile = ({ navigation }) => {
                                                         MyStyles.buttonShadow,
                                                         {
                                                             height: hp("5%"),
-                                                            alignItems:
-                                                                "center",
-                                                            justifyContent:
-                                                                "center",
+                                                            alignItems: "center",
+                                                            justifyContent: "center",
                                                             borderRadius: 10,
                                                         },
                                                     ]}
                                                     onPress={() => {
-                                                        if (
-                                                            verificationId !==
-                                                            ""
-                                                        ) {
+                                                        if (verificationId !== "") {
                                                             dbChangePhone();
                                                         } else {
                                                             Alert.alert(
@@ -754,14 +690,10 @@ export default Profile = ({ navigation }) => {
                                             onPress={() => {
                                                 setChangeEmail("");
                                                 setChkUsedEmail(false);
-                                                setModalEmailVisible(
-                                                    !modalEmailVisible
-                                                );
+                                                setModalEmailVisible(!modalEmailVisible);
                                             }}
                                         >
-                                            <Text style={{ fontSize: 17 }}>
-                                                Close
-                                            </Text>
+                                            <Text style={{ fontSize: 17 }}>Close</Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity
                                             style={{ flex: 1 }}
@@ -776,12 +708,8 @@ export default Profile = ({ navigation }) => {
                                                     paddingHorizontal: 30,
                                                 }}
                                             >
-                                                <View
-                                                    style={AuthStyles.textView}
-                                                >
-                                                    <Text
-                                                        style={AuthStyles.text}
-                                                    >
+                                                <View style={AuthStyles.textView}>
+                                                    <Text style={AuthStyles.text}>
                                                         Enter Change Email
                                                     </Text>
                                                     <TextInput
@@ -790,12 +718,10 @@ export default Profile = ({ navigation }) => {
                                                             changeEmail
                                                                 ? checkEmail
                                                                     ? {
-                                                                          backgroundColor:
-                                                                              "green",
+                                                                          backgroundColor: "green",
                                                                       }
                                                                     : {
-                                                                          backgroundColor:
-                                                                              "red",
+                                                                          backgroundColor: "red",
                                                                       }
                                                                 : undefined,
                                                         ]}
@@ -804,58 +730,39 @@ export default Profile = ({ navigation }) => {
                                                         autoCompleteType="email"
                                                         textContentType="emailAddress"
                                                         value={changeEmail}
-                                                        onChangeText={
-                                                            setChangeEmail
-                                                        }
+                                                        onChangeText={setChangeEmail}
                                                     />
                                                 </View>
                                                 <Button
                                                     title="Check Email"
                                                     onPress={checkUsedEmail}
                                                 />
-                                                <View
-                                                    style={AuthStyles.textView}
-                                                >
-                                                    <Text
-                                                        style={AuthStyles.text}
-                                                    >
+                                                <View style={AuthStyles.textView}>
+                                                    <Text style={AuthStyles.text}>
                                                         Enter Password
                                                     </Text>
                                                     <TextInput
-                                                        style={
-                                                            AuthStyles.textInput
-                                                        }
+                                                        style={AuthStyles.textInput}
                                                         placeholder="Input password"
                                                         secureTextEntry={true}
                                                         value={password}
-                                                        onChangeText={
-                                                            setPassword
-                                                        }
+                                                        onChangeText={setPassword}
                                                     />
                                                 </View>
                                                 <Button
                                                     title="Submit"
                                                     onPress={dbChangeEmail}
                                                     disabled={
-                                                        !changeEmail ||
-                                                        !password ||
-                                                        !chkUsedEmail
+                                                        !changeEmail || !password || !chkUsedEmail
                                                     }
                                                 />
                                             </View>
                                         </TouchableOpacity>
                                     </SafeAreaView>
                                 </Modal>
-                                <Text style={MyStyles.profileText}>
-                                    이름 : {name}
-                                </Text>
+                                <Text style={MyStyles.profileText}>이름 : {name}</Text>
                                 <View style={{ flexDirection: "row" }}>
-                                    <Text
-                                        style={[
-                                            MyStyles.profileText,
-                                            { flex: 9 },
-                                        ]}
-                                    >
+                                    <Text style={[MyStyles.profileText, { flex: 9 }]}>
                                         휴대폰번호 : {phoneNumber}
                                     </Text>
                                     <TouchableOpacity
@@ -878,14 +785,8 @@ export default Profile = ({ navigation }) => {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={{ flexDirection: "row" }}>
-                                    <Text
-                                        style={[
-                                            MyStyles.profileText,
-                                            { flex: 9 },
-                                        ]}
-                                    >
-                                        이메일 :{" "}
-                                        {myBase.auth().currentUser.email}
+                                    <Text style={[MyStyles.profileText, { flex: 9 }]}>
+                                        이메일 : {myBase.auth().currentUser.email}
                                     </Text>
                                     <TouchableOpacity
                                         style={{ flex: 1 }}
@@ -907,8 +808,7 @@ export default Profile = ({ navigation }) => {
                                     </TouchableOpacity>
                                 </View>
                                 <Text style={MyStyles.profileText}>
-                                    보관함 번호 :{" "}
-                                    {locker !== 0 ? locker : "없음"}
+                                    보관함 번호 : {locker !== 0 ? locker : "없음"}
                                 </Text>
                                 <Text
                                     style={[
@@ -921,70 +821,60 @@ export default Profile = ({ navigation }) => {
                                 >
                                     회원권 정보
                                 </Text>
-                                {membershipInfo
-                                    .split("\n")
-                                    .map((info, index) => (
-                                        <View
-                                            key={index}
-                                            style={{
-                                                flexDirection: "row",
-                                                alignItems: "center",
-                                                marginBottom: 1,
-                                            }}
-                                        >
-                                            {info === "회원권이 없습니다." ? (
-                                                <>
-                                                    <MaterialCommunityIcons
-                                                        name="close-circle-outline"
-                                                        size={20}
-                                                        color="black"
-                                                    />
+                                {membershipInfo.split("\n").map((info, index) => (
+                                    <View
+                                        key={index}
+                                        style={{
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            marginBottom: 1,
+                                        }}
+                                    >
+                                        {info === "회원권이 없습니다." ? (
+                                            <>
+                                                <MaterialCommunityIcons
+                                                    name="close-circle-outline"
+                                                    size={20}
+                                                    color="black"
+                                                />
+                                                <Text
+                                                    style={{
+                                                        fontSize: RFPercentage(2),
+                                                        marginLeft: 3,
+                                                    }}
+                                                >
+                                                    {info}
+                                                </Text>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <MaterialCommunityIcons
+                                                    name="check-circle-outline"
+                                                    size={20}
+                                                    color="black"
+                                                />
+                                                {info.split(":").map((s, i) => (
                                                     <Text
-                                                        style={{
-                                                            fontSize: RFPercentage(
-                                                                2
-                                                            ),
-                                                            marginLeft: 3,
-                                                        }}
+                                                        key={i}
+                                                        style={[
+                                                            {
+                                                                fontSize: RFPercentage(2),
+                                                                marginLeft: 3,
+                                                            },
+                                                            i === 0
+                                                                ? {
+                                                                      width: 52,
+                                                                  }
+                                                                : undefined,
+                                                        ]}
                                                     >
-                                                        {info}
+                                                        {(i === 1 ? ":" : "") + s}
                                                     </Text>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <MaterialCommunityIcons
-                                                        name="check-circle-outline"
-                                                        size={20}
-                                                        color="black"
-                                                    />
-                                                    {info
-                                                        .split(":")
-                                                        .map((s, i) => (
-                                                            <Text
-                                                                key={i}
-                                                                style={[
-                                                                    {
-                                                                        fontSize: RFPercentage(
-                                                                            2
-                                                                        ),
-                                                                        marginLeft: 3,
-                                                                    },
-                                                                    i === 0
-                                                                        ? {
-                                                                              width: 52,
-                                                                          }
-                                                                        : undefined,
-                                                                ]}
-                                                            >
-                                                                {(i === 1
-                                                                    ? ":"
-                                                                    : "") + s}
-                                                            </Text>
-                                                        ))}
-                                                </>
-                                            )}
-                                        </View>
-                                    ))}
+                                                ))}
+                                            </>
+                                        )}
+                                    </View>
+                                ))}
                                 <View style={{ marginTop: 3 }}>
                                     <Text
                                         style={[
@@ -1000,34 +890,27 @@ export default Profile = ({ navigation }) => {
                                     {reservedClasses.length === 0 ? (
                                         <Text> 예약된 수업이 없습니다.</Text>
                                     ) : null}
-                                    {reservedClasses.map(
-                                        (reservedClass, index) => (
-                                            <Text
-                                                key={index}
-                                                style={{
-                                                    fontSize: RFPercentage(2),
-                                                    marginBottom: 3,
-                                                }}
-                                            >
-                                                {enToKo(
-                                                    reservedClass.className
-                                                ) +
-                                                    "(강사 " +
-                                                    reservedClass.trainer +
-                                                    ")"}{" "}
-                                                {reservedClass.classDate}{" "}
-                                                {reservedClass.startTime +
-                                                    "~" +
-                                                    reservedClass.endTime}
-                                                {reservedClass.className ===
-                                                "pt"
-                                                    ? reservedClass.confirm
-                                                        ? " (승인O)"
-                                                        : " (승인X)"
-                                                    : null}
-                                            </Text>
-                                        )
-                                    )}
+                                    {reservedClasses.map((reservedClass, index) => (
+                                        <Text
+                                            key={index}
+                                            style={{
+                                                fontSize: RFPercentage(2),
+                                                marginBottom: 3,
+                                            }}
+                                        >
+                                            {enToKo(reservedClass.className) +
+                                                "(강사 " +
+                                                reservedClass.trainer +
+                                                ")"}{" "}
+                                            {reservedClass.classDate}{" "}
+                                            {reservedClass.startTime + "~" + reservedClass.endTime}
+                                            {reservedClass.className === "pt"
+                                                ? reservedClass.confirm
+                                                    ? " (승인O)"
+                                                    : " (승인X)"
+                                                : null}
+                                        </Text>
+                                    ))}
                                 </View>
                                 <View style={{ height: 30 }}></View>
                             </ScrollView>

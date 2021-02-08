@@ -1,11 +1,5 @@
 import React from "react";
-import {
-    Dimensions,
-    SafeAreaView,
-    Text,
-    TouchableOpacity,
-    ScrollView,
-} from "react-native";
+import { Dimensions, SafeAreaView, Text, TouchableOpacity, ScrollView } from "react-native";
 import { MyStyles } from "../../../css/MyStyles";
 
 export default Info = ({ navigation }) => {

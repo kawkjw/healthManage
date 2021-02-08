@@ -38,9 +38,7 @@ export default Home = ({ navigation, route }) => {
                 if (data.navigation) {
                     if (data.datas) {
                         const { datas } = data;
-                        const { className } = (
-                            await db.collection("users").doc(uid).get()
-                        ).data();
+                        const { className } = (await db.collection("users").doc(uid).get()).data();
                         if (data.navigation !== "PT") {
                             navigation.reset({
                                 index: 1,
@@ -58,9 +56,7 @@ export default Home = ({ navigation, route }) => {
                                         name: "PT",
                                         params: {
                                             ...datas,
-                                            limit: className
-                                                .split(".")
-                                                .slice(1),
+                                            limit: className.split(".").slice(1),
                                         },
                                     },
                                 ],
@@ -69,10 +65,7 @@ export default Home = ({ navigation, route }) => {
                     } else {
                         navigation.reset({
                             index: 1,
-                            routes: [
-                                { name: "HomeScreen" },
-                                { name: data.navigation },
-                            ],
+                            routes: [{ name: "HomeScreen" }, { name: data.navigation }],
                         });
                     }
                 }
@@ -80,29 +73,20 @@ export default Home = ({ navigation, route }) => {
             }
         );
         return () => {
-            Notifications.removeNotificationSubscription(
-                notificationSubscription
-            );
+            Notifications.removeNotificationSubscription(notificationSubscription);
             Notifications.removeNotificationSubscription(responseSubscription);
         };
     }, []);
 
     const goMyClass = async () => {
-        const { className } = (
-            await db.collection("users").doc(uid).get()
-        ).data();
+        const { className } = (await db.collection("users").doc(uid).get()).data();
         if (className === "Need to Set Up") {
-            Alert.alert(
-                "Error",
-                "Need to set up your class\nPlease set up in Profile",
-                [
-                    {
-                        text: "OK",
-                        onPress: () =>
-                            navigation.navigate("Profile", { showModal: true }),
-                    },
-                ]
-            );
+            Alert.alert("Error", "Need to set up your class\nPlease set up in Profile", [
+                {
+                    text: "OK",
+                    onPress: () => navigation.navigate("Profile", { showModal: true }),
+                },
+            ]);
         } else if (className.split(".")[0] === "pt") {
             navigation.navigate("PT", { limit: className.split(".").slice(1) });
         } else if (className.split(".")[0] === "gx") {
@@ -114,9 +98,7 @@ export default Home = ({ navigation, route }) => {
 
     return (
         <SafeAreaView style={MyStyles.container}>
-            <StatusBar
-                barStyle={Platform.OS === "ios" ? "dark-content" : "default"}
-            />
+            <StatusBar barStyle={Platform.OS === "ios" ? "dark-content" : "default"} />
             <ScrollView
                 style={{ flex: 1, alignSelf: "stretch", paddingVertical: 10 }}
                 contentContainerStyle={{ alignItems: "center" }}

@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-    Dimensions,
-    SafeAreaView,
-    Text,
-    TouchableOpacity,
-    ScrollView,
-} from "react-native";
+import { Dimensions, SafeAreaView, Text, TouchableOpacity, ScrollView } from "react-native";
 import { MyStyles } from "../../../css/MyStyles";
 
 export default SelectDate = ({ navigation, route }) => {
@@ -53,9 +47,7 @@ export default SelectDate = ({ navigation, route }) => {
                                 MyStyles.phoneButton,
                                 MyStyles.buttonShadow,
                                 { width: widthButton, marginBottom: 20 },
-                                i === sixDate.length - 1
-                                    ? { marginBottom: 40 }
-                                    : undefined,
+                                i === sixDate.length - 1 ? { marginBottom: 40 } : undefined,
                             ]}
                             onPress={() =>
                                 navigation.navigate("GX", {

@@ -27,13 +27,7 @@ export default SignIn = ({ navigation }) => {
     const [mailShow, setMailShow] = useState(false);
     const [mailTop, setMailTop] = useState(0);
     const [mailWidth, setMailWidth] = useState(0);
-    const mailList = [
-        "gmail.com",
-        "naver.com",
-        "daum.net",
-        "me.com",
-        "nate.com",
-    ];
+    const mailList = ["gmail.com", "naver.com", "daum.net", "me.com", "nate.com"];
     const [mailBoxDisplay, setMailBoxDisplay] = useState(true);
     const [loading, setLoading] = useState(false);
 
@@ -62,9 +56,7 @@ export default SignIn = ({ navigation }) => {
 
     return (
         <SafeAreaView style={AuthStyles.container}>
-            <StatusBar
-                barStyle={Platform.OS === "ios" ? "dark-content" : "default"}
-            />
+            <StatusBar barStyle={Platform.OS === "ios" ? "dark-content" : "default"} />
             <KeyboardAwareScrollView
                 style={{ alignSelf: "stretch" }}
                 contentContainerStyle={{ height: hp("90%") }}
@@ -84,9 +76,7 @@ export default SignIn = ({ navigation }) => {
                                 top: mailTop,
                                 right: 30,
                             },
-                            mailBoxDisplay
-                                ? { display: "flex" }
-                                : { display: "none" },
+                            mailBoxDisplay ? { display: "flex" } : { display: "none" },
                         ]}
                     >
                         <ScrollView
@@ -95,11 +85,8 @@ export default SignIn = ({ navigation }) => {
                         >
                             {mailList.map((mail, index) => (
                                 <View key={index}>
-                                    {mailAddress ===
-                                    mail.slice(0, mailAddress.length) ? (
-                                        <View
-                                            style={{ borderBottomWidth: "0.5" }}
-                                        >
+                                    {mailAddress === mail.slice(0, mailAddress.length) ? (
+                                        <View style={{ borderBottomWidth: "0.5" }}>
                                             <TouchableOpacity
                                                 style={{
                                                     paddingTop: 1,
@@ -114,9 +101,7 @@ export default SignIn = ({ navigation }) => {
                                             >
                                                 <Text
                                                     style={{
-                                                        fontSize: RFPercentage(
-                                                            2.5
-                                                        ),
+                                                        fontSize: RFPercentage(2.5),
                                                     }}
                                                 >
                                                     {mail}
@@ -155,10 +140,7 @@ export default SignIn = ({ navigation }) => {
                     <View
                         style={AuthStyles.textView}
                         onLayout={(e) => {
-                            setMailTop(
-                                e.nativeEvent.layout.height +
-                                    e.nativeEvent.layout.y
-                            );
+                            setMailTop(e.nativeEvent.layout.height + e.nativeEvent.layout.y);
                         }}
                     >
                         <Text style={AuthStyles.text}>Enter Email</Text>
@@ -180,9 +162,7 @@ export default SignIn = ({ navigation }) => {
                                     justifyContent: "center",
                                 }}
                             >
-                                <Text style={{ fontSize: RFPercentage(3) }}>
-                                    @
-                                </Text>
+                                <Text style={{ fontSize: RFPercentage(3) }}>@</Text>
                             </View>
                             <View
                                 style={{
@@ -195,10 +175,7 @@ export default SignIn = ({ navigation }) => {
                                 }}
                             >
                                 <TextInput
-                                    style={[
-                                        AuthStyles.textInput,
-                                        { flex: 1, borderWidth: 0 },
-                                    ]}
+                                    style={[AuthStyles.textInput, { flex: 1, borderWidth: 0 }]}
                                     keyboardType="default"
                                     placeholder="Mail Address"
                                     value={mailAddress}
@@ -235,9 +212,7 @@ export default SignIn = ({ navigation }) => {
                             }}
                         />
                     </View>
-                    <View
-                        style={[AuthStyles.textView, { flexDirection: "row" }]}
-                    >
+                    <View style={[AuthStyles.textView, { flexDirection: "row" }]}>
                         <TouchableOpacity
                             style={[AuthStyles.authButton, { marginRight: 5 }]}
                             disabled={!id || !mailAddress || !password}

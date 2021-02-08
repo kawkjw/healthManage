@@ -51,10 +51,7 @@ export default TimeTable = ({ classData, kind = "pt", style, ...props }) => {
                     if (c !== -1) {
                         if (kind === "pt") {
                             classList[c.start - 7] = {
-                                time:
-                                    c.start < 10
-                                        ? "0" + c.start + ":00"
-                                        : c.start + ":00",
+                                time: c.start < 10 ? "0" + c.start + ":00" : c.start + ":00",
                                 kind: kind,
                                 hasClass: true,
                                 classInfo: {
@@ -150,9 +147,7 @@ export default TimeTable = ({ classData, kind = "pt", style, ...props }) => {
                                         width: wp("35%"),
                                         alignItems: "center",
                                     },
-                                    index !== data.length - 1
-                                        ? { borderRightWidth: 1 }
-                                        : undefined,
+                                    index !== data.length - 1 ? { borderRightWidth: 1 } : undefined,
                                 ]}
                             >
                                 <View
@@ -185,14 +180,12 @@ export default TimeTable = ({ classData, kind = "pt", style, ...props }) => {
                                             index !== d.classes.length - 1
                                                 ? {
                                                       borderBottomWidth: 1,
-                                                      borderBottomColor:
-                                                          "#e6e6e6",
+                                                      borderBottomColor: "#e6e6e6",
                                                   }
                                                 : undefined,
                                             c.hasClass
                                                 ? {
-                                                      backgroundColor:
-                                                          "#99ccff",
+                                                      backgroundColor: "#99ccff",
                                                       borderWidth: 1,
                                                       borderColor: "#80bfff",
                                                   }
@@ -206,12 +199,9 @@ export default TimeTable = ({ classData, kind = "pt", style, ...props }) => {
                                                       " PT (" +
                                                       c.classInfo.remainCount +
                                                       "회 남음)"
-                                                    : enToKo(
-                                                          c.classInfo.className
-                                                      ) +
+                                                    : enToKo(c.classInfo.className) +
                                                       " (" +
-                                                      c.classInfo
-                                                          .currentClient +
+                                                      c.classInfo.currentClient +
                                                       "/" +
                                                       c.classInfo.maxClient +
                                                       ")"

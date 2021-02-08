@@ -14,10 +14,7 @@ import { AuthStyles } from "../../css/MyStyles";
 import CheckBox from "../../config/CheckBox";
 import myBase, { db } from "../../config/MyBase";
 import firebase from "firebase";
-import {
-    FirebaseRecaptchaVerifierModal,
-    FirebaseRecaptchaBanner,
-} from "expo-firebase-recaptcha";
+import { FirebaseRecaptchaVerifierModal, FirebaseRecaptchaBanner } from "expo-firebase-recaptcha";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
@@ -63,11 +60,7 @@ export default SignUp = ({ navigation }) => {
             //alert("비밀번호는 공백없이 입력해주세요.");
             return false;
         }
-        if (
-            (num < 0 && eng < 0) ||
-            (eng < 0 && spe < 0) ||
-            (spe < 0 && num < 0)
-        ) {
+        if ((num < 0 && eng < 0) || (eng < 0 && spe < 0) || (spe < 0 && num < 0)) {
             //alert("영문, 숫자, 특수문자 중 2가지 이상을 혼합하여 입력해주세요.");
             return false;
         }
@@ -96,10 +89,7 @@ export default SignUp = ({ navigation }) => {
         setPhoneNumber(
             phoneNumber
                 .replace(/[^0-9]/g, "")
-                .replace(
-                    /(^02|^0505|^1[0-9]{3}|^0[0-9]{2})([0-9]+)?([0-9]{4})$/,
-                    "$1-$2-$3"
-                )
+                .replace(/(^02|^0505|^1[0-9]{3}|^0[0-9]{2})([0-9]+)?([0-9]{4})$/, "$1-$2-$3")
                 .replace("--", "-")
         );
     }, [phoneNumber]);
@@ -117,9 +107,7 @@ export default SignUp = ({ navigation }) => {
                     });
                     if (Object.keys(data).length === 0) {
                         setChkUsedEmail(true);
-                        Alert.alert("Success", "Use your email", [
-                            { text: "OK" },
-                        ]);
+                        Alert.alert("Success", "Use your email", [{ text: "OK" }]);
                     } else {
                         Alert.alert("Error", "Already used email!", [
                             {
@@ -149,12 +137,10 @@ export default SignUp = ({ navigation }) => {
             profilePhone = "+" + phoneNumber.split("-").join("");
         }
         const phoneProvider = new firebase.auth.PhoneAuthProvider();
-        await phoneProvider
-            .verifyPhoneNumber(profilePhone, appVerifier.current)
-            .then((id) => {
-                setVerificationId(id);
-                Alert.alert("Send Code", "Check your message");
-            });
+        await phoneProvider.verifyPhoneNumber(profilePhone, appVerifier.current).then((id) => {
+            setVerificationId(id);
+            Alert.alert("Send Code", "Check your message");
+        });
     };
 
     const submit = async () => {
@@ -234,17 +220,15 @@ export default SignUp = ({ navigation }) => {
                                 style={AuthStyles.authButton}
                                 onPress={checkUsedEmail}
                             >
-                                <Text style={AuthStyles.authText}>
-                                    중복확인
-                                </Text>
+                                <Text style={AuthStyles.authText}>중복확인</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
                     <View style={AuthStyles.textView}>
                         <Text style={AuthStyles.text}>Enter Password</Text>
                         <Text style={{ color: "#8c8c8c", marginBottom: 5 }}>
-                            길이는 8자 이상 15자 이하이며{"\n"}영문, 숫자,
-                            특수문자 중 2가지 이상을 혼합하여 입력해주세요
+                            길이는 8자 이상 15자 이하이며{"\n"}영문, 숫자, 특수문자 중 2가지 이상을
+                            혼합하여 입력해주세요
                         </Text>
                         <TextInput
                             style={[
@@ -262,9 +246,7 @@ export default SignUp = ({ navigation }) => {
                         />
                     </View>
                     <View style={AuthStyles.textView}>
-                        <Text style={AuthStyles.text}>
-                            Enter Check Password
-                        </Text>
+                        <Text style={AuthStyles.text}>Enter Check Password</Text>
                         <TextInput
                             style={[
                                 AuthStyles.textInput,
@@ -290,16 +272,11 @@ export default SignUp = ({ navigation }) => {
                             text=" Are you admin?"
                             textStyle={{ fontSize: RFPercentage(2) }}
                             size={RFPercentage(2.5)}
-                            style={[
-                                { width: "40%" },
-                                selected && { marginBottom: 10 },
-                            ]}
+                            style={[{ width: "40%" }, selected && { marginBottom: 10 }]}
                         />
                         {selected ? (
                             <>
-                                <Text style={AuthStyles.text}>
-                                    Input Admin Code
-                                </Text>
+                                <Text style={AuthStyles.text}>Input Admin Code</Text>
                                 <TextInput
                                     style={AuthStyles.textInput}
                                     placeholder="00000000"
@@ -315,10 +292,7 @@ export default SignUp = ({ navigation }) => {
                         <Text style={AuthStyles.text}>Enter Phone Number</Text>
                         <View style={{ marginBottom: 5, flexDirection: "row" }}>
                             <TextInput
-                                style={[
-                                    AuthStyles.textInput,
-                                    { flex: 3, marginRight: 7 },
-                                ]}
+                                style={[AuthStyles.textInput, { flex: 3, marginRight: 7 }]}
                                 placeholder="010-0000-0000"
                                 autoCompleteType="tel"
                                 keyboardType="phone-pad"
@@ -340,9 +314,7 @@ export default SignUp = ({ navigation }) => {
                         </View>
                         <View>
                             {verificationId !== "" && (
-                                <Text style={{ marginBottom: 5 }}>
-                                    Sended Code
-                                </Text>
+                                <Text style={{ marginBottom: 5 }}>Sended Code</Text>
                             )}
                             <TextInput
                                 style={AuthStyles.textInput}

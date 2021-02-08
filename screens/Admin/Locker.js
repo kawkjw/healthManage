@@ -1,12 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import {
-    StyleSheet,
-    View,
-    FlatList,
-    Text,
-    TouchableOpacity,
-    Alert,
-} from "react-native";
+import { StyleSheet, View, FlatList, Text, TouchableOpacity, Alert } from "react-native";
 import myBase, { db } from "../../config/MyBase";
 import Dialog from "react-native-dialog";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
@@ -67,9 +60,7 @@ export default Locker = () => {
                             await db.collection("users").doc(locker.uid).get()
                         ).data();
                         items[Number(locker.id) - 1]["name"] = name;
-                        items[Number(locker.id) - 1][
-                            "phoneNumber"
-                        ] = phoneNumber;
+                        items[Number(locker.id) - 1]["phoneNumber"] = phoneNumber;
                         items[Number(locker.id) - 1]["uid"] = locker.uid;
                         items[Number(locker.id) - 1]["occupied"] = true;
                     });
@@ -86,10 +77,7 @@ export default Locker = () => {
         setPhoneNumber(
             phoneNumber
                 .replace(/[^0-9]/g, "")
-                .replace(
-                    /(^02|^0505|^1[0-9]{3}|^0[0-9]{2})([0-9]+)?([0-9]{4})$/,
-                    "$1-$2-$3"
-                )
+                .replace(/(^02|^0505|^1[0-9]{3}|^0[0-9]{2})([0-9]+)?([0-9]{4})$/, "$1-$2-$3")
                 .replace("--", "-")
         );
     }, [phoneNumber]);
@@ -127,78 +115,57 @@ export default Locker = () => {
                 snapshots.forEach(async (snapshot) => {
                     const { name, uid } = snapshot.data();
                     const phone = snapshot.data().phoneNumber;
-                    Alert.alert(
-                        "Info",
-                        `Name: ${name}\nPhone: ${phone}\nIs that right?`,
-                        [
-                            {
-                                text: "OK",
-                                onPress: async () => {
-                                    await db
-                                        .collection("lockers")
-                                        .where("uid", "==", uid)
-                                        .get()
-                                        .then(async (lockers) => {
-                                            if (lockers.size > 0) {
-                                                let lockerNum;
-                                                lockers.forEach((locker) => {
-                                                    lockerNum = locker.id;
+                    Alert.alert("Info", `Name: ${name}\nPhone: ${phone}\nIs that right?`, [
+                        {
+                            text: "OK",
+                            onPress: async () => {
+                                await db
+                                    .collection("lockers")
+                                    .where("uid", "==", uid)
+                                    .get()
+                                    .then(async (lockers) => {
+                                        if (lockers.size > 0) {
+                                            let lockerNum;
+                                            lockers.forEach((locker) => {
+                                                lockerNum = locker.id;
+                                            });
+                                            throw Error(`Already Have Locker: ${lockerNum}`);
+                                        } else {
+                                            await db
+                                                .collection("lockers")
+                                                .doc(selectedLocker.toString())
+                                                .get()
+                                                .then((doc) => {
+                                                    if (!doc.exists) {
+                                                        db.collection("lockers")
+                                                            .doc(selectedLocker.toString())
+                                                            .set({
+                                                                name: name,
+                                                                phoneNumber: phoneNumber,
+                                                                uid: uid,
+                                                            });
+                                                    }
+                                                })
+                                                .then(() => {
+                                                    Alert.alert("Success", "Add Success", [
+                                                        {
+                                                            text: "OK",
+                                                            onPress: () => {
+                                                                handleCancel();
+                                                                setChanged(!changed);
+                                                            },
+                                                        },
+                                                    ]);
                                                 });
-                                                throw Error(
-                                                    `Already Have Locker: ${lockerNum}`
-                                                );
-                                            } else {
-                                                await db
-                                                    .collection("lockers")
-                                                    .doc(
-                                                        selectedLocker.toString()
-                                                    )
-                                                    .get()
-                                                    .then((doc) => {
-                                                        if (!doc.exists) {
-                                                            db.collection(
-                                                                "lockers"
-                                                            )
-                                                                .doc(
-                                                                    selectedLocker.toString()
-                                                                )
-                                                                .set({
-                                                                    name: name,
-                                                                    phoneNumber: phoneNumber,
-                                                                    uid: uid,
-                                                                });
-                                                        }
-                                                    })
-                                                    .then(() => {
-                                                        Alert.alert(
-                                                            "Success",
-                                                            "Add Success",
-                                                            [
-                                                                {
-                                                                    text: "OK",
-                                                                    onPress: () => {
-                                                                        handleCancel();
-                                                                        setChanged(
-                                                                            !changed
-                                                                        );
-                                                                    },
-                                                                },
-                                                            ]
-                                                        );
-                                                    });
-                                            }
-                                        })
-                                        .catch((error) => {
-                                            Alert.alert(
-                                                "Failure",
-                                                error.message
-                                            );
-                                        });
-                                },
+                                        }
+                                    })
+                                    .catch((error) => {
+                                        Alert.alert("Failure", error.message);
+                                    });
                             },
-                            { text: "Cancel" },
-                        ]
-                    );
+                        },
+                        { text: "Cancel" },
+                    ]);
                 });
             })
             .catch((error) => {
@@ -223,9 +190,7 @@ export default Locker = () => {
                 data={data}
                 windowSize={1}
                 renderItem={({ item }) => (
-                    <View
-                        style={{ flex: 1, flexDirection: "column", margin: 5 }}
-                    >
+                    <View style={{ flex: 1, flexDirection: "column", margin: 5 }}>
                         <TouchableOpacity
                             style={styles.locker}
                             onPress={() => {
@@ -237,23 +202,16 @@ export default Locker = () => {
                                             {
                                                 text: "Delete",
                                                 onPress: () => {
-                                                    Alert.alert(
-                                                        "Are you sure?",
-                                                        "",
-                                                        [
-                                                            { text: "Cancel" },
-                                                            {
-                                                                text: "Delete",
-                                                                onPress: () => {
-                                                                    removeLocker(
-                                                                        item.id
-                                                                    );
-                                                                },
-                                                                style:
-                                                                    "destructive",
+                                                    Alert.alert("Are you sure?", "", [
+                                                        { text: "Cancel" },
+                                                        {
+                                                            text: "Delete",
+                                                            onPress: () => {
+                                                                removeLocker(item.id);
                                                             },
-                                                        ]
-                                                    );
+                                                            style: "destructive",
+                                                        },
+                                                    ]);
                                                 },
                                                 style: "destructive",
                                             },
@@ -261,20 +219,16 @@ export default Locker = () => {
                                         ]
                                     );
                                 } else {
-                                    Alert.alert(
-                                        item.id.toString(),
-                                        "Not occupied",
-                                        [
-                                            {
-                                                text: "Add",
-                                                onPress: () => {
-                                                    setSelectedLocker(item.id);
-                                                    setVisible(true);
-                                                },
+                                    Alert.alert(item.id.toString(), "Not occupied", [
+                                        {
+                                            text: "Add",
+                                            onPress: () => {
+                                                setSelectedLocker(item.id);
+                                                setVisible(true);
                                             },
-                                            { text: "OK" },
-                                        ]
-                                    );
+                                        },
+                                        { text: "OK" },
+                                    ]);
                                 }
                             }}
                         >

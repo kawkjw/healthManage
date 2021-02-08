@@ -1,11 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import {
-    Dimensions,
-    SafeAreaView,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-} from "react-native";
+import { Dimensions, SafeAreaView, ScrollView, Text, TouchableOpacity } from "react-native";
 import myBase, { db } from "../../config/MyBase";
 import { MyStyles } from "../../css/MyStyles";
 import { AuthContext } from "../Auth";

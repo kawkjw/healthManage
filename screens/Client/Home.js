@@ -47,10 +47,7 @@ export default Home = ({ navigation, route }) => {
                     } else {
                         navigation.reset({
                             index: 1,
-                            routes: [
-                                { name: "HomeScreen" },
-                                { name: data.navigation },
-                            ],
+                            routes: [{ name: "HomeScreen" }, { name: data.navigation }],
                         });
                     }
                 }
@@ -58,18 +55,14 @@ export default Home = ({ navigation, route }) => {
             }
         );
         return () => {
-            Notifications.removeNotificationSubscription(
-                notificationSubscription
-            );
+            Notifications.removeNotificationSubscription(notificationSubscription);
             Notifications.removeNotificationSubscription(responseSubscription);
         };
     }, []);
 
     return (
         <SafeAreaView style={MyStyles.container}>
-            <StatusBar
-                barStyle={Platform.OS === "ios" ? "dark-content" : "default"}
-            />
+            <StatusBar barStyle={Platform.OS === "ios" ? "dark-content" : "default"} />
             <View style={{ flex: 1, justifyContent: "center" }}>
                 <TouchableOpacity
                     style={[
@@ -102,11 +95,7 @@ export default Home = ({ navigation, route }) => {
                     <Text>Menu</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton },
-                    ]}
+                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { width: widthButton }]}
                     onPress={() => {
                         Linking.openURL("tel:12345678");
                     }}

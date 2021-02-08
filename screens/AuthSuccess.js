@@ -32,14 +32,8 @@ const MyStack = () => {
                     setIsAdmin(data.permission === 0 ? true : false);
                     setIsTrainer(data.permission === 1 ? true : false);
                     if (user.email !== data.email) {
-                        await db
-                            .collection("emails")
-                            .doc(user.uid)
-                            .update({ email: user.email });
-                        await db
-                            .collection("users")
-                            .doc(user.uid)
-                            .update({ email: user.email });
+                        await db.collection("emails").doc(user.uid).update({ email: user.email });
+                        await db.collection("users").doc(user.uid).update({ email: user.email });
                     }
                     //setIsLoading(false);
                 } else {
@@ -100,9 +94,7 @@ const MyStack = () => {
         user.sendEmailVerification()
             .then(() => {
                 console.log("Send Email");
-                Alert.alert("Success", "Check your email for verification!", [
-                    { text: "OK" },
-                ]);
+                Alert.alert("Success", "Check your email for verification!", [{ text: "OK" }]);
             })
             .catch((error) => console.log(error));
     };
@@ -110,11 +102,7 @@ const MyStack = () => {
     const VerifyEmail = () => {
         return (
             <>
-                <StatusBar
-                    barStyle={
-                        Platform.OS === "ios" ? "dark-content" : "default"
-                    }
-                />
+                <StatusBar barStyle={Platform.OS === "ios" ? "dark-content" : "default"} />
                 <View
                     style={{
                         flex: 1,

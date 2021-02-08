@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-    Image,
-    SafeAreaView,
-    Text,
-    View,
-    TouchableOpacity,
-} from "react-native";
+import { Image, SafeAreaView, Text, View, TouchableOpacity } from "react-native";
 import { db } from "../../../config/MyBase";
 import { MyStyles } from "../../../css/MyStyles";
 import { RFPercentage } from "react-native-responsive-fontsize";
@@ -71,12 +65,8 @@ export default ClientInfo = ({ navigation, route }) => {
                             .get()
                             .then((memberships) => {
                                 memberships.forEach((membership) => {
-                                    temp[index]["membership"]["kinds"].push(
-                                        membership.id
-                                    );
-                                    temp[index]["membership"][
-                                        membership.id
-                                    ] = membership.data();
+                                    temp[index]["membership"]["kinds"].push(membership.id);
+                                    temp[index]["membership"][membership.id] = membership.data();
                                 });
                             });
                     });
@@ -176,52 +166,44 @@ export default ClientInfo = ({ navigation, route }) => {
                         {selectedIndex === -1 ? (
                             <Text>Error</Text>
                         ) : (
-                            clientsInfo[selectedIndex].membership.kinds.map(
-                                (v, index) => (
-                                    <View
-                                        key={index}
+                            clientsInfo[selectedIndex].membership.kinds.map((v, index) => (
+                                <View
+                                    key={index}
+                                    style={{
+                                        paddingLeft: 10,
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <Text
                                         style={{
-                                            paddingLeft: 10,
-                                            flexDirection: "row",
-                                            alignItems: "center",
+                                            flex: 1,
+                                            fontSize: RFPercentage(2),
                                         }}
                                     >
-                                        <Text
-                                            style={{
-                                                flex: 1,
-                                                fontSize: RFPercentage(2),
-                                            }}
-                                        >
-                                            {enToKo(v)}
-                                        </Text>
-                                        <Text
-                                            style={{
-                                                flex: 6,
-                                                fontSize: RFPercentage(2),
-                                            }}
-                                        >
-                                            {" : " +
-                                                (v === "pt"
-                                                    ? clientsInfo[selectedIndex]
-                                                          .membership[v].count +
-                                                      "번 남음"
-                                                    : clientsInfo[selectedIndex]
-                                                          .membership[v].month +
-                                                      "개월권 (" +
-                                                      moment(
-                                                          clientsInfo[
-                                                              selectedIndex
-                                                          ].membership[
-                                                              v
-                                                          ].end.toDate()
-                                                      ).format(
-                                                          "YYYY. MM. DD."
-                                                      ) +
-                                                      " 까지)")}
-                                        </Text>
-                                    </View>
-                                )
-                            )
+                                        {enToKo(v)}
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            flex: 6,
+                                            fontSize: RFPercentage(2),
+                                        }}
+                                    >
+                                        {" : " +
+                                            (v === "pt"
+                                                ? clientsInfo[selectedIndex].membership[v].count +
+                                                  "번 남음"
+                                                : clientsInfo[selectedIndex].membership[v].month +
+                                                  "개월권 (" +
+                                                  moment(
+                                                      clientsInfo[selectedIndex].membership[
+                                                          v
+                                                      ].end.toDate()
+                                                  ).format("YYYY. MM. DD.") +
+                                                  " 까지)")}
+                                    </Text>
+                                </View>
+                            ))
                         )}
                     </View>
                 </View>

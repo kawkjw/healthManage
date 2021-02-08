@@ -225,14 +225,10 @@ export default Profile = ({ navigation, route }) => {
                         .get()
                         .then(async (doc) => {
                             const { date } = doc.data();
-                            if (
-                                date.indexOf(today.getDate().toString()) !== -1
-                            ) {
+                            if (date.indexOf(today.getDate().toString()) !== -1) {
                                 if (classNameList[0] === "pt") {
                                     setTodayClassInfo({
-                                        pt: await getPTClass(
-                                            today.getDate().toString()
-                                        ),
+                                        pt: await getPTClass(today.getDate().toString()),
                                     });
                                 } else if (classNameList[0] === "gx") {
                                     setTodayClassInfo(
@@ -243,16 +239,10 @@ export default Profile = ({ navigation, route }) => {
                                     );
                                 }
                             }
-                            if (
-                                date.indexOf(
-                                    (today.getDate() + 1).toString()
-                                ) !== -1
-                            ) {
+                            if (date.indexOf((today.getDate() + 1).toString()) !== -1) {
                                 if (classNameList[0] === "pt") {
                                     setTomorrowClassInfo({
-                                        pt: await getPTClass(
-                                            (today.getDate() + 1).toString()
-                                        ),
+                                        pt: await getPTClass((today.getDate() + 1).toString()),
                                     });
                                 } else if (classNameList[0] === "gx") {
                                     setTomorrowClassInfo(
@@ -288,17 +278,10 @@ export default Profile = ({ navigation, route }) => {
             } else {
                 let str =
                     "pt." +
-                    (Number(ptStartTime) < 10
-                        ? "0" + Number(ptStartTime)
-                        : Number(ptStartTime)) +
+                    (Number(ptStartTime) < 10 ? "0" + Number(ptStartTime) : Number(ptStartTime)) +
                     "." +
-                    (Number(ptEndTime) < 10
-                        ? "0" + Number(ptEndTime)
-                        : Number(ptEndTime));
-                await db
-                    .collection("users")
-                    .doc(uid)
-                    .update({ className: str });
+                    (Number(ptEndTime) < 10 ? "0" + Number(ptEndTime) : Number(ptEndTime));
+                await db.collection("users").doc(uid).update({ className: str });
                 setModalSetClass(false);
                 getUserData();
             }
@@ -308,10 +291,7 @@ export default Profile = ({ navigation, route }) => {
                 return;
             } else {
                 let str = "gx." + radioGxOptions[radioGxSelected].value;
-                await db
-                    .collection("users")
-                    .doc(uid)
-                    .update({ className: str });
+                await db.collection("users").doc(uid).update({ className: str });
                 setModalSetClass(false);
                 getUserData();
             }
@@ -319,9 +299,7 @@ export default Profile = ({ navigation, route }) => {
     };
 
     return (
-        <SafeAreaView
-            style={[MyStyles.container, { justifyContent: "center" }]}
-        >
+        <SafeAreaView style={[MyStyles.container, { justifyContent: "center" }]}>
             <View
                 style={[
                     MyStyles.buttonShadow,
@@ -330,9 +308,7 @@ export default Profile = ({ navigation, route }) => {
             >
                 <Text style={MyStyles.profileText}>이름 : {name}</Text>
                 <Text style={MyStyles.profileText}>이메일 : {email}</Text>
-                <Text style={MyStyles.profileText}>
-                    휴대폰번호 : {phoneNumber}
-                </Text>
+                <Text style={MyStyles.profileText}>휴대폰번호 : {phoneNumber}</Text>
                 <View style={{ flexDirection: "row" }}>
                     <Text style={MyStyles.profileText}>담당 : </Text>
                     <TouchableOpacity
@@ -348,18 +324,13 @@ export default Profile = ({ navigation, route }) => {
                         <Text style={MyStyles.profileText}>
                             {enToKo(className[0]) + " "}
                             {className[0] === "pt"
-                                ? "(" +
-                                  className[1] +
-                                  ":00 ~ " +
-                                  className[2] +
-                                  ":00)"
+                                ? "(" + className[1] + ":00 ~ " + className[2] + ":00)"
                                 : className[0] === "gx"
                                 ? "(" +
                                   className
                                       .slice(1)
                                       .map((value, index) =>
-                                          index ===
-                                          className.slice(1).length - 1
+                                          index === className.slice(1).length - 1
                                               ? enToKo(value)
                                               : enToKo(value) + ","
                                       )
@@ -409,17 +380,10 @@ export default Profile = ({ navigation, route }) => {
                                         }}
                                         onPress={() => {
                                             let gxStr = "";
-                                            if (
-                                                radioSelected === 1 &&
-                                                radioGxSelected !== -1
-                                            ) {
+                                            if (radioSelected === 1 && radioGxSelected !== -1) {
                                                 gxStr =
                                                     gxStr +
-                                                    enToKo(
-                                                        radioGxOptions[
-                                                            radioGxSelected
-                                                        ].value
-                                                    );
+                                                    enToKo(radioGxOptions[radioGxSelected].value);
                                             }
                                             Alert.alert(
                                                 (radioSelected === 0
@@ -429,9 +393,7 @@ export default Profile = ({ navigation, route }) => {
                                                     : null) +
                                                     ":" +
                                                     (radioSelected === 0
-                                                        ? `${Number(
-                                                              ptStartTime
-                                                          )}시부터 ${Number(
+                                                        ? `${Number(ptStartTime)}시부터 ${Number(
                                                               ptEndTime
                                                           )}시까지`
                                                         : radioSelected === 1
@@ -442,8 +404,7 @@ export default Profile = ({ navigation, route }) => {
                                                     { text: "Cancel" },
                                                     {
                                                         text: "OK",
-                                                        onPress: () =>
-                                                            submitSetClass(),
+                                                        onPress: () => submitSetClass(),
                                                     },
                                                 ]
                                             );
@@ -453,10 +414,7 @@ export default Profile = ({ navigation, route }) => {
                                     </TouchableOpacity>
                                 </View>
                                 <View style={{ flex: 1, paddingVertical: 10 }}>
-                                    <RadioForm
-                                        formHorizontal={true}
-                                        animation={true}
-                                    >
+                                    <RadioForm formHorizontal={true} animation={true}>
                                         {radioOptions.map((option, index) => (
                                             <View key={index}>
                                                 <RadioButton
@@ -468,45 +426,28 @@ export default Profile = ({ navigation, route }) => {
                                                     <RadioButtonInput
                                                         obj={option}
                                                         index={index}
-                                                        isSelected={
-                                                            radioSelected ===
-                                                            index
-                                                        }
+                                                        isSelected={radioSelected === index}
                                                         onPress={() => {
-                                                            setRadioSelected(
-                                                                index
-                                                            );
-                                                            setRadioGxSelected(
-                                                                -1
-                                                            );
+                                                            setRadioSelected(index);
+                                                            setRadioGxSelected(-1);
                                                             setPtStartTime("");
                                                             setPtEndTime("");
                                                         }}
                                                         buttonSize={15}
-                                                        buttonInnerColor={
-                                                            "black"
-                                                        }
-                                                        buttonOuterColor={
-                                                            "black"
-                                                        }
+                                                        buttonInnerColor={"black"}
+                                                        buttonOuterColor={"black"}
                                                     />
                                                     <RadioButtonLabel
                                                         obj={option}
                                                         index={index}
                                                         onPress={() => {
-                                                            setRadioSelected(
-                                                                index
-                                                            );
-                                                            setRadioGxSelected(
-                                                                -1
-                                                            );
+                                                            setRadioSelected(index);
+                                                            setRadioGxSelected(-1);
                                                             setPtStartTime("");
                                                             setPtEndTime("");
                                                         }}
                                                         labelStyle={{
-                                                            fontSize: RFPercentage(
-                                                                2.5
-                                                            ),
+                                                            fontSize: RFPercentage(2.5),
                                                             marginLeft: 5,
                                                         }}
                                                     />
@@ -524,10 +465,7 @@ export default Profile = ({ navigation, route }) => {
                                             }}
                                         >
                                             <TextInput
-                                                style={[
-                                                    AuthStyles.textInput,
-                                                    { flex: 1 },
-                                                ]}
+                                                style={[AuthStyles.textInput, { flex: 1 }]}
                                                 value={ptStartTime}
                                                 onChangeText={setPtStartTime}
                                                 keyboardType="number-pad"
@@ -544,10 +482,7 @@ export default Profile = ({ navigation, route }) => {
                                                 시부터
                                             </Text>
                                             <TextInput
-                                                style={[
-                                                    AuthStyles.textInput,
-                                                    { flex: 1 },
-                                                ]}
+                                                style={[AuthStyles.textInput, { flex: 1 }]}
                                                 value={ptEndTime}
                                                 onChangeText={setPtEndTime}
                                                 keyboardType="number-pad"
@@ -571,135 +506,82 @@ export default Profile = ({ navigation, route }) => {
                                                 marginVertical: 10,
                                             }}
                                         >
-                                            <RadioForm
-                                                formHorizontal={true}
-                                                animation={true}
-                                            >
-                                                {radioGxOptions
-                                                    .slice(0, 2)
-                                                    .map((option, index) => (
-                                                        <View key={index}>
-                                                            <RadioButton
-                                                                labelHorizontal={
-                                                                    true
+                                            <RadioForm formHorizontal={true} animation={true}>
+                                                {radioGxOptions.slice(0, 2).map((option, index) => (
+                                                    <View key={index}>
+                                                        <RadioButton
+                                                            labelHorizontal={true}
+                                                            wrapStyle={{
+                                                                marginLeft: 10,
+                                                                marginRight: 25,
+                                                                marginBottom: 5,
+                                                            }}
+                                                        >
+                                                            <RadioButtonInput
+                                                                obj={option}
+                                                                index={index}
+                                                                isSelected={
+                                                                    radioGxSelected === index
                                                                 }
-                                                                wrapStyle={{
-                                                                    marginLeft: 10,
-                                                                    marginRight: 25,
-                                                                    marginBottom: 5,
+                                                                onPress={() =>
+                                                                    setRadioGxSelected(index)
+                                                                }
+                                                                buttonSize={15}
+                                                                buttonInnerColor={"black"}
+                                                                buttonOuterColor={"black"}
+                                                            />
+                                                            <RadioButtonLabel
+                                                                obj={option}
+                                                                index={index}
+                                                                onPress={() =>
+                                                                    setRadioGxSelected(index)
+                                                                }
+                                                                labelStyle={{
+                                                                    fontSize: RFPercentage(2.5),
+                                                                    marginLeft: 5,
                                                                 }}
-                                                            >
-                                                                <RadioButtonInput
-                                                                    obj={option}
-                                                                    index={
-                                                                        index
-                                                                    }
-                                                                    isSelected={
-                                                                        radioGxSelected ===
-                                                                        index
-                                                                    }
-                                                                    onPress={() =>
-                                                                        setRadioGxSelected(
-                                                                            index
-                                                                        )
-                                                                    }
-                                                                    buttonSize={
-                                                                        15
-                                                                    }
-                                                                    buttonInnerColor={
-                                                                        "black"
-                                                                    }
-                                                                    buttonOuterColor={
-                                                                        "black"
-                                                                    }
-                                                                />
-                                                                <RadioButtonLabel
-                                                                    obj={option}
-                                                                    index={
-                                                                        index
-                                                                    }
-                                                                    onPress={() =>
-                                                                        setRadioGxSelected(
-                                                                            index
-                                                                        )
-                                                                    }
-                                                                    labelStyle={{
-                                                                        fontSize: RFPercentage(
-                                                                            2.5
-                                                                        ),
-                                                                        marginLeft: 5,
-                                                                    }}
-                                                                />
-                                                            </RadioButton>
-                                                        </View>
-                                                    ))}
+                                                            />
+                                                        </RadioButton>
+                                                    </View>
+                                                ))}
                                             </RadioForm>
-                                            <RadioForm
-                                                formHorizontal={true}
-                                                animation={true}
-                                            >
-                                                {radioGxOptions
-                                                    .slice(2, 4)
-                                                    .map((option, index) => (
-                                                        <View key={index + 2}>
-                                                            <RadioButton
-                                                                labelHorizontal={
-                                                                    true
+                                            <RadioForm formHorizontal={true} animation={true}>
+                                                {radioGxOptions.slice(2, 4).map((option, index) => (
+                                                    <View key={index + 2}>
+                                                        <RadioButton
+                                                            labelHorizontal={true}
+                                                            wrapStyle={{
+                                                                marginLeft: 10,
+                                                                marginRight: 10,
+                                                            }}
+                                                        >
+                                                            <RadioButtonInput
+                                                                obj={option}
+                                                                index={index + 2}
+                                                                isSelected={
+                                                                    radioGxSelected === index + 2
                                                                 }
-                                                                wrapStyle={{
-                                                                    marginLeft: 10,
-                                                                    marginRight: 10,
+                                                                onPress={() =>
+                                                                    setRadioGxSelected(index + 2)
+                                                                }
+                                                                buttonSize={15}
+                                                                buttonInnerColor={"black"}
+                                                                buttonOuterColor={"black"}
+                                                            />
+                                                            <RadioButtonLabel
+                                                                obj={option}
+                                                                index={index + 2}
+                                                                onPress={() =>
+                                                                    setRadioGxSelected(index + 2)
+                                                                }
+                                                                labelStyle={{
+                                                                    fontSize: RFPercentage(2.5),
+                                                                    marginLeft: 5,
                                                                 }}
-                                                            >
-                                                                <RadioButtonInput
-                                                                    obj={option}
-                                                                    index={
-                                                                        index +
-                                                                        2
-                                                                    }
-                                                                    isSelected={
-                                                                        radioGxSelected ===
-                                                                        index +
-                                                                            2
-                                                                    }
-                                                                    onPress={() =>
-                                                                        setRadioGxSelected(
-                                                                            index +
-                                                                                2
-                                                                        )
-                                                                    }
-                                                                    buttonSize={
-                                                                        15
-                                                                    }
-                                                                    buttonInnerColor={
-                                                                        "black"
-                                                                    }
-                                                                    buttonOuterColor={
-                                                                        "black"
-                                                                    }
-                                                                />
-                                                                <RadioButtonLabel
-                                                                    obj={option}
-                                                                    index={
-                                                                        index +
-                                                                        2
-                                                                    }
-                                                                    onPress={() =>
-                                                                        setRadioGxSelected(
-                                                                            index +
-                                                                                2
-                                                                        )
-                                                                    }
-                                                                    labelStyle={{
-                                                                        fontSize: RFPercentage(
-                                                                            2.5
-                                                                        ),
-                                                                        marginLeft: 5,
-                                                                    }}
-                                                                />
-                                                            </RadioButton>
-                                                        </View>
-                                                    ))}
+                                                            />
+                                                        </RadioButton>
+                                                    </View>
+                                                ))}
                                             </RadioForm>
                                         </View>
                                     ) : null}
@@ -753,17 +635,10 @@ export default Profile = ({ navigation, route }) => {
                                             marginLeft: 5,
                                         }}
                                     >
-                                        {value.time +
-                                            " " +
-                                            value.clientName +
-                                            " "}
+                                        {value.time + " " + value.clientName + " "}
                                     </Text>
                                     <TouchableOpacity
-                                        onPress={() =>
-                                            Linking.openURL(
-                                                `tel:${value.clientPhone}`
-                                            )
-                                        }
+                                        onPress={() => Linking.openURL(`tel:${value.clientPhone}`)}
                                     >
                                         <Text
                                             style={{
@@ -809,13 +684,9 @@ export default Profile = ({ navigation, route }) => {
                                         marginLeft: 5,
                                     }}
                                 >
-                                    {moment(value.info.start.toDate()).format(
-                                        "HH:mm"
-                                    ) +
+                                    {moment(value.info.start.toDate()).format("HH:mm") +
                                         " ~ " +
-                                        moment(value.info.end.toDate()).format(
-                                            "HH:mm"
-                                        ) +
+                                        moment(value.info.end.toDate()).format("HH:mm") +
                                         " " +
                                         value.info.currentClient +
                                         "/" +
@@ -868,17 +739,10 @@ export default Profile = ({ navigation, route }) => {
                                             marginLeft: 5,
                                         }}
                                     >
-                                        {value.time +
-                                            " " +
-                                            value.clientName +
-                                            " "}
+                                        {value.time + " " + value.clientName + " "}
                                     </Text>
                                     <TouchableOpacity
-                                        onPress={() =>
-                                            Linking.openURL(
-                                                `tel:${value.clientPhone}`
-                                            )
-                                        }
+                                        onPress={() => Linking.openURL(`tel:${value.clientPhone}`)}
                                     >
                                         <Text
                                             style={{
@@ -924,13 +788,9 @@ export default Profile = ({ navigation, route }) => {
                                         marginLeft: 5,
                                     }}
                                 >
-                                    {moment(value.info.start.toDate()).format(
-                                        "HH:mm"
-                                    ) +
+                                    {moment(value.info.start.toDate()).format("HH:mm") +
                                         " ~ " +
-                                        moment(value.info.end.toDate()).format(
-                                            "HH:mm"
-                                        ) +
+                                        moment(value.info.end.toDate()).format("HH:mm") +
                                         " " +
                                         value.info.currentClient +
                                         "/" +

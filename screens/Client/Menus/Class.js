@@ -1,12 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-    Dimensions,
-    SafeAreaView,
-    Text,
-    TouchableOpacity,
-    ScrollView,
-    Alert,
-} from "react-native";
+import { Dimensions, SafeAreaView, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { MyStyles } from "../../../css/MyStyles";
 import myBase, { db } from "../../../config/MyBase";
 
@@ -26,18 +19,14 @@ export default Class = ({ navigation }) => {
                 .get()
                 .then((snapshots) => {
                     if (snapshots.size === 0) {
-                        Alert.alert(
-                            "No memberships",
-                            "You can't reserve class",
-                            [
-                                {
-                                    text: "OK",
-                                    onPress: () => {
-                                        navigation.goBack();
-                                    },
+                        Alert.alert("No memberships", "You can't reserve class", [
+                            {
+                                text: "OK",
+                                onPress: () => {
+                                    navigation.goBack();
                                 },
-                            ]
-                        );
+                            },
+                        ]);
                     } else {
                         let availabeClass = [];
                         snapshots.forEach((snapshot) => {
@@ -61,16 +50,12 @@ export default Class = ({ navigation }) => {
     const goClassReservation = (classname) => {
         if (classname === "yoga" || classname === "zoomba") {
             if (memberships.indexOf("GX") === -1) {
-                Alert.alert("Error", `You don't have GX membership`, [
-                    { text: "OK" },
-                ]);
+                Alert.alert("Error", `You don't have GX membership`, [{ text: "OK" }]);
             } else {
                 navigation.navigate("SelectDate", { classname: classname });
             }
         } else if (memberships.indexOf(classname) === -1) {
-            Alert.alert("Error", `You don't have ${classname} membership`, [
-                { text: "OK" },
-            ]);
+            Alert.alert("Error", `You don't have ${classname} membership`, [{ text: "OK" }]);
         } else {
             if (classname === "pt") {
                 navigation.navigate("SelectTrainer");
@@ -100,9 +85,7 @@ export default Class = ({ navigation }) => {
                 >
                     <Text
                         style={
-                            memberships.indexOf("pt") === -1
-                                ? { color: "red" }
-                                : { color: "black" }
+                            memberships.indexOf("pt") === -1 ? { color: "red" } : { color: "black" }
                         }
                     >
                         PT
@@ -172,9 +155,7 @@ export default Class = ({ navigation }) => {
                 >
                     <Text
                         style={
-                            memberships.indexOf("GX") === -1
-                                ? { color: "red" }
-                                : { color: "black" }
+                            memberships.indexOf("GX") === -1 ? { color: "red" } : { color: "black" }
                         }
                     >
                         요가
@@ -190,9 +171,7 @@ export default Class = ({ navigation }) => {
                 >
                     <Text
                         style={
-                            memberships.indexOf("GX") === -1
-                                ? { color: "red" }
-                                : { color: "black" }
+                            memberships.indexOf("GX") === -1 ? { color: "red" } : { color: "black" }
                         }
                     >
                         줌바

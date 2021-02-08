@@ -66,9 +66,7 @@ export default GX = ({ navigation, route }) => {
     useEffect(() => {
         const showCalendar = async () => {
             const yearMonthStr =
-                selectedYear +
-                "-" +
-                (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
+                selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
 
             let items = [
                 { id: "일", color: "red", pressable: false, isHeader: true },
@@ -129,11 +127,7 @@ export default GX = ({ navigation, route }) => {
     useEffect(() => {
         const setListForPicker = () => {
             let list = [];
-            for (
-                let i = today.getFullYear() - 10;
-                i <= today.getFullYear() + 10;
-                i++
-            ) {
+            for (let i = today.getFullYear() - 10; i <= today.getFullYear() + 10; i++) {
                 list.push({
                     label: i.toString(),
                     value: i.toString(),
@@ -156,9 +150,7 @@ export default GX = ({ navigation, route }) => {
 
     const getMyClass = async () => {
         const yearMonthStr =
-            selectedYear +
-            "-" +
-            (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
+            selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
         let allList = {};
         const exec = classNameList.map(async (className) => {
             await db
@@ -194,17 +186,12 @@ export default GX = ({ navigation, route }) => {
                                     clientUids.push(client.data().uid);
                                 });
                                 let clientList = [];
-                                const clientPromise = clientUids.map(
-                                    async (uid) => {
-                                        const { name, phoneNumber } = (
-                                            await db
-                                                .collection("users")
-                                                .doc(uid)
-                                                .get()
-                                        ).data();
-                                        clientList.push({ name, phoneNumber });
-                                    }
-                                );
+                                const clientPromise = clientUids.map(async (uid) => {
+                                    const { name, phoneNumber } = (
+                                        await db.collection("users").doc(uid).get()
+                                    ).data();
+                                    clientList.push({ name, phoneNumber });
+                                });
                                 await Promise.all(clientPromise);
                                 clientList.sort((a, b) => {
                                     return a.name - b.name;
@@ -271,11 +258,7 @@ export default GX = ({ navigation, route }) => {
                     }}
                 >
                     <TouchableOpacity activeOpacity={0.5} onPress={goPreMonth}>
-                        <MaterialIcons
-                            name="chevron-left"
-                            size={30}
-                            color="black"
-                        />
+                        <MaterialIcons name="chevron-left" size={30} color="black" />
                     </TouchableOpacity>
                 </View>
                 <View
@@ -289,9 +272,7 @@ export default GX = ({ navigation, route }) => {
                         <Text style={{ fontSize: RFPercentage(2.5) }}>
                             {selectedYear +
                                 "-" +
-                                (selectedMonth < 10
-                                    ? "0" + selectedMonth
-                                    : selectedMonth)}
+                                (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth)}
                         </Text>
                     </TouchableOpacity>
                 </View>
@@ -304,11 +285,7 @@ export default GX = ({ navigation, route }) => {
                     }}
                 >
                     <TouchableOpacity activeOpacity={0.5} onPress={goNextMonth}>
-                        <MaterialIcons
-                            name="chevron-right"
-                            size={30}
-                            color="black"
-                        />
+                        <MaterialIcons name="chevron-right" size={30} color="black" />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -316,9 +293,7 @@ export default GX = ({ navigation, route }) => {
                 data={data}
                 windowSize={1}
                 renderItem={({ item }) => (
-                    <View
-                        style={{ flex: 1, flexDirection: "column", margin: 5 }}
-                    >
+                    <View style={{ flex: 1, flexDirection: "column", margin: 5 }}>
                         <TouchableOpacity
                             style={[
                                 styles.day,
@@ -371,11 +346,7 @@ export default GX = ({ navigation, route }) => {
                     },
                 ]}
             />
-            <Modal
-                animationType="fade"
-                visible={modalClassInfo}
-                transparent={true}
-            >
+            <Modal animationType="fade" visible={modalClassInfo} transparent={true}>
                 <SafeAreaView
                     style={{
                         flex: 1,
@@ -385,10 +356,7 @@ export default GX = ({ navigation, route }) => {
                     <TouchableOpacity
                         style={{
                             position: "absolute",
-                            top:
-                                Platform.OS === "ios"
-                                    ? getStatusBarHeight()
-                                    : 0,
+                            top: Platform.OS === "ios" ? getStatusBarHeight() : 0,
                             left: 0,
                             margin: 10,
                             padding: 5,
@@ -409,9 +377,7 @@ export default GX = ({ navigation, route }) => {
                             justifyContent: "center",
                         }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2.5) }}>
-                            {selectedDate + "일"}
-                        </Text>
+                        <Text style={{ fontSize: RFPercentage(2.5) }}>{selectedDate + "일"}</Text>
                     </View>
                     {loading ? (
                         <View
@@ -428,13 +394,8 @@ export default GX = ({ navigation, route }) => {
                         </View>
                     ) : (
                         classNameList.map((className, index) => (
-                            <View
-                                key={index}
-                                style={{ paddingLeft: 7, paddingTop: 10 }}
-                            >
-                                <Text style={{ paddingLeft: 12 }}>
-                                    {enToKo(className)}
-                                </Text>
+                            <View key={index} style={{ paddingLeft: 7, paddingTop: 10 }}>
+                                <Text style={{ paddingLeft: 12 }}>{enToKo(className)}</Text>
                                 <FlatList
                                     data={classList[className]}
                                     renderItem={({ item }) => (
@@ -453,13 +414,11 @@ export default GX = ({ navigation, route }) => {
                                                 }}
                                             >
                                                 <Text>
-                                                    {moment(
-                                                        item.info.start.toDate()
-                                                    ).format("HH:mm")}
+                                                    {moment(item.info.start.toDate()).format(
+                                                        "HH:mm"
+                                                    )}
                                                     ~
-                                                    {moment(
-                                                        item.info.end.toDate()
-                                                    ).format("HH:mm")}
+                                                    {moment(item.info.end.toDate()).format("HH:mm")}
                                                 </Text>
                                                 <Text>
                                                     {item.info.currentClient +
@@ -477,11 +436,7 @@ export default GX = ({ navigation, route }) => {
                     )}
                 </SafeAreaView>
             </Modal>
-            <Modal
-                animationType="fade"
-                visible={modalClientInfo}
-                transparent={true}
-            >
+            <Modal animationType="fade" visible={modalClientInfo} transparent={true}>
                 <SafeAreaView
                     style={{
                         flex: 1,
@@ -492,10 +447,7 @@ export default GX = ({ navigation, route }) => {
                     <TouchableOpacity
                         style={{
                             position: "absolute",
-                            top:
-                                Platform.OS === "ios"
-                                    ? getStatusBarHeight()
-                                    : 0,
+                            top: Platform.OS === "ios" ? getStatusBarHeight() : 0,
                             left: 0,
                             margin: 10,
                             padding: 5,
@@ -556,11 +508,7 @@ export default GX = ({ navigation, route }) => {
                                     </Text>
                                 </View>
                                 <TouchableOpacity
-                                    onPress={() =>
-                                        Linking.openURL(
-                                            `tel:${client.phoneNumber}`
-                                        )
-                                    }
+                                    onPress={() => Linking.openURL(`tel:${client.phoneNumber}`)}
                                 >
                                     <Text
                                         style={{

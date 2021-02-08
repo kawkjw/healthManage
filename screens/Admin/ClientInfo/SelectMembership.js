@@ -1,11 +1,5 @@
 import React from "react";
-import {
-    Dimensions,
-    SafeAreaView,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-} from "react-native";
+import { Dimensions, SafeAreaView, ScrollView, Text, TouchableOpacity } from "react-native";
 import { MyStyles } from "../../../css/MyStyles";
 
 export default SelectMembership = ({ navigation, route }) => {

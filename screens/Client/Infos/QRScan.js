@@ -59,12 +59,7 @@ export default QRScan = ({ navigation }) => {
                 onBarCodeScanned={scanned ? undefined : handleCodeScanned}
                 style={StyleSheet.absoluteFillObject}
             />
-            {scanned && (
-                <Button
-                    title={"Tap to Scan Again"}
-                    onPress={() => setScanned(false)}
-                />
-            )}
+            {scanned && <Button title={"Tap to Scan Again"} onPress={() => setScanned(false)} />}
         </View>
     );
 };

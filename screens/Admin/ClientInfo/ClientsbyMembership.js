@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-    Image,
-    SafeAreaView,
-    Text,
-    TouchableOpacity,
-    View,
-} from "react-native";
+import { Image, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
@@ -56,19 +50,11 @@ export default ClientbyMembership = ({ navigation, route }) => {
                             list.push({
                                 path: snapshot.ref.parent.parent.path,
                             });
-                        } else if (
-                            route.params.membershipName === "yogaZoomba"
-                        ) {
-                            if (
-                                snapshot.id === "yoga" ||
-                                snapshot.id === "zoomba"
-                            ) {
+                        } else if (route.params.membershipName === "yogaZoomba") {
+                            if (snapshot.id === "yoga" || snapshot.id === "zoomba") {
                                 if (
-                                    list.find(
-                                        (v) =>
-                                            v.path ===
-                                            snapshot.ref.parent.parent.path
-                                    ) === undefined
+                                    list.find((v) => v.path === snapshot.ref.parent.parent.path) ===
+                                    undefined
                                 ) {
                                     list.push({
                                         path: snapshot.ref.parent.parent.path,
@@ -95,12 +81,8 @@ export default ClientbyMembership = ({ navigation, route }) => {
                             .get()
                             .then((memberships) => {
                                 memberships.forEach((membership) => {
-                                    temp[index]["membership"]["kinds"].push(
-                                        membership.id
-                                    );
-                                    temp[index]["membership"][
-                                        membership.id
-                                    ] = membership.data();
+                                    temp[index]["membership"]["kinds"].push(membership.id);
+                                    temp[index]["membership"][membership.id] = membership.data();
                                 });
                             });
                     });
@@ -187,9 +169,7 @@ export default ClientbyMembership = ({ navigation, route }) => {
                         }}
                         onPress={() => setModalMemberships(false)}
                     >
-                        <Text style={{ margin: 7, fontSize: RFPercentage(2) }}>
-                            닫기
-                        </Text>
+                        <Text style={{ margin: 7, fontSize: RFPercentage(2) }}>닫기</Text>
                     </TouchableOpacity>
                     <View
                         style={{
@@ -210,52 +190,44 @@ export default ClientbyMembership = ({ navigation, route }) => {
                         {selectedIndex === -1 ? (
                             <Text>Error</Text>
                         ) : (
-                            clientInfos[selectedIndex].membership.kinds.map(
-                                (v, index) => (
-                                    <View
-                                        key={index}
+                            clientInfos[selectedIndex].membership.kinds.map((v, index) => (
+                                <View
+                                    key={index}
+                                    style={{
+                                        paddingLeft: 10,
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    <Text
                                         style={{
-                                            paddingLeft: 10,
-                                            flexDirection: "row",
-                                            alignItems: "center",
+                                            flex: 1,
+                                            fontSize: RFPercentage(2),
                                         }}
                                     >
-                                        <Text
-                                            style={{
-                                                flex: 1,
-                                                fontSize: RFPercentage(2),
-                                            }}
-                                        >
-                                            {enToKo(v)}
-                                        </Text>
-                                        <Text
-                                            style={{
-                                                flex: 6,
-                                                fontSize: RFPercentage(2),
-                                            }}
-                                        >
-                                            {" : " +
-                                                (v === "pt"
-                                                    ? clientInfos[selectedIndex]
-                                                          .membership[v].count +
-                                                      "번 남음"
-                                                    : clientInfos[selectedIndex]
-                                                          .membership[v].month +
-                                                      "개월권 (" +
-                                                      moment(
-                                                          clientInfos[
-                                                              selectedIndex
-                                                          ].membership[
-                                                              v
-                                                          ].end.toDate()
-                                                      ).format(
-                                                          "YYYY. MM. DD."
-                                                      ) +
-                                                      " 까지)")}
-                                        </Text>
-                                    </View>
-                                )
-                            )
+                                        {enToKo(v)}
+                                    </Text>
+                                    <Text
+                                        style={{
+                                            flex: 6,
+                                            fontSize: RFPercentage(2),
+                                        }}
+                                    >
+                                        {" : " +
+                                            (v === "pt"
+                                                ? clientInfos[selectedIndex].membership[v].count +
+                                                  "번 남음"
+                                                : clientInfos[selectedIndex].membership[v].month +
+                                                  "개월권 (" +
+                                                  moment(
+                                                      clientInfos[selectedIndex].membership[
+                                                          v
+                                                      ].end.toDate()
+                                                  ).format("YYYY. MM. DD.") +
+                                                  " 까지)")}
+                                    </Text>
+                                </View>
+                            ))
                         )}
                     </View>
                 </View>

@@ -14,12 +14,7 @@ import {
     Image,
     Linking,
 } from "react-native";
-import myBase, {
-    arrayDelete,
-    arrayUnion,
-    db,
-    fieldDelete,
-} from "../../../config/MyBase";
+import myBase, { arrayDelete, arrayUnion, db, fieldDelete } from "../../../config/MyBase";
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
@@ -66,9 +61,7 @@ export default PT = ({ navigation, route }) => {
     useEffect(() => {
         const showCalendar = async () => {
             const yearMonthStr =
-                selectedYear +
-                "-" +
-                (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
+                selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
 
             let items = [
                 { id: "일", color: "red", pressable: false, isHeader: true },
@@ -106,12 +99,7 @@ export default PT = ({ navigation, route }) => {
                 let item = {
                     id: i.toString(),
                     pressable:
-                        d >=
-                        new Date(
-                            today.getFullYear(),
-                            today.getMonth(),
-                            today.getDate()
-                        ),
+                        d >= new Date(today.getFullYear(), today.getMonth(), today.getDate()),
                     isToday:
                         i === today.getDate() &&
                         selectedMonth === today.getMonth() + 1 &&
@@ -146,11 +134,7 @@ export default PT = ({ navigation, route }) => {
     useEffect(() => {
         const setListForPicker = () => {
             let list = [];
-            for (
-                let i = today.getFullYear() - 10;
-                i <= today.getFullYear() + 10;
-                i++
-            ) {
+            for (let i = today.getFullYear() - 10; i <= today.getFullYear() + 10; i++) {
                 list.push({
                     label: i.toString(),
                     value: i.toString(),
@@ -176,15 +160,10 @@ export default PT = ({ navigation, route }) => {
         let finishSetUp = true;
         let timeList = [];
         const yearMonthStr =
-            selectedYear +
-            "-" +
-            (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
+            selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
         for (let i = Number(startLimit); i < Number(endLimit); i++) {
             let s =
-                (i < 10 ? "0" + i : i) +
-                ":00 ~ " +
-                (i + 1 < 10 ? "0" + (i + 1) : i + 1) +
-                ":00";
+                (i < 10 ? "0" + i : i) + ":00 ~ " + (i + 1 < 10 ? "0" + (i + 1) : i + 1) + ":00";
             let obj = {};
             obj["str"] = s;
             await db
@@ -203,10 +182,7 @@ export default PT = ({ navigation, route }) => {
                         obj["notEditable"] = today.getDate() >= selectedDate;
                         if (bool.data().hasReservation) {
                             const { name, phoneNumber } = (
-                                await db
-                                    .collection("users")
-                                    .doc(bool.data().clientUid)
-                                    .get()
+                                await db.collection("users").doc(bool.data().clientUid).get()
                             ).data();
                             obj["clientName"] = name;
                             obj["clientPhone"] = phoneNumber;
@@ -274,9 +250,7 @@ export default PT = ({ navigation, route }) => {
 
     const setAvailableTime = async (availTime) => {
         const yearMonthStr =
-            selectedYear +
-            "-" +
-            (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
+            selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
         await db
             .collection("classes")
             .doc("pt")
@@ -292,9 +266,7 @@ export default PT = ({ navigation, route }) => {
 
     const setUnAvailabeTime = async (availTime) => {
         const yearMonthStr =
-            selectedYear +
-            "-" +
-            (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
+            selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
         await db
             .collection("classes")
             .doc("pt")
@@ -310,9 +282,7 @@ export default PT = ({ navigation, route }) => {
 
     const resetAvailTime = async (availTime) => {
         const yearMonthStr =
-            selectedYear +
-            "-" +
-            (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
+            selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
         await db
             .collection("classes")
             .doc("pt")
@@ -328,9 +298,7 @@ export default PT = ({ navigation, route }) => {
 
     const confirmClass = async (clientUid, availTime) => {
         const yearMonthStr =
-            selectedYear +
-            "-" +
-            (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
+            selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
         const { hasReservation } = (
             await db
                 .collection("classes")
@@ -408,9 +376,7 @@ export default PT = ({ navigation, route }) => {
 
     const cancelClass = async (clientUid, availTime) => {
         const yearMonthStr =
-            selectedYear +
-            "-" +
-            (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
+            selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
         const { hasReservation } = (
             await db
                 .collection("classes")
@@ -515,11 +481,7 @@ export default PT = ({ navigation, route }) => {
                     }}
                 >
                     <TouchableOpacity activeOpacity={0.5} onPress={goPreMonth}>
-                        <MaterialIcons
-                            name="chevron-left"
-                            size={30}
-                            color="black"
-                        />
+                        <MaterialIcons name="chevron-left" size={30} color="black" />
                     </TouchableOpacity>
                 </View>
                 <View
@@ -533,9 +495,7 @@ export default PT = ({ navigation, route }) => {
                         <Text style={{ fontSize: RFPercentage(2.5) }}>
                             {selectedYear +
                                 "-" +
-                                (selectedMonth < 10
-                                    ? "0" + selectedMonth
-                                    : selectedMonth)}
+                                (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth)}
                         </Text>
                     </TouchableOpacity>
                 </View>
@@ -548,11 +508,7 @@ export default PT = ({ navigation, route }) => {
                     }}
                 >
                     <TouchableOpacity activeOpacity={0.5} onPress={goNextMonth}>
-                        <MaterialIcons
-                            name="chevron-right"
-                            size={30}
-                            color="black"
-                        />
+                        <MaterialIcons name="chevron-right" size={30} color="black" />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -560,9 +516,7 @@ export default PT = ({ navigation, route }) => {
                 data={data}
                 windowSize={1}
                 renderItem={({ item }) => (
-                    <View
-                        style={{ flex: 1, flexDirection: "column", margin: 5 }}
-                    >
+                    <View style={{ flex: 1, flexDirection: "column", margin: 5 }}>
                         <TouchableOpacity
                             style={[
                                 styles.day,
@@ -630,11 +584,7 @@ export default PT = ({ navigation, route }) => {
                     },
                 ]}
             />
-            <Modal
-                animationType="slide"
-                visible={modalTimeTable}
-                transparent={true}
-            >
+            <Modal animationType="slide" visible={modalTimeTable} transparent={true}>
                 <SafeAreaView
                     style={{
                         flex: 1,
@@ -644,10 +594,7 @@ export default PT = ({ navigation, route }) => {
                     <TouchableOpacity
                         style={{
                             position: "absolute",
-                            top:
-                                Platform.OS === "ios"
-                                    ? getStatusBarHeight()
-                                    : 0,
+                            top: Platform.OS === "ios" ? getStatusBarHeight() : 0,
                             left: 0,
                             margin: 10,
                             padding: 5,
@@ -685,9 +632,7 @@ export default PT = ({ navigation, route }) => {
                             justifyContent: "center",
                         }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2.5) }}>
-                            {selectedDate + "일"}
-                        </Text>
+                        <Text style={{ fontSize: RFPercentage(2.5) }}>{selectedDate + "일"}</Text>
                     </View>
                     {loading ? (
                         <View
@@ -766,15 +711,10 @@ export default PT = ({ navigation, route }) => {
                                                         styles.availButton,
                                                         {
                                                             marginRight: 7,
-                                                            backgroundColor:
-                                                                "#66ccff",
+                                                            backgroundColor: "#66ccff",
                                                         },
                                                     ]}
-                                                    onPress={() =>
-                                                        setAvailableTime(
-                                                            availTime.str
-                                                        )
-                                                    }
+                                                    onPress={() => setAvailableTime(availTime.str)}
                                                 >
                                                     <Text>Available</Text>
                                                 </TouchableOpacity>
@@ -783,15 +723,10 @@ export default PT = ({ navigation, route }) => {
                                                         styles.availButton,
                                                         {
                                                             marginLeft: 7,
-                                                            backgroundColor:
-                                                                "#ff9999",
+                                                            backgroundColor: "#ff9999",
                                                         },
                                                     ]}
-                                                    onPress={() =>
-                                                        setUnAvailabeTime(
-                                                            availTime.str
-                                                        )
-                                                    }
+                                                    onPress={() => setUnAvailabeTime(availTime.str)}
                                                 >
                                                     <Text>Unavailable</Text>
                                                 </TouchableOpacity>
@@ -808,8 +743,7 @@ export default PT = ({ navigation, route }) => {
                                                     <View
                                                         style={[
                                                             {
-                                                                alignItems:
-                                                                    "center",
+                                                                alignItems: "center",
                                                             },
                                                             availTime.hasReserve &&
                                                             !availTime.confirm
@@ -819,11 +753,7 @@ export default PT = ({ navigation, route }) => {
                                                     >
                                                         {availTime.hasReserve ? (
                                                             <>
-                                                                <Text>
-                                                                    {
-                                                                        availTime.clientName
-                                                                    }
-                                                                </Text>
+                                                                <Text>{availTime.clientName}</Text>
                                                                 <TouchableOpacity
                                                                     onPress={() =>
                                                                         Linking.openURL(
@@ -833,28 +763,22 @@ export default PT = ({ navigation, route }) => {
                                                                 >
                                                                     <Text
                                                                         style={{
-                                                                            color:
-                                                                                "blue",
+                                                                            color: "blue",
                                                                         }}
                                                                     >
-                                                                        {
-                                                                            availTime.clientPhone
-                                                                        }
+                                                                        {availTime.clientPhone}
                                                                     </Text>
                                                                 </TouchableOpacity>
                                                             </>
                                                         ) : (
-                                                            <Text>
-                                                                No Reservation
-                                                            </Text>
+                                                            <Text>No Reservation</Text>
                                                         )}
                                                     </View>
                                                 ) : (
                                                     <View
                                                         style={{
                                                             flex: 3,
-                                                            alignItems:
-                                                                "center",
+                                                            alignItems: "center",
                                                         }}
                                                     >
                                                         <Text
@@ -872,11 +796,8 @@ export default PT = ({ navigation, route }) => {
                                                             style={[
                                                                 styles.availButton,
                                                                 {
-                                                                    backgroundColor:
-                                                                        "white",
-                                                                    height: hp(
-                                                                        "7%"
-                                                                    ),
+                                                                    backgroundColor: "white",
+                                                                    height: hp("7%"),
                                                                 },
                                                             ]}
                                                             onPress={() =>
@@ -885,12 +806,10 @@ export default PT = ({ navigation, route }) => {
                                                                     "Are you sure?",
                                                                     [
                                                                         {
-                                                                            text:
-                                                                                "Cancel",
+                                                                            text: "Cancel",
                                                                         },
                                                                         {
-                                                                            text:
-                                                                                "OK",
+                                                                            text: "OK",
                                                                             onPress: () =>
                                                                                 cancelClass(
                                                                                     availTime.clientUid,
@@ -909,11 +828,8 @@ export default PT = ({ navigation, route }) => {
                                                                 style={[
                                                                     styles.availButton,
                                                                     {
-                                                                        backgroundColor:
-                                                                            "white",
-                                                                        height: hp(
-                                                                            "7%"
-                                                                        ),
+                                                                        backgroundColor: "white",
+                                                                        height: hp("7%"),
                                                                         marginRight: 3,
                                                                     },
                                                                 ]}
@@ -923,12 +839,10 @@ export default PT = ({ navigation, route }) => {
                                                                         "Are you sure?",
                                                                         [
                                                                             {
-                                                                                text:
-                                                                                    "Cancel",
+                                                                                text: "Cancel",
                                                                             },
                                                                             {
-                                                                                text:
-                                                                                    "OK",
+                                                                                text: "OK",
                                                                                 onPress: () =>
                                                                                     confirmClass(
                                                                                         availTime.clientUid,
@@ -939,19 +853,14 @@ export default PT = ({ navigation, route }) => {
                                                                     )
                                                                 }
                                                             >
-                                                                <Text>
-                                                                    Confirm
-                                                                </Text>
+                                                                <Text>Confirm</Text>
                                                             </TouchableOpacity>
                                                             <TouchableOpacity
                                                                 style={[
                                                                     styles.availButton,
                                                                     {
-                                                                        backgroundColor:
-                                                                            "white",
-                                                                        height: hp(
-                                                                            "7%"
-                                                                        ),
+                                                                        backgroundColor: "white",
+                                                                        height: hp("7%"),
                                                                         marginLeft: 3,
                                                                     },
                                                                 ]}
@@ -961,12 +870,10 @@ export default PT = ({ navigation, route }) => {
                                                                         "Are you sure?",
                                                                         [
                                                                             {
-                                                                                text:
-                                                                                    "Cancel",
+                                                                                text: "Cancel",
                                                                             },
                                                                             {
-                                                                                text:
-                                                                                    "OK",
+                                                                                text: "OK",
                                                                                 onPress: () =>
                                                                                     cancelClass(
                                                                                         availTime.clientUid,
@@ -977,9 +884,7 @@ export default PT = ({ navigation, route }) => {
                                                                     )
                                                                 }
                                                             >
-                                                                <Text>
-                                                                    Cancel
-                                                                </Text>
+                                                                <Text>Cancel</Text>
                                                             </TouchableOpacity>
                                                         </>
                                                     )
@@ -988,17 +893,12 @@ export default PT = ({ navigation, route }) => {
                                                         style={[
                                                             styles.availButton,
                                                             {
-                                                                backgroundColor:
-                                                                    "white",
-                                                                height: hp(
-                                                                    "7%"
-                                                                ),
+                                                                backgroundColor: "white",
+                                                                height: hp("7%"),
                                                             },
                                                         ]}
                                                         onPress={() =>
-                                                            resetAvailTime(
-                                                                availTime.str
-                                                            )
+                                                            resetAvailTime(availTime.str)
                                                         }
                                                     >
                                                         <Text>Reset</Text>

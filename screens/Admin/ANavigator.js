@@ -56,9 +56,7 @@ const MyStack = ({ navigation }) => {
     };
 
     const getNotifications = async () => {
-        const { status: existingStatus } = await Permissions.getAsync(
-            Permissions.NOTIFICATIONS
-        );
+        const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
         if (existingStatus === "granted") {
             setNotificationAvail(true);
             setUnread(false);
@@ -70,11 +68,7 @@ const MyStack = ({ navigation }) => {
                 .where(
                     "sendDate",
                     ">=",
-                    new Date(
-                        today.getFullYear(),
-                        today.getMonth(),
-                        today.getDate() - 7
-                    )
+                    new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7)
                 )
                 .orderBy("sendDate", "desc")
                 .get()
@@ -204,9 +198,7 @@ const MyStack = ({ navigation }) => {
                                         justifyContent: "flex-end",
                                         margin: 0,
                                     }}
-                                    onBackdropPress={() =>
-                                        setModalNotification(false)
-                                    }
+                                    onBackdropPress={() => setModalNotification(false)}
                                 >
                                     <View
                                         style={{
@@ -221,16 +213,12 @@ const MyStack = ({ navigation }) => {
                                                     width: wp("13%"),
                                                     alignItems: "center",
                                                 }}
-                                                onPress={() =>
-                                                    setModalNotification(false)
-                                                }
+                                                onPress={() => setModalNotification(false)}
                                             >
                                                 <Text
                                                     style={{
                                                         margin: 7,
-                                                        fontSize: RFPercentage(
-                                                            2
-                                                        ),
+                                                        fontSize: RFPercentage(2),
                                                     }}
                                                 >
                                                     닫기
@@ -252,9 +240,7 @@ const MyStack = ({ navigation }) => {
                                                 <Text
                                                     style={{
                                                         margin: 7,
-                                                        fontSize: RFPercentage(
-                                                            2
-                                                        ),
+                                                        fontSize: RFPercentage(2),
                                                     }}
                                                 >
                                                     모두 읽음
@@ -267,9 +253,7 @@ const MyStack = ({ navigation }) => {
                                                 <View style={{ padding: 10 }}>
                                                     <Text
                                                         style={{
-                                                            fontSize: RFPercentage(
-                                                                2.5
-                                                            ),
+                                                            fontSize: RFPercentage(2.5),
                                                         }}
                                                     >
                                                         알림 없음
@@ -277,151 +261,128 @@ const MyStack = ({ navigation }) => {
                                                 </View>
                                             ) : (
                                                 <ScrollView>
-                                                    {messages.map(
-                                                        (message, index) => (
-                                                            <View
-                                                                key={index}
-                                                                style={{
-                                                                    padding: 10,
-                                                                    borderWidth: 1,
-                                                                    margin: 10,
+                                                    {messages.map((message, index) => (
+                                                        <View
+                                                            key={index}
+                                                            style={{
+                                                                padding: 10,
+                                                                borderWidth: 1,
+                                                                margin: 10,
+                                                            }}
+                                                        >
+                                                            <TouchableOpacity
+                                                                onPress={() => {
+                                                                    setModalNotification(false);
+                                                                    if (!message.isRead) {
+                                                                        checkNotification(
+                                                                            message.id
+                                                                        );
+                                                                    }
+                                                                    if (
+                                                                        message.data.navigation ===
+                                                                        "PT"
+                                                                    ) {
+                                                                        navigation.navigate(
+                                                                            message.data.navigation,
+                                                                            {
+                                                                                limit: limit,
+                                                                                ...message.data
+                                                                                    .datas,
+                                                                            }
+                                                                        );
+                                                                    }
                                                                 }}
                                                             >
-                                                                <TouchableOpacity
-                                                                    onPress={() => {
-                                                                        setModalNotification(
-                                                                            false
-                                                                        );
-                                                                        if (
-                                                                            !message.isRead
-                                                                        ) {
-                                                                            checkNotification(
-                                                                                message.id
-                                                                            );
-                                                                        }
-                                                                        if (
-                                                                            message
-                                                                                .data
-                                                                                .navigation ===
-                                                                            "PT"
-                                                                        ) {
-                                                                            navigation.navigate(
-                                                                                message
-                                                                                    .data
-                                                                                    .navigation,
-                                                                                {
-                                                                                    limit: limit,
-                                                                                    ...message
-                                                                                        .data
-                                                                                        .datas,
-                                                                                }
-                                                                            );
-                                                                        }
+                                                                <View
+                                                                    style={{
+                                                                        flexDirection: "row",
                                                                     }}
                                                                 >
                                                                     <View
                                                                         style={{
-                                                                            flexDirection:
-                                                                                "row",
+                                                                            flex: 1,
                                                                         }}
                                                                     >
-                                                                        <View
-                                                                            style={{
-                                                                                flex: 1,
-                                                                            }}
+                                                                        <Text
+                                                                            style={[
+                                                                                message.isRead
+                                                                                    ? {
+                                                                                          color:
+                                                                                              "grey",
+                                                                                      }
+                                                                                    : {
+                                                                                          color:
+                                                                                              "black",
+                                                                                      },
+                                                                            ]}
                                                                         >
-                                                                            <Text
-                                                                                style={[
-                                                                                    message.isRead
-                                                                                        ? {
-                                                                                              color:
-                                                                                                  "grey",
-                                                                                          }
-                                                                                        : {
-                                                                                              color:
-                                                                                                  "black",
-                                                                                          },
-                                                                                ]}
-                                                                            >
-                                                                                {message.sendFrom +
-                                                                                    " 로부터"}
-                                                                            </Text>
-                                                                        </View>
-                                                                        <View
-                                                                            style={{
-                                                                                alignItems:
-                                                                                    "flex-end",
-                                                                                flex: 1,
-                                                                            }}
-                                                                        >
-                                                                            <Text
-                                                                                style={[
-                                                                                    message.isRead
-                                                                                        ? {
-                                                                                              color:
-                                                                                                  "grey",
-                                                                                          }
-                                                                                        : {
-                                                                                              color:
-                                                                                                  "black",
-                                                                                          },
-                                                                                ]}
-                                                                            >
-                                                                                {moment(
-                                                                                    message.sendDate.toDate()
-                                                                                ).format(
-                                                                                    "MM.DD. HH:mm"
-                                                                                ) +
-                                                                                    " 에 보냄"}
-                                                                            </Text>
-                                                                        </View>
+                                                                            {message.sendFrom +
+                                                                                " 로부터"}
+                                                                        </Text>
                                                                     </View>
-                                                                    <Text
-                                                                        style={[
-                                                                            message.isRead
-                                                                                ? {
-                                                                                      color:
-                                                                                          "grey",
-                                                                                  }
-                                                                                : {
-                                                                                      color:
-                                                                                          "black",
-                                                                                  },
-                                                                            {
-                                                                                fontWeight:
-                                                                                    "bold",
-                                                                                marginBottom: 5,
-                                                                            },
-                                                                        ]}
+                                                                    <View
+                                                                        style={{
+                                                                            alignItems: "flex-end",
+                                                                            flex: 1,
+                                                                        }}
                                                                     >
+                                                                        <Text
+                                                                            style={[
+                                                                                message.isRead
+                                                                                    ? {
+                                                                                          color:
+                                                                                              "grey",
+                                                                                      }
+                                                                                    : {
+                                                                                          color:
+                                                                                              "black",
+                                                                                      },
+                                                                            ]}
+                                                                        >
+                                                                            {moment(
+                                                                                message.sendDate.toDate()
+                                                                            ).format(
+                                                                                "MM.DD. HH:mm"
+                                                                            ) + " 에 보냄"}
+                                                                        </Text>
+                                                                    </View>
+                                                                </View>
+                                                                <Text
+                                                                    style={[
+                                                                        message.isRead
+                                                                            ? {
+                                                                                  color: "grey",
+                                                                              }
+                                                                            : {
+                                                                                  color: "black",
+                                                                              },
                                                                         {
-                                                                            message.title
-                                                                        }
-                                                                    </Text>
-                                                                    <Text
-                                                                        style={[
-                                                                            message.isRead
-                                                                                ? {
-                                                                                      color:
-                                                                                          "grey",
-                                                                                  }
-                                                                                : {
-                                                                                      color:
-                                                                                          "black",
-                                                                                  },
-                                                                            {
-                                                                                marginLeft: 7,
-                                                                            },
-                                                                        ]}
-                                                                    >
+                                                                            fontWeight: "bold",
+                                                                            marginBottom: 5,
+                                                                        },
+                                                                    ]}
+                                                                >
+                                                                    {message.title}
+                                                                </Text>
+                                                                <Text
+                                                                    style={[
+                                                                        message.isRead
+                                                                            ? {
+                                                                                  color: "grey",
+                                                                              }
+                                                                            : {
+                                                                                  color: "black",
+                                                                              },
                                                                         {
-                                                                            message.body
-                                                                        }
-                                                                    </Text>
-                                                                </TouchableOpacity>
-                                                            </View>
-                                                        )
-                                                    )}
+                                                                            marginLeft: 7,
+                                                                        },
+                                                                    ]}
+                                                                >
+                                                                    {message.body}
+                                                                </Text>
+                                                            </TouchableOpacity>
+                                                        </View>
+                                                    ))}
                                                 </ScrollView>
                                             )}
                                         </View>
@@ -488,16 +449,8 @@ const MyStack = ({ navigation }) => {
                 component={ClassInfoMenu}
                 options={{ headerTitle: "메뉴" }}
             />
-            <Stack.Screen
-                name="GxInfo"
-                component={GxInfo}
-                options={{ headerTitle: "GX" }}
-            />
-            <Stack.Screen
-                name="PtInfo"
-                component={PtInfo}
-                options={{ headerTitle: "PT" }}
-            />
+            <Stack.Screen name="GxInfo" component={GxInfo} options={{ headerTitle: "GX" }} />
+            <Stack.Screen name="PtInfo" component={PtInfo} options={{ headerTitle: "PT" }} />
         </Stack.Navigator>
     );
 };

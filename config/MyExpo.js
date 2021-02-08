@@ -9,14 +9,10 @@ const MyExpo = new Expo();
 
 export const registerForPushNotificationAsync = async () => {
     let token = null;
-    const { status: existingStatus } = await Permissions.getAsync(
-        Permissions.NOTIFICATIONS
-    );
+    const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
     let finalStatus = existingStatus;
     if (existingStatus !== "granted") {
-        const { status } = await Permissions.askAsync(
-            Permissions.NOTIFICATIONS
-        );
+        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
         finalStatus = status;
     }
     if (finalStatus !== "granted") {
@@ -39,12 +35,7 @@ export const registerForPushNotificationAsync = async () => {
     }
 };
 
-export const pushNotificationsToAdmin = async (
-    sendFrom,
-    inputTitle,
-    inputBody,
-    inputData = {}
-) => {
+export const pushNotificationsToAdmin = async (sendFrom, inputTitle, inputBody, inputData = {}) => {
     const sendDate = new Date();
     let messages = [];
     let tokens = [];
@@ -78,9 +69,7 @@ export const pushNotificationsToAdmin = async (
             let tickets = [];
             for (let chunk of chunks) {
                 try {
-                    const ticketChunk = await MyExpo.sendPushNotificationsAsync(
-                        chunk
-                    );
+                    const ticketChunk = await MyExpo.sendPushNotificationsAsync(chunk);
                     console.log(ticketChunk);
                     tickets.push(...ticketChunk);
                 } catch (error) {
@@ -96,18 +85,14 @@ export const pushNotificationsToAdmin = async (
             });
 
             const savePromises = uidList.map(async (uid) => {
-                await db
-                    .collection("notifications")
-                    .doc(uid)
-                    .collection("messages")
-                    .add({
-                        sendDate: sendDate,
-                        title: inputTitle,
-                        body: inputBody,
-                        data: inputData,
-                        sendFrom: sendFrom,
-                        isRead: false,
-                    });
+                await db.collection("notifications").doc(uid).collection("messages").add({
+                    sendDate: sendDate,
+                    title: inputTitle,
+                    body: inputBody,
+                    data: inputData,
+                    sendFrom: sendFrom,
+                    isRead: false,
+                });
             });
             await Promise.all(savePromises);
         });
@@ -152,9 +137,7 @@ export const pushNotificationsToPerson = async (
             let tickets = [];
             for (let chunk of chunks) {
                 try {
-                    const ticketChunk = await MyExpo.sendPushNotificationsAsync(
-                        chunk
-                    );
+                    const ticketChunk = await MyExpo.sendPushNotificationsAsync(chunk);
                     console.log(ticketChunk);
                     tickets.push(...ticketChunk);
                 } catch (error) {
@@ -164,18 +147,14 @@ export const pushNotificationsToPerson = async (
             return sendDate;
         })
         .then(async (date) => {
-            await db
-                .collection("notifications")
-                .doc(uid)
-                .collection("messages")
-                .add({
-                    sendDate: date,
-                    title: inputTitle,
-                    body: inputBody,
-                    data: inputData,
-                    sendFrom: sendFrom,
-                    isRead: false,
-                });
+            await db.collection("notifications").doc(uid).collection("messages").add({
+                sendDate: date,
+                title: inputTitle,
+                body: inputBody,
+                data: inputData,
+                sendFrom: sendFrom,
+                isRead: false,
+            });
         });
 };
 

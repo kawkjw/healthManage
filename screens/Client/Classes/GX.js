@@ -64,12 +64,7 @@ export default GX = ({ navigation, route }) => {
                 let item = {
                     id: i.toString(),
                     pressable:
-                        d >=
-                        new Date(
-                            today.getFullYear(),
-                            today.getMonth(),
-                            today.getDate()
-                        ),
+                        d >= new Date(today.getFullYear(), today.getMonth(), today.getDate()),
                     isToday:
                         i === today.getDate() &&
                         Number(date.split("-")[1]) === today.getMonth() + 1 &&
@@ -142,9 +137,7 @@ export default GX = ({ navigation, route }) => {
             .doc(date)
             .collection(selectDate.toString())
             .doc(cid);
-        const { currentClient, maxClient, start, end, trainer } = (
-            await classInDB.get()
-        ).data();
+        const { currentClient, maxClient, start, end, trainer } = (await classInDB.get()).data();
         if (currentClient >= maxClient) {
             Alert.alert("Error", "Full Class", [
                 {
@@ -156,10 +149,7 @@ export default GX = ({ navigation, route }) => {
             ]);
         } else {
             const { uid } = (
-                await db
-                    .collection("users")
-                    .doc(myBase.auth().currentUser.uid)
-                    .get()
+                await db.collection("users").doc(myBase.auth().currentUser.uid).get()
             ).data();
             await classInDB
                 .collection("clients")
@@ -237,9 +227,7 @@ export default GX = ({ navigation, route }) => {
                 data={data}
                 windowSize={1}
                 renderItem={({ item }) => (
-                    <View
-                        style={{ flex: 1, flexDirection: "column", margin: 5 }}
-                    >
+                    <View style={{ flex: 1, flexDirection: "column", margin: 5 }}>
                         <TouchableOpacity
                             style={[
                                 styles.day,
@@ -302,10 +290,7 @@ export default GX = ({ navigation, route }) => {
                     <TouchableOpacity
                         style={{
                             position: "absolute",
-                            top:
-                                Platform.OS === "ios"
-                                    ? getStatusBarHeight()
-                                    : 0,
+                            top: Platform.OS === "ios" ? getStatusBarHeight() : 0,
                             left: 0,
                             margin: 10,
                             padding: 5,
@@ -337,18 +322,13 @@ export default GX = ({ navigation, route }) => {
                                 ]}
                                 onPress={() => {
                                     Alert.alert(
-                                        selectDate.toString() +
-                                            "일 " +
-                                            c.start +
-                                            "~" +
-                                            c.end,
+                                        selectDate.toString() + "일 " + c.start + "~" + c.end,
                                         "Are you sure?",
                                         [
                                             { text: "Cancel" },
                                             {
                                                 text: "OK",
-                                                onPress: () =>
-                                                    reserveClass(c.cid),
+                                                onPress: () => reserveClass(c.cid),
                                             },
                                         ]
                                     );
@@ -356,15 +336,13 @@ export default GX = ({ navigation, route }) => {
                                 disabled={c.isToday}
                             >
                                 <Text>
-                                    {selectDate}일 {c.start}~{c.end} (
-                                    {c.currentClient}/{c.maxClient})
+                                    {selectDate}일 {c.start}~{c.end} ({c.currentClient}/
+                                    {c.maxClient})
                                 </Text>
                                 <Text>트레이너 : {c.trainer}</Text>
                             </TouchableOpacity>
                         ))}
-                        {classList.length === 0 ? (
-                            <Text>No Class</Text>
-                        ) : undefined}
+                        {classList.length === 0 ? <Text>No Class</Text> : undefined}
                     </ScrollView>
                 </SafeAreaView>
             </Modal>

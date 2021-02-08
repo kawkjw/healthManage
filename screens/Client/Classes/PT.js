@@ -47,9 +47,7 @@ export default PT = ({ navigation, route }) => {
     useEffect(() => {
         const showCalendar = async () => {
             const yearMonthStr =
-                selectedYear +
-                "-" +
-                (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
+                selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
 
             let items = [
                 { id: "일", color: "red", pressable: false, isHeader: true },
@@ -87,12 +85,7 @@ export default PT = ({ navigation, route }) => {
                 let item = {
                     id: i.toString(),
                     pressable:
-                        d >=
-                        new Date(
-                            today.getFullYear(),
-                            today.getMonth(),
-                            today.getDate()
-                        ),
+                        d >= new Date(today.getFullYear(), today.getMonth(), today.getDate()),
                     isToday:
                         i === today.getDate() &&
                         selectedMonth === today.getMonth() + 1 &&
@@ -125,11 +118,7 @@ export default PT = ({ navigation, route }) => {
     useEffect(() => {
         const setListForPicker = () => {
             let list = [];
-            for (
-                let i = today.getFullYear() - 10;
-                i <= today.getFullYear() + 10;
-                i++
-            ) {
+            for (let i = today.getFullYear() - 10; i <= today.getFullYear() + 10; i++) {
                 list.push({
                     label: i.toString(),
                     value: i.toString(),
@@ -154,9 +143,7 @@ export default PT = ({ navigation, route }) => {
         setLoading(true);
         let timeList = [];
         const yearMonthStr =
-            selectedYear +
-            "-" +
-            (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
+            selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
         await db
             .collection("classes")
             .doc("pt")
@@ -213,12 +200,7 @@ export default PT = ({ navigation, route }) => {
 
     const reservePTClass = async (timeStr) => {
         const { count } = (
-            await db
-                .collection("users")
-                .doc(uid)
-                .collection("memberships")
-                .doc("pt")
-                .get()
+            await db.collection("users").doc(uid).collection("memberships").doc("pt").get()
         ).data();
         if (count <= 0) {
             Alert.alert("Error", "No remained PT count", [
@@ -235,9 +217,7 @@ export default PT = ({ navigation, route }) => {
             return;
         } else {
             const yearMonthStr =
-                selectedYear +
-                "-" +
-                (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
+                selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
             const classDBInTimeStr = db
                 .collection("classes")
                 .doc("pt")
@@ -351,11 +331,7 @@ export default PT = ({ navigation, route }) => {
                     }}
                 >
                     <TouchableOpacity activeOpacity={0.5} onPress={goPreMonth}>
-                        <MaterialIcons
-                            name="chevron-left"
-                            size={30}
-                            color="black"
-                        />
+                        <MaterialIcons name="chevron-left" size={30} color="black" />
                     </TouchableOpacity>
                 </View>
                 <View
@@ -369,9 +345,7 @@ export default PT = ({ navigation, route }) => {
                         <Text style={{ fontSize: 20 }}>
                             {selectedYear +
                                 "-" +
-                                (selectedMonth < 10
-                                    ? "0" + selectedMonth
-                                    : selectedMonth)}
+                                (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth)}
                         </Text>
                     </TouchableOpacity>
                 </View>
@@ -384,11 +358,7 @@ export default PT = ({ navigation, route }) => {
                     }}
                 >
                     <TouchableOpacity activeOpacity={0.5} onPress={goNextMonth}>
-                        <MaterialIcons
-                            name="chevron-right"
-                            size={30}
-                            color="black"
-                        />
+                        <MaterialIcons name="chevron-right" size={30} color="black" />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -396,9 +366,7 @@ export default PT = ({ navigation, route }) => {
                 data={data}
                 windowSize={1}
                 renderItem={({ item }) => (
-                    <View
-                        style={{ flex: 1, flexDirection: "column", margin: 5 }}
-                    >
+                    <View style={{ flex: 1, flexDirection: "column", margin: 5 }}>
                         <TouchableOpacity
                             style={[
                                 styles.day,
@@ -467,11 +435,7 @@ export default PT = ({ navigation, route }) => {
                     },
                 ]}
             />
-            <Modal
-                animationType="slide"
-                visible={modalTimeTable}
-                transparent={true}
-            >
+            <Modal animationType="slide" visible={modalTimeTable} transparent={true}>
                 <SafeAreaView
                     style={{
                         flex: 1,
@@ -481,10 +445,7 @@ export default PT = ({ navigation, route }) => {
                     <TouchableOpacity
                         style={{
                             position: "absolute",
-                            top:
-                                Platform.OS === "ios"
-                                    ? getStatusBarHeight()
-                                    : 0,
+                            top: Platform.OS === "ios" ? getStatusBarHeight() : 0,
                             left: 0,
                             margin: 10,
                             padding: 5,
@@ -501,10 +462,7 @@ export default PT = ({ navigation, route }) => {
                     <Text
                         style={{
                             position: "absolute",
-                            top:
-                                Platform.OS === "ios"
-                                    ? getStatusBarHeight() + 10
-                                    : 0,
+                            top: Platform.OS === "ios" ? getStatusBarHeight() + 10 : 0,
                             left: width / 2.15,
                             fontSize: RFPercentage(2.5),
                         }}
@@ -587,17 +545,13 @@ export default PT = ({ navigation, route }) => {
                                                 availTime.hasReserve ? (
                                                     <Text>
                                                         Already Reserved{" "}
-                                                        {availTime.isMe
-                                                            ? "(me)"
-                                                            : null}
+                                                        {availTime.isMe ? "(me)" : null}
                                                     </Text>
                                                 ) : (
                                                     <Text>No Reservation</Text>
                                                 )
                                             ) : (
-                                                <Text style={{ color: "red" }}>
-                                                    Unavailable
-                                                </Text>
+                                                <Text style={{ color: "red" }}>Unavailable</Text>
                                             )}
                                         </View>
                                         {availTime.isAvail ? (
@@ -606,8 +560,7 @@ export default PT = ({ navigation, route }) => {
                                                     style={[
                                                         styles.availButton,
                                                         {
-                                                            backgroundColor:
-                                                                "white",
+                                                            backgroundColor: "white",
                                                             height: hp("7%"),
                                                         },
                                                     ]}
@@ -619,8 +572,7 @@ export default PT = ({ navigation, route }) => {
                                                             "Are you sure?",
                                                             [
                                                                 {
-                                                                    text:
-                                                                        "Cancel",
+                                                                    text: "Cancel",
                                                                 },
                                                                 {
                                                                     text: "OK",

@@ -93,9 +93,7 @@ export default ShowUser = ({ route }) => {
                     <View style={{ flex: 1, alignItems: "flex-end" }}>
                         <Text>{enToKo(kind)}: </Text>
                     </View>
-                    <Text style={{ flex: 4 }}>
-                        {membership[kind].count}회 남음
-                    </Text>
+                    <Text style={{ flex: 4 }}>{membership[kind].count}회 남음</Text>
                 </View>
             );
         } else {
@@ -117,13 +115,9 @@ export default ShowUser = ({ route }) => {
                         <Text>{enToKo(kind)}: </Text>
                     </View>
                     <Text style={{ flex: 4 }}>
-                        {moment(membership[kind].start.toDate()).format(
-                            "YYYY. MM. DD."
-                        ) +
+                        {moment(membership[kind].start.toDate()).format("YYYY. MM. DD.") +
                             " ~ " +
-                            moment(membership[kind].end.toDate()).format(
-                                "YYYY. MM. DD."
-                            )}
+                            moment(membership[kind].end.toDate()).format("YYYY. MM. DD.")}
                         ({membership[kind].month}개월권)
                     </Text>
                 </View>
@@ -161,15 +155,11 @@ export default ShowUser = ({ route }) => {
                         <Text>이름 : {user.name}</Text>
                         <Text>이메일 : {user.email}</Text>
                         <Text>휴대폰번호 : {user.phoneNumber}</Text>
-                        <Text>
-                            보관함 번호 : {locker === 0 ? "없음" : locker}
-                        </Text>
+                        <Text>보관함 번호 : {locker === 0 ? "없음" : locker}</Text>
                         <Text>유저 ID : {user.uid}</Text>
                     </View>
 
-                    <Text style={{ fontSize: RFPercentage(2.5) }}>
-                        이용권 현황
-                    </Text>
+                    <Text style={{ fontSize: RFPercentage(2.5) }}>이용권 현황</Text>
                     {membershipKinds.length === 0 ? (
                         <View
                             style={{
@@ -193,9 +183,7 @@ export default ShowUser = ({ route }) => {
                             </Text>
                         </View>
                     ) : (
-                        membershipKinds.map((kind, index) =>
-                            renderMembership(kind, index)
-                        )
+                        membershipKinds.map((kind, index) => renderMembership(kind, index))
                     )}
                 </View>
             )}
