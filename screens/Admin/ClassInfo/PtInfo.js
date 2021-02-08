@@ -95,7 +95,9 @@ export default ClassInfo = ({ navigation }) => {
                     .catch((error) => {});
             });
             await Promise.all(ptPromises);
-            classDate.sort();
+            classDate.sort((a, b) => {
+                return Number(a) - Number(b);
+            });
             classDate.push("-1");
             let index = 0;
             const endDate = new Date(selectedYear, selectedMonth, 0);
@@ -472,23 +474,5 @@ const styles = StyleSheet.create({
         backgroundColor: "grey",
         borderWidth: 1,
         borderRadius: 10,
-    },
-    availButton: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-        borderWidth: 1,
-        borderRadius: RFPercentage(2.5),
-        borderColor: "grey",
-        ...Platform.select({
-            ios: {
-                shadowColor: "#c6c6c6",
-                shadowOffset: { width: 5, height: 5 },
-                shadowOpacity: 5,
-            },
-            android: {
-                elevation: 10,
-            },
-        }),
     },
 });

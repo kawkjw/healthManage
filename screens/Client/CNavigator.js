@@ -40,7 +40,6 @@ const MyStack = ({ navigation }) => {
     const [loading, setLoading] = useState(true);
     const [endDate, setEndDate] = useState("");
     const [membershipString, setMembershipString] = useState("");
-    const [membershipInfo, setMembershipInfo] = useState("");
     const [notificationAvail, setNotificationAvail] = useState(false);
     const [messages, setMessages] = useState([]);
     const [modalNotification, setModalNotification] = useState(false);
@@ -138,10 +137,9 @@ const MyStack = ({ navigation }) => {
                     }
                     info = info + stringTemp + "\n";
                 });
-                setMembershipInfo(
-                    info ? info.substring(0, info.length - 1) : "No Membership"
-                );
-                ret = info.substring(0, info.length - 1);
+                ret = info
+                    ? info.substring(0, info.length - 1)
+                    : "No Membership";
             });
         return ret;
     };

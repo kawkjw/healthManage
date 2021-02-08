@@ -76,7 +76,7 @@ const MyStack = ({ navigation }) => {
                         today.getDate() - 7
                     )
                 )
-                .orderBy("sendDate", "asc")
+                .orderBy("sendDate", "desc")
                 .get()
                 .then(async (messages) => {
                     let list = [];

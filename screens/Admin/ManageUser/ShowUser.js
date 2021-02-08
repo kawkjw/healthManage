@@ -119,11 +119,11 @@ export default ShowUser = ({ route }) => {
                     <Text style={{ flex: 4 }}>
                         {moment(membership[kind].start.toDate()).format(
                             "YYYY. MM. DD."
-                        )}{" "}
-                        ~{" "}
-                        {moment(membership[kind].end.toDate()).format(
-                            "YYYY. MM. DD."
-                        )}
+                        ) +
+                            " ~ " +
+                            moment(membership[kind].end.toDate()).format(
+                                "YYYY. MM. DD."
+                            )}
                         ({membership[kind].month}개월권)
                     </Text>
                 </View>

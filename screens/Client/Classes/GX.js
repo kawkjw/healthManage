@@ -155,7 +155,7 @@ export default GX = ({ navigation, route }) => {
                 },
             ]);
         } else {
-            const { name, phoneNumber, uid } = (
+            const { uid } = (
                 await db
                     .collection("users")
                     .doc(myBase.auth().currentUser.uid)
@@ -207,7 +207,8 @@ export default GX = ({ navigation, route }) => {
                             {
                                 text: "OK",
                                 onPress: () => {
-                                    navigation.replace("HomeScreen");
+                                    setModalClass(false);
+                                    setSelectDate(0);
                                 },
                             },
                         ]);
