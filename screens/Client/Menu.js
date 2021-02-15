@@ -1,5 +1,5 @@
 import React from "react";
-import { Dimensions, SafeAreaView, Text, TouchableOpacity, ScrollView } from "react-native";
+import { Dimensions, SafeAreaView, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { MyStyles } from "../../css/MyStyles";
 
 export default Menu = ({ navigation }) => {
@@ -42,7 +42,13 @@ export default Menu = ({ navigation }) => {
                         MyStyles.buttonShadow,
                         { width: widthButton, marginBottom: 40 },
                     ]}
-                    onPress={() => navigation.navigate("ExtendDate")}
+                    onPress={() =>
+                        Alert.alert(
+                            "주의사항",
+                            "3개월권은 연장 불가능이며, 6개월권은 1번, 12개월권은 2번까지 연장 가능합니다.",
+                            [{ text: "OK", onPress: () => navigation.navigate("ExtendDate") }]
+                        )
+                    }
                 >
                     <Text>Extend Membership</Text>
                 </TouchableOpacity>

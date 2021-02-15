@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View, ScrollView } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./Home";
 import { AuthContext } from "../Auth";
@@ -278,14 +278,10 @@ const MyStack = ({ navigation }) => {
                                                                             message.id
                                                                         );
                                                                     }
-                                                                    if (
-                                                                        message.data.navigation ===
-                                                                        "PT"
-                                                                    ) {
+                                                                    if (message.data.navigation) {
                                                                         navigation.navigate(
                                                                             message.data.navigation,
                                                                             {
-                                                                                limit: limit,
                                                                                 ...message.data
                                                                                     .datas,
                                                                             }

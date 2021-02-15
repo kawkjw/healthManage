@@ -7,7 +7,6 @@ import {
     View,
     Image,
     Modal,
-    Button,
     TextInput,
     Alert,
     Keyboard,
@@ -54,6 +53,11 @@ export default Profile = ({ navigation }) => {
     const [verifyCode, setVerifyCode] = useState("");
     const [change, setChange] = useState(true);
     const [loading, setLoading] = useState(true);
+    const [extendBool, setExtendBool] = useState({
+        hasExtend: false,
+        confirmExtend: false,
+    });
+    const { hasExtend, confirmExtend } = extendBool;
 
     const enToKo = (s) => {
         switch (s) {
@@ -175,6 +179,18 @@ export default Profile = ({ navigation }) => {
                     );
                     if (info && kinds.length !== expiredNum) {
                         setCanGenQR(true);
+                    }
+                });
+            await thisuser
+                .collection("extends")
+                .orderBy("submitDate", "desc")
+                .limit(1)
+                .get()
+                .then((docs) => {
+                    if (docs.size !== 0) {
+                        docs.forEach((doc) => {
+                            setExtendBool({ hasExtend: true, confirmExtend: doc.data().confirm });
+                        });
                     }
                 });
             const today = new Date();
@@ -440,7 +456,7 @@ export default Profile = ({ navigation }) => {
                     style={[
                         MyStyles.button,
                         MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
+                        { width: widthButton, marginBottom: 15 },
                     ]}
                     onPress={() => {
                         if (canGenQR) {
@@ -545,7 +561,7 @@ export default Profile = ({ navigation }) => {
                                                 setModalPhoneVisible(!modalPhoneVisible);
                                             }}
                                         >
-                                            <Text style={{ fontSize: 17 }}>Close</Text>
+                                            <Text style={{ fontSize: RFPercentage(2) }}>Close</Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity
                                             style={{ flex: 1 }}
@@ -693,7 +709,7 @@ export default Profile = ({ navigation }) => {
                                                 setModalEmailVisible(!modalEmailVisible);
                                             }}
                                         >
-                                            <Text style={{ fontSize: 17 }}>Close</Text>
+                                            <Text style={{ fontSize: RFPercentage(2) }}>Close</Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity
                                             style={{ flex: 1 }}
@@ -712,31 +728,47 @@ export default Profile = ({ navigation }) => {
                                                     <Text style={AuthStyles.text}>
                                                         Enter Change Email
                                                     </Text>
-                                                    <TextInput
-                                                        style={[
-                                                            AuthStyles.textInput,
-                                                            changeEmail
-                                                                ? checkEmail
-                                                                    ? {
-                                                                          backgroundColor: "green",
-                                                                      }
-                                                                    : {
-                                                                          backgroundColor: "red",
-                                                                      }
-                                                                : undefined,
-                                                        ]}
-                                                        placeholder="examples@example.com"
-                                                        keyboardType="email-address"
-                                                        autoCompleteType="email"
-                                                        textContentType="emailAddress"
-                                                        value={changeEmail}
-                                                        onChangeText={setChangeEmail}
-                                                    />
+                                                    <View
+                                                        style={{
+                                                            flexDirection: "row",
+                                                            marginBottom: 10,
+                                                        }}
+                                                    >
+                                                        <TextInput
+                                                            style={[
+                                                                AuthStyles.textInput,
+                                                                changeEmail
+                                                                    ? checkEmail
+                                                                        ? {
+                                                                              backgroundColor:
+                                                                                  "green",
+                                                                          }
+                                                                        : {
+                                                                              backgroundColor:
+                                                                                  "red",
+                                                                          }
+                                                                    : undefined,
+                                                                {
+                                                                    flex: 3,
+                                                                    marginRight: 7,
+                                                                },
+                                                            ]}
+                                                            placeholder="examples@example.com"
+                                                            keyboardType="email-address"
+                                                            autoCompleteType="email"
+                                                            textContentType="emailAddress"
+                                                            value={changeEmail}
+                                                            onChangeText={setChangeEmail}
+                                                        />
+                                                        <TouchableOpacity
+                                                            style={AuthStyles.authButton}
+                                                            onPress={() => checkUsedEmail()}
+                                                            disabled={!changePhone}
+                                                        >
+                                                            <Text>중복확인</Text>
+                                                        </TouchableOpacity>
+                                                    </View>
                                                 </View>
-                                                <Button
-                                                    title="Check Email"
-                                                    onPress={checkUsedEmail}
-                                                />
                                                 <View style={AuthStyles.textView}>
                                                     <Text style={AuthStyles.text}>
                                                         Enter Password
@@ -749,13 +781,23 @@ export default Profile = ({ navigation }) => {
                                                         onChangeText={setPassword}
                                                     />
                                                 </View>
-                                                <Button
-                                                    title="Submit"
-                                                    onPress={dbChangeEmail}
+                                                <TouchableOpacity
+                                                    style={[
+                                                        MyStyles.buttonShadow,
+                                                        {
+                                                            height: hp("5%"),
+                                                            alignItems: "center",
+                                                            justifyContent: "center",
+                                                            borderRadius: 10,
+                                                        },
+                                                    ]}
+                                                    onPress={() => dbChangeEmail()}
                                                     disabled={
                                                         !changeEmail || !password || !chkUsedEmail
                                                     }
-                                                />
+                                                >
+                                                    <Text>Submit</Text>
+                                                </TouchableOpacity>
                                             </View>
                                         </TouchableOpacity>
                                     </SafeAreaView>
@@ -820,6 +862,11 @@ export default Profile = ({ navigation }) => {
                                     ]}
                                 >
                                     회원권 정보
+                                    {hasExtend
+                                        ? confirmExtend
+                                            ? "(연장 승인 완료)"
+                                            : "(연장 승인 대기중)"
+                                        : undefined}
                                 </Text>
                                 {membershipInfo.split("\n").map((info, index) => (
                                     <View
@@ -888,7 +935,9 @@ export default Profile = ({ navigation }) => {
                                         이번 달 수업 예약 정보
                                     </Text>
                                     {reservedClasses.length === 0 ? (
-                                        <Text> 예약된 수업이 없습니다.</Text>
+                                        <Text style={{ fontSize: RFPercentage(2), paddingLeft: 5 }}>
+                                            예약된 수업이 없습니다.
+                                        </Text>
                                     ) : null}
                                     {reservedClasses.map((reservedClass, index) => (
                                         <Text

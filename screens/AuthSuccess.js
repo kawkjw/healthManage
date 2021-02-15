@@ -79,7 +79,7 @@ const MyStack = () => {
     };
 
     useEffect(() => {
-        myBase.auth().onAuthStateChanged(async (user) => {
+        const unsubscribe = myBase.auth().onAuthStateChanged(async (user) => {
             if (user) {
                 const tempUid = await AsyncStorage.getItem("userToken");
                 if (tempUid === user.uid) {
@@ -88,6 +88,7 @@ const MyStack = () => {
                 }
             }
         });
+        return () => unsubscribe();
     }, []);
 
     const reSendVerification = () => {

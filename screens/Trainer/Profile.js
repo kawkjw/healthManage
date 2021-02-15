@@ -144,26 +144,7 @@ export default Profile = ({ navigation, route }) => {
                 .doc(date)
                 .get()
                 .then(async (doc) => {
-                    let classId = [];
-                    switch (className) {
-                        case "pilates":
-                            classId = doc.data().pilates;
-                            break;
-                        case "spinning":
-                            classId = doc.data().spinning;
-                            break;
-                        case "squash":
-                            classId = doc.data().squash;
-                            break;
-                        case "yoga":
-                            classId = doc.data().yoga;
-                            break;
-                        case "zoomba":
-                            classId = doc.data().zoomba;
-                            break;
-                        default:
-                            Alert.alert("Error", "Wrong Class Name");
-                    }
+                    let classId = doc.data().list;
                     return classId;
                 })
                 .then(async (classId) => {
@@ -321,7 +302,14 @@ export default Profile = ({ navigation, route }) => {
                         }}
                         disabled={className[0] !== "Need to Set Up"}
                     >
-                        <Text style={MyStyles.profileText}>
+                        <Text
+                            style={[
+                                MyStyles.profileText,
+                                className[0] === "Need to Set Up"
+                                    ? { color: "#1e90ff" }
+                                    : undefined,
+                            ]}
+                        >
                             {enToKo(className[0]) + " "}
                             {className[0] === "pt"
                                 ? "(" + className[1] + ":00 ~ " + className[2] + ":00)"
@@ -370,7 +358,9 @@ export default Profile = ({ navigation, route }) => {
                                         }}
                                         onPress={() => setModalSetClass(false)}
                                     >
-                                        <Text style={{ margin: 7 }}>닫기</Text>
+                                        <Text style={{ margin: 7, fontSize: RFPercentage(2) }}>
+                                            닫기
+                                        </Text>
                                     </TouchableOpacity>
                                     <View style={{ flex: 6 }} />
                                     <TouchableOpacity
@@ -410,7 +400,9 @@ export default Profile = ({ navigation, route }) => {
                                             );
                                         }}
                                     >
-                                        <Text style={{ margin: 7 }}>확인</Text>
+                                        <Text style={{ margin: 7, fontSize: RFPercentage(2) }}>
+                                            확인
+                                        </Text>
                                     </TouchableOpacity>
                                 </View>
                                 <View style={{ flex: 1, paddingVertical: 10 }}>
@@ -590,20 +582,72 @@ export default Profile = ({ navigation, route }) => {
                         </TouchableOpacity>
                     </Modal>
                 </View>
-                <View>
-                    <Text style={{ fontSize: RFPercentage(2) }}>오늘 수업</Text>
-                    {loading ? (
-                        <Text
-                            style={{
-                                marginBottom: 5,
-                                marginLeft: 7,
-                                fontSize: RFPercentage(2),
-                            }}
-                        >
-                            로딩 중
-                        </Text>
-                    ) : className[0] === "pt" ? (
-                        todayClassInfo["pt"].length === 0 ? (
+                {className[0] === "Need to Set Up" ? undefined : (
+                    <View>
+                        <Text style={{ fontSize: RFPercentage(2) }}>오늘 수업</Text>
+                        {loading ? (
+                            <Text
+                                style={{
+                                    marginBottom: 5,
+                                    marginLeft: 7,
+                                    fontSize: RFPercentage(2),
+                                }}
+                            >
+                                로딩 중
+                            </Text>
+                        ) : className[0] === "pt" ? (
+                            todayClassInfo["pt"].length === 0 ? (
+                                <Text
+                                    style={{
+                                        marginBottom: 5,
+                                        marginLeft: 7,
+                                        fontSize: RFPercentage(2),
+                                    }}
+                                >
+                                    수업이 없습니다.
+                                </Text>
+                            ) : (
+                                todayClassInfo["pt"].map((value, index) => (
+                                    <View
+                                        key={index}
+                                        style={{
+                                            flexDirection: "row",
+                                            marginBottom: 5,
+                                            marginLeft: 7,
+                                        }}
+                                    >
+                                        <MaterialIcons
+                                            name="circle"
+                                            size={RFPercentage(1.5)}
+                                            color="black"
+                                            style={{ alignSelf: "center" }}
+                                        />
+                                        <Text
+                                            style={{
+                                                fontSize: RFPercentage(2),
+                                                marginLeft: 5,
+                                            }}
+                                        >
+                                            {value.time + " " + value.clientName + " "}
+                                        </Text>
+                                        <TouchableOpacity
+                                            onPress={() =>
+                                                Linking.openURL(`tel:${value.clientPhone}`)
+                                            }
+                                        >
+                                            <Text
+                                                style={{
+                                                    fontSize: RFPercentage(2),
+                                                    color: "blue",
+                                                }}
+                                            >
+                                                {value.clientPhone}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                ))
+                            )
+                        ) : todayClassInfo[className[1]].length === 0 ? (
                             <Text
                                 style={{
                                     marginBottom: 5,
@@ -614,7 +658,7 @@ export default Profile = ({ navigation, route }) => {
                                 수업이 없습니다.
                             </Text>
                         ) : (
-                            todayClassInfo["pt"].map((value, index) => (
+                            todayClassInfo[className[1]].map((value, index) => (
                                 <View
                                     key={index}
                                     style={{
@@ -635,79 +679,81 @@ export default Profile = ({ navigation, route }) => {
                                             marginLeft: 5,
                                         }}
                                     >
-                                        {value.time + " " + value.clientName + " "}
+                                        {moment(value.info.start.toDate()).format("HH:mm") +
+                                            " ~ " +
+                                            moment(value.info.end.toDate()).format("HH:mm") +
+                                            " " +
+                                            value.info.currentClient +
+                                            "/" +
+                                            value.info.maxClient}
                                     </Text>
-                                    <TouchableOpacity
-                                        onPress={() => Linking.openURL(`tel:${value.clientPhone}`)}
+                                </View>
+                            ))
+                        )}
+                        <Text style={{ fontSize: RFPercentage(2) }}>내일 수업</Text>
+                        {loading ? (
+                            <Text
+                                style={{
+                                    marginBottom: 5,
+                                    marginLeft: 7,
+                                    fontSize: RFPercentage(2),
+                                }}
+                            >
+                                로딩 중
+                            </Text>
+                        ) : className[0] === "pt" ? (
+                            tomorrowClassInfo["pt"].length === 0 ? (
+                                <Text
+                                    style={{
+                                        marginBottom: 5,
+                                        marginLeft: 7,
+                                        fontSize: RFPercentage(2),
+                                    }}
+                                >
+                                    수업이 없습니다.
+                                </Text>
+                            ) : (
+                                tomorrowClassInfo["pt"].map((value, index) => (
+                                    <View
+                                        key={index}
+                                        style={{
+                                            flexDirection: "row",
+                                            marginBottom: 5,
+                                            marginLeft: 7,
+                                        }}
                                     >
+                                        <MaterialIcons
+                                            name="circle"
+                                            size={RFPercentage(1.5)}
+                                            color="black"
+                                            style={{ alignSelf: "center" }}
+                                        />
                                         <Text
                                             style={{
                                                 fontSize: RFPercentage(2),
-                                                color: "blue",
+                                                marginLeft: 5,
                                             }}
                                         >
-                                            {value.clientPhone}
+                                            {value.time + " " + value.clientName + " "}
                                         </Text>
-                                    </TouchableOpacity>
-                                </View>
-                            ))
-                        )
-                    ) : todayClassInfo[className[1]].length === 0 ? (
-                        <Text
-                            style={{
-                                marginBottom: 5,
-                                marginLeft: 7,
-                                fontSize: RFPercentage(2),
-                            }}
-                        >
-                            수업이 없습니다.
-                        </Text>
-                    ) : (
-                        todayClassInfo[className[1]].map((value, index) => (
-                            <View
-                                key={index}
-                                style={{
-                                    flexDirection: "row",
-                                    marginBottom: 5,
-                                    marginLeft: 7,
-                                }}
-                            >
-                                <MaterialIcons
-                                    name="circle"
-                                    size={RFPercentage(1.5)}
-                                    color="black"
-                                    style={{ alignSelf: "center" }}
-                                />
-                                <Text
-                                    style={{
-                                        fontSize: RFPercentage(2),
-                                        marginLeft: 5,
-                                    }}
-                                >
-                                    {moment(value.info.start.toDate()).format("HH:mm") +
-                                        " ~ " +
-                                        moment(value.info.end.toDate()).format("HH:mm") +
-                                        " " +
-                                        value.info.currentClient +
-                                        "/" +
-                                        value.info.maxClient}
-                                </Text>
-                            </View>
-                        ))
-                    )}
-                    <Text style={{ fontSize: RFPercentage(2) }}>내일 수업</Text>
-                    {loading ? (
-                        <Text
-                            style={{
-                                marginBottom: 5,
-                                marginLeft: 7,
-                                fontSize: RFPercentage(2),
-                            }}
-                        >
-                            로딩 중
-                        </Text>
-                    ) : className[0] === "pt" ? (
-                        tomorrowClassInfo["pt"].length === 0 ? (
+                                        <TouchableOpacity
+                                            onPress={() =>
+                                                Linking.openURL(`tel:${value.clientPhone}`)
+                                            }
+                                        >
+                                            <Text
+                                                style={{
+                                                    fontSize: RFPercentage(2),
+                                                    color: "blue",
+                                                }}
+                                            >
+                                                {value.clientPhone}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                ))
+                            )
+                        ) : tomorrowClassInfo[className[1]].length === 0 ? (
                             <Text
                                 style={{
                                     marginBottom: 5,
@@ -718,7 +764,7 @@ export default Profile = ({ navigation, route }) => {
                                 수업이 없습니다.
                             </Text>
                         ) : (
-                            tomorrowClassInfo["pt"].map((value, index) => (
+                            tomorrowClassInfo[className[1]].map((value, index) => (
                                 <View
                                     key={index}
                                     style={{
@@ -739,67 +785,19 @@ export default Profile = ({ navigation, route }) => {
                                             marginLeft: 5,
                                         }}
                                     >
-                                        {value.time + " " + value.clientName + " "}
+                                        {moment(value.info.start.toDate()).format("HH:mm") +
+                                            " ~ " +
+                                            moment(value.info.end.toDate()).format("HH:mm") +
+                                            " " +
+                                            value.info.currentClient +
+                                            "/" +
+                                            value.info.maxClient}
                                     </Text>
-                                    <TouchableOpacity
-                                        onPress={() => Linking.openURL(`tel:${value.clientPhone}`)}
-                                    >
-                                        <Text
-                                            style={{
-                                                fontSize: RFPercentage(2),
-                                                color: "blue",
-                                            }}
-                                        >
-                                            {value.clientPhone}
-                                        </Text>
-                                    </TouchableOpacity>
                                 </View>
                             ))
-                        )
-                    ) : tomorrowClassInfo[className[1]].length === 0 ? (
-                        <Text
-                            style={{
-                                marginBottom: 5,
-                                marginLeft: 7,
-                                fontSize: RFPercentage(2),
-                            }}
-                        >
-                            수업이 없습니다.
-                        </Text>
-                    ) : (
-                        tomorrowClassInfo[className[1]].map((value, index) => (
-                            <View
-                                key={index}
-                                style={{
-                                    flexDirection: "row",
-                                    marginBottom: 5,
-                                    marginLeft: 7,
-                                }}
-                            >
-                                <MaterialIcons
-                                    name="circle"
-                                    size={RFPercentage(1.5)}
-                                    color="black"
-                                    style={{ alignSelf: "center" }}
-                                />
-                                <Text
-                                    style={{
-                                        fontSize: RFPercentage(2),
-                                        marginLeft: 5,
-                                    }}
-                                >
-                                    {moment(value.info.start.toDate()).format("HH:mm") +
-                                        " ~ " +
-                                        moment(value.info.end.toDate()).format("HH:mm") +
-                                        " " +
-                                        value.info.currentClient +
-                                        "/" +
-                                        value.info.maxClient}
-                                </Text>
-                            </View>
-                        ))
-                    )}
-                </View>
+                        )}
+                    </View>
+                )}
             </View>
         </SafeAreaView>
     );

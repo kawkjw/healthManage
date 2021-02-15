@@ -58,6 +58,11 @@ export const MyStyles = StyleSheet.create({
         marginBottom: 5,
         fontSize: RFPercentage(2),
     },
+    flexCenter: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+    },
 });
 
 export const AuthStyles = StyleSheet.create({

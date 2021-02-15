@@ -1,20 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { Image, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
-import {
-    widthPercentageToDP as wp,
-    heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
+import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { db } from "../../../config/MyBase";
 import { MyStyles } from "../../../css/MyStyles";
 import { RFPercentage } from "react-native-responsive-fontsize";
-import moment from "moment";
-import Modal from "react-native-modal";
 
 export default ClientbyMembership = ({ navigation, route }) => {
     const [clientInfos, setClientInfos] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [modalMemberships, setModalMemberships] = useState(false);
-    const [selectedIndex, setSelectedIndex] = useState(-1);
 
     const enToKo = (s) => {
         switch (s) {
@@ -50,17 +43,6 @@ export default ClientbyMembership = ({ navigation, route }) => {
                             list.push({
                                 path: snapshot.ref.parent.parent.path,
                             });
-                        } else if (route.params.membershipName === "yogaZoomba") {
-                            if (snapshot.id === "yoga" || snapshot.id === "zoomba") {
-                                if (
-                                    list.find((v) => v.path === snapshot.ref.parent.parent.path) ===
-                                    undefined
-                                ) {
-                                    list.push({
-                                        path: snapshot.ref.parent.parent.path,
-                                    });
-                                }
-                            }
                         }
                     });
                     return list;
@@ -68,22 +50,11 @@ export default ClientbyMembership = ({ navigation, route }) => {
                 .then(async (list) => {
                     let temp = list;
                     const promises = list.map(async (v, index) => {
-                        temp[index]["membership"] = { kinds: [] };
                         await db
                             .doc(v.path)
                             .get()
                             .then((user) => {
                                 temp[index]["info"] = user.data();
-                            });
-                        await db
-                            .collection(v.path + "/memberships")
-                            .orderBy("sort", "asc")
-                            .get()
-                            .then((memberships) => {
-                                memberships.forEach((membership) => {
-                                    temp[index]["membership"]["kinds"].push(membership.id);
-                                    temp[index]["membership"][membership.id] = membership.data();
-                                });
                             });
                     });
                     await Promise.all(promises);
@@ -123,8 +94,7 @@ export default ClientbyMembership = ({ navigation, route }) => {
                     <TouchableOpacity
                         key={index}
                         onPress={() => {
-                            setSelectedIndex(index);
-                            setModalMemberships(true);
+                            navigation.navigate("ShowUser", { user: client.info });
                         }}
                     >
                         <View
@@ -151,87 +121,6 @@ export default ClientbyMembership = ({ navigation, route }) => {
                     </TouchableOpacity>
                 ))
             )}
-            <Modal
-                isVisible={modalMemberships}
-                style={{ justifyContent: "flex-end", margin: 0 }}
-                onBackdropPress={() => setModalMemberships(false)}
-            >
-                <View
-                    style={{
-                        backgroundColor: "white",
-                        height: hp("30%"),
-                    }}
-                >
-                    <TouchableOpacity
-                        style={{
-                            width: wp("15%"),
-                            alignItems: "center",
-                        }}
-                        onPress={() => setModalMemberships(false)}
-                    >
-                        <Text style={{ margin: 7, fontSize: RFPercentage(2) }}>닫기</Text>
-                    </TouchableOpacity>
-                    <View
-                        style={{
-                            borderWidth: "0.5",
-                            marginHorizontal: 5,
-                            borderColor: "grey",
-                        }}
-                    />
-                    <View style={{ padding: 7 }}>
-                        <Text
-                            style={{
-                                fontSize: RFPercentage(2.5),
-                                fontWeight: "bold",
-                            }}
-                        >
-                            이용권 정보
-                        </Text>
-                        {selectedIndex === -1 ? (
-                            <Text>Error</Text>
-                        ) : (
-                            clientInfos[selectedIndex].membership.kinds.map((v, index) => (
-                                <View
-                                    key={index}
-                                    style={{
-                                        paddingLeft: 10,
-                                        flexDirection: "row",
-                                        alignItems: "center",
-                                    }}
-                                >
-                                    <Text
-                                        style={{
-                                            flex: 1,
-                                            fontSize: RFPercentage(2),
-                                        }}
-                                    >
-                                        {enToKo(v)}
-                                    </Text>
-                                    <Text
-                                        style={{
-                                            flex: 6,
-                                            fontSize: RFPercentage(2),
-                                        }}
-                                    >
-                                        {" : " +
-                                            (v === "pt"
-                                                ? clientInfos[selectedIndex].membership[v].count +
-                                                  "번 남음"
-                                                : clientInfos[selectedIndex].membership[v].month +
-                                                  "개월권 (" +
-                                                  moment(
-                                                      clientInfos[selectedIndex].membership[
-                                                          v
-                                                      ].end.toDate()
-                                                  ).format("YYYY. MM. DD.") +
-                                                  " 까지)")}
-                                    </Text>
-                                </View>
-                            ))
-                        )}
-                    </View>
-                </View>
-            </Modal>
         </SafeAreaView>
     );
 };

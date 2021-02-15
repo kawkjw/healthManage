@@ -1,11 +1,15 @@
 import React, { useEffect, useState } from "react";
-import { Image, SafeAreaView, Text, View } from "react-native";
+import { Alert, Image, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
 import { db } from "../../../config/MyBase";
 import moment from "moment";
 import { MyStyles } from "../../../css/MyStyles";
-import { widthPercentageToDP as wp } from "react-native-responsive-screen";
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { pushNotificationsToPerson } from "../../../config/MyExpo";
 
 export default ShowUser = ({ route }) => {
     const { user } = route.params;
@@ -13,6 +17,8 @@ export default ShowUser = ({ route }) => {
     const [membership, setMembership] = useState({});
     const [membershipKinds, setMembershipKinds] = useState([]);
     const [locker, setLocker] = useState(0);
+    const [extendList, setExtendList] = useState([]);
+    const [change, setChange] = useState(false);
 
     const getMembership = async () => {
         await db
@@ -45,11 +51,29 @@ export default ShowUser = ({ route }) => {
             });
     };
 
+    const getExtends = async () => {
+        await db
+            .collection("users")
+            .doc(user.uid)
+            .collection("extends")
+            .orderBy("submitDate", "desc")
+            .get()
+            .then((docs) => {
+                let list = [];
+                docs.forEach((doc) => {
+                    list.push({ ...doc.data(), id: doc.id });
+                });
+                setExtendList(list);
+            });
+    };
+
     const getter = async () => {
         setIsLoading(true);
         await getMembership().then(async () => {
-            await getLocker().then(() => {
-                setIsLoading(false);
+            await getExtends().then(async () => {
+                await getLocker().then(() => {
+                    setIsLoading(false);
+                });
             });
         });
     };
@@ -87,13 +111,15 @@ export default ShowUser = ({ route }) => {
                 >
                     <MaterialCommunityIcons
                         name="check-circle-outline"
-                        size={RFPercentage(2.5)}
+                        size={RFPercentage(2)}
                         color="black"
                     />
                     <View style={{ flex: 1, alignItems: "flex-end" }}>
-                        <Text>{enToKo(kind)}: </Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>{enToKo(kind)}: </Text>
                     </View>
-                    <Text style={{ flex: 4 }}>{membership[kind].count}회 남음</Text>
+                    <Text style={{ flex: 4, fontSize: RFPercentage(2) }}>
+                        {membership[kind].count}회 남음
+                    </Text>
                 </View>
             );
         } else {
@@ -108,13 +134,13 @@ export default ShowUser = ({ route }) => {
                 >
                     <MaterialCommunityIcons
                         name="check-circle-outline"
-                        size={RFPercentage(2.5)}
+                        size={RFPercentage(2)}
                         color="black"
                     />
                     <View style={{ flex: 1, alignItems: "flex-end" }}>
-                        <Text>{enToKo(kind)}: </Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>{enToKo(kind)}: </Text>
                     </View>
-                    <Text style={{ flex: 4 }}>
+                    <Text style={{ flex: 4, fontSize: RFPercentage(2) }}>
                         {moment(membership[kind].start.toDate()).format("YYYY. MM. DD.") +
                             " ~ " +
                             moment(membership[kind].end.toDate()).format("YYYY. MM. DD.")}
@@ -127,7 +153,63 @@ export default ShowUser = ({ route }) => {
 
     useEffect(() => {
         getter();
-    }, []);
+    }, [change]);
+
+    const onConfirm = async (extendInfo) => {
+        const confirmDate = new Date();
+        const { extendDate, extendMembership } = extendInfo;
+        const promises = extendMembership.map(async (memName) => {
+            const changeEnd = moment(membership[memName].end.toDate())
+                .add(extendDate, "days")
+                .toDate();
+            await db
+                .collection("users")
+                .doc(user.uid)
+                .collection("memberships")
+                .doc(memName)
+                .get()
+                .then((doc) => {
+                    if (doc.data().extended === undefined) {
+                        doc.ref.set({ end: changeEnd, extended: 1 }, { merge: true });
+                    } else if (doc.data().month === 12) {
+                        doc.ref.set({ end: changeEnd, extended: 2 }, { merge: true });
+                    }
+                });
+        });
+        await db
+            .collection("users")
+            .doc(user.uid)
+            .collection("extends")
+            .doc(extendInfo.id)
+            .set({ confirm: true, confirmDate: confirmDate }, { merge: true });
+        await Promise.all(promises);
+        await pushNotificationsToPerson(
+            "관리자",
+            user.uid,
+            "연장 신청 승인 완료",
+            "이용권 연장 신청 승인되었습니다.",
+            { navigation: "Profile" }
+        );
+        setChange(!change);
+        Alert.alert("Success", "연장 승인 됨");
+    };
+
+    const onCancel = async (extendInfo) => {
+        await db
+            .collection("users")
+            .doc(user.uid)
+            .collection("extends")
+            .doc(extendInfo.id)
+            .delete();
+        await pushNotificationsToPerson(
+            "관리자",
+            user.uid,
+            "연장 신청 승인 취소",
+            "이용권 연장 신청 취소되었습니다."
+        );
+        setChange(!change);
+        Alert.alert("Success", "연장 취소 됨");
+    };
 
     return (
         <SafeAreaView style={{ flex: 1, alignItems: "center" }}>
@@ -152,15 +234,115 @@ export default ShowUser = ({ route }) => {
                     ]}
                 >
                     <View style={{ marginBottom: 10 }}>
-                        <Text>이름 : {user.name}</Text>
-                        <Text>이메일 : {user.email}</Text>
-                        <Text>휴대폰번호 : {user.phoneNumber}</Text>
-                        <Text>보관함 번호 : {locker === 0 ? "없음" : locker}</Text>
-                        <Text>유저 ID : {user.uid}</Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>이름 : {user.name}</Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>이메일 : {user.email}</Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>
+                            휴대폰번호 : {user.phoneNumber}
+                        </Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>
+                            보관함 번호 : {locker === 0 ? "없음" : locker}
+                        </Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>유저 ID : {user.uid}</Text>
                     </View>
 
-                    <Text style={{ fontSize: RFPercentage(2.5) }}>이용권 현황</Text>
-                    {membershipKinds.length === 0 ? (
+                    <View style={{ marginBottom: 5 }}>
+                        <Text style={{ fontSize: RFPercentage(2.3) }}>이용권 현황</Text>
+                        {membershipKinds.length === 0 ? (
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    marginBottom: 1,
+                                }}
+                            >
+                                <MaterialCommunityIcons
+                                    name="close-circle-outline"
+                                    size={RFPercentage(2.3)}
+                                    color="black"
+                                />
+                                <Text
+                                    style={{
+                                        fontSize: RFPercentage(2),
+                                        marginLeft: 3,
+                                    }}
+                                >
+                                    이용권이 없습니다.
+                                </Text>
+                            </View>
+                        ) : (
+                            membershipKinds.map((kind, index) => renderMembership(kind, index))
+                        )}
+                    </View>
+
+                    <Text style={{ fontSize: RFPercentage(2.3) }}>이용권 연장 확인</Text>
+                    {extendList.length !== 0 ? (
+                        extendList.map((obj, index) => (
+                            <View
+                                key={index}
+                                style={{
+                                    paddingLeft: 10,
+                                    flexDirection: "row",
+                                    alignItems: "center",
+                                    marginBottom: 10,
+                                }}
+                            >
+                                <Text style={{ fontSize: RFPercentage(2), flex: 2 }}>
+                                    {obj.extendDate}일 연장(사유: {obj.extendReason})
+                                </Text>
+                                {obj.confirm ? (
+                                    <Text style={{ fontSize: RFPercentage(2) }}>승인완료</Text>
+                                ) : (
+                                    <>
+                                        <TouchableOpacity
+                                            style={[
+                                                MyStyles.buttonShadow,
+                                                MyStyles.flexCenter,
+                                                {
+                                                    borderRadius: 10,
+                                                    height: hp("3%"),
+                                                    marginRight: 5,
+                                                },
+                                            ]}
+                                            onPress={() =>
+                                                Alert.alert("Warning", "승인하시겠습니까?", [
+                                                    { text: "Cancel", style: "cancel" },
+                                                    { text: "OK", onPress: () => onConfirm(obj) },
+                                                ])
+                                            }
+                                        >
+                                            <Text style={{ fontSize: RFPercentage(2) }}>승인</Text>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity
+                                            style={[
+                                                MyStyles.buttonShadow,
+                                                MyStyles.flexCenter,
+                                                {
+                                                    borderRadius: 10,
+                                                    height: hp("3%"),
+                                                    marginLeft: 5,
+                                                },
+                                            ]}
+                                            onPress={() =>
+                                                Alert.alert("Warning", "신청 취소하시겠습니까", [
+                                                    { text: "Cancel", style: "cancel" },
+                                                    { text: "OK", onPress: () => onCancel(obj) },
+                                                ])
+                                            }
+                                        >
+                                            <Text
+                                                style={{
+                                                    fontSize: RFPercentage(2),
+                                                    color: "red",
+                                                }}
+                                            >
+                                                취소
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </>
+                                )}
+                            </View>
+                        ))
+                    ) : (
                         <View
                             style={{
                                 flexDirection: "row",
@@ -170,7 +352,7 @@ export default ShowUser = ({ route }) => {
                         >
                             <MaterialCommunityIcons
                                 name="close-circle-outline"
-                                size={RFPercentage(2.5)}
+                                size={RFPercentage(2.3)}
                                 color="black"
                             />
                             <Text
@@ -179,11 +361,9 @@ export default ShowUser = ({ route }) => {
                                     marginLeft: 3,
                                 }}
                             >
-                                이용권이 없습니다.
+                                연장 신청 내역이 없습니다.
                             </Text>
                         </View>
-                    ) : (
-                        membershipKinds.map((kind, index) => renderMembership(kind, index))
                     )}
                 </View>
             )}

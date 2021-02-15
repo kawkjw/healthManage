@@ -563,6 +563,7 @@ export default PT = ({ navigation, route }) => {
                 )}
                 numColumns={7}
                 keyExtractor={(item, index) => index}
+                scrollEnabled={false}
             />
             <SegmentedPicker
                 ref={picker}

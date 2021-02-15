@@ -325,6 +325,7 @@ export default GX = ({ navigation, route }) => {
                 )}
                 numColumns={7}
                 keyExtractor={(item, index) => index}
+                scrollEnabled={false}
             />
             <SegmentedPicker
                 ref={picker}
