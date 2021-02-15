@@ -194,12 +194,25 @@ export default ClassInfo = ({ navigation }) => {
                             if (d.currentClient >= 1) {
                                 await db
                                     .collection(d.path + "/clients")
-                                    .orderBy("name", "asc")
                                     .get()
-                                    .then((clients) => {
+                                    .then(async (clients) => {
+                                        let uidList = [];
                                         clients.forEach((client) => {
-                                            temp[index]["clients"].push(client.data());
+                                            uidList.push(client.data().uid);
                                         });
+                                        const infoPromises = uidList.map(async (clientUid) => {
+                                            await db
+                                                .collection("users")
+                                                .doc(clientUid)
+                                                .get()
+                                                .then((doc) => {
+                                                    temp[index]["clients"].push({
+                                                        name: doc.data().name,
+                                                        phoneNumber: doc.data().phoneNumber,
+                                                    });
+                                                });
+                                        });
+                                        await Promise.all(infoPromises);
                                     });
                             }
                         });
@@ -244,8 +257,10 @@ export default ClassInfo = ({ navigation }) => {
         if (selectedMonth === 1) {
             setSelectedMonth(12);
             setSelectedYear(selectedYear - 1);
+            setSelections({ year: (selectedYear - 1).toString(), month: "12" });
         } else {
             setSelectedMonth(selectedMonth - 1);
+            setSelections({ year: selectedYear.toString(), month: (selectedMonth - 1).toString() });
         }
         setChange(!change);
     };
@@ -254,8 +269,10 @@ export default ClassInfo = ({ navigation }) => {
         if (selectedMonth === 12) {
             setSelectedMonth(1);
             setSelectedYear(selectedYear + 1);
+            setSelections({ year: (selectedYear + 1).toString(), month: "1" });
         } else {
             setSelectedMonth(selectedMonth + 1);
+            setSelections({ year: selectedYear.toString(), month: (selectedMonth + 1).toString() });
         }
         setChange(!change);
     };
@@ -384,6 +401,7 @@ export default ClassInfo = ({ navigation }) => {
                     setSelectedMonth(Number(select.month));
                     setChange(!change);
                 }}
+                confirmText="확인"
                 defaultSelections={selections}
                 options={[
                     {
@@ -417,7 +435,7 @@ export default ClassInfo = ({ navigation }) => {
                             setSelectedDate(0);
                         }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2) }}>Close</Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>닫기</Text>
                     </TouchableOpacity>
                     <View style={{ height: 30 }}></View>
                     <Text
@@ -554,7 +572,7 @@ export default ClassInfo = ({ navigation }) => {
                             setModalClassInfo(true);
                         }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2) }}>Close</Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>닫기</Text>
                     </TouchableOpacity>
                     <View
                         style={{
@@ -579,7 +597,7 @@ export default ClassInfo = ({ navigation }) => {
                                     fontSize: RFPercentage(2.3),
                                 }}
                             >
-                                No Client
+                                예약한 고객이 없습니다.
                             </Text>
                         ) : (
                             selectedClass.clients.map((client, index) => (

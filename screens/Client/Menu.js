@@ -1,6 +1,7 @@
 import React from "react";
 import { Dimensions, SafeAreaView, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { MyStyles } from "../../css/MyStyles";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 export default Menu = ({ navigation }) => {
     const { width } = Dimensions.get("screen");
@@ -24,7 +25,7 @@ export default Menu = ({ navigation }) => {
                     ]}
                     onPress={() => navigation.navigate("Info")}
                 >
-                    <Text>Information</Text>
+                    <Text style={{ fontSize: RFPercentage(2.3) }}>정보</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -34,7 +35,7 @@ export default Menu = ({ navigation }) => {
                     ]}
                     onPress={() => navigation.navigate("Class")}
                 >
-                    <Text>Reservation</Text>
+                    <Text style={{ fontSize: RFPercentage(2.3) }}>예약</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -46,11 +47,11 @@ export default Menu = ({ navigation }) => {
                         Alert.alert(
                             "주의사항",
                             "3개월권은 연장 불가능이며, 6개월권은 1번, 12개월권은 2번까지 연장 가능합니다.",
-                            [{ text: "OK", onPress: () => navigation.navigate("ExtendDate") }]
+                            [{ text: "확인", onPress: () => navigation.navigate("ExtendDate") }]
                         )
                     }
                 >
-                    <Text>Extend Membership</Text>
+                    <Text style={{ fontSize: RFPercentage(2.3) }}>회원권 연장 신청</Text>
                 </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>

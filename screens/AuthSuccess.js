@@ -95,7 +95,7 @@ const MyStack = () => {
         user.sendEmailVerification()
             .then(() => {
                 console.log("Send Email");
-                Alert.alert("Success", "Check your email for verification!", [{ text: "OK" }]);
+                Alert.alert("성공", "인증 메일을 확인해주세요.", [{ text: "확인" }]);
             })
             .catch((error) => console.log(error));
     };

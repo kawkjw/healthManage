@@ -292,7 +292,7 @@ export default Profile = ({ navigation }) => {
         const phoneProvider = new firebase.auth.PhoneAuthProvider();
         await phoneProvider.verifyPhoneNumber(profilePhone, appVerifier.current).then((id) => {
             setVerificationId(id);
-            Alert.alert("Send Code", "Check your message");
+            Alert.alert("성공", "인증 문자를 확인해주세요.", [{ text: "확인" }]);
         });
     };
 
@@ -314,9 +314,9 @@ export default Profile = ({ navigation }) => {
                                 thisuser.update({
                                     phoneNumber: changePhone,
                                 });
-                                Alert.alert("Success", "Update Success", [
+                                Alert.alert("성공", "변경되었습니다.", [
                                     {
-                                        text: "OK",
+                                        text: "확인",
                                         onPress: () => {
                                             setChangePhone("");
                                             setChange(!change);
@@ -332,7 +332,7 @@ export default Profile = ({ navigation }) => {
                     console.log(error.code, error.message);
                 });
         } else {
-            Alert.alert("Error", "This account is not yours", [{ text: "OK" }]);
+            Alert.alert("경고", "이 계정은 당신 것이 아닙니다.", [{ text: "확인" }]);
             signOut();
         }
     };
@@ -415,9 +415,9 @@ export default Profile = ({ navigation }) => {
                                     });
                                 }
                             });
-                            Alert.alert("Success", "Changed Email", [
+                            Alert.alert("성공", "변경되었습니다.", [
                                 {
-                                    text: "OK",
+                                    text: "확인",
                                     onPress: () => {
                                         setChangeEmail("");
                                         setChkUsedEmail(false);
@@ -429,19 +429,17 @@ export default Profile = ({ navigation }) => {
                 })
                 .catch((error) => {
                     console.log(error.code, error.message);
-                    Alert.alert("Error", "Wrong Password", [
-                        { text: "OK", onPress: () => setPassword("") },
+                    Alert.alert("경고", "비밀번호가 틀립니다.", [
+                        { text: "확인", onPress: () => setPassword("") },
                     ]);
                 });
         } else {
-            Alert.alert("Error", "This account is not yours", [
+            Alert.alert("경고", "이 계정은 당신 것이 아닙니다.", [
                 {
-                    text: "OK",
-                    onPress: () => {
-                        signOut();
-                    },
+                    text: "확인",
                 },
             ]);
+            signOut();
         }
     };
 
@@ -463,7 +461,7 @@ export default Profile = ({ navigation }) => {
                             setIsRun(!isRun);
                             setCount(15);
                         } else {
-                            Alert.alert("Error", "No Memberships");
+                            Alert.alert("경고", "회원권이 없습니다.");
                         }
                     }}
                 >
@@ -484,7 +482,7 @@ export default Profile = ({ navigation }) => {
                                     />
                                 ) : undefined}
 
-                                <Text style={{ marginTop: 10 }}>
+                                <Text style={{ marginTop: 10, fontSize: RFPercentage(2.3) }}>
                                     유효시간 {isRun ? count : 0}초
                                 </Text>
                             </View>
@@ -498,7 +496,7 @@ export default Profile = ({ navigation }) => {
                             />
                         </>
                     )}
-                    <TouchableOpacity
+                    {/*<TouchableOpacity
                         style={[MyStyles.backButton, MyStyles.buttonShadow, { borderRadius: 10 }]}
                         onPress={() => {
                             setIsRun(false);
@@ -506,7 +504,7 @@ export default Profile = ({ navigation }) => {
                         }}
                     >
                         <Text>뒤로가기</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity>*/}
                 </TouchableOpacity>
                 <View style={[MyStyles.buttonShadow, { width: widthButton, height: "40%" }]}>
                     {loading ? (
@@ -561,7 +559,7 @@ export default Profile = ({ navigation }) => {
                                                 setModalPhoneVisible(!modalPhoneVisible);
                                             }}
                                         >
-                                            <Text style={{ fontSize: RFPercentage(2) }}>Close</Text>
+                                            <Text style={{ fontSize: RFPercentage(2) }}>닫기</Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity
                                             style={{ flex: 1 }}
@@ -581,7 +579,7 @@ export default Profile = ({ navigation }) => {
                                                 }}
                                             >
                                                 <Text style={AuthStyles.text}>
-                                                    Enter Change Phone Number
+                                                    변경할 휴대폰 번호
                                                 </Text>
                                                 <View
                                                     style={{
@@ -610,7 +608,9 @@ export default Profile = ({ navigation }) => {
                                                         onPress={() => sendCode()}
                                                         disabled={!changePhone}
                                                     >
-                                                        <Text>Send</Text>
+                                                        <Text style={{ fontSize: RFPercentage(2) }}>
+                                                            전송
+                                                        </Text>
                                                     </TouchableOpacity>
                                                 </View>
                                                 <View style={{ marginBottom: 10 }}>
@@ -620,7 +620,7 @@ export default Profile = ({ navigation }) => {
                                                                 marginBottom: 5,
                                                             }}
                                                         >
-                                                            Sended Code
+                                                            인증 코드 발송되었습니다.
                                                         </Text>
                                                     )}
                                                     <TextInput
@@ -653,9 +653,9 @@ export default Profile = ({ navigation }) => {
                                                             dbChangePhone();
                                                         } else {
                                                             Alert.alert(
-                                                                "Error",
-                                                                "Please Send Code to verify",
-                                                                [{ text: "OK" }]
+                                                                "경고",
+                                                                "인증을 위한 문자 전송 버튼을 눌러주세요.",
+                                                                [{ text: "확인" }]
                                                             );
                                                         }
                                                     }}
@@ -665,7 +665,9 @@ export default Profile = ({ navigation }) => {
                                                         !verifyCode
                                                     }
                                                 >
-                                                    <Text>Submit</Text>
+                                                    <Text style={{ fontSize: RFPercentage(2) }}>
+                                                        확인
+                                                    </Text>
                                                 </TouchableOpacity>
                                             </View>
                                         </TouchableOpacity>
@@ -709,7 +711,7 @@ export default Profile = ({ navigation }) => {
                                                 setModalEmailVisible(!modalEmailVisible);
                                             }}
                                         >
-                                            <Text style={{ fontSize: RFPercentage(2) }}>Close</Text>
+                                            <Text style={{ fontSize: RFPercentage(2) }}>닫기</Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity
                                             style={{ flex: 1 }}
@@ -726,12 +728,11 @@ export default Profile = ({ navigation }) => {
                                             >
                                                 <View style={AuthStyles.textView}>
                                                     <Text style={AuthStyles.text}>
-                                                        Enter Change Email
+                                                        변경할 이메일 주소
                                                     </Text>
                                                     <View
                                                         style={{
                                                             flexDirection: "row",
-                                                            marginBottom: 10,
                                                         }}
                                                     >
                                                         <TextInput
@@ -765,14 +766,18 @@ export default Profile = ({ navigation }) => {
                                                             onPress={() => checkUsedEmail()}
                                                             disabled={!changePhone}
                                                         >
-                                                            <Text>중복확인</Text>
+                                                            <Text
+                                                                style={{
+                                                                    fontSize: RFPercentage(2),
+                                                                }}
+                                                            >
+                                                                중복확인
+                                                            </Text>
                                                         </TouchableOpacity>
                                                     </View>
                                                 </View>
                                                 <View style={AuthStyles.textView}>
-                                                    <Text style={AuthStyles.text}>
-                                                        Enter Password
-                                                    </Text>
+                                                    <Text style={AuthStyles.text}>비밀번호</Text>
                                                     <TextInput
                                                         style={AuthStyles.textInput}
                                                         placeholder="Input password"
@@ -796,7 +801,9 @@ export default Profile = ({ navigation }) => {
                                                         !changeEmail || !password || !chkUsedEmail
                                                     }
                                                 >
-                                                    <Text>Submit</Text>
+                                                    <Text style={{ fontSize: RFPercentage(2) }}>
+                                                        확인
+                                                    </Text>
                                                 </TouchableOpacity>
                                             </View>
                                         </TouchableOpacity>

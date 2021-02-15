@@ -25,8 +25,7 @@ export const MyStyles = StyleSheet.create({
     profileButton: {
         aspectRatio: 1,
         alignItems: "center",
-        paddingHorizontal: 20,
-        paddingBottom: 20,
+        padding: 20,
     },
     image: {
         aspectRatio: 1,

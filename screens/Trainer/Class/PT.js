@@ -232,8 +232,10 @@ export default PT = ({ navigation, route }) => {
         if (selectedMonth === 1) {
             setSelectedMonth(12);
             setSelectedYear(selectedYear - 1);
+            setSelections({ year: (selectedYear - 1).toString(), month: "12" });
         } else {
             setSelectedMonth(selectedMonth - 1);
+            setSelections({ year: selectedYear.toString(), month: (selectedMonth - 1).toString() });
         }
         setChange(!change);
     };
@@ -242,8 +244,10 @@ export default PT = ({ navigation, route }) => {
         if (selectedMonth === 12) {
             setSelectedMonth(1);
             setSelectedYear(selectedYear + 1);
+            setSelections({ year: (selectedYear + 1).toString(), month: "1" });
         } else {
             setSelectedMonth(selectedMonth + 1);
+            setSelections({ year: selectedYear.toString(), month: (selectedMonth + 1).toString() });
         }
         setChange(!change);
     };
@@ -355,14 +359,14 @@ export default PT = ({ navigation, route }) => {
                 .doc(availTime)
                 .update({ confirm: true });
         }
-        Alert.alert("Success", "Confirm Class", [
+        Alert.alert("성공", "예약 승인되었습니다.", [
             {
-                text: "OK",
+                text: "확인",
                 onPress: async () => {
                     await pushNotificationsToPerson(
                         myBase.auth().currentUser.displayName,
                         clientUid,
-                        "Confirmed Reservation",
+                        "예약 승인되었습니다.",
                         `${selectedDate}일 ${availTime}`,
                         { navigation: "Profile" }
                     );
@@ -457,9 +461,9 @@ export default PT = ({ navigation, route }) => {
                         .update({ count: count + 1 });
                 });
         }
-        Alert.alert("Success", "Cancel Class", [
+        Alert.alert("취소됨", "예약이 취소되었습니다.", [
             {
-                text: "OK",
+                text: "확인",
                 onPress: () => {
                     const backup = selectedDate;
                     setSelectedDate(0);
@@ -573,6 +577,7 @@ export default PT = ({ navigation, route }) => {
                     setSelectedMonth(Number(select.month));
                     setChange(!change);
                 }}
+                confirmText="확인"
                 defaultSelections={selections}
                 options={[
                     {
@@ -608,12 +613,12 @@ export default PT = ({ navigation, route }) => {
                                 setChange(!change);
                             } else {
                                 Alert.alert(
-                                    "Warning",
-                                    "You don't finish setting up time\nDo you want to go Back?",
+                                    "경고",
+                                    "시간 설정이 완료되지 않았습니다.\n전 화면으로 돌아가길 원하십니까?",
                                     [
-                                        { text: "Cancel" },
+                                        { text: "취소" },
                                         {
-                                            text: "OK",
+                                            text: "확인",
                                             onPress: () => {
                                                 setModalTimeTable(false);
                                                 setSelectedDate(0);
@@ -624,7 +629,7 @@ export default PT = ({ navigation, route }) => {
                             }
                         }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2) }}>Close</Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>닫기</Text>
                     </TouchableOpacity>
                     <View
                         style={{
@@ -717,7 +722,7 @@ export default PT = ({ navigation, route }) => {
                                                     ]}
                                                     onPress={() => setAvailableTime(availTime.str)}
                                                 >
-                                                    <Text>Available</Text>
+                                                    <Text>가능</Text>
                                                 </TouchableOpacity>
                                                 <TouchableOpacity
                                                     style={[
@@ -729,7 +734,7 @@ export default PT = ({ navigation, route }) => {
                                                     ]}
                                                     onPress={() => setUnAvailabeTime(availTime.str)}
                                                 >
-                                                    <Text>Unavailable</Text>
+                                                    <Text>불가능</Text>
                                                 </TouchableOpacity>
                                             </>
                                         ) : (
@@ -772,7 +777,7 @@ export default PT = ({ navigation, route }) => {
                                                                 </TouchableOpacity>
                                                             </>
                                                         ) : (
-                                                            <Text>No Reservation</Text>
+                                                            <Text>예약이 없습니다.</Text>
                                                         )}
                                                     </View>
                                                 ) : (
@@ -787,7 +792,7 @@ export default PT = ({ navigation, route }) => {
                                                                 color: "red",
                                                             }}
                                                         >
-                                                            Unavailable
+                                                            불가능
                                                         </Text>
                                                     </View>
                                                 )}
@@ -803,14 +808,14 @@ export default PT = ({ navigation, route }) => {
                                                             ]}
                                                             onPress={() =>
                                                                 Alert.alert(
-                                                                    "Cancel",
-                                                                    "Are you sure?",
+                                                                    "예약취소",
+                                                                    "예약 취소하시겠습니까?",
                                                                     [
                                                                         {
-                                                                            text: "Cancel",
+                                                                            text: "취소",
                                                                         },
                                                                         {
-                                                                            text: "OK",
+                                                                            text: "확인",
                                                                             onPress: () =>
                                                                                 cancelClass(
                                                                                     availTime.clientUid,
@@ -821,7 +826,7 @@ export default PT = ({ navigation, route }) => {
                                                                 )
                                                             }
                                                         >
-                                                            <Text>Cancel</Text>
+                                                            <Text>취소</Text>
                                                         </TouchableOpacity>
                                                     ) : (
                                                         <>
@@ -836,14 +841,14 @@ export default PT = ({ navigation, route }) => {
                                                                 ]}
                                                                 onPress={() =>
                                                                     Alert.alert(
-                                                                        "Confirm",
-                                                                        "Are you sure?",
+                                                                        "예약승인",
+                                                                        "예약 승인하시겠습니까?",
                                                                         [
                                                                             {
-                                                                                text: "Cancel",
+                                                                                text: "취소",
                                                                             },
                                                                             {
-                                                                                text: "OK",
+                                                                                text: "확인",
                                                                                 onPress: () =>
                                                                                     confirmClass(
                                                                                         availTime.clientUid,
@@ -854,7 +859,7 @@ export default PT = ({ navigation, route }) => {
                                                                     )
                                                                 }
                                                             >
-                                                                <Text>Confirm</Text>
+                                                                <Text>확인</Text>
                                                             </TouchableOpacity>
                                                             <TouchableOpacity
                                                                 style={[
@@ -867,14 +872,14 @@ export default PT = ({ navigation, route }) => {
                                                                 ]}
                                                                 onPress={() =>
                                                                     Alert.alert(
-                                                                        "Cancel",
-                                                                        "Are you sure?",
+                                                                        "예약 취소",
+                                                                        "예약 취소하시겠습니까?",
                                                                         [
                                                                             {
-                                                                                text: "Cancel",
+                                                                                text: "취소",
                                                                             },
                                                                             {
-                                                                                text: "OK",
+                                                                                text: "확인",
                                                                                 onPress: () =>
                                                                                     cancelClass(
                                                                                         availTime.clientUid,
@@ -885,7 +890,7 @@ export default PT = ({ navigation, route }) => {
                                                                     )
                                                                 }
                                                             >
-                                                                <Text>Cancel</Text>
+                                                                <Text>취소</Text>
                                                             </TouchableOpacity>
                                                         </>
                                                     )
@@ -902,7 +907,7 @@ export default PT = ({ navigation, route }) => {
                                                             resetAvailTime(availTime.str)
                                                         }
                                                     >
-                                                        <Text>Reset</Text>
+                                                        <Text>리셋</Text>
                                                     </TouchableOpacity>
                                                 )}
                                             </View>

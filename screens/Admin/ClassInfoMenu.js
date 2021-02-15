@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { Dimensions, SafeAreaView, ScrollView, Text, TouchableOpacity } from "react-native";
+import { RFPercentage } from "react-native-responsive-fontsize";
 import myBase, { db } from "../../config/MyBase";
 import { MyStyles } from "../../css/MyStyles";
 import { AuthContext } from "../Auth";
@@ -43,7 +44,7 @@ export default ClientInfoMenu = ({ navigation, route }) => {
                     ]}
                     onPress={() => navigation.navigate("PtInfo")}
                 >
-                    <Text>PT</Text>
+                    <Text style={{ fontSize: RFPercentage(2.3) }}>PT</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -53,7 +54,7 @@ export default ClientInfoMenu = ({ navigation, route }) => {
                     ]}
                     onPress={() => navigation.navigate("GxInfo")}
                 >
-                    <Text>GX</Text>
+                    <Text style={{ fontSize: RFPercentage(2.3) }}>GX</Text>
                 </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>

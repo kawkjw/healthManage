@@ -72,13 +72,13 @@ export default function Auth({ navigation, route }) {
                     })
                     .catch((error) => {
                         if (error.code === "auth/wrong-password") {
-                            Alert.alert("Error", "Wrong Password", [{ text: "OK" }]);
+                            Alert.alert("경고", "잘못된 비밀번호입니다.", [{ text: "확인" }]);
                         } else if (error.code === "auth/invalid-email") {
-                            Alert.alert("Error", "Input correct email", [{ text: "OK" }]);
+                            Alert.alert("경고", "잘못된 이메일 형식입니다.", [{ text: "확인" }]);
                         } else if (error.code === "auth/user-not-found") {
-                            Alert.alert("Error", "User not found", [{ text: "OK" }]);
+                            Alert.alert("경고", "가입되지 않은 이메일입니다.", [{ text: "확인" }]);
                         } else {
-                            Alert.alert("Error", error.message, [{ text: "OK" }]);
+                            Alert.alert("Error", error.message, [{ text: "확인" }]);
                         }
                         throw Error();
                     });
@@ -210,17 +210,17 @@ export default function Auth({ navigation, route }) {
                             .then(() => {
                                 console.log("Send Email");
                                 Alert.alert(
-                                    "Success",
-                                    "Complete Sign Up\nCheck your email for verification!",
+                                    "성공",
+                                    "회원가입이 완료되었습니다.\n인증 메일을 획인해주세요.",
                                     [
                                         {
-                                            text: "OK",
+                                            text: "확인",
                                             onPress: () => {
                                                 if (!isAdmin) {
                                                     pushNotificationsToAdmin(
                                                         name,
-                                                        "New Client",
-                                                        "Signed Up",
+                                                        "새로운 고객",
+                                                        "회원가입했습니다.",
                                                         {
                                                             navigation: "FindUser",
                                                             datas: {
@@ -241,15 +241,15 @@ export default function Auth({ navigation, route }) {
                         const errorCode = error.code;
                         const errorMessage = error.message;
                         if (errorCode === "auth/email-already-in-use") {
-                            Alert.alert("Error", "Already used Email", [{ text: "OK" }]);
+                            Alert.alert("경고", "이미 사용된 이메일입니다.", [{ text: "확인" }]);
                         } else {
                             if (errorMessage === "auth/invalid-verification-code") {
-                                Alert.alert("Error", "Wrong Code");
+                                Alert.alert("경고", "잘못된 인증 코드입니다.");
                             } else if (errorMessage === "auth/credential-already-in-use") {
-                                Alert.alert("Error", "Already Signed Up Phone Number");
+                                Alert.alert("경고", "이미 가입된 휴대폰번호입니다.");
                             } else {
                                 Alert.alert("Error", errorCode + "\n" + errorMessage, [
-                                    { text: "OK" },
+                                    { text: "확인" },
                                 ]);
                             }
                         }

@@ -8,7 +8,7 @@ import {
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { RFPercentage } from "react-native-responsive-fontsize";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import { pushNotificationsToPerson } from "../../../config/MyExpo";
 
 export default ShowUser = ({ route }) => {
@@ -115,7 +115,7 @@ export default ShowUser = ({ route }) => {
                         color="black"
                     />
                     <View style={{ flex: 1, alignItems: "flex-end" }}>
-                        <Text style={{ fontSize: RFPercentage(2) }}>{enToKo(kind)}: </Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>{enToKo(kind)} : </Text>
                     </View>
                     <Text style={{ flex: 4, fontSize: RFPercentage(2) }}>
                         {membership[kind].count}회 남음
@@ -138,12 +138,13 @@ export default ShowUser = ({ route }) => {
                         color="black"
                     />
                     <View style={{ flex: 1, alignItems: "flex-end" }}>
-                        <Text style={{ fontSize: RFPercentage(2) }}>{enToKo(kind)}: </Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>{enToKo(kind)} : </Text>
                     </View>
                     <Text style={{ flex: 4, fontSize: RFPercentage(2) }}>
                         {moment(membership[kind].start.toDate()).format("YYYY. MM. DD.") +
                             " ~ " +
-                            moment(membership[kind].end.toDate()).format("YYYY. MM. DD.")}
+                            moment(membership[kind].end.toDate()).format("YYYY. MM. DD.") +
+                            " "}
                         ({membership[kind].month}개월권)
                     </Text>
                 </View>
@@ -191,7 +192,7 @@ export default ShowUser = ({ route }) => {
             { navigation: "Profile" }
         );
         setChange(!change);
-        Alert.alert("Success", "연장 승인 됨");
+        Alert.alert("성공", "연장 승인 됨");
     };
 
     const onCancel = async (extendInfo) => {
@@ -208,7 +209,7 @@ export default ShowUser = ({ route }) => {
             "이용권 연장 신청 취소되었습니다."
         );
         setChange(!change);
-        Alert.alert("Success", "연장 취소 됨");
+        Alert.alert("성공", "연장 취소 됨");
     };
 
     return (
@@ -257,7 +258,7 @@ export default ShowUser = ({ route }) => {
                             >
                                 <MaterialCommunityIcons
                                     name="close-circle-outline"
-                                    size={RFPercentage(2.3)}
+                                    size={RFPercentage(2)}
                                     color="black"
                                 />
                                 <Text
@@ -280,15 +281,42 @@ export default ShowUser = ({ route }) => {
                             <View
                                 key={index}
                                 style={{
-                                    paddingLeft: 10,
                                     flexDirection: "row",
                                     alignItems: "center",
-                                    marginBottom: 10,
+                                    marginBottom: 3,
                                 }}
                             >
-                                <Text style={{ fontSize: RFPercentage(2), flex: 2 }}>
-                                    {obj.extendDate}일 연장(사유: {obj.extendReason})
-                                </Text>
+                                <View style={{ flex: 3 }}>
+                                    <View style={{ flexDirection: "row" }}>
+                                        <MaterialCommunityIcons
+                                            name="check-circle-outline"
+                                            size={RFPercentage(2)}
+                                            color="black"
+                                        />
+                                        <Text style={{ fontSize: RFPercentage(2) }}>
+                                            {obj.extendDate}일 연장(
+                                            {moment(obj.submitDate.toDate()).format("YY. MM. DD.") +
+                                                "에 신청"}
+                                            )
+                                        </Text>
+                                    </View>
+                                    <View
+                                        style={{
+                                            paddingLeft: RFPercentage(2) + 3,
+                                            flexDirection: "row",
+                                        }}
+                                    >
+                                        <Ionicons
+                                            name="return-down-forward-sharp"
+                                            size={RFPercentage(2)}
+                                            color="black"
+                                            style={{ marginRight: 4 }}
+                                        />
+                                        <Text style={{ fontSize: RFPercentage(2) }}>
+                                            사유: {obj.extendReason}
+                                        </Text>
+                                    </View>
+                                </View>
                                 {obj.confirm ? (
                                     <Text style={{ fontSize: RFPercentage(2) }}>승인완료</Text>
                                 ) : (
@@ -304,9 +332,9 @@ export default ShowUser = ({ route }) => {
                                                 },
                                             ]}
                                             onPress={() =>
-                                                Alert.alert("Warning", "승인하시겠습니까?", [
-                                                    { text: "Cancel", style: "cancel" },
-                                                    { text: "OK", onPress: () => onConfirm(obj) },
+                                                Alert.alert("경고", "승인하시겠습니까?", [
+                                                    { text: "취소", style: "cancel" },
+                                                    { text: "확인", onPress: () => onConfirm(obj) },
                                                 ])
                                             }
                                         >
@@ -323,9 +351,9 @@ export default ShowUser = ({ route }) => {
                                                 },
                                             ]}
                                             onPress={() =>
-                                                Alert.alert("Warning", "신청 취소하시겠습니까", [
-                                                    { text: "Cancel", style: "cancel" },
-                                                    { text: "OK", onPress: () => onCancel(obj) },
+                                                Alert.alert("경고", "신청 취소하시겠습니까", [
+                                                    { text: "취소", style: "cancel" },
+                                                    { text: "확인", onPress: () => onCancel(obj) },
                                                 ])
                                             }
                                         >
@@ -352,7 +380,7 @@ export default ShowUser = ({ route }) => {
                         >
                             <MaterialCommunityIcons
                                 name="close-circle-outline"
-                                size={RFPercentage(2.3)}
+                                size={RFPercentage(2)}
                                 color="black"
                             />
                             <Text

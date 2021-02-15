@@ -1,5 +1,6 @@
 import React from "react";
 import { Dimensions, SafeAreaView, ScrollView, Text, TouchableOpacity } from "react-native";
+import { RFPercentage } from "react-native-responsive-fontsize";
 import { MyStyles } from "../../../css/MyStyles";
 
 export default SelectMembership = ({ navigation, route }) => {
@@ -25,7 +26,7 @@ export default SelectMembership = ({ navigation, route }) => {
                     ]}
                     onPress={() => goClientsbyMembership("health")}
                 >
-                    <Text>헬스</Text>
+                    <Text style={{ fontSize: RFPercentage(2.3) }}>헬스</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -35,7 +36,7 @@ export default SelectMembership = ({ navigation, route }) => {
                     ]}
                     onPress={() => goClientsbyMembership("pt")}
                 >
-                    <Text>PT</Text>
+                    <Text style={{ fontSize: RFPercentage(2.3) }}>PT</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -45,7 +46,7 @@ export default SelectMembership = ({ navigation, route }) => {
                     ]}
                     onPress={() => goClientsbyMembership("spinning")}
                 >
-                    <Text>스피닝</Text>
+                    <Text style={{ fontSize: RFPercentage(2.3) }}>스피닝</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -55,7 +56,7 @@ export default SelectMembership = ({ navigation, route }) => {
                     ]}
                     onPress={() => goClientsbyMembership("squash")}
                 >
-                    <Text>스쿼시</Text>
+                    <Text style={{ fontSize: RFPercentage(2.3) }}>스쿼시</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -65,7 +66,7 @@ export default SelectMembership = ({ navigation, route }) => {
                     ]}
                     onPress={() => goClientsbyMembership("pilates")}
                 >
-                    <Text>필라테스</Text>
+                    <Text style={{ fontSize: RFPercentage(2.3) }}>필라테스</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -75,7 +76,7 @@ export default SelectMembership = ({ navigation, route }) => {
                     ]}
                     onPress={() => goClientsbyMembership("GX")}
                 >
-                    <Text>GX(요가, 줌바)</Text>
+                    <Text style={{ fontSize: RFPercentage(2.3) }}>GX(요가, 줌바)</Text>
                 </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>

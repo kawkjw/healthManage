@@ -11,6 +11,7 @@ import {
 import { MyStyles } from "../../css/MyStyles";
 import * as Notifications from "expo-notifications";
 import myBase, { db } from "../../config/MyBase";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 export default Home = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -92,7 +93,7 @@ export default Home = ({ navigation, route }) => {
                     ]}
                     onPress={() => navigation.navigate("ClassInfoMenu")}
                 >
-                    <Text>Class Info</Text>
+                    <Text style={{ fontSize: RFPercentage(2.3) }}>수업 정보</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -102,7 +103,7 @@ export default Home = ({ navigation, route }) => {
                     ]}
                     onPress={() => navigation.navigate("Locker")}
                 >
-                    <Text>Locker</Text>
+                    <Text style={{ fontSize: RFPercentage(2.3) }}>락커</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -112,7 +113,7 @@ export default Home = ({ navigation, route }) => {
                     ]}
                     onPress={() => navigation.navigate("ClientInfoMenu")}
                 >
-                    <Text>Client Info Menu</Text>
+                    <Text style={{ fontSize: RFPercentage(2.3) }}>고객 정보</Text>
                 </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>

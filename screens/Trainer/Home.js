@@ -13,6 +13,7 @@ import {
 import { MyStyles } from "../../css/MyStyles";
 import * as Notifications from "expo-notifications";
 import myBase, { db } from "../../config/MyBase";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 export default Home = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -81,9 +82,9 @@ export default Home = ({ navigation, route }) => {
     const goMyClass = async () => {
         const { className } = (await db.collection("users").doc(uid).get()).data();
         if (className === "Need to Set Up") {
-            Alert.alert("Error", "Need to set up your class\nPlease set up in Profile", [
+            Alert.alert("경고", "담당 과목 설정이 안되어 있습니다.\n내 정보에서 설정해주세요.", [
                 {
-                    text: "OK",
+                    text: "확인",
                     onPress: () => navigation.navigate("Profile", { showModal: true }),
                 },
             ]);
@@ -112,7 +113,7 @@ export default Home = ({ navigation, route }) => {
                     ]}
                     onPress={() => navigation.navigate("Profile")}
                 >
-                    <Text>Profile</Text>
+                    <Text style={{ fontSize: RFPercentage(2.3) }}>내 정보</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -122,7 +123,7 @@ export default Home = ({ navigation, route }) => {
                     ]}
                     onPress={() => goMyClass()}
                 >
-                    <Text>Class Info</Text>
+                    <Text style={{ fontSize: RFPercentage(2.3) }}>수업 정보</Text>
                 </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>

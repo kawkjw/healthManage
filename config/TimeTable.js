@@ -195,10 +195,13 @@ export default TimeTable = ({ classData, kind = "pt", style, ...props }) => {
                                         <Text>
                                             {c.hasClass
                                                 ? c.kind === "pt"
-                                                    ? c.classInfo.clientName +
-                                                      " PT (" +
-                                                      c.classInfo.remainCount +
-                                                      "회 남음)"
+                                                    ? c.classInfo.remainCount === -1
+                                                        ? c.classInfo.clientName +
+                                                          " PT(회원권 없음)"
+                                                        : c.classInfo.clientName +
+                                                          " PT (" +
+                                                          c.classInfo.remainCount +
+                                                          "회 남음)"
                                                     : enToKo(c.classInfo.className) +
                                                       " (" +
                                                       c.classInfo.currentClient +

@@ -16,8 +16,8 @@ export const registerForPushNotificationAsync = async () => {
         finalStatus = status;
     }
     if (finalStatus !== "granted") {
-        Alert.alert("Fail", "Failed for Notifications", [
-            { text: "OK", onPress: () => Linking.openSettings() },
+        Alert.alert("경고", "알림 권한이 거부되어 있습니다.", [
+            { text: "확인", onPress: () => Linking.openSettings() },
         ]);
         return null;
     }

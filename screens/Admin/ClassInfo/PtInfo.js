@@ -169,14 +169,20 @@ export default ClassInfo = ({ navigation }) => {
                                 const { name } = (
                                     await db.collection("users").doc(v.clientUid).get()
                                 ).data();
-                                const { count } = (
-                                    await db
-                                        .collection("users")
-                                        .doc(v.clientUid)
-                                        .collection("memberships")
-                                        .doc("pt")
-                                        .get()
-                                ).data();
+                                let count = 0;
+                                await db
+                                    .collection("users")
+                                    .doc(v.clientUid)
+                                    .collection("memberships")
+                                    .doc("pt")
+                                    .get()
+                                    .then((ptDoc) => {
+                                        if (ptDoc.exists) {
+                                            count = ptDoc.data().count;
+                                        } else {
+                                            count = -1;
+                                        }
+                                    });
                                 changed[index]["clientName"] = name;
                                 changed[index]["remainCount"] = count;
                             }
@@ -223,8 +229,10 @@ export default ClassInfo = ({ navigation }) => {
         if (selectedMonth === 1) {
             setSelectedMonth(12);
             setSelectedYear(selectedYear - 1);
+            setSelections({ year: (selectedYear - 1).toString(), month: "12" });
         } else {
             setSelectedMonth(selectedMonth - 1);
+            setSelections({ year: selectedYear.toString(), month: (selectedMonth - 1).toString() });
         }
         setChange(!change);
     };
@@ -233,8 +241,10 @@ export default ClassInfo = ({ navigation }) => {
         if (selectedMonth === 12) {
             setSelectedMonth(1);
             setSelectedYear(selectedYear + 1);
+            setSelections({ year: (selectedYear + 1).toString(), month: "1" });
         } else {
             setSelectedMonth(selectedMonth + 1);
+            setSelections({ year: selectedYear.toString(), month: (selectedMonth + 1).toString() });
         }
         setChange(!change);
     };
@@ -363,6 +373,7 @@ export default ClassInfo = ({ navigation }) => {
                     setSelectedMonth(Number(select.month));
                     setChange(!change);
                 }}
+                confirmText="확인"
                 defaultSelections={selections}
                 options={[
                     {
@@ -396,7 +407,7 @@ export default ClassInfo = ({ navigation }) => {
                             setSelectedDate(0);
                         }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2) }}>Close</Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>닫기</Text>
                     </TouchableOpacity>
                     <View
                         style={{

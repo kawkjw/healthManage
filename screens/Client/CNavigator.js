@@ -75,7 +75,7 @@ const MyStack = ({ navigation }) => {
                     if (membership.id === "pt") {
                         const { count } = membership.data();
                         if (count <= 0) {
-                            Alert.alert("Warning", "No Remained PT Count");
+                            Alert.alert("경고", "남은 PT 횟수가 없습니다.");
                         } else {
                             kinds.push(membership.id);
                             temp[membership.id] = membership.data();
@@ -84,7 +84,10 @@ const MyStack = ({ navigation }) => {
                         const { end } = membership.data();
                         const today = new Date();
                         if (end.toDate() < today) {
-                            Alert.alert("Warning", `Expired ${enToKo(membership.id)} Membership`);
+                            Alert.alert(
+                                "경고",
+                                `${enToKo(membership.id)} 회원권이 만료되었습니다.`
+                            );
                         } else {
                             kinds.push(membership.id);
                             temp[membership.id] = membership.data();
@@ -92,7 +95,7 @@ const MyStack = ({ navigation }) => {
                     }
                 });
                 if (kinds.length === 0) {
-                    setMembershipString("No Membership");
+                    setMembershipString("회원권이 없습니다.");
                 }
                 if (kinds.length >= 1) {
                     let string = enToKo(kinds[0]);
@@ -125,7 +128,7 @@ const MyStack = ({ navigation }) => {
                     }
                     info = info + stringTemp + "\n";
                 });
-                ret = info ? info.substring(0, info.length - 1) : "No Membership";
+                ret = info ? info.substring(0, info.length - 1) : "회원권이 없습니다.";
             });
         return ret;
     };
@@ -215,6 +218,22 @@ const MyStack = ({ navigation }) => {
     useEffect(() => {
         execPromise();
     }, []);
+
+    const renderGoBackButton = (
+        <TouchableOpacity
+            style={{
+                width: "100%",
+                height: "100%",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 10,
+                marginLeft: 7,
+            }}
+            onPress={() => navigation.goBack()}
+        >
+            <MaterialIcons name="arrow-back-ios" size={RFPercentage(2.5)} color="black" />
+        </TouchableOpacity>
+    );
 
     return (
         <Stack.Navigator initialRouteName="HomeScreen">
@@ -471,7 +490,7 @@ const MyStack = ({ navigation }) => {
                             }}
                             onPress={async () => {
                                 await getMemberships().then((info) => {
-                                    Alert.alert("Membership", info);
+                                    Alert.alert("회원권 정보", info);
                                 });
                             }}
                         >
@@ -489,8 +508,8 @@ const MyStack = ({ navigation }) => {
                 name="Profile"
                 component={Profile}
                 options={{
-                    title: "사용자 정보",
-                    headerLeft: () => {},
+                    title: "내 정보",
+                    headerLeft: () => renderGoBackButton,
                     headerRight: () => (
                         <TouchableOpacity
                             style={{
@@ -502,26 +521,56 @@ const MyStack = ({ navigation }) => {
                             }}
                             onPress={signOut}
                         >
-                            <Text>로그아웃</Text>
+                            <Text style={{ fontSize: RFPercentage(2) }}>로그아웃</Text>
                         </TouchableOpacity>
                     ),
                 }}
             />
-            <Stack.Screen name="Menu" component={Menu} options={{ title: "메뉴" }} />
-            <Stack.Screen name="Info" component={Info} />
-            <Stack.Screen name="QRScan" component={QRScan} />
-            <Stack.Screen name="Test" component={Test} />
-            <Stack.Screen name="Class" component={Class} options={{ title: "예약" }} />
+            <Stack.Screen
+                name="Menu"
+                component={Menu}
+                options={{
+                    title: "메뉴",
+                    headerLeft: () => renderGoBackButton,
+                }}
+            />
+            <Stack.Screen
+                name="Info"
+                component={Info}
+                options={{ title: "정보", headerLeft: () => renderGoBackButton }}
+            />
+            <Stack.Screen
+                name="QRScan"
+                component={QRScan}
+                options={{ title: "QR코드 스캔", headerLeft: () => renderGoBackButton }}
+            />
+            <Stack.Screen
+                name="Test"
+                component={Test}
+                options={{ headerLeft: () => renderGoBackButton }}
+            />
+            <Stack.Screen
+                name="Class"
+                component={Class}
+                options={{
+                    title: "예약",
+                    headerLeft: () => renderGoBackButton,
+                }}
+            />
             <Stack.Screen
                 name="PT"
                 component={PT}
-                options={({ route }) => ({ title: route.params.trainerName })}
+                options={({ route }) => ({
+                    title: route.params.trainerName,
+                    headerLeft: () => renderGoBackButton,
+                })}
             />
             <Stack.Screen
                 name="GX"
                 component={GX}
                 options={({ route }) => ({
                     title: route.params.date,
+                    headerLeft: () => renderGoBackButton,
                 })}
             />
             <Stack.Screen
@@ -529,17 +578,18 @@ const MyStack = ({ navigation }) => {
                 component={SelectDate}
                 options={({ route }) => ({
                     title: enToKo(route.params.classname),
+                    headerLeft: () => renderGoBackButton,
                 })}
             />
             <Stack.Screen
                 name="SelectTrainer"
                 component={SelectTrainer}
-                options={{ title: "트레이너" }}
+                options={{ title: "트레이너", headerLeft: () => renderGoBackButton }}
             />
             <Stack.Screen
                 name="ExtendDate"
                 component={ExtendDate}
-                options={{ title: "이용권 연장" }}
+                options={{ title: "이용권 연장", headerLeft: () => renderGoBackButton }}
             />
         </Stack.Navigator>
     );

@@ -94,7 +94,7 @@ export default Profile = ({ navigation, route }) => {
             case "yoga.zoomba":
                 return "(요가, 줌바)";
             default:
-                return "Please Click Here to Set up";
+                return "여기를 눌러 설정해주세요.";
         }
     };
 
@@ -251,10 +251,10 @@ export default Profile = ({ navigation, route }) => {
     const submitSetClass = async () => {
         if (radioSelected === 0) {
             if (Number(ptStartTime) >= Number(ptEndTime)) {
-                Alert.alert("Error", "Wrong Time");
+                Alert.alert("경고", "잘못된 범위의 시간입니다.");
                 return;
             } else if (Number(ptStartTime) < 8 || Number(ptEndTime) > 22) {
-                Alert.alert("Error", "Minimum : 8, Maximum : 22");
+                Alert.alert("경고", "최소 : 8, 최대 : 22");
                 return;
             } else {
                 let str =
@@ -268,7 +268,7 @@ export default Profile = ({ navigation, route }) => {
             }
         } else if (radioSelected === 1) {
             if (radioGxSelected === -1) {
-                Alert.alert("Error", "Please select one");
+                Alert.alert("경고", "하나를 선택해주세요.");
                 return;
             } else {
                 let str = "gx." + radioGxOptions[radioGxSelected].value;
@@ -391,9 +391,9 @@ export default Profile = ({ navigation, route }) => {
                                                         : null),
                                                 "확실합니까?",
                                                 [
-                                                    { text: "Cancel" },
+                                                    { text: "취소" },
                                                     {
-                                                        text: "OK",
+                                                        text: "확인",
                                                         onPress: () => submitSetClass(),
                                                     },
                                                 ]
@@ -584,7 +584,7 @@ export default Profile = ({ navigation, route }) => {
                 </View>
                 {className[0] === "Need to Set Up" ? undefined : (
                     <View>
-                        <Text style={{ fontSize: RFPercentage(2) }}>오늘 수업</Text>
+                        <Text style={{ fontSize: RFPercentage(2.3) }}>오늘 수업</Text>
                         {loading ? (
                             <Text
                                 style={{
@@ -690,7 +690,7 @@ export default Profile = ({ navigation, route }) => {
                                 </View>
                             ))
                         )}
-                        <Text style={{ fontSize: RFPercentage(2) }}>내일 수업</Text>
+                        <Text style={{ fontSize: RFPercentage(2.3) }}>내일 수업</Text>
                         {loading ? (
                             <Text
                                 style={{

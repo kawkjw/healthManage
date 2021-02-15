@@ -139,9 +139,9 @@ export default GX = ({ navigation, route }) => {
             .doc(cid);
         const { currentClient, maxClient, start, end, trainer } = (await classInDB.get()).data();
         if (currentClient >= maxClient) {
-            Alert.alert("Error", "Full Class", [
+            Alert.alert("경고", "예약 가능한 자리가 없습니다.", [
                 {
-                    text: "OK",
+                    text: "확인",
                     onPress: () => {
                         setModalClass(false);
                     },
@@ -193,9 +193,9 @@ export default GX = ({ navigation, route }) => {
                                     .doc(date)
                                     .set({ date: [selectDate.toString()] });
                             });
-                        Alert.alert("Success", "Reserved Class", [
+                        Alert.alert("성공", "예약되었습니다.", [
                             {
-                                text: "OK",
+                                text: "확인",
                                 onPress: () => {
                                     setModalClass(false);
                                     setSelectDate(0);
@@ -205,9 +205,9 @@ export default GX = ({ navigation, route }) => {
                     } else {
                         clients.forEach((client) => {
                             if (client.exists) {
-                                Alert.alert("Error", "Already Reserved", [
+                                Alert.alert("경고", "이미 예약되었습니다.", [
                                     {
-                                        text: "OK",
+                                        text: "확인",
                                         onPress: () => {
                                             setModalClass(false);
                                             setSelectDate(0);
@@ -323,11 +323,11 @@ export default GX = ({ navigation, route }) => {
                                 onPress={() => {
                                     Alert.alert(
                                         selectDate.toString() + "일 " + c.start + "~" + c.end,
-                                        "Are you sure?",
+                                        "확실합니까?",
                                         [
-                                            { text: "Cancel" },
+                                            { text: "취소" },
                                             {
-                                                text: "OK",
+                                                text: "확인",
                                                 onPress: () => reserveClass(c.cid),
                                             },
                                         ]

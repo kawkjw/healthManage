@@ -68,7 +68,7 @@ export default ExtendDate = ({ navigation, route }) => {
                             .get()
                             .then((memberships) => {
                                 if (memberships.size === 0) {
-                                    Alert.alert("Error", "연장 가능한 이용권이 없습니다.");
+                                    Alert.alert("경고", "연장 가능한 이용권이 없습니다.");
                                     navigation.goBack();
                                 } else {
                                     let temp = [];
@@ -95,7 +95,7 @@ export default ExtendDate = ({ navigation, route }) => {
                                             }
                                         });
                                     if (temp.length === 0) {
-                                        Alert.alert("Error", "연장 가능한 이용권이 없습니다.");
+                                        Alert.alert("경고", "연장 가능한 이용권이 없습니다.");
                                         navigation.goBack();
                                     } else {
                                         setAvailExtend(temp);
@@ -104,7 +104,7 @@ export default ExtendDate = ({ navigation, route }) => {
                             });
                     } else {
                         Alert.alert(
-                            "Error",
+                            "경고",
                             "승인 대기 중입니다.\n승인 완료 후 신청해 주시기 바랍니다."
                         );
                         navigation.goBack();
@@ -168,9 +168,7 @@ export default ExtendDate = ({ navigation, route }) => {
                 },
             }
         );
-        Alert.alert("Success", "연장 신청 완료", [
-            { text: "OK", onPress: () => navigation.goBack() },
-        ]);
+        Alert.alert("성공", "연장 신청 완료", [{ text: "OK", onPress: () => navigation.goBack() }]);
     };
 
     return (
@@ -279,8 +277,8 @@ export default ExtendDate = ({ navigation, route }) => {
                                         "확실합니까?",
                                         `연장 일수: ${extendDate}\n연장 사유: ${extendReason}`,
                                         [
-                                            { text: "Cancel" },
-                                            { text: "OK", onPress: () => onSubmit() },
+                                            { text: "취소" },
+                                            { text: "확인", onPress: () => onSubmit() },
                                         ]
                                     );
                                 }}

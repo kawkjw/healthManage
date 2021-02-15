@@ -51,10 +51,10 @@ export default FindUser = ({ navigation, route }) => {
                     activeOpacity={1}
                 >
                     <View style={AuthStyles.textView}>
-                        <Text style={AuthStyles.text}>Input Name</Text>
+                        <Text style={AuthStyles.text}>고객 이름</Text>
                         <TextInput
                             style={AuthStyles.textInput}
-                            placeholder="Name"
+                            placeholder="이름"
                             autoCompleteType="name"
                             keyboardType="default"
                             textContentType="name"
@@ -63,7 +63,7 @@ export default FindUser = ({ navigation, route }) => {
                         />
                     </View>
                     <View style={AuthStyles.textView}>
-                        <Text style={AuthStyles.text}>Enter Phone Number</Text>
+                        <Text style={AuthStyles.text}>휴대폰 번호</Text>
                         <TextInput
                             style={AuthStyles.textInput}
                             placeholder="010-0000-0000"
@@ -86,7 +86,7 @@ export default FindUser = ({ navigation, route }) => {
                                 })
                             }
                         >
-                            <Text style={AuthStyles.authText}>Find User</Text>
+                            <Text style={AuthStyles.authText}>검색</Text>
                         </TouchableOpacity>
                     </View>
                 </TouchableOpacity>

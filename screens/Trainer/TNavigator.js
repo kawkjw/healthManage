@@ -127,13 +127,29 @@ const MyStack = ({ navigation }) => {
         execPromise();
     }, []);
 
+    const renderGoBackButton = (
+        <TouchableOpacity
+            style={{
+                width: "100%",
+                height: "100%",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 10,
+                marginLeft: 7,
+            }}
+            onPress={() => navigation.goBack()}
+        >
+            <MaterialIcons name="arrow-back-ios" size={RFPercentage(2.5)} color="black" />
+        </TouchableOpacity>
+    );
+
     return (
         <Stack.Navigator initialRouteName="HomeScreen">
             <Stack.Screen
                 name="HomeScreen"
                 component={Home}
                 options={{
-                    title: "Home",
+                    title: myBase.auth().currentUser.displayName,
                     headerLeft: () =>
                         loading ? undefined : (
                             <View
@@ -384,8 +400,8 @@ const MyStack = ({ navigation }) => {
                 name="Profile"
                 component={Profile}
                 options={{
-                    title: "사용자 정보",
-                    headerLeft: () => {},
+                    title: "내 정보",
+                    headerLeft: () => renderGoBackButton,
                     headerRight: () => (
                         <TouchableOpacity
                             style={{
@@ -397,13 +413,21 @@ const MyStack = ({ navigation }) => {
                             }}
                             onPress={signOut}
                         >
-                            <Text>로그아웃</Text>
+                            <Text style={{ fontSize: RFPercentage(2) }}>로그아웃</Text>
                         </TouchableOpacity>
                     ),
                 }}
             />
-            <Stack.Screen name="GX" component={GX} />
-            <Stack.Screen name="PT" component={PT} />
+            <Stack.Screen
+                name="GX"
+                component={GX}
+                options={{ headerLeft: () => renderGoBackButton }}
+            />
+            <Stack.Screen
+                name="PT"
+                component={PT}
+                options={{ headerLeft: () => renderGoBackButton }}
+            />
         </Stack.Navigator>
     );
 };

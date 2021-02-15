@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { MyStyles } from "../../css/MyStyles";
 import * as Notifications from "expo-notifications";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 export default Home = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -76,7 +77,6 @@ export default Home = ({ navigation, route }) => {
                     ]}
                     onPress={() => navigation.navigate("Profile")}
                 >
-                    <Text>Profile</Text>
                     <Image
                         style={[MyStyles.image, { width: widthImage }]}
                         source={{
@@ -92,7 +92,7 @@ export default Home = ({ navigation, route }) => {
                     ]}
                     onPress={() => navigation.navigate("Menu")}
                 >
-                    <Text>Menu</Text>
+                    <Text style={{ fontSize: RFPercentage(2.3) }}>메뉴</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[MyStyles.phoneButton, MyStyles.buttonShadow, { width: widthButton }]}
@@ -100,7 +100,7 @@ export default Home = ({ navigation, route }) => {
                         Linking.openURL("tel:12345678");
                     }}
                 >
-                    <Text>전화 연결</Text>
+                    <Text style={{ fontSize: RFPercentage(2.3) }}>전화 연결</Text>
                 </TouchableOpacity>
             </View>
         </SafeAreaView>

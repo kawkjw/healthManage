@@ -88,10 +88,10 @@ export default Locker = () => {
             .doc(id.toString())
             .delete()
             .then(() => {
-                Alert.alert("Success", "Remove Success", [{ text: "OK" }]);
+                Alert.alert("성공", "성공적으로 제거되었습니다.", [{ text: "확인" }]);
             })
             .catch((error) => {
-                Alert.alert("Failure", "Already Removed", [{ text: "OK" }]);
+                Alert.alert("실패", "이미 제거되었습니다.", [{ text: "확인" }]);
             });
         setChanged(!changed);
     };
@@ -108,68 +108,78 @@ export default Locker = () => {
             .get()
             .then((snapshots) => {
                 if (snapshots.empty) {
-                    throw Error("Not Existed User");
+                    throw Error("찾는 고객이 없습니다.");
                 } else if (snapshots.size > 1) {
-                    throw Error("Several Phone Number");
+                    throw Error("같은 휴대폰번호가 많습니다.");
                 }
                 snapshots.forEach(async (snapshot) => {
                     const { name, uid } = snapshot.data();
                     const phone = snapshot.data().phoneNumber;
-                    Alert.alert("Info", `Name: ${name}\nPhone: ${phone}\nIs that right?`, [
-                        {
-                            text: "OK",
-                            onPress: async () => {
-                                await db
-                                    .collection("lockers")
-                                    .where("uid", "==", uid)
-                                    .get()
-                                    .then(async (lockers) => {
-                                        if (lockers.size > 0) {
-                                            let lockerNum;
-                                            lockers.forEach((locker) => {
-                                                lockerNum = locker.id;
-                                            });
-                                            throw Error(`Already Have Locker: ${lockerNum}`);
-                                        } else {
-                                            await db
-                                                .collection("lockers")
-                                                .doc(selectedLocker.toString())
-                                                .get()
-                                                .then((doc) => {
-                                                    if (!doc.exists) {
-                                                        db.collection("lockers")
-                                                            .doc(selectedLocker.toString())
-                                                            .set({
-                                                                name: name,
-                                                                phoneNumber: phoneNumber,
-                                                                uid: uid,
-                                                            });
-                                                    }
-                                                })
-                                                .then(() => {
-                                                    Alert.alert("Success", "Add Success", [
-                                                        {
-                                                            text: "OK",
-                                                            onPress: () => {
-                                                                handleCancel();
-                                                                setChanged(!changed);
-                                                            },
-                                                        },
-                                                    ]);
+                    Alert.alert(
+                        "정보",
+                        `이름: ${name}\n휴대폰번호: ${phone}\n위 정보가 맞습니까?`,
+                        [
+                            {
+                                text: "확인",
+                                onPress: async () => {
+                                    await db
+                                        .collection("lockers")
+                                        .where("uid", "==", uid)
+                                        .get()
+                                        .then(async (lockers) => {
+                                            if (lockers.size > 0) {
+                                                let lockerNum;
+                                                lockers.forEach((locker) => {
+                                                    lockerNum = locker.id;
                                                 });
-                                        }
-                                    })
-                                    .catch((error) => {
-                                        Alert.alert("Failure", error.message);
-                                    });
+                                                throw Error(
+                                                    `이미 보관함을 가지고 있음: ${lockerNum}`
+                                                );
+                                            } else {
+                                                await db
+                                                    .collection("lockers")
+                                                    .doc(selectedLocker.toString())
+                                                    .get()
+                                                    .then((doc) => {
+                                                        if (!doc.exists) {
+                                                            db.collection("lockers")
+                                                                .doc(selectedLocker.toString())
+                                                                .set({
+                                                                    name: name,
+                                                                    phoneNumber: phoneNumber,
+                                                                    uid: uid,
+                                                                });
+                                                        }
+                                                    })
+                                                    .then(() => {
+                                                        Alert.alert(
+                                                            "성공",
+                                                            "성공적으로 추가되었습니다.",
+                                                            [
+                                                                {
+                                                                    text: "확인",
+                                                                    onPress: () => {
+                                                                        handleCancel();
+                                                                        setChanged(!changed);
+                                                                    },
+                                                                },
+                                                            ]
+                                                        );
+                                                    });
+                                            }
+                                        })
+                                        .catch((error) => {
+                                            Alert.alert("실패", error.message);
+                                        });
+                                },
                             },
-                        },
-                        { text: "Cancel" },
-                    ]);
+                            { text: "취소" },
+                        ]
+                    );
                 });
             })
             .catch((error) => {
-                Alert.alert("Failure", error.message);
+                Alert.alert("실패", error.message);
             });
     };
 
@@ -183,8 +193,8 @@ export default Locker = () => {
                     keyboardType="phone-pad"
                     maxLength={13}
                 />
-                <Dialog.Button label="Cancel" onPress={handleCancel} />
-                <Dialog.Button label="OK" onPress={addLocker} />
+                <Dialog.Button label="취소" onPress={handleCancel} />
+                <Dialog.Button label="확인" onPress={addLocker} />
             </Dialog.Container>
             <FlatList
                 data={data}
@@ -200,12 +210,12 @@ export default Locker = () => {
                                         `${item.name}\n${item.phoneNumber}`,
                                         [
                                             {
-                                                text: "Delete",
+                                                text: "삭제",
                                                 onPress: () => {
-                                                    Alert.alert("Are you sure?", "", [
-                                                        { text: "Cancel" },
+                                                    Alert.alert("확실합니까?", "", [
+                                                        { text: "취소" },
                                                         {
-                                                            text: "Delete",
+                                                            text: "삭제",
                                                             onPress: () => {
                                                                 removeLocker(item.id);
                                                             },
@@ -215,19 +225,19 @@ export default Locker = () => {
                                                 },
                                                 style: "destructive",
                                             },
-                                            { text: "OK" },
+                                            { text: "확인" },
                                         ]
                                     );
                                 } else {
-                                    Alert.alert(item.id.toString(), "Not occupied", [
+                                    Alert.alert(item.id.toString(), "비어있음", [
                                         {
-                                            text: "Add",
+                                            text: "추가",
                                             onPress: () => {
                                                 setSelectedLocker(item.id);
                                                 setVisible(true);
                                             },
                                         },
-                                        { text: "OK" },
+                                        { text: "확인" },
                                     ]);
                                 }
                             }}

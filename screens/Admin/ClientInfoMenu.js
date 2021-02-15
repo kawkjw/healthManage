@@ -1,5 +1,6 @@
 import React, { useContext, useEffect } from "react";
 import { Dimensions, SafeAreaView, ScrollView, Text, TouchableOpacity } from "react-native";
+import { RFPercentage } from "react-native-responsive-fontsize";
 import myBase, { db } from "../../config/MyBase";
 import { MyStyles } from "../../css/MyStyles";
 import { AuthContext } from "../Auth";
@@ -43,7 +44,7 @@ export default ClientInfoMenu = ({ navigation, route }) => {
                     ]}
                     onPress={() => navigation.navigate("ClientInfo")}
                 >
-                    <Text>All Client Infos</Text>
+                    <Text style={{ fontSize: RFPercentage(2.3) }}>모든 고객 정보</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -53,7 +54,7 @@ export default ClientInfoMenu = ({ navigation, route }) => {
                     ]}
                     onPress={() => navigation.navigate("FindUser")}
                 >
-                    <Text>Find User</Text>
+                    <Text style={{ fontSize: RFPercentage(2.3) }}>고객 검색</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -63,7 +64,7 @@ export default ClientInfoMenu = ({ navigation, route }) => {
                     ]}
                     onPress={() => navigation.navigate("SelectMembership")}
                 >
-                    <Text>Select Membership</Text>
+                    <Text style={{ fontSize: RFPercentage(2.3) }}>회원권별 고객 정보</Text>
                 </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>

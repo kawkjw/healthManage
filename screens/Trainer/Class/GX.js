@@ -230,8 +230,10 @@ export default GX = ({ navigation, route }) => {
         if (selectedMonth === 1) {
             setSelectedMonth(12);
             setSelectedYear(selectedYear - 1);
+            setSelections({ year: (selectedYear - 1).toString(), month: "12" });
         } else {
             setSelectedMonth(selectedMonth - 1);
+            setSelections({ year: selectedYear.toString(), month: (selectedMonth - 1).toString() });
         }
         setChange(!change);
     };
@@ -240,8 +242,10 @@ export default GX = ({ navigation, route }) => {
         if (selectedMonth === 12) {
             setSelectedMonth(1);
             setSelectedYear(selectedYear + 1);
+            setSelections({ year: (selectedYear + 1).toString(), month: "1" });
         } else {
             setSelectedMonth(selectedMonth + 1);
+            setSelections({ year: selectedYear.toString(), month: (selectedMonth + 1).toString() });
         }
         setChange(!change);
     };
@@ -335,6 +339,7 @@ export default GX = ({ navigation, route }) => {
                     setSelectedMonth(Number(select.month));
                     setChange(!change);
                 }}
+                confirmText="확인"
                 defaultSelections={selections}
                 options={[
                     {
@@ -369,7 +374,7 @@ export default GX = ({ navigation, route }) => {
                             setLoading(true);
                         }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2) }}>Close</Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>닫기</Text>
                     </TouchableOpacity>
                     <View
                         style={{
@@ -442,7 +447,6 @@ export default GX = ({ navigation, route }) => {
                     style={{
                         flex: 1,
                         backgroundColor: "white",
-                        //justifyContent: "center",
                     }}
                 >
                     <TouchableOpacity
@@ -460,7 +464,7 @@ export default GX = ({ navigation, route }) => {
                             setLoading(true);
                         }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2) }}>Close</Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>닫기</Text>
                     </TouchableOpacity>
                     <View style={{ height: 50 }}></View>
                     <View style={{ paddingHorizontal: 10 }}>
@@ -472,56 +476,68 @@ export default GX = ({ navigation, route }) => {
                         >
                             고객 명단
                         </Text>
-                        {clientList.map((client, index) => (
-                            <View
-                                key={index}
+                        {clientList.length === 0 ? (
+                            <Text
                                 style={{
-                                    flexDirection: "row",
                                     paddingLeft: 10,
+                                    fontSize: RFPercentage(2.3),
+                                    color: "red",
                                 }}
                             >
+                                예약한 고객이 없습니다.
+                            </Text>
+                        ) : (
+                            clientList.map((client, index) => (
                                 <View
+                                    key={index}
                                     style={{
-                                        width: wp("4%"),
-                                        alignItems: "flex-end",
+                                        flexDirection: "row",
+                                        paddingLeft: 10,
                                     }}
                                 >
-                                    <Text
+                                    <View
                                         style={{
-                                            fontSize: RFPercentage(2),
+                                            width: wp("4%"),
+                                            alignItems: "flex-end",
                                         }}
                                     >
-                                        {(index + 1).toString() + ". "}
-                                    </Text>
+                                        <Text
+                                            style={{
+                                                fontSize: RFPercentage(2),
+                                            }}
+                                        >
+                                            {(index + 1).toString() + ". "}
+                                        </Text>
+                                    </View>
+                                    <View
+                                        style={{
+                                            width: wp("15%"),
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        <Text
+                                            style={{
+                                                fontSize: RFPercentage(2),
+                                            }}
+                                        >
+                                            {client.name}
+                                        </Text>
+                                    </View>
+                                    <TouchableOpacity
+                                        onPress={() => Linking.openURL(`tel:${client.phoneNumber}`)}
+                                    >
+                                        <Text
+                                            style={{
+                                                color: "blue",
+                                                fontSize: RFPercentage(2),
+                                            }}
+                                        >
+                                            {client.phoneNumber}
+                                        </Text>
+                                    </TouchableOpacity>
                                 </View>
-                                <View
-                                    style={{
-                                        width: wp("15%"),
-                                        alignItems: "center",
-                                    }}
-                                >
-                                    <Text
-                                        style={{
-                                            fontSize: RFPercentage(2),
-                                        }}
-                                    >
-                                        {client.name}
-                                    </Text>
-                                </View>
-                                <TouchableOpacity
-                                    onPress={() => Linking.openURL(`tel:${client.phoneNumber}`)}
-                                >
-                                    <Text
-                                        style={{
-                                            color: "blue",
-                                            fontSize: RFPercentage(2),
-                                        }}
-                                    >
-                                        {client.phoneNumber}
-                                    </Text>
-                                </TouchableOpacity>
-                            </View>
-                        ))}
+                            ))
+                        )}
                     </View>
                 </SafeAreaView>
             </Modal>

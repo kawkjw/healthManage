@@ -182,8 +182,10 @@ export default PT = ({ navigation, route }) => {
         if (selectedMonth === 1) {
             setSelectedMonth(12);
             setSelectedYear(selectedYear - 1);
+            setSelections({ year: (selectedYear - 1).toString(), month: "12" });
         } else {
             setSelectedMonth(selectedMonth - 1);
+            setSelections({ year: selectedYear.toString(), month: (selectedMonth - 1).toString() });
         }
         setChange(!change);
     };
@@ -192,8 +194,10 @@ export default PT = ({ navigation, route }) => {
         if (selectedMonth === 12) {
             setSelectedMonth(1);
             setSelectedYear(selectedYear + 1);
+            setSelections({ year: (selectedYear + 1).toString(), month: "1" });
         } else {
             setSelectedMonth(selectedMonth + 1);
+            setSelections({ year: selectedYear.toString(), month: (selectedMonth + 1).toString() });
         }
         setChange(!change);
     };
@@ -203,9 +207,9 @@ export default PT = ({ navigation, route }) => {
             await db.collection("users").doc(uid).collection("memberships").doc("pt").get()
         ).data();
         if (count <= 0) {
-            Alert.alert("Error", "No remained PT count", [
+            Alert.alert("경고", "남은 PT 횟수가 없습니다. ", [
                 {
-                    text: "OK",
+                    text: "확인",
                     onPress: () => {
                         navigation.reset({
                             index: 1,
@@ -279,14 +283,14 @@ export default PT = ({ navigation, route }) => {
                         .collection("memberships")
                         .doc("pt")
                         .update({ count: count - 1 });
-                    Alert.alert("Success", "Reserved Class", [
+                    Alert.alert("성공", "수업이 예약되었습니다.", [
                         {
-                            text: "OK",
+                            text: "확인",
                             onPress: async () => {
                                 await pushNotificationsToPerson(
                                     myBase.auth().currentUser.displayName,
                                     trainerUid,
-                                    "New Reservation",
+                                    "새 PT 예약",
                                     `${selectedDate}일 ${timeStr}`,
                                     {
                                         navigation: "PT",
@@ -304,9 +308,9 @@ export default PT = ({ navigation, route }) => {
                         },
                     ]);
                 } else {
-                    Alert.alert("Failure", "Already Reserved", [
+                    Alert.alert("실패", "이미 예약되어 있습니다.", [
                         {
-                            text: "OK",
+                            text: "확인",
                             onPress: () => {
                                 const backup = selectedDate;
                                 setSelectedDate(0);
@@ -423,6 +427,7 @@ export default PT = ({ navigation, route }) => {
                     setSelectedMonth(Number(select.month));
                     setChange(!change);
                 }}
+                confirmText="확인"
                 defaultSelections={selections}
                 options={[
                     {
@@ -544,14 +549,13 @@ export default PT = ({ navigation, route }) => {
                                             {availTime.isAvail ? (
                                                 availTime.hasReserve ? (
                                                     <Text>
-                                                        Already Reserved{" "}
-                                                        {availTime.isMe ? "(me)" : null}
+                                                        이미 예약됨 {availTime.isMe ? "(나)" : null}
                                                     </Text>
                                                 ) : (
-                                                    <Text>No Reservation</Text>
+                                                    <Text>예약 안됨</Text>
                                                 )
                                             ) : (
-                                                <Text style={{ color: "red" }}>Unavailable</Text>
+                                                <Text style={{ color: "red" }}>불가능</Text>
                                             )}
                                         </View>
                                         {availTime.isAvail ? (
@@ -569,13 +573,13 @@ export default PT = ({ navigation, route }) => {
                                                             selectedDate.toString() +
                                                                 "일 " +
                                                                 availTime.timeStr,
-                                                            "Are you sure?",
+                                                            "확실합니까?",
                                                             [
                                                                 {
-                                                                    text: "Cancel",
+                                                                    text: "취소",
                                                                 },
                                                                 {
-                                                                    text: "OK",
+                                                                    text: "확인",
                                                                     onPress: () =>
                                                                         reservePTClass(
                                                                             availTime.timeStr
@@ -585,7 +589,7 @@ export default PT = ({ navigation, route }) => {
                                                         );
                                                     }}
                                                 >
-                                                    <Text>Reserve</Text>
+                                                    <Text>예약</Text>
                                                 </TouchableOpacity>
                                             )
                                         ) : null}

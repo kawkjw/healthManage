@@ -139,13 +139,29 @@ const MyStack = ({ navigation }) => {
         execPromise();
     }, []);
 
+    const renderGoBackButton = (
+        <TouchableOpacity
+            style={{
+                width: "100%",
+                height: "100%",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 10,
+                marginLeft: 7,
+            }}
+            onPress={() => navigation.goBack()}
+        >
+            <MaterialIcons name="arrow-back-ios" size={RFPercentage(2.5)} color="black" />
+        </TouchableOpacity>
+    );
+
     return (
         <Stack.Navigator initialRouteName="HomeScreen">
             <Stack.Screen
                 name="HomeScreen"
                 component={Home}
                 options={{
-                    title: "Home",
+                    title: "관리자",
                     headerLeft: () =>
                         loading ? undefined : (
                             <View
@@ -397,56 +413,69 @@ const MyStack = ({ navigation }) => {
                             }}
                             onPress={signOut}
                         >
-                            <Text>로그아웃</Text>
+                            <Text style={{ fontSize: RFPercentage(2) }}>로그아웃</Text>
                         </TouchableOpacity>
                     ),
                 }}
             />
-            <Stack.Screen name="Locker" component={Locker} />
+            <Stack.Screen
+                name="Locker"
+                component={Locker}
+                options={{ title: "락커", headerLeft: () => renderGoBackButton }}
+            />
             <Stack.Screen
                 name="FindUser"
                 component={FindUser}
-                options={{ headerTitle: "고객 검색" }}
+                options={{ headerTitle: "고객 검색", headerLeft: () => renderGoBackButton }}
             />
             <Stack.Screen
                 name="SelectUser"
                 component={SelectUser}
-                options={{ headerTitle: "검색 결과" }}
+                options={{ headerTitle: "검색 결과", headerLeft: () => renderGoBackButton }}
             />
             <Stack.Screen
                 name="ShowUser"
                 component={ShowUser}
-                options={{ headerTitle: "고객 정보" }}
+                options={{ headerTitle: "고객 정보", headerLeft: () => renderGoBackButton }}
             />
             <Stack.Screen
                 name="ClientInfoMenu"
                 component={ClientInfoMenu}
-                options={{ headerTitle: "메뉴" }}
+                options={{ headerTitle: "메뉴", headerLeft: () => renderGoBackButton }}
             />
             <Stack.Screen
                 name="SelectMembership"
                 component={SelectMembership}
-                options={{ headerTitle: "이용권 선택" }}
+                options={{ headerTitle: "이용권 선택", headerLeft: () => renderGoBackButton }}
             />
             <Stack.Screen
                 name="ClientInfo"
                 component={ClientInfo}
-                options={{ headerTitle: "모든 고객 정보" }}
+                options={{ headerTitle: "모든 고객 정보", headerLeft: () => renderGoBackButton }}
             />
             <Stack.Screen
                 name="ClientsbyMembership"
                 component={ClientsbyMembership}
                 options={({ route }) => ({
                     headerTitle: enToKo(route.params.membershipName),
+                    headerLeft: () => renderGoBackButton,
                 })}
             />
             <Stack.Screen
                 name="ClassInfoMenu"
                 component={ClassInfoMenu}
-                options={{ headerTitle: "메뉴" }}
+                options={{ headerTitle: "메뉴", headerLeft: () => renderGoBackButton }}
             />
-            <Stack.Screen name="GxInfo" component={GxInfo} options={{ headerTitle: "GX" }} />
-            <Stack.Screen name="PtInfo" component={PtInfo} options={{ headerTitle: "PT" }} />
+            <Stack.Screen
+                name="GxInfo"
+                component={GxInfo}
+                options={{ headerTitle: "GX", headerLeft: () => renderGoBackButton }}
+            />
+            <Stack.Screen
+                name="PtInfo"
+                component={PtInfo}
+                options={{ headerTitle: "PT", headerLeft: () => renderGoBackButton }}
+            />
         </Stack.Navigator>
     );
 };
