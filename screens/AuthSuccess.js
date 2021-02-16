@@ -35,7 +35,6 @@ const MyStack = () => {
                         await db.collection("emails").doc(user.uid).update({ email: user.email });
                         await db.collection("users").doc(user.uid).update({ email: user.email });
                     }
-                    //setIsLoading(false);
                 } else {
                     signOut();
                 }
@@ -84,7 +83,8 @@ const MyStack = () => {
                 const tempUid = await AsyncStorage.getItem("userToken");
                 if (tempUid === user.uid) {
                     await execPromise(user);
-                    //user.updateProfile({ displayName: "" });
+                } else {
+                    signOut();
                 }
             }
         });

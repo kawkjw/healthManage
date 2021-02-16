@@ -1,7 +1,7 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import React, { useEffect } from "react";
-import { Alert, Text, TouchableOpacity } from "react-native";
+import React, { createContext, useEffect, useMemo, useReducer } from "react";
+import { Alert, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import myBase, { arrayDelete, db } from "../config/MyBase";
 import firebase from "firebase";
@@ -17,10 +17,10 @@ import { RFPercentage } from "react-native-responsive-fontsize";
 
 const Stack = createStackNavigator();
 
-export const AuthContext = React.createContext();
+export const AuthContext = createContext();
 
 export default Auth = () => {
-    const [state, dispatch] = React.useReducer(
+    const [state, dispatch] = useReducer(
         (prevState, action) => {
             switch (action.type) {
                 case "RESTORE_TOKEN":
@@ -49,6 +49,7 @@ export default Auth = () => {
             userToken: null,
         }
     );
+
     useEffect(() => {
         const restoreToken = async () => {
             let userToken;
@@ -61,7 +62,8 @@ export default Auth = () => {
         };
         restoreToken();
     }, []);
-    const authContext = React.useMemo(
+
+    const authContext = useMemo(
         () => ({
             signIn: async (data) => {
                 const { email, password } = data;

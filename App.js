@@ -11,6 +11,6 @@ Notifications.setNotificationHandler({
     }),
 });
 
-export default function App({ navigation, route }) {
-    return <Auth navigation={navigation} />;
+export default function App() {
+    return <Auth />;
 }
