@@ -235,250 +235,237 @@ const MyStack = () => {
         </TouchableOpacity>
     );
 
+    const renderNotificationButton = (navigation) =>
+        loading ? undefined : (
+            <View
+                style={{
+                    marginLeft: 10,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    width: "100%",
+                    height: "60%",
+                }}
+            >
+                <TouchableOpacity
+                    style={{ width: wp("8%") }}
+                    onPress={() => {
+                        if (notificationAvail) {
+                            setModalNotification(true);
+                        } else {
+                            Linking.openSettings();
+                        }
+                    }}
+                >
+                    <View
+                        style={[
+                            {
+                                borderRadius: 100,
+                                position: "absolute",
+                                width: 10,
+                                height: 10,
+                                top: 0,
+                                right: 0,
+                            },
+                            unread ? { backgroundColor: "red" } : { backgroundColor: "white" },
+                        ]}
+                    />
+                    <MaterialIcons
+                        name={notificationAvail ? "notifications" : "notifications-off"}
+                        size={RFPercentage(3.5)}
+                        color="black"
+                    />
+                </TouchableOpacity>
+                <Modal
+                    isVisible={modalNotification}
+                    style={{
+                        justifyContent: "flex-end",
+                        margin: 0,
+                    }}
+                    onBackdropPress={() => setModalNotification(false)}
+                >
+                    <View
+                        style={{
+                            height: hp("80%"),
+                            backgroundColor: "white",
+                        }}
+                    >
+                        <View style={{ flexDirection: "row" }}>
+                            <TouchableOpacity
+                                style={{
+                                    padding: 5,
+                                    width: wp("13%"),
+                                    alignItems: "center",
+                                }}
+                                onPress={() => setModalNotification(false)}
+                            >
+                                <Text
+                                    style={{
+                                        margin: 7,
+                                        fontSize: RFPercentage(2),
+                                    }}
+                                >
+                                    닫기
+                                </Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity
+                                style={{
+                                    padding: 5,
+                                    width: wp("20%"),
+                                    alignItems: "center",
+                                    position: "absolute",
+                                    right: 0,
+                                }}
+                                onPress={() => {
+                                    checkAllNotification();
+                                    setModalNotification(false);
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        margin: 7,
+                                        fontSize: RFPercentage(2),
+                                    }}
+                                >
+                                    모두 읽음
+                                </Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View style={{ borderWidth: "0.5" }} />
+                        <View>
+                            {messages.length === 0 ? (
+                                <View style={{ padding: 10 }}>
+                                    <Text
+                                        style={{
+                                            fontSize: RFPercentage(2.5),
+                                        }}
+                                    >
+                                        알림 없음
+                                    </Text>
+                                </View>
+                            ) : (
+                                <ScrollView>
+                                    {messages.map((message, index) => (
+                                        <View
+                                            key={index}
+                                            style={{
+                                                padding: 10,
+                                                borderWidth: 1,
+                                                margin: 10,
+                                            }}
+                                        >
+                                            <TouchableOpacity
+                                                onPress={() => {
+                                                    setModalNotification(false);
+                                                    if (!message.isRead) {
+                                                        checkNotification(message.id);
+                                                    }
+                                                    if (message.data.navigation) {
+                                                        navigation.navigate(
+                                                            message.data.navigation
+                                                        );
+                                                    }
+                                                }}
+                                            >
+                                                <View
+                                                    style={{
+                                                        flexDirection: "row",
+                                                    }}
+                                                >
+                                                    <View
+                                                        style={{
+                                                            flex: 1,
+                                                        }}
+                                                    >
+                                                        <Text
+                                                            style={[
+                                                                message.isRead
+                                                                    ? {
+                                                                          color: "grey",
+                                                                      }
+                                                                    : {
+                                                                          color: "black",
+                                                                      },
+                                                            ]}
+                                                        >
+                                                            {message.sendFrom + " 로부터"}
+                                                        </Text>
+                                                    </View>
+                                                    <View
+                                                        style={{
+                                                            alignItems: "flex-end",
+                                                            flex: 1,
+                                                        }}
+                                                    >
+                                                        <Text
+                                                            style={[
+                                                                message.isRead
+                                                                    ? {
+                                                                          color: "grey",
+                                                                      }
+                                                                    : {
+                                                                          color: "black",
+                                                                      },
+                                                            ]}
+                                                        >
+                                                            {moment(
+                                                                message.sendDate.toDate()
+                                                            ).format("MM.DD. HH:mm") + " 에 보냄"}
+                                                        </Text>
+                                                    </View>
+                                                </View>
+                                                <Text
+                                                    style={[
+                                                        message.isRead
+                                                            ? {
+                                                                  color: "grey",
+                                                              }
+                                                            : {
+                                                                  color: "black",
+                                                              },
+                                                        {
+                                                            fontWeight: "bold",
+                                                            marginBottom: 5,
+                                                        },
+                                                    ]}
+                                                >
+                                                    {message.title}
+                                                </Text>
+                                                <Text
+                                                    style={[
+                                                        message.isRead
+                                                            ? {
+                                                                  color: "grey",
+                                                              }
+                                                            : {
+                                                                  color: "black",
+                                                              },
+                                                        {
+                                                            marginLeft: 7,
+                                                        },
+                                                    ]}
+                                                >
+                                                    {message.body}
+                                                </Text>
+                                            </TouchableOpacity>
+                                        </View>
+                                    ))}
+                                </ScrollView>
+                            )}
+                        </View>
+                    </View>
+                </Modal>
+            </View>
+        );
+
     return (
         <Stack.Navigator initialRouteName="HomeScreen">
             <Stack.Screen
                 name="HomeScreen"
                 component={Home}
-                options={{
+                options={({ navigation }) => ({
                     title: myBase.auth().currentUser.displayName + "님",
                     headerTitleAlign: "center",
-                    headerLeft: () =>
-                        loading ? undefined : (
-                            <View
-                                style={{
-                                    marginLeft: 10,
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    width: "100%",
-                                    height: "60%",
-                                }}
-                            >
-                                <TouchableOpacity
-                                    style={{ width: wp("8%") }}
-                                    onPress={() => {
-                                        if (notificationAvail) {
-                                            setModalNotification(true);
-                                        } else {
-                                            Linking.openSettings();
-                                        }
-                                    }}
-                                >
-                                    <View
-                                        style={[
-                                            {
-                                                borderRadius: 100,
-                                                position: "absolute",
-                                                width: 10,
-                                                height: 10,
-                                                top: 0,
-                                                right: 0,
-                                            },
-                                            unread
-                                                ? { backgroundColor: "red" }
-                                                : { backgroundColor: "white" },
-                                        ]}
-                                    />
-                                    <MaterialIcons
-                                        name={
-                                            notificationAvail
-                                                ? "notifications"
-                                                : "notifications-off"
-                                        }
-                                        size={RFPercentage(3.5)}
-                                        color="black"
-                                    />
-                                </TouchableOpacity>
-                                <Modal
-                                    isVisible={modalNotification}
-                                    style={{
-                                        justifyContent: "flex-end",
-                                        margin: 0,
-                                    }}
-                                    onBackdropPress={() => setModalNotification(false)}
-                                >
-                                    <View
-                                        style={{
-                                            height: hp("80%"),
-                                            backgroundColor: "white",
-                                        }}
-                                    >
-                                        <View style={{ flexDirection: "row" }}>
-                                            <TouchableOpacity
-                                                style={{
-                                                    padding: 5,
-                                                    width: wp("13%"),
-                                                    alignItems: "center",
-                                                }}
-                                                onPress={() => setModalNotification(false)}
-                                            >
-                                                <Text
-                                                    style={{
-                                                        margin: 7,
-                                                        fontSize: RFPercentage(2),
-                                                    }}
-                                                >
-                                                    닫기
-                                                </Text>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity
-                                                style={{
-                                                    padding: 5,
-                                                    width: wp("20%"),
-                                                    alignItems: "center",
-                                                    position: "absolute",
-                                                    right: 0,
-                                                }}
-                                                onPress={() => {
-                                                    checkAllNotification();
-                                                    setModalNotification(false);
-                                                }}
-                                            >
-                                                <Text
-                                                    style={{
-                                                        margin: 7,
-                                                        fontSize: RFPercentage(2),
-                                                    }}
-                                                >
-                                                    모두 읽음
-                                                </Text>
-                                            </TouchableOpacity>
-                                        </View>
-                                        <View style={{ borderWidth: "0.5" }} />
-                                        <View>
-                                            {messages.length === 0 ? (
-                                                <View style={{ padding: 10 }}>
-                                                    <Text
-                                                        style={{
-                                                            fontSize: RFPercentage(2.5),
-                                                        }}
-                                                    >
-                                                        알림 없음
-                                                    </Text>
-                                                </View>
-                                            ) : (
-                                                <ScrollView>
-                                                    {messages.map((message, index) => (
-                                                        <View
-                                                            key={index}
-                                                            style={{
-                                                                padding: 10,
-                                                                borderWidth: 1,
-                                                                margin: 10,
-                                                            }}
-                                                        >
-                                                            <TouchableOpacity
-                                                                onPress={() => {
-                                                                    setModalNotification(false);
-                                                                    if (!message.isRead) {
-                                                                        checkNotification(
-                                                                            message.id
-                                                                        );
-                                                                    }
-                                                                    if (message.data.navigation) {
-                                                                        navigation.navigate(
-                                                                            message.data.navigation
-                                                                        );
-                                                                    }
-                                                                }}
-                                                            >
-                                                                <View
-                                                                    style={{
-                                                                        flexDirection: "row",
-                                                                    }}
-                                                                >
-                                                                    <View
-                                                                        style={{
-                                                                            flex: 1,
-                                                                        }}
-                                                                    >
-                                                                        <Text
-                                                                            style={[
-                                                                                message.isRead
-                                                                                    ? {
-                                                                                          color:
-                                                                                              "grey",
-                                                                                      }
-                                                                                    : {
-                                                                                          color:
-                                                                                              "black",
-                                                                                      },
-                                                                            ]}
-                                                                        >
-                                                                            {message.sendFrom +
-                                                                                " 로부터"}
-                                                                        </Text>
-                                                                    </View>
-                                                                    <View
-                                                                        style={{
-                                                                            alignItems: "flex-end",
-                                                                            flex: 1,
-                                                                        }}
-                                                                    >
-                                                                        <Text
-                                                                            style={[
-                                                                                message.isRead
-                                                                                    ? {
-                                                                                          color:
-                                                                                              "grey",
-                                                                                      }
-                                                                                    : {
-                                                                                          color:
-                                                                                              "black",
-                                                                                      },
-                                                                            ]}
-                                                                        >
-                                                                            {moment(
-                                                                                message.sendDate.toDate()
-                                                                            ).format(
-                                                                                "MM.DD. HH:mm"
-                                                                            ) + " 에 보냄"}
-                                                                        </Text>
-                                                                    </View>
-                                                                </View>
-                                                                <Text
-                                                                    style={[
-                                                                        message.isRead
-                                                                            ? {
-                                                                                  color: "grey",
-                                                                              }
-                                                                            : {
-                                                                                  color: "black",
-                                                                              },
-                                                                        {
-                                                                            fontWeight: "bold",
-                                                                            marginBottom: 5,
-                                                                        },
-                                                                    ]}
-                                                                >
-                                                                    {message.title}
-                                                                </Text>
-                                                                <Text
-                                                                    style={[
-                                                                        message.isRead
-                                                                            ? {
-                                                                                  color: "grey",
-                                                                              }
-                                                                            : {
-                                                                                  color: "black",
-                                                                              },
-                                                                        {
-                                                                            marginLeft: 7,
-                                                                        },
-                                                                    ]}
-                                                                >
-                                                                    {message.body}
-                                                                </Text>
-                                                            </TouchableOpacity>
-                                                        </View>
-                                                    ))}
-                                                </ScrollView>
-                                            )}
-                                        </View>
-                                    </View>
-                                </Modal>
-                            </View>
-                        ),
+                    headerLeft: () => renderNotificationButton(navigation),
                     headerRight: () => (
                         <TouchableOpacity
                             style={{
@@ -502,7 +489,7 @@ const MyStack = () => {
                             ) : undefined}
                         </TouchableOpacity>
                     ),
-                }}
+                })}
             />
             <Stack.Screen
                 name="Profile"

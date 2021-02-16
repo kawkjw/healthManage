@@ -51,8 +51,7 @@ export default Profile = ({ navigation, route }) => {
         { label: "스피닝", value: "spinning" },
         { label: "스쿼시", value: "squash" },
         { label: "필라테스", value: "pilates" },
-        { label: "요가", value: "yoga" },
-        { label: "줌바", value: "zoomba" },
+        { label: "GX", value: "yoga.zoomba" },
     ];
     const [radioGxSelected, setRadioGxSelected] = useState(-1);
     const [todayClassInfo, setTodayClassInfo] = useState({

@@ -198,12 +198,14 @@ export default GX = ({ navigation, route }) => {
                                 });
                                 classInfo["clients"] = clientList;
                             });
-                        list.push(classInfo);
-                        list.sort((a, b) => {
-                            return a.info.start.seconds - b.info.start.seconds;
-                        });
+                        if (classInfo.info !== undefined) {
+                            list.push(classInfo);
+                        }
                     });
                     await Promise.all(promises);
+                    list.sort((a, b) => {
+                        return a.info.start.seconds - b.info.start.seconds;
+                    });
                     allList[className] = list;
                 });
         });
