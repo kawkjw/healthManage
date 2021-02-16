@@ -282,7 +282,7 @@ export default Auth = () => {
                         <Stack.Screen
                             name="Loading"
                             component={LoadingScreen}
-                            options={{ title: " " }}
+                            options={{ headerShown: false }}
                         />
                     ) : state.userToken == null ? (
                         <>

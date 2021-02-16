@@ -141,7 +141,11 @@ const MyStack = () => {
     return (
         <Stack.Navigator>
             {isLoading ? (
-                <Stack.Screen name="Loading" component={LoadingScreen} />
+                <Stack.Screen
+                    name="Loading"
+                    component={LoadingScreen}
+                    options={{ headerShown: false }}
+                />
             ) : !isVerified ? (
                 <Stack.Screen name="Verify" component={VerifyEmail} />
             ) : isAdmin ? (
