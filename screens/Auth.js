@@ -182,29 +182,23 @@ export default Auth = () => {
                                             .get()
                                             .then(async (temp) => {
                                                 const data = temp.data();
-                                                const promises = [
-                                                    "health",
-                                                    "pilates",
-                                                    "spinning",
-                                                    "squash",
-                                                    "GX",
-                                                    "pt",
-                                                ].map(async (className) => {
-                                                    if (data.memberships[className] !== undefined) {
+                                                const promises = data.memberships.map(
+                                                    async (membership) => {
                                                         await db
                                                             .collection("users")
                                                             .doc(currentUser.id)
                                                             .collection("memberships")
-                                                            .doc(className)
-                                                            .set(data.memberships[className]);
+                                                            .doc(membership.name)
+                                                            .set(membership);
                                                     }
-                                                });
+                                                );
                                                 await Promise.all(promises);
+                                                temp.ref.delete();
                                             });
                                     }
                                 }
                             })
-                            .catch((error) => console.log(error));
+                            .catch((error) => console.log(error.code));
                     })
                     .then(() => {
                         const user = myBase.auth().currentUser;

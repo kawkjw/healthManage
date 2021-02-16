@@ -176,7 +176,7 @@ export default SignUp = ({ navigation }) => {
                 keyboardShouldPersistTaps="always"
                 showsVerticalScrollIndicator={false}
                 scrollEnabled={false}
-                extraScrollHeight={80}
+                extraScrollHeight={120}
             >
                 <TouchableOpacity
                     style={AuthStyles.touchScreen}

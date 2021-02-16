@@ -401,13 +401,14 @@ export default PT = ({ navigation, route }) => {
                                 }
                             >
                                 <Text
-                                    style={
+                                    style={[
                                         item.color === "black"
                                             ? { color: "black" }
                                             : item.color === "blue"
                                             ? { color: "blue" }
-                                            : { color: "red" }
-                                    }
+                                            : { color: "red" },
+                                        { fontSize: RFPercentage(2) },
+                                    ]}
                                 >
                                     {item.id}
                                 </Text>

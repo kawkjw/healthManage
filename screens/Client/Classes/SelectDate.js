@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Dimensions, SafeAreaView, Text, TouchableOpacity, ScrollView } from "react-native";
+import { RFPercentage } from "react-native-responsive-fontsize";
 import { MyStyles } from "../../../css/MyStyles";
 
 export default SelectDate = ({ navigation, route }) => {
@@ -56,7 +57,7 @@ export default SelectDate = ({ navigation, route }) => {
                                 })
                             }
                         >
-                            <Text>{d}</Text>
+                            <Text style={{ fontSize: RFPercentage(2.3) }}>{d}</Text>
                         </TouchableOpacity>
                     );
                 })}

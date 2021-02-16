@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Dimensions, SafeAreaView, ScrollView, Text, TouchableOpacity } from "react-native";
+import { RFPercentage } from "react-native-responsive-fontsize";
 import myBase, { db } from "../../../config/MyBase";
 import { MyStyles } from "../../../css/MyStyles";
 
@@ -59,7 +60,7 @@ export default SelectTrainer = ({ navigation, route }) => {
                             })
                         }
                     >
-                        <Text>{trainer.name}</Text>
+                        <Text style={{ fontSize: RFPercentage(2.3) }}>{trainer.name}</Text>
                     </TouchableOpacity>
                 ))}
             </ScrollView>
