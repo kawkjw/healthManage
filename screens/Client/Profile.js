@@ -31,6 +31,7 @@ export default Profile = ({ navigation }) => {
     const [data, setData] = useState("");
     const delay = 15000;
     const [isRun, setIsRun] = useState(false);
+    const [num, setNum] = useState(4);
     const [count, setCount] = useState(15);
     const [phoneNumber, setPhoneNumber] = useState("");
     const [name, setName] = useState("");
@@ -244,9 +245,10 @@ export default Profile = ({ navigation }) => {
 
     useEffect(() => {
         if (isRun) {
+            setNum(4);
             createRandom();
         } else {
-            setTimeout(() => resetRandom(), delay);
+            setTimeout(() => resetRandom(), 5000);
         }
     }, [isRun]);
 
@@ -260,7 +262,12 @@ export default Profile = ({ navigation }) => {
     useInterval(
         () => {
             setCount(15);
-            createRandom();
+            if (num === 0) {
+                setIsRun(false);
+            } else {
+                setNum(num - 1);
+                createRandom();
+            }
         },
         isRun ? delay : null
     );
