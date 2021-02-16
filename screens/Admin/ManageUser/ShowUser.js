@@ -172,7 +172,7 @@ export default ShowUser = ({ route }) => {
                 .then((doc) => {
                     if (doc.data().extended === undefined) {
                         doc.ref.set({ end: changeEnd, extended: 1 }, { merge: true });
-                    } else if (doc.data().month === 12) {
+                    } else if (doc.data().month === 12 && doc.data().extended === 1) {
                         doc.ref.set({ end: changeEnd, extended: 2 }, { merge: true });
                     }
                 });
@@ -318,7 +318,14 @@ export default ShowUser = ({ route }) => {
                                     </View>
                                 </View>
                                 {obj.confirm ? (
-                                    <Text style={{ fontSize: RFPercentage(2) }}>승인완료</Text>
+                                    <Text
+                                        style={{
+                                            fontSize: RFPercentage(2),
+                                            marginRight: RFPercentage(1.3),
+                                        }}
+                                    >
+                                        승인완료
+                                    </Text>
                                 ) : (
                                     <>
                                         <TouchableOpacity

@@ -185,10 +185,10 @@ export default SignUp = ({ navigation }) => {
                     activeOpacity={1}
                 >
                     <View style={AuthStyles.textView}>
-                        <Text style={AuthStyles.text}>Enter Name</Text>
+                        <Text style={AuthStyles.text}>이름</Text>
                         <TextInput
                             style={AuthStyles.textInput}
-                            placeholder="Name"
+                            placeholder="이름"
                             autoCompleteType="name"
                             keyboardType="default"
                             textContentType="name"
@@ -197,7 +197,7 @@ export default SignUp = ({ navigation }) => {
                         />
                     </View>
                     <View style={AuthStyles.textView}>
-                        <Text style={AuthStyles.text}>Enter Email</Text>
+                        <Text style={AuthStyles.text}>이메일</Text>
                         <View style={{ flexDirection: "row" }}>
                             <TextInput
                                 style={[
@@ -225,7 +225,7 @@ export default SignUp = ({ navigation }) => {
                         </View>
                     </View>
                     <View style={AuthStyles.textView}>
-                        <Text style={AuthStyles.text}>Enter Password</Text>
+                        <Text style={AuthStyles.text}>비밀번호</Text>
                         <Text style={{ color: "#8c8c8c", marginBottom: 5 }}>
                             길이는 8자 이상 15자 이하이며{"\n"}영문, 숫자, 특수문자 중 2가지 이상을
                             혼합하여 입력해주세요
@@ -246,7 +246,7 @@ export default SignUp = ({ navigation }) => {
                         />
                     </View>
                     <View style={AuthStyles.textView}>
-                        <Text style={AuthStyles.text}>Enter Check Password</Text>
+                        <Text style={AuthStyles.text}>비밀번호 확인</Text>
                         <TextInput
                             style={[
                                 AuthStyles.textInput,
@@ -269,7 +269,7 @@ export default SignUp = ({ navigation }) => {
                                 setSelected(!selected);
                                 Keyboard.dismiss();
                             }}
-                            text=" Are you admin?"
+                            text=" 관리자 코드 입력"
                             textStyle={{ fontSize: RFPercentage(2) }}
                             size={RFPercentage(2.5)}
                             style={[{ width: "40%" }, selected && { marginBottom: 10 }]}
@@ -289,7 +289,7 @@ export default SignUp = ({ navigation }) => {
                         ) : null}
                     </View>
                     <View style={AuthStyles.textView}>
-                        <Text style={AuthStyles.text}>Enter Phone Number</Text>
+                        <Text style={AuthStyles.text}>휴대폰 번호</Text>
                         <View style={{ marginBottom: 5, flexDirection: "row" }}>
                             <TextInput
                                 style={[AuthStyles.textInput, { flex: 3, marginRight: 7 }]}
@@ -309,12 +309,12 @@ export default SignUp = ({ navigation }) => {
                                 }}
                                 disabled={phoneNumber.length === 0}
                             >
-                                <Text style={AuthStyles.authText}>Send</Text>
+                                <Text style={AuthStyles.authText}>전송</Text>
                             </TouchableOpacity>
                         </View>
                         <View>
                             {verificationId !== "" && (
-                                <Text style={{ marginBottom: 5 }}>Sended Code</Text>
+                                <Text style={{ marginBottom: 5 }}>인증 문자 확인해주세요</Text>
                             )}
                             <TextInput
                                 style={AuthStyles.textInput}
@@ -352,7 +352,7 @@ export default SignUp = ({ navigation }) => {
                             {loading ? (
                                 <ActivityIndicator />
                             ) : (
-                                <Text style={AuthStyles.authText}>Sign Up</Text>
+                                <Text style={AuthStyles.authText}>회원가입</Text>
                             )}
                         </TouchableOpacity>
                     </View>

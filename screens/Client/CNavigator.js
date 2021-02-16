@@ -27,7 +27,7 @@ import * as Notifications from "expo-notifications";
 import ExtendDate from "./Menus/ExtendDate";
 
 const Stack = createStackNavigator();
-const MyStack = ({ navigation }) => {
+const MyStack = () => {
     const { signOut } = useContext(AuthContext);
     const uid = myBase.auth().currentUser.uid;
     const [loading, setLoading] = useState(true);
@@ -219,7 +219,7 @@ const MyStack = ({ navigation }) => {
         execPromise();
     }, []);
 
-    const renderGoBackButton = (
+    const renderGoBackButton = (navigation) => (
         <TouchableOpacity
             style={{
                 width: "100%",
@@ -507,9 +507,9 @@ const MyStack = ({ navigation }) => {
             <Stack.Screen
                 name="Profile"
                 component={Profile}
-                options={{
+                options={({ navigation }) => ({
                     title: "내 정보",
-                    headerLeft: () => renderGoBackButton,
+                    headerLeft: () => renderGoBackButton(navigation),
                     headerRight: () => (
                         <TouchableOpacity
                             style={{
@@ -524,77 +524,89 @@ const MyStack = ({ navigation }) => {
                             <Text style={{ fontSize: RFPercentage(2) }}>로그아웃</Text>
                         </TouchableOpacity>
                     ),
-                }}
+                })}
             />
             <Stack.Screen
                 name="Menu"
                 component={Menu}
-                options={{
+                options={({ navigation }) => ({
                     title: "메뉴",
-                    headerLeft: () => renderGoBackButton,
-                }}
+                    headerLeft: () => renderGoBackButton(navigation),
+                })}
             />
             <Stack.Screen
                 name="Info"
                 component={Info}
-                options={{ title: "정보", headerLeft: () => renderGoBackButton }}
+                options={({ navigation }) => ({
+                    title: "정보",
+                    headerLeft: () => renderGoBackButton(navigation),
+                })}
             />
             <Stack.Screen
                 name="QRScan"
                 component={QRScan}
-                options={{ title: "QR코드 스캔", headerLeft: () => renderGoBackButton }}
+                options={({ navigation }) => ({
+                    title: "QR코드 스캔",
+                    headerLeft: () => renderGoBackButton(navigation),
+                })}
             />
             <Stack.Screen
                 name="Test"
                 component={Test}
-                options={{ headerLeft: () => renderGoBackButton }}
+                options={({ navigation }) => ({ headerLeft: () => renderGoBackButton(navigation) })}
             />
             <Stack.Screen
                 name="Class"
                 component={Class}
-                options={{
+                options={({ navigation }) => ({
                     title: "예약",
-                    headerLeft: () => renderGoBackButton,
-                }}
+                    headerLeft: () => renderGoBackButton(navigation),
+                })}
             />
             <Stack.Screen
                 name="PT"
                 component={PT}
-                options={({ route }) => ({
+                options={({ navigation, route }) => ({
                     title: route.params.trainerName,
-                    headerLeft: () => renderGoBackButton,
+                    headerLeft: () => renderGoBackButton(navigation),
                 })}
             />
             <Stack.Screen
                 name="GX"
                 component={GX}
-                options={({ route }) => ({
+                options={({ navigation, route }) => ({
                     title: route.params.date,
-                    headerLeft: () => renderGoBackButton,
+                    headerLeft: () => renderGoBackButton(navigation),
                 })}
             />
             <Stack.Screen
                 name="SelectDate"
                 component={SelectDate}
-                options={({ route }) => ({
+                options={({ navigation, route }) => ({
                     title: enToKo(route.params.classname),
-                    headerLeft: () => renderGoBackButton,
+                    headerLeft: () => renderGoBackButton(navigation),
                 })}
             />
             <Stack.Screen
                 name="SelectTrainer"
                 component={SelectTrainer}
-                options={{ title: "트레이너", headerLeft: () => renderGoBackButton }}
+                options={({ navigation }) => ({
+                    title: "트레이너",
+                    headerLeft: () => renderGoBackButton(navigation),
+                })}
             />
             <Stack.Screen
                 name="ExtendDate"
                 component={ExtendDate}
-                options={{ title: "이용권 연장", headerLeft: () => renderGoBackButton }}
+                options={({ navigation }) => ({
+                    title: "이용권 연장",
+                    headerLeft: () => renderGoBackButton(navigation),
+                })}
             />
         </Stack.Navigator>
     );
 };
 
-export default CNavigator = ({ navigation, route }) => {
-    return <MyStack navigation={navigation} />;
+export default CNavigator = () => {
+    return <MyStack />;
 };

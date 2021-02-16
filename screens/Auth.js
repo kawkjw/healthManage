@@ -1,7 +1,8 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import React from "react";
-import { Alert } from "react-native";
+import React, { useEffect } from "react";
+import { Alert, Text, TouchableOpacity } from "react-native";
+import { MaterialIcons } from "@expo/vector-icons";
 import myBase, { arrayDelete, db } from "../config/MyBase";
 import firebase from "firebase";
 import LoadingScreen from "./LoadingScreen";
@@ -12,12 +13,13 @@ import SignUp from "./Auth/SignUp";
 import ResetPw from "./Auth/ResetPw";
 import { ADMIN_CODE, TRAINER_CODE } from "@env";
 import { pushNotificationsToAdmin } from "../config/MyExpo";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 const Stack = createStackNavigator();
 
 export const AuthContext = React.createContext();
 
-export default function Auth({ navigation, route }) {
+export default Auth = () => {
     const [state, dispatch] = React.useReducer(
         (prevState, action) => {
             switch (action.type) {
@@ -47,7 +49,7 @@ export default function Auth({ navigation, route }) {
             userToken: null,
         }
     );
-    React.useEffect(() => {
+    useEffect(() => {
         const restoreToken = async () => {
             let userToken;
             try {
@@ -259,6 +261,23 @@ export default function Auth({ navigation, route }) {
         }),
         []
     );
+
+    const renderGoBackButton = (navigation) => (
+        <TouchableOpacity
+            style={{
+                width: "100%",
+                height: "100%",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: 10,
+                marginLeft: 7,
+            }}
+            onPress={() => navigation.goBack()}
+        >
+            <MaterialIcons name="arrow-back-ios" size={RFPercentage(2.5)} color="black" />
+        </TouchableOpacity>
+    );
+
     return (
         <AuthContext.Provider value={authContext}>
             <NavigationContainer>
@@ -275,27 +294,29 @@ export default function Auth({ navigation, route }) {
                                 name="signin"
                                 component={SignIn}
                                 options={{
-                                    title: "Sign In",
+                                    title: "더끌림 피트니스",
                                     animationTypeForReplace: state.isSignout ? "pop" : "push",
                                 }}
                             />
                             <Stack.Screen
                                 name="resetpw"
                                 component={ResetPw}
-                                options={{
-                                    title: "Reset Password",
+                                options={({ navigation }) => ({
+                                    title: "비밀번호 초기화",
                                     gestureEnabled: false,
                                     animationTypeForReplace: state.isSignout ? "pop" : "push",
-                                }}
+                                    headerLeft: () => renderGoBackButton(navigation),
+                                })}
                             />
                             <Stack.Screen
                                 name="signup"
                                 component={SignUp}
-                                options={{
-                                    title: "Sign Up",
+                                options={({ navigation }) => ({
+                                    title: "회원가입",
                                     gestureEnabled: false,
                                     animationTypeForReplace: state.isSignout ? "pop" : "push",
-                                }}
+                                    headerLeft: () => renderGoBackButton(navigation),
+                                })}
                             />
                         </>
                     ) : (
@@ -312,4 +333,4 @@ export default function Auth({ navigation, route }) {
             </NavigationContainer>
         </AuthContext.Provider>
     );
-}
+};

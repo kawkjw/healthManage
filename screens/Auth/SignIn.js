@@ -143,7 +143,7 @@ export default SignIn = ({ navigation }) => {
                             setMailTop(e.nativeEvent.layout.height + e.nativeEvent.layout.y);
                         }}
                     >
-                        <Text style={AuthStyles.text}>Enter Email</Text>
+                        <Text style={AuthStyles.text}>이메일</Text>
                         <View style={{ flexDirection: "row" }}>
                             <TextInput
                                 style={[AuthStyles.textInput, { flex: 3 }]}
@@ -200,7 +200,7 @@ export default SignIn = ({ navigation }) => {
                         </View>
                     </View>
                     <View style={AuthStyles.textView}>
-                        <Text style={AuthStyles.text}>Enter Password</Text>
+                        <Text style={AuthStyles.text}>비밀번호</Text>
                         <TextInput
                             style={AuthStyles.textInput}
                             placeholder="Input password"
@@ -229,7 +229,7 @@ export default SignIn = ({ navigation }) => {
                                             : undefined,
                                     ]}
                                 >
-                                    Sign In
+                                    로그인
                                 </Text>
                             )}
                         </TouchableOpacity>
@@ -237,7 +237,7 @@ export default SignIn = ({ navigation }) => {
                             style={[AuthStyles.authButton, { marginLeft: 5 }]}
                             onPress={() => navigation.navigate("resetpw")}
                         >
-                            <Text style={AuthStyles.authText}>Reset Pw</Text>
+                            <Text style={AuthStyles.authText}>비밀번호 초기화</Text>
                         </TouchableOpacity>
                     </View>
                     <View style={{ height: 35 }}>
@@ -245,7 +245,7 @@ export default SignIn = ({ navigation }) => {
                             style={AuthStyles.authButton}
                             onPress={() => navigation.navigate("signup")}
                         >
-                            <Text style={AuthStyles.authText}>Sign Up</Text>
+                            <Text style={AuthStyles.authText}>회원가입</Text>
                         </TouchableOpacity>
                     </View>
                 </TouchableOpacity>

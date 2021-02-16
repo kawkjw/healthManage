@@ -61,7 +61,7 @@ export default ResetPw = () => {
                     activeOpacity={1}
                 >
                     <View style={AuthStyles.textView}>
-                        <Text style={AuthStyles.text}>Enter Email</Text>
+                        <Text style={AuthStyles.text}>이메일</Text>
                         <TextInput
                             style={[
                                 AuthStyles.textInput,
@@ -81,7 +81,7 @@ export default ResetPw = () => {
                     </View>
                     <View style={{ height: 35 }}>
                         <TouchableOpacity style={AuthStyles.authButton} onPress={sendResetMail}>
-                            <Text style={AuthStyles.authText}>Send Reset Password Mail</Text>
+                            <Text style={AuthStyles.authText}>비밀번호 초기화</Text>
                         </TouchableOpacity>
                     </View>
                 </TouchableOpacity>

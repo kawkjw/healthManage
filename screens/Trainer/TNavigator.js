@@ -19,7 +19,7 @@ import myBase, { db } from "../../config/MyBase";
 import moment from "moment";
 
 const Stack = createStackNavigator();
-const MyStack = ({ navigation }) => {
+const MyStack = () => {
     const { signOut } = useContext(AuthContext);
     const uid = myBase.auth().currentUser.uid;
     const [limit, setLimit] = useState([]);
@@ -127,7 +127,7 @@ const MyStack = ({ navigation }) => {
         execPromise();
     }, []);
 
-    const renderGoBackButton = (
+    const renderGoBackButton = (navigation) => (
         <TouchableOpacity
             style={{
                 width: "100%",
@@ -399,9 +399,9 @@ const MyStack = ({ navigation }) => {
             <Stack.Screen
                 name="Profile"
                 component={Profile}
-                options={{
+                options={({ navigation }) => ({
                     title: "내 정보",
-                    headerLeft: () => renderGoBackButton,
+                    headerLeft: () => renderGoBackButton(navigation),
                     headerRight: () => (
                         <TouchableOpacity
                             style={{
@@ -416,22 +416,22 @@ const MyStack = ({ navigation }) => {
                             <Text style={{ fontSize: RFPercentage(2) }}>로그아웃</Text>
                         </TouchableOpacity>
                     ),
-                }}
+                })}
             />
             <Stack.Screen
                 name="GX"
                 component={GX}
-                options={{ headerLeft: () => renderGoBackButton }}
+                options={({ navigation }) => ({ headerLeft: () => renderGoBackButton(navigation) })}
             />
             <Stack.Screen
                 name="PT"
                 component={PT}
-                options={{ headerLeft: () => renderGoBackButton }}
+                options={({ navigation }) => ({ headerLeft: () => renderGoBackButton(navigation) })}
             />
         </Stack.Navigator>
     );
 };
 
 export default TNavigator = ({ navigation, route }) => {
-    return <MyStack navigation={navigation} />;
+    return <MyStack />;
 };
