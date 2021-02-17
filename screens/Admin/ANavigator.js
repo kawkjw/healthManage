@@ -37,7 +37,7 @@ const MyStack = () => {
     const [modalNotification, setModalNotification] = useState(false);
     const [unread, setUnread] = useState(false);
     const [notificationNum, setNotificationNum] = useState(0);
-    const [pressNotification, setPressNotification] = useState(true);
+    const [unsubscribe, setUnsubscribe] = useState(() => {});
 
     const enToKo = (s) => {
         switch (s) {
@@ -62,7 +62,7 @@ const MyStack = () => {
             setNotificationAvail(true);
             setUnread(false);
             const today = new Date();
-            await db
+            const func = db
                 .collection("notifications")
                 .doc(uid)
                 .collection("messages")
@@ -72,8 +72,7 @@ const MyStack = () => {
                     new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7)
                 )
                 .orderBy("sendDate", "desc")
-                .get()
-                .then(async (messages) => {
+                .onSnapshot(async (messages) => {
                     let list = [];
                     let num = 0;
                     messages.forEach((message) => {
@@ -88,6 +87,7 @@ const MyStack = () => {
                     setNotificationNum(num);
                     await Notifications.setBadgeCountAsync(num);
                 });
+            return func;
         }
     };
 
@@ -131,14 +131,15 @@ const MyStack = () => {
     };
 
     const execPromise = async () => {
-        await getNotifications().then(() => {
+        await getNotifications().then((func) => {
+            setUnsubscribe(() => func);
             setLoading(false);
         });
     };
 
     useEffect(() => {
         execPromise();
-    }, [pressNotification]);
+    }, []);
 
     const renderGoBackButton = (navigation) => (
         <TouchableOpacity
@@ -171,7 +172,6 @@ const MyStack = () => {
                     style={{ width: wp("8%") }}
                     onPress={() => {
                         if (notificationAvail) {
-                            setPressNotification(!pressNotification);
                             setModalNotification(true);
                         } else {
                             Linking.openSettings();
@@ -399,7 +399,10 @@ const MyStack = () => {
                                 alignItems: "center",
                                 justifyContent: "center",
                             }}
-                            onPress={signOut}
+                            onPress={() => {
+                                unsubscribe();
+                                signOut();
+                            }}
                         >
                             <Text style={{ fontSize: RFPercentage(2) }}>로그아웃</Text>
                         </TouchableOpacity>

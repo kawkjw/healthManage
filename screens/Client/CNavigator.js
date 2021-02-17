@@ -33,12 +33,14 @@ const MyStack = () => {
     const [loading, setLoading] = useState(true);
     const [endDate, setEndDate] = useState("");
     const [membershipString, setMembershipString] = useState("");
+    const [membershipInfo, setMembershipInfo] = useState("");
     const [notificationAvail, setNotificationAvail] = useState(false);
     const [messages, setMessages] = useState([]);
     const [modalNotification, setModalNotification] = useState(false);
     const [unread, setUnread] = useState(false);
     const [notificationNum, setNotificationNum] = useState(0);
-    const [pressNotification, setPressNotification] = useState(true);
+    const [notificationUnsubscribe, setNotificationUnsubscribe] = useState(() => {});
+    const [membershipUnsubscribe, setMembershipUnsubsribe] = useState(() => {});
 
     const enToKo = (s) => {
         switch (s) {
@@ -62,16 +64,15 @@ const MyStack = () => {
     };
 
     const getMemberships = async () => {
-        let ret = "";
-        await db
+        const func = db
             .collection("users")
             .doc(uid)
             .collection("memberships")
             .orderBy("end", "asc")
-            .get()
-            .then((memberships) => {
+            .onSnapshot((memberships) => {
                 let kinds = [];
                 let temp = {};
+                let ret = "";
                 memberships.forEach((membership) => {
                     if (membership.id === "pt") {
                         const { count } = membership.data();
@@ -130,8 +131,9 @@ const MyStack = () => {
                     info = info + stringTemp + "\n";
                 });
                 ret = info ? info.substring(0, info.length - 1) : "회원권이 없습니다.";
+                setMembershipInfo(ret);
             });
-        return ret;
+        return func;
     };
 
     const getNotifications = async () => {
@@ -140,7 +142,7 @@ const MyStack = () => {
             setNotificationAvail(true);
             setUnread(false);
             const today = new Date();
-            await db
+            const func = db
                 .collection("notifications")
                 .doc(uid)
                 .collection("messages")
@@ -150,8 +152,7 @@ const MyStack = () => {
                     new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7)
                 )
                 .orderBy("sendDate", "desc")
-                .get()
-                .then(async (messages) => {
+                .onSnapshot(async (messages) => {
                     let list = [];
                     let num = 0;
                     messages.forEach((message) => {
@@ -164,9 +165,9 @@ const MyStack = () => {
                     });
                     setMessages(list);
                     setNotificationNum(num);
-                    console.log(list);
                     await Notifications.setBadgeCountAsync(num);
                 });
+            return func;
         }
     };
 
@@ -210,8 +211,10 @@ const MyStack = () => {
     };
 
     const execPromise = async () => {
-        await getMemberships().then(async () => {
-            await getNotifications().then(() => {
+        await getMemberships().then(async (ret) => {
+            setMembershipUnsubsribe(() => ret);
+            await getNotifications().then((func) => {
+                setNotificationUnsubscribe(() => func);
                 setLoading(false);
             });
         });
@@ -220,10 +223,6 @@ const MyStack = () => {
     useEffect(() => {
         execPromise();
     }, []);
-
-    useEffect(() => {
-        getNotifications();
-    }, [pressNotification]);
 
     const renderGoBackButton = (navigation) => (
         <TouchableOpacity
@@ -256,7 +255,6 @@ const MyStack = () => {
                     style={{ width: wp("8%") }}
                     onPress={() => {
                         if (notificationAvail) {
-                            setPressNotification(!pressNotification);
                             setModalNotification(true);
                         } else {
                             Linking.openSettings();
@@ -482,10 +480,8 @@ const MyStack = () => {
                                 alignItems: "center",
                                 justifyContent: "center",
                             }}
-                            onPress={async () => {
-                                await getMemberships().then((info) => {
-                                    Alert.alert("회원권 정보", info);
-                                });
+                            onPress={() => {
+                                Alert.alert("회원권 정보", membershipInfo);
                             }}
                         >
                             <Text style={{ fontSize: RFPercentage(2) }}>
@@ -513,7 +509,11 @@ const MyStack = () => {
                                 alignItems: "center",
                                 justifyContent: "center",
                             }}
-                            onPress={signOut}
+                            onPress={() => {
+                                membershipUnsubscribe();
+                                notificationUnsubscribe();
+                                signOut();
+                            }}
                         >
                             <Text style={{ fontSize: RFPercentage(2) }}>로그아웃</Text>
                         </TouchableOpacity>
