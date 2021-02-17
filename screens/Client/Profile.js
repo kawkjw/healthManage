@@ -126,14 +126,18 @@ export default Profile = ({ navigation }) => {
             let kinds = [];
             let temp = {};
             setLoading(true);
-            await thisuser.get().then((user) => {
-                if (user.exists) {
-                    setPhoneNumber(user.data().phoneNumber);
-                    setName(user.data().name);
-                }
-            });
-            //setPhoneNumber(myBase.auth().currentUser.phoneNumber);
-            //setName(myBase.auth().currentUser.displayName);
+            setName(myBase.auth().currentUser.displayName);
+            let phoneNumber = myBase.auth().currentUser.phoneNumber;
+            if (phoneNumber.slice(0, 3) === "+82") {
+                phoneNumber =
+                    "0" +
+                    phoneNumber.slice(3, 5) +
+                    "-" +
+                    phoneNumber.slice(5, 9) +
+                    "-" +
+                    phoneNumber.slice(9, phoneNumber.length);
+            }
+            setPhoneNumber(phoneNumber);
             await db
                 .collection("lockers")
                 .where("uid", "==", uid)
