@@ -284,9 +284,7 @@ export default ExtendDate = ({ navigation, route }) => {
                                 }}
                                 disabled={!extendDate || !extendReason}
                             >
-                                <Text style={{ fontSize: RFPercentage(2), margin: 10 }}>
-                                    Submit
-                                </Text>
+                                <Text style={{ fontSize: RFPercentage(2), margin: 10 }}>제출</Text>
                             </TouchableOpacity>
                         </View>
                     </View>

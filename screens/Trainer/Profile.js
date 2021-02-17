@@ -10,7 +10,7 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import myBase, { db } from "../../config/MyBase";
+import myBase, { arrayUnion, db } from "../../config/MyBase";
 import { AuthContext } from "../Auth";
 import { AuthStyles, MyStyles } from "../../css/MyStyles";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
@@ -262,8 +262,12 @@ export default Profile = ({ navigation, route }) => {
                     "." +
                     (Number(ptEndTime) < 10 ? "0" + Number(ptEndTime) : Number(ptEndTime));
                 await db.collection("users").doc(uid).update({ className: str });
+                await db
+                    .collection("classes")
+                    .doc("pt")
+                    .update({ trainerList: arrayUnion(uid) });
                 setModalSetClass(false);
-                getUserData();
+                setUserInfo({ ...userInfo, className: str.split(".") });
             }
         } else if (radioSelected === 1) {
             if (radioGxSelected === -1) {
@@ -273,7 +277,7 @@ export default Profile = ({ navigation, route }) => {
                 let str = "gx." + radioGxOptions[radioGxSelected].value;
                 await db.collection("users").doc(uid).update({ className: str });
                 setModalSetClass(false);
-                getUserData();
+                setUserInfo({ ...userInfo, className: str.split(".") });
             }
         }
     };

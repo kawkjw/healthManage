@@ -212,9 +212,9 @@ const MyStack = () => {
 
     const execPromise = async () => {
         await getMemberships().then(async (ret) => {
-            setMembershipUnsubsribe(() => ret);
+            setMembershipUnsubsribe(ret === undefined ? () => console.log : () => ret);
             await getNotifications().then((func) => {
-                setNotificationUnsubscribe(() => func);
+                setNotificationUnsubscribe(func === undefined ? () => console.log : () => func);
                 setLoading(false);
             });
         });

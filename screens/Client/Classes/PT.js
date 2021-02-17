@@ -546,17 +546,26 @@ export default PT = ({ navigation, route }) => {
                                             alignItems: "center",
                                         }}
                                     >
-                                        <View style={{ flex: 1 }}>
+                                        <View style={{ flex: 1, alignItems: "center" }}>
                                             {availTime.isAvail ? (
                                                 availTime.hasReserve ? (
-                                                    <Text>
+                                                    <Text style={{ fontSize: RFPercentage(2) }}>
                                                         이미 예약됨 {availTime.isMe ? "(나)" : null}
                                                     </Text>
                                                 ) : (
-                                                    <Text>예약 안됨</Text>
+                                                    <Text style={{ fontSize: RFPercentage(2) }}>
+                                                        예약 안됨
+                                                    </Text>
                                                 )
                                             ) : (
-                                                <Text style={{ color: "red" }}>불가능</Text>
+                                                <Text
+                                                    style={{
+                                                        color: "red",
+                                                        fontSize: RFPercentage(2),
+                                                    }}
+                                                >
+                                                    불가능
+                                                </Text>
                                             )}
                                         </View>
                                         {availTime.isAvail ? (
@@ -590,10 +599,14 @@ export default PT = ({ navigation, route }) => {
                                                         );
                                                     }}
                                                 >
-                                                    <Text>예약</Text>
+                                                    <Text style={{ fontSize: RFPercentage(2) }}>
+                                                        예약
+                                                    </Text>
                                                 </TouchableOpacity>
                                             )
-                                        ) : null}
+                                        ) : (
+                                            <View style={{ flex: 1 }} />
+                                        )}
                                     </View>
                                 </View>
                             ))}

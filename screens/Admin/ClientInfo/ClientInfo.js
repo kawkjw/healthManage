@@ -127,36 +127,40 @@ export default ClientInfo = ({ navigation, route }) => {
                     style={{ alignSelf: "stretch" }}
                     contentContainerStyle={{ alignItems: "center" }}
                 >
-                    {clientsInfo.map((client, index) => (
-                        <TouchableOpacity
-                            key={index}
-                            onPress={() => {
-                                navigation.navigate("ShowUser", { user: client.info });
-                            }}
-                        >
-                            <View
-                                style={[
-                                    MyStyles.buttonShadow,
-                                    {
-                                        padding: 10,
-                                        width: wp("95%"),
-                                        marginBottom: 15,
-                                    },
-                                    index === 0 ? { marginTop: 10 } : undefined,
-                                ]}
+                    {clientsInfo.length === 0 ? (
+                        <Text>No Client</Text>
+                    ) : (
+                        clientsInfo.map((client, index) => (
+                            <TouchableOpacity
+                                key={index}
+                                onPress={() => {
+                                    navigation.navigate("ShowUser", { user: client.info });
+                                }}
                             >
-                                <Text style={{ fontSize: RFPercentage(2) }}>
-                                    이름 : {client.info.name}
-                                </Text>
-                                <Text style={{ fontSize: RFPercentage(2) }}>
-                                    이메일 : {client.info.email}
-                                </Text>
-                                <Text style={{ fontSize: RFPercentage(2) }}>
-                                    휴대폰번호 : {client.info.phoneNumber}
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-                    ))}
+                                <View
+                                    style={[
+                                        MyStyles.buttonShadow,
+                                        {
+                                            padding: 10,
+                                            width: wp("95%"),
+                                            marginBottom: 15,
+                                        },
+                                        index === 0 ? { marginTop: 10 } : undefined,
+                                    ]}
+                                >
+                                    <Text style={{ fontSize: RFPercentage(2) }}>
+                                        이름 : {client.info.name}
+                                    </Text>
+                                    <Text style={{ fontSize: RFPercentage(2) }}>
+                                        이메일 : {client.info.email}
+                                    </Text>
+                                    <Text style={{ fontSize: RFPercentage(2) }}>
+                                        휴대폰번호 : {client.info.phoneNumber}
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                        ))
+                    )}
                 </ScrollView>
             )}
         </SafeAreaView>

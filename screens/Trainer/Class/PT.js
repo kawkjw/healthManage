@@ -95,11 +95,10 @@ export default PT = ({ navigation, route }) => {
             let index = 0;
             const endDate = new Date(selectedYear, selectedMonth, 0);
             for (let i = 1; i <= endDate.getDate(); i++) {
-                const d = new Date(yearMonthStr + "-" + (i < 10 ? "0" + i : i));
+                const d = new Date(yearMonthStr + "-" + (i < 10 ? "0" + i : i) + "T00:00");
                 let item = {
                     id: i.toString(),
-                    pressable:
-                        d >= new Date(today.getFullYear(), today.getMonth(), today.getDate()),
+                    pressable: d > new Date(today.getFullYear(), today.getMonth(), today.getDate()),
                     isToday:
                         i === today.getDate() &&
                         selectedMonth === today.getMonth() + 1 &&
@@ -179,7 +178,8 @@ export default PT = ({ navigation, route }) => {
                         obj["submit"] = true;
                         obj["isAvail"] = bool.data().isAvail;
                         obj["hasReserve"] = bool.data().hasReservation;
-                        obj["notEditable"] = today.getDate() >= selectedDate;
+                        obj["notEditable"] =
+                            today > new Date(selectedYear, selectedMonth - 1, selectedDate);
                         if (bool.data().hasReservation) {
                             const { name, phoneNumber } = (
                                 await db.collection("users").doc(bool.data().clientUid).get()
@@ -694,7 +694,7 @@ export default PT = ({ navigation, route }) => {
                                     >
                                         <Text
                                             style={{
-                                                fontSize: RFPercentage(2.2),
+                                                fontSize: RFPercentage(2),
                                             }}
                                         >
                                             {availTime.str}
@@ -722,7 +722,9 @@ export default PT = ({ navigation, route }) => {
                                                     ]}
                                                     onPress={() => setAvailableTime(availTime.str)}
                                                 >
-                                                    <Text>가능</Text>
+                                                    <Text style={{ fontSize: RFPercentage(2.3) }}>
+                                                        가능
+                                                    </Text>
                                                 </TouchableOpacity>
                                                 <TouchableOpacity
                                                     style={[
@@ -734,7 +736,9 @@ export default PT = ({ navigation, route }) => {
                                                     ]}
                                                     onPress={() => setUnAvailabeTime(availTime.str)}
                                                 >
-                                                    <Text>불가능</Text>
+                                                    <Text style={{ fontSize: RFPercentage(2.3) }}>
+                                                        불가능
+                                                    </Text>
                                                 </TouchableOpacity>
                                             </>
                                         ) : (
@@ -759,7 +763,13 @@ export default PT = ({ navigation, route }) => {
                                                     >
                                                         {availTime.hasReserve ? (
                                                             <>
-                                                                <Text>{availTime.clientName}</Text>
+                                                                <Text
+                                                                    style={{
+                                                                        fontSize: RFPercentage(2),
+                                                                    }}
+                                                                >
+                                                                    {availTime.clientName}
+                                                                </Text>
                                                                 <TouchableOpacity
                                                                     onPress={() =>
                                                                         Linking.openURL(
@@ -770,6 +780,9 @@ export default PT = ({ navigation, route }) => {
                                                                     <Text
                                                                         style={{
                                                                             color: "blue",
+                                                                            fontSize: RFPercentage(
+                                                                                2
+                                                                            ),
                                                                         }}
                                                                     >
                                                                         {availTime.clientPhone}
@@ -777,7 +790,13 @@ export default PT = ({ navigation, route }) => {
                                                                 </TouchableOpacity>
                                                             </>
                                                         ) : (
-                                                            <Text>예약이 없습니다.</Text>
+                                                            <Text
+                                                                style={{
+                                                                    fontSize: RFPercentage(2),
+                                                                }}
+                                                            >
+                                                                예약이 없습니다.
+                                                            </Text>
                                                         )}
                                                     </View>
                                                 ) : (
@@ -790,6 +809,7 @@ export default PT = ({ navigation, route }) => {
                                                         <Text
                                                             style={{
                                                                 color: "red",
+                                                                fontSize: RFPercentage(2),
                                                             }}
                                                         >
                                                             불가능
@@ -798,37 +818,39 @@ export default PT = ({ navigation, route }) => {
                                                 )}
                                                 {availTime.hasReserve ? (
                                                     availTime.confirm ? (
-                                                        <TouchableOpacity
-                                                            style={[
-                                                                styles.availButton,
-                                                                {
-                                                                    backgroundColor: "white",
-                                                                    height: hp("7%"),
-                                                                },
-                                                            ]}
-                                                            onPress={() =>
-                                                                Alert.alert(
-                                                                    "예약취소",
-                                                                    "예약 취소하시겠습니까?",
-                                                                    [
-                                                                        {
-                                                                            text: "취소",
-                                                                        },
-                                                                        {
-                                                                            text: "확인",
-                                                                            onPress: () =>
-                                                                                cancelClass(
-                                                                                    availTime.clientUid,
-                                                                                    availTime.str
-                                                                                ),
-                                                                        },
-                                                                    ]
-                                                                )
-                                                            }
-                                                        >
-                                                            <Text>취소</Text>
-                                                        </TouchableOpacity>
-                                                    ) : (
+                                                        availTime.notEditable ? null : (
+                                                            <TouchableOpacity
+                                                                style={[
+                                                                    styles.availButton,
+                                                                    {
+                                                                        backgroundColor: "white",
+                                                                        height: hp("7%"),
+                                                                    },
+                                                                ]}
+                                                                onPress={() =>
+                                                                    Alert.alert(
+                                                                        "예약취소",
+                                                                        "예약 취소하시겠습니까?",
+                                                                        [
+                                                                            {
+                                                                                text: "취소",
+                                                                            },
+                                                                            {
+                                                                                text: "확인",
+                                                                                onPress: () =>
+                                                                                    cancelClass(
+                                                                                        availTime.clientUid,
+                                                                                        availTime.str
+                                                                                    ),
+                                                                            },
+                                                                        ]
+                                                                    )
+                                                                }
+                                                            >
+                                                                <Text>취소</Text>
+                                                            </TouchableOpacity>
+                                                        )
+                                                    ) : availTime.notEditable ? null : (
                                                         <>
                                                             <TouchableOpacity
                                                                 style={[

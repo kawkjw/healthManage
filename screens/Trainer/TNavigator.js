@@ -120,7 +120,7 @@ const MyStack = () => {
     const execPromise = async () => {
         await getPTLimit();
         await getNotifications().then((func) => {
-            setUnsubscribe(() => func);
+            setUnsubscribe(func === undefined ? () => console.log : () => func);
             setLoading(false);
         });
     };
