@@ -251,8 +251,6 @@ export default Profile = ({ navigation }) => {
         if (isRun) {
             setNum(4);
             createRandom();
-        } else {
-            setTimeout(() => resetRandom(), 5000);
         }
     }, [isRun]);
 

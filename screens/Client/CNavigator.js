@@ -224,6 +224,25 @@ const MyStack = () => {
         execPromise();
     }, []);
 
+    const resetRandom = async () => {
+        if (uid !== null) {
+            await db
+                .collection("users")
+                .doc(uid)
+                .get()
+                .then((user) => {
+                    if (user.exists) {
+                        if (user.data().random !== " ") {
+                            user.ref.update({
+                                random: " ",
+                            });
+                        }
+                    }
+                })
+                .catch((error) => console.log("reset random", error.code));
+        }
+    };
+
     const renderGoBackButton = (navigation) => (
         <TouchableOpacity
             style={{
@@ -511,6 +530,7 @@ const MyStack = () => {
                                 justifyContent: "center",
                             }}
                             onPress={() => {
+                                resetRandom();
                                 membershipUnsubscribe();
                                 notificationUnsubscribe();
                                 signOut();
