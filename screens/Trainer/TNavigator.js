@@ -30,6 +30,7 @@ const MyStack = () => {
     const [modalNotification, setModalNotification] = useState(false);
     const [unread, setUnread] = useState(false);
     const [notificationNum, setNotificationNum] = useState(0);
+    const [pressNotification, setPressNotification] = useState(true);
 
     const getPTLimit = async () => {
         await db
@@ -127,6 +128,10 @@ const MyStack = () => {
         execPromise();
     }, []);
 
+    useEffect(() => {
+        getNotifications();
+    }, [pressNotification]);
+
     const renderGoBackButton = (navigation) => (
         <TouchableOpacity
             style={{
@@ -158,6 +163,7 @@ const MyStack = () => {
                     style={{ width: wp("8%") }}
                     onPress={() => {
                         if (notificationAvail) {
+                            setPressNotification(!pressNotification);
                             setModalNotification(true);
                         } else {
                             Linking.openSettings();
