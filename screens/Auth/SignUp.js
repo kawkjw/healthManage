@@ -239,7 +239,7 @@ export default SignUp = ({ navigation }) => {
                                         : { backgroundColor: "red" }
                                     : undefined,
                             ]}
-                            placeholder="Input password"
+                            placeholder="비밀번호"
                             secureTextEntry={true}
                             value={password}
                             onChangeText={setPassword}
@@ -256,7 +256,7 @@ export default SignUp = ({ navigation }) => {
                                         : { backgroundColor: "red" }
                                     : undefined,
                             ]}
-                            placeholder="Input password again"
+                            placeholder="비밀번호 확인"
                             secureTextEntry={true}
                             value={chkPassword}
                             onChangeText={setChkPassword}

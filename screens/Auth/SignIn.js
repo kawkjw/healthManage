@@ -147,7 +147,7 @@ export default SignIn = ({ navigation }) => {
                         <View style={{ flexDirection: "row" }}>
                             <TextInput
                                 style={[AuthStyles.textInput, { flex: 3 }]}
-                                placeholder="ID"
+                                placeholder="아이디"
                                 keyboardType="default"
                                 value={id}
                                 onChangeText={setId}
@@ -177,7 +177,7 @@ export default SignIn = ({ navigation }) => {
                                 <TextInput
                                     style={[AuthStyles.textInput, { flex: 1, borderWidth: 0 }]}
                                     keyboardType="default"
-                                    placeholder="Mail Address"
+                                    placeholder="이메일 주소"
                                     value={mailAddress}
                                     onChangeText={setMailAddress}
                                     onFocus={() => {
@@ -203,7 +203,7 @@ export default SignIn = ({ navigation }) => {
                         <Text style={AuthStyles.text}>비밀번호</Text>
                         <TextInput
                             style={AuthStyles.textInput}
-                            placeholder="Input password"
+                            placeholder="비밀번호"
                             secureTextEntry={true}
                             value={password}
                             onChangeText={setPassword}

@@ -197,6 +197,7 @@ const MyStack = () => {
                         style={{
                             height: hp("80%"),
                             backgroundColor: "white",
+                            paddingBottom: 60,
                         }}
                     >
                         <View style={{ flexDirection: "row" }}>
