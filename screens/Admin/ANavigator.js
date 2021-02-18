@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Text, TouchableOpacity, View, ScrollView } from "react-native";
+import { Text, TouchableOpacity, View, ScrollView, AppState, Linking } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./Home";
 import { AuthContext } from "../Auth";
@@ -57,38 +57,36 @@ const MyStack = () => {
     };
 
     const getNotifications = async () => {
-        const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
-        if (existingStatus === "granted") {
-            setNotificationAvail(true);
-            setUnread(false);
-            const today = new Date();
-            const func = db
-                .collection("notifications")
-                .doc(uid)
-                .collection("messages")
-                .where(
-                    "sendDate",
-                    ">=",
-                    new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7)
-                )
-                .orderBy("sendDate", "desc")
-                .onSnapshot(async (messages) => {
-                    let list = [];
-                    let num = 0;
-                    messages.forEach((message) => {
-                        const obj = message.data();
-                        list.push({ id: message.id, ...obj });
-                        if (!obj.isRead) {
-                            num = num + 1;
-                            setUnread(true);
-                        }
-                    });
-                    setMessages(list);
-                    setNotificationNum(num);
-                    await Notifications.setBadgeCountAsync(num);
+        const today = new Date();
+        const func = db
+            .collection("notifications")
+            .doc(uid)
+            .collection("messages")
+            .where(
+                "sendDate",
+                ">=",
+                new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7)
+            )
+            .orderBy("sendDate", "desc")
+            .onSnapshot(async (messages) => {
+                let list = [];
+                let num = 0;
+                messages.forEach((message) => {
+                    const obj = message.data();
+                    list.push({ id: message.id, ...obj });
+                    if (!obj.isRead) {
+                        num = num + 1;
+                        setUnread(true);
+                    }
                 });
-            return func;
-        }
+                if (num === 0) {
+                    setUnread(false);
+                }
+                setMessages(list);
+                setNotificationNum(num);
+                await Notifications.setBadgeCountAsync(num);
+            });
+        return func;
     };
 
     const checkNotification = async (id) => {
@@ -131,14 +129,37 @@ const MyStack = () => {
     };
 
     const execPromise = async () => {
+        const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+        if (status === "granted") {
+            setNotificationAvail(true);
+        }
         await getNotifications().then((func) => {
             setUnsubscribe(func === undefined ? () => console.log : () => func);
             setLoading(false);
         });
     };
 
+    const setPermissionNotification = async (state) => {
+        if (state === "active") {
+            const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+            if (status !== "granted") {
+                setUnread(false);
+                setNotificationAvail(false);
+            } else {
+                setNotificationAvail(true);
+                if (notificationNum > 0) {
+                    setUnread(true);
+                }
+            }
+        }
+    };
+
     useEffect(() => {
+        AppState.addEventListener("change", setPermissionNotification);
         execPromise();
+        return () => {
+            AppState.removeEventListener("change", setPermissionNotification);
+        };
     }, []);
 
     const renderGoBackButton = (navigation) => (

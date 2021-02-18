@@ -152,6 +152,7 @@ export default Profile = ({ navigation }) => {
                 .orderBy("end", "asc")
                 .get()
                 .then((snapshots) => {
+                    const today = new Date();
                     snapshots.forEach((snapshot) => {
                         kinds.push(snapshot.id);
                         temp[snapshot.id] = snapshot.data();
@@ -168,12 +169,12 @@ export default Profile = ({ navigation }) => {
                         } else {
                             stringTemp =
                                 stringTemp +
-                                (temp[kind].end.toDate() < new Date()
-                                    ? "Expired"
+                                (temp[kind].end.toDate() < today
+                                    ? "만료됨"
                                     : `${temp[kind].month}개월권 (${moment(
                                           temp[kind].end.toDate()
                                       ).format("YYYY. MM. DD.")} 까지)`);
-                            if (temp[kind].end.toDate() < new Date()) {
+                            if (temp[kind].end.toDate() < today) {
                                 expiredNum = expiredNum + 1;
                             }
                         }
@@ -186,6 +187,7 @@ export default Profile = ({ navigation }) => {
                         setCanGenQR(true);
                     }
                 });
+            setExtendBool({ hasExtend: false, confirmExtend: false });
             await thisuser
                 .collection("extends")
                 .orderBy("submitDate", "desc")
@@ -193,8 +195,15 @@ export default Profile = ({ navigation }) => {
                 .get()
                 .then((docs) => {
                     if (docs.size !== 0) {
-                        docs.forEach((doc) => {
-                            setExtendBool({ hasExtend: true, confirmExtend: doc.data().confirm });
+                        kinds.forEach((kind) => {
+                            if (temp[kind].extended !== undefined) {
+                                docs.forEach((doc) => {
+                                    setExtendBool({
+                                        hasExtend: true,
+                                        confirmExtend: doc.data().confirm,
+                                    });
+                                });
+                            }
                         });
                     }
                 });
