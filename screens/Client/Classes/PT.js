@@ -283,24 +283,24 @@ export default PT = ({ navigation, route }) => {
                         .collection("memberships")
                         .doc("pt")
                         .update({ count: count - 1 });
+                    await pushNotificationsToPerson(
+                        myBase.auth().currentUser.displayName,
+                        trainerUid,
+                        "새 PT 예약",
+                        `${selectedDate}일 ${timeStr}`,
+                        {
+                            navigation: "PT",
+                            datas: {
+                                year: selectedYear,
+                                month: selectedMonth,
+                                date: selectedDate,
+                            },
+                        }
+                    );
                     Alert.alert("성공", "수업이 예약되었습니다.", [
                         {
                             text: "확인",
-                            onPress: async () => {
-                                await pushNotificationsToPerson(
-                                    myBase.auth().currentUser.displayName,
-                                    trainerUid,
-                                    "새 PT 예약",
-                                    `${selectedDate}일 ${timeStr}`,
-                                    {
-                                        navigation: "PT",
-                                        datas: {
-                                            year: selectedYear,
-                                            month: selectedMonth,
-                                            date: selectedDate,
-                                        },
-                                    }
-                                );
+                            onPress: () => {
                                 const backup = selectedDate;
                                 setSelectedDate(0);
                                 setSelectedDate(backup);

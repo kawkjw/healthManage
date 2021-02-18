@@ -358,24 +358,24 @@ export default PT = ({ navigation, route }) => {
                 .collection(selectedDate.toString())
                 .doc(availTime)
                 .update({ confirm: true });
-        }
-        Alert.alert("성공", "예약 승인되었습니다.", [
-            {
-                text: "확인",
-                onPress: async () => {
-                    await pushNotificationsToPerson(
-                        myBase.auth().currentUser.displayName,
-                        clientUid,
-                        "예약 승인되었습니다.",
-                        `${selectedDate}일 ${availTime}`,
-                        { navigation: "Profile" }
-                    );
-                    const backup = selectedDate;
-                    setSelectedDate(0);
-                    setSelectedDate(backup);
+            await pushNotificationsToPerson(
+                myBase.auth().currentUser.displayName,
+                clientUid,
+                "예약 승인되었습니다.",
+                `${selectedDate}일 ${availTime}`,
+                { navigation: "Profile" }
+            );
+            Alert.alert("성공", "예약 승인되었습니다.", [
+                {
+                    text: "확인",
+                    onPress: () => {
+                        const backup = selectedDate;
+                        setSelectedDate(0);
+                        setSelectedDate(backup);
+                    },
                 },
-            },
-        ]);
+            ]);
+        }
     };
 
     const cancelClass = async (clientUid, availTime) => {
@@ -460,17 +460,17 @@ export default PT = ({ navigation, route }) => {
                         .doc("pt")
                         .update({ count: count + 1 });
                 });
-        }
-        Alert.alert("취소됨", "예약이 취소되었습니다.", [
-            {
-                text: "확인",
-                onPress: () => {
-                    const backup = selectedDate;
-                    setSelectedDate(0);
-                    setSelectedDate(backup);
+            Alert.alert("취소됨", "예약이 취소되었습니다.", [
+                {
+                    text: "확인",
+                    onPress: () => {
+                        const backup = selectedDate;
+                        setSelectedDate(0);
+                        setSelectedDate(backup);
+                    },
                 },
-            },
-        ]);
+            ]);
+        }
     };
 
     return (
