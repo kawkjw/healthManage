@@ -12,6 +12,7 @@ import {
     Keyboard,
     Platform,
     ScrollView,
+    AppState,
 } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import myBase, { db } from "../../config/MyBase";
@@ -263,10 +264,18 @@ export default Profile = ({ navigation }) => {
         }
     }, [isRun]);
 
+    const changeAppState = (state) => {
+        if (state === "inactive") {
+            setIsRun(false);
+            resetRandom();
+        }
+    };
+
     useEffect(() => {
+        AppState.addEventListener("change", changeAppState);
         getUserData();
         return () => {
-            if (myBase.auth().currentUser) resetRandom();
+            AppState.removeEventListener("change", changeAppState);
         };
     }, [change]);
 

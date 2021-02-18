@@ -69,70 +69,77 @@ const MyStack = () => {
             .doc(uid)
             .collection("memberships")
             .orderBy("end", "asc")
-            .onSnapshot((memberships) => {
-                let kinds = [];
-                let temp = {};
-                let ret = "";
-                memberships.forEach((membership) => {
-                    if (membership.id === "pt") {
-                        const { count } = membership.data();
-                        if (count <= 0) {
-                            Alert.alert("경고", "남은 PT 횟수가 없습니다.");
+            .onSnapshot(
+                (memberships) => {
+                    let kinds = [];
+                    let temp = {};
+                    let ret = "";
+                    memberships.forEach((membership) => {
+                        if (membership.id === "pt") {
+                            const { count } = membership.data();
+                            if (count <= 0) {
+                                Alert.alert("경고", "남은 PT 횟수가 없습니다.");
+                            } else {
+                                kinds.push(membership.id);
+                                temp[membership.id] = membership.data();
+                            }
                         } else {
-                            kinds.push(membership.id);
-                            temp[membership.id] = membership.data();
+                            const { end } = membership.data();
+                            const today = new Date();
+                            if (end.toDate() < today) {
+                                Alert.alert(
+                                    "경고",
+                                    `${enToKo(membership.id)} 회원권이 만료되었습니다.`
+                                );
+                            } else {
+                                kinds.push(membership.id);
+                                temp[membership.id] = membership.data();
+                            }
                         }
-                    } else {
-                        const { end } = membership.data();
-                        const today = new Date();
-                        if (end.toDate() < today) {
-                            Alert.alert(
-                                "경고",
-                                `${enToKo(membership.id)} 회원권이 만료되었습니다.`
+                    });
+                    if (kinds.length === 0) {
+                        setMembershipString("회원권이 없습니다.");
+                    }
+                    if (kinds.length >= 1) {
+                        let string = enToKo(kinds[0]);
+                        if (kinds[0] === "pt") {
+                            setEndDate(temp[kinds[0]].count + "번 남음");
+                        } else {
+                            setEndDate(
+                                moment(temp[kinds[0]].end.toDate()).format("YYYY. MM. DD.") +
+                                    " 까지"
                             );
-                        } else {
-                            kinds.push(membership.id);
-                            temp[membership.id] = membership.data();
                         }
+                        if (kinds.length >= 2) {
+                            string = string + ", " + enToKo(kinds[1]);
+                        }
+                        if (kinds.length >= 3) {
+                            string = string + ", 등";
+                        }
+                        setMembershipString(string);
                     }
-                });
-                if (kinds.length === 0) {
-                    setMembershipString("회원권이 없습니다.");
+                    let info = "";
+                    kinds.map((kind) => {
+                        let stringTemp = enToKo(kind) + ": ";
+                        if (kind === "pt") {
+                            stringTemp = stringTemp + `${temp[kind].count}번 남음`;
+                        } else {
+                            stringTemp =
+                                stringTemp +
+                                `${temp[kind].month}개월권 (${moment(
+                                    temp[kind].end.toDate()
+                                ).format("YYYY. MM. DD.")} 까지)`;
+                        }
+                        info = info + stringTemp + "\n";
+                    });
+                    ret = info ? info.substring(0, info.length - 1) : "회원권이 없습니다.";
+                    setMembershipInfo(ret);
+                },
+                (error) => {
+                    console.log(error);
+                    func();
                 }
-                if (kinds.length >= 1) {
-                    let string = enToKo(kinds[0]);
-                    if (kinds[0] === "pt") {
-                        setEndDate(temp[kinds[0]].count + "번 남음");
-                    } else {
-                        setEndDate(
-                            moment(temp[kinds[0]].end.toDate()).format("YYYY. MM. DD.") + " 까지"
-                        );
-                    }
-                    if (kinds.length >= 2) {
-                        string = string + ", " + enToKo(kinds[1]);
-                    }
-                    if (kinds.length >= 3) {
-                        string = string + ", 등";
-                    }
-                    setMembershipString(string);
-                }
-                let info = "";
-                kinds.map((kind) => {
-                    let stringTemp = enToKo(kind) + ": ";
-                    if (kind === "pt") {
-                        stringTemp = stringTemp + `${temp[kind].count}번 남음`;
-                    } else {
-                        stringTemp =
-                            stringTemp +
-                            `${temp[kind].month}개월권 (${moment(temp[kind].end.toDate()).format(
-                                "YYYY. MM. DD."
-                            )} 까지)`;
-                    }
-                    info = info + stringTemp + "\n";
-                });
-                ret = info ? info.substring(0, info.length - 1) : "회원권이 없습니다.";
-                setMembershipInfo(ret);
-            });
+            );
         return func;
     };
 
@@ -148,24 +155,30 @@ const MyStack = () => {
                 new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7)
             )
             .orderBy("sendDate", "desc")
-            .onSnapshot(async (messages) => {
-                let list = [];
-                let num = 0;
-                messages.forEach((message) => {
-                    const obj = message.data();
-                    list.push({ id: message.id, ...obj });
-                    if (!obj.isRead) {
-                        num = num + 1;
-                        setUnread(true);
+            .onSnapshot(
+                async (messages) => {
+                    let list = [];
+                    let num = 0;
+                    messages.forEach((message) => {
+                        const obj = message.data();
+                        list.push({ id: message.id, ...obj });
+                        if (!obj.isRead) {
+                            num = num + 1;
+                            setUnread(true);
+                        }
+                    });
+                    if (num === 0) {
+                        setUnread(false);
                     }
-                });
-                if (num === 0) {
-                    setUnread(false);
+                    setMessages(list);
+                    setNotificationNum(num);
+                    await Notifications.setBadgeCountAsync(num);
+                },
+                (error) => {
+                    console.log(error);
+                    func();
                 }
-                setMessages(list);
-                setNotificationNum(num);
-                await Notifications.setBadgeCountAsync(num);
-            });
+            );
         return func;
     };
 

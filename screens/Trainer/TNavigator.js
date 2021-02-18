@@ -55,24 +55,30 @@ const MyStack = () => {
                 new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7)
             )
             .orderBy("sendDate", "desc")
-            .onSnapshot(async (messages) => {
-                let list = [];
-                let num = 0;
-                messages.forEach((message) => {
-                    const obj = message.data();
-                    list.push({ id: message.id, ...obj });
-                    if (!obj.isRead) {
-                        num = num + 1;
-                        setUnread(true);
+            .onSnapshot(
+                async (messages) => {
+                    let list = [];
+                    let num = 0;
+                    messages.forEach((message) => {
+                        const obj = message.data();
+                        list.push({ id: message.id, ...obj });
+                        if (!obj.isRead) {
+                            num = num + 1;
+                            setUnread(true);
+                        }
+                    });
+                    if (num === 0) {
+                        setUnread(false);
                     }
-                });
-                if (num === 0) {
-                    setUnread(false);
+                    setMessages(list);
+                    setNotificationNum(num);
+                    await Notifications.setBadgeCountAsync(num);
+                },
+                (error) => {
+                    console.log(error);
+                    func();
                 }
-                setMessages(list);
-                setNotificationNum(num);
-                await Notifications.setBadgeCountAsync(num);
-            });
+            );
         return func;
     };
 
