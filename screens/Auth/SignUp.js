@@ -74,7 +74,6 @@ export default SignUp = ({ navigation }) => {
     };
     const [address, setAddress] = useState("");
     const [modalAddress, setModalAddress] = useState(false);
-    const [webLoading, setWebLoading] = useState(true);
 
     const { signUp } = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
@@ -244,17 +243,12 @@ export default SignUp = ({ navigation }) => {
                         height: hp("85%"),
                     }}
                 >
-                    {webLoading && <ActivityIndicator />}
                     <Postcode
                         style={{ flex: 1 }}
-                        jsOptions={{ animation: false }}
+                        jsOptions={{ animation: true }}
                         onSelected={(data) => {
-                            setAddress(data.jibunAddress.split(" ").slice(0, -1).join(" "));
+                            setAddress(data.jibunAddress);
                             setModalAddress(false);
-                        }}
-                        onLoad={() => setWebLoading(false)}
-                        renderLoading={() => {
-                            return <ActivityIndicator />;
                         }}
                     />
                 </View>
