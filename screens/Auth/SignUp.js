@@ -247,7 +247,11 @@ export default SignUp = ({ navigation }) => {
                         style={{ flex: 1 }}
                         jsOptions={{ animation: true }}
                         onSelected={(data) => {
-                            setAddress(data.jibunAddress);
+                            setAddress(
+                                data.autoJibunAddress === ""
+                                    ? data.jibunAddress
+                                    : data.autoJibunAddress
+                            );
                             setModalAddress(false);
                         }}
                     />
@@ -427,7 +431,7 @@ export default SignUp = ({ navigation }) => {
                         <Text style={AuthStyles.text}>주소</Text>
                         <View style={{ flexDirection: "row" }}>
                             <TextInput
-                                style={[AuthStyles.textInput, { marginRight: 5, flex: 2 }]}
+                                style={[AuthStyles.textInput, { marginRight: 5, flex: 3 }]}
                                 placeholder="경기도 오산시 궐동"
                                 keyboardType="default"
                                 value={address}
@@ -436,9 +440,12 @@ export default SignUp = ({ navigation }) => {
                             />
                             <TouchableOpacity
                                 style={[AuthStyles.authButton, { marginLeft: 5 }]}
-                                onPress={() => setModalAddress(true)}
+                                onPress={() => {
+                                    Keyboard.dismiss();
+                                    setModalAddress(true);
+                                }}
                             >
-                                <Text style={AuthStyles.authText}>주소 검색</Text>
+                                <Text style={AuthStyles.authText}>검색</Text>
                             </TouchableOpacity>
                         </View>
                     </View>
