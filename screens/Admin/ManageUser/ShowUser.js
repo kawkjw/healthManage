@@ -13,6 +13,7 @@ import { pushNotificationsToPerson } from "../../../config/MyExpo";
 
 export default ShowUser = ({ route }) => {
     const { user } = route.params;
+    const today = new Date();
     const [isLoading, setIsLoading] = useState(true);
     const [membership, setMembership] = useState({});
     const [membershipKinds, setMembershipKinds] = useState([]);
@@ -236,14 +237,26 @@ export default ShowUser = ({ route }) => {
                 >
                     <View style={{ marginBottom: 10 }}>
                         <Text style={{ fontSize: RFPercentage(2) }}>이름 : {user.name}</Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>성별 : {user.sex}</Text>
                         <Text style={{ fontSize: RFPercentage(2) }}>이메일 : {user.email}</Text>
                         <Text style={{ fontSize: RFPercentage(2) }}>
                             휴대폰번호 : {user.phoneNumber}
                         </Text>
                         <Text style={{ fontSize: RFPercentage(2) }}>
+                            생년월일 :{" "}
+                            {moment(
+                                new Date(
+                                    Number(user.birthday.year),
+                                    Number(user.birthday.month),
+                                    Number(user.birthday.day)
+                                )
+                            ).format("YYYY/MM/DD") +
+                                ` (${today.getFullYear() - Number(user.birthday.year) + 1}세)`}
+                        </Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>주소 : {user.address}</Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>
                             보관함 번호 : {locker === 0 ? "없음" : locker}
                         </Text>
-                        <Text style={{ fontSize: RFPercentage(2) }}>유저 ID : {user.uid}</Text>
                     </View>
 
                     <View style={{ marginBottom: 5 }}>

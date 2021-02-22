@@ -25,6 +25,8 @@ import RadioForm, {
 } from "react-native-simple-radio-button";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import SegmentedPicker from "react-native-segmented-picker";
+import Postcode from "react-native-daum-postcode";
+import Modal from "react-native-modal";
 
 export default SignUp = ({ navigation }) => {
     const appVerifier = useRef(null);
@@ -71,6 +73,8 @@ export default SignUp = ({ navigation }) => {
         })),
     };
     const [address, setAddress] = useState("");
+    const [modalAddress, setModalAddress] = useState(false);
+    const [webLoading, setWebLoading] = useState(true);
 
     const { signUp } = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
@@ -229,6 +233,32 @@ export default SignUp = ({ navigation }) => {
                 firebaseConfig={myBase.options}
                 attemptInvisibleVerification={true}
             />
+            <Modal
+                isVisible={modalAddress}
+                style={{ justifyContent: "flex-end", margin: 0 }}
+                onBackdropPress={() => setModalAddress(false)}
+            >
+                <View
+                    style={{
+                        backgroundColor: "white",
+                        height: hp("85%"),
+                    }}
+                >
+                    {webLoading && <ActivityIndicator />}
+                    <Postcode
+                        style={{ flex: 1 }}
+                        jsOptions={{ animation: false }}
+                        onSelected={(data) => {
+                            setAddress(data.jibunAddress.split(" ").slice(0, -1).join(" "));
+                            setModalAddress(false);
+                        }}
+                        onLoad={() => setWebLoading(false)}
+                        renderLoading={() => {
+                            return <ActivityIndicator />;
+                        }}
+                    />
+                </View>
+            </Modal>
             <KeyboardAwareScrollView
                 style={{ alignSelf: "stretch" }}
                 contentContainerStyle={{ height: hp("90%") }}
@@ -401,13 +431,22 @@ export default SignUp = ({ navigation }) => {
                     </View>
                     <View style={AuthStyles.textView}>
                         <Text style={AuthStyles.text}>주소</Text>
-                        <TextInput
-                            style={AuthStyles.textInput}
-                            placeholder="경기도 오산시 궐동"
-                            keyboardType="default"
-                            value={address}
-                            onChangeText={setAddress}
-                        />
+                        <View style={{ flexDirection: "row" }}>
+                            <TextInput
+                                style={[AuthStyles.textInput, { marginRight: 5, flex: 2 }]}
+                                placeholder="경기도 오산시 궐동"
+                                keyboardType="default"
+                                value={address}
+                                onChangeText={setAddress}
+                                editable={false}
+                            />
+                            <TouchableOpacity
+                                style={[AuthStyles.authButton, { marginLeft: 5 }]}
+                                onPress={() => setModalAddress(true)}
+                            >
+                                <Text style={AuthStyles.authText}>주소 검색</Text>
+                            </TouchableOpacity>
+                        </View>
                     </View>
                     <View style={AuthStyles.textView}>
                         <CheckBox
