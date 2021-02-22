@@ -18,6 +18,13 @@ import { FirebaseRecaptchaVerifierModal, FirebaseRecaptchaBanner } from "expo-fi
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import RadioForm, {
+    RadioButton,
+    RadioButtonInput,
+    RadioButtonLabel,
+} from "react-native-simple-radio-button";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
+import SegmentedPicker from "react-native-segmented-picker";
 
 export default SignUp = ({ navigation }) => {
     const appVerifier = useRef(null);
@@ -34,6 +41,36 @@ export default SignUp = ({ navigation }) => {
     const [chkUsedEmail, setChkUsedEmail] = useState(false);
     const [checkPw, setCheckPw] = useState(false);
     const [correctPw, setCorrectPw] = useState(false);
+    const [sexSelected, setSexSelected] = useState(-1);
+    const radioOptions = [
+        { label: "남", value: "man" },
+        { label: "여", value: "woman" },
+    ];
+    const today = new Date();
+    const picker = useRef();
+    const [birthday, setBirthday] = useState({
+        year: today.getFullYear().toString(),
+        month: (today.getMonth() + 1).toString(),
+        day: today.getDate().toString(),
+    });
+    const pickerBirthday = {
+        year: [...Array(today.getFullYear() - 1930 + 1).keys()].map((d) => ({
+            label: (d + 1930).toString(),
+            value: (d + 1930).toString(),
+            key: (d + 1930).toString(),
+        })),
+        month: [...Array(12).keys()].map((d) => ({
+            label: (d + 1).toString(),
+            value: (d + 1).toString(),
+            key: (d + 1).toString(),
+        })),
+        day: [...Array(31).keys()].map((d) => ({
+            label: (d + 1).toString(),
+            value: (d + 1).toString(),
+            key: (d + 1).toString(),
+        })),
+    };
+    const [address, setAddress] = useState("");
 
     const { signUp } = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
@@ -153,6 +190,9 @@ export default SignUp = ({ navigation }) => {
             adminCode,
             verifyCode,
             verificationId,
+            sexSelected,
+            birthday,
+            address,
         })
             .then(() => {
                 navigation.goBack();
@@ -161,6 +201,25 @@ export default SignUp = ({ navigation }) => {
                 setLoading(false);
                 console.log(error);
             });
+    };
+
+    const generateOptions = () => {
+        const { year, month, day } = pickerBirthday;
+        const finalDate = new Date(birthday.year, birthday.month, 0).getDate();
+        return [
+            {
+                key: "year",
+                items: year,
+            },
+            {
+                key: "month",
+                items: month,
+            },
+            {
+                key: "day",
+                items: pickerBirthday.day.slice(0, finalDate),
+            },
+        ];
     };
 
     return (
@@ -186,15 +245,53 @@ export default SignUp = ({ navigation }) => {
                 >
                     <View style={AuthStyles.textView}>
                         <Text style={AuthStyles.text}>이름</Text>
-                        <TextInput
-                            style={AuthStyles.textInput}
-                            placeholder="이름"
-                            autoCompleteType="name"
-                            keyboardType="default"
-                            textContentType="name"
-                            value={name}
-                            onChangeText={setName}
-                        />
+                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                            <TextInput
+                                style={[AuthStyles.textInput, { flex: 1 }]}
+                                placeholder="이름"
+                                autoCompleteType="name"
+                                keyboardType="default"
+                                textContentType="name"
+                                value={name}
+                                onChangeText={setName}
+                            />
+                            <RadioForm formHorizontal={true} animation={true}>
+                                {radioOptions.map((option, index) => (
+                                    <View key={index}>
+                                        <RadioButton
+                                            labelHorizontal={true}
+                                            wrapStyle={{
+                                                marginLeft: 10,
+                                            }}
+                                        >
+                                            <RadioButtonInput
+                                                obj={option}
+                                                index={index}
+                                                isSelected={sexSelected === index}
+                                                onPress={() => {
+                                                    setSexSelected(index);
+                                                }}
+                                                buttonSize={15}
+                                                buttonInnerColor={"black"}
+                                                buttonOuterColor={"black"}
+                                                buttonStyle={{ borderWidth: 1 }}
+                                            />
+                                            <RadioButtonLabel
+                                                obj={option}
+                                                index={index}
+                                                onPress={() => {
+                                                    setSexSelected(index);
+                                                }}
+                                                labelStyle={{
+                                                    fontSize: RFPercentage(2.5),
+                                                    marginLeft: 5,
+                                                }}
+                                            />
+                                        </RadioButton>
+                                    </View>
+                                ))}
+                            </RadioForm>
+                        </View>
                     </View>
                     <View style={AuthStyles.textView}>
                         <Text style={AuthStyles.text}>이메일</Text>
@@ -263,6 +360,56 @@ export default SignUp = ({ navigation }) => {
                         />
                     </View>
                     <View style={AuthStyles.textView}>
+                        <Text style={AuthStyles.text}>생년월일</Text>
+                        <View
+                            style={{
+                                flexDirection: "row",
+                                borderWidth: 1,
+                                alignItems: "center",
+                            }}
+                        >
+                            <View style={{ flex: 2, alignItems: "center" }}>
+                                <Text style={{ fontSize: RFPercentage(2.5) }}>{birthday.year}</Text>
+                            </View>
+                            <View style={{ alignItems: "center" }}>
+                                <Text style={{ fontSize: RFPercentage(2.5) }}>{" / "}</Text>
+                            </View>
+                            <View style={{ flex: 2, alignItems: "center" }}>
+                                <Text style={{ fontSize: RFPercentage(2.5) }}>
+                                    {birthday.month}
+                                </Text>
+                            </View>
+                            <View style={{ alignItems: "center" }}>
+                                <Text style={{ fontSize: RFPercentage(2.5) }}>{" / "}</Text>
+                            </View>
+                            <View style={{ flex: 2, alignItems: "center" }}>
+                                <Text style={{ fontSize: RFPercentage(2.5) }}>{birthday.day}</Text>
+                            </View>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    Keyboard.dismiss();
+                                    picker.current.show();
+                                }}
+                            >
+                                <MaterialCommunityIcons
+                                    name="chevron-down"
+                                    size={30}
+                                    color="black"
+                                />
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <View style={AuthStyles.textView}>
+                        <Text style={AuthStyles.text}>주소</Text>
+                        <TextInput
+                            style={AuthStyles.textInput}
+                            placeholder="경기도 오산시 궐동"
+                            keyboardType="default"
+                            value={address}
+                            onChangeText={setAddress}
+                        />
+                    </View>
+                    <View style={AuthStyles.textView}>
                         <CheckBox
                             selected={selected}
                             onPress={() => {
@@ -276,7 +423,6 @@ export default SignUp = ({ navigation }) => {
                         />
                         {selected ? (
                             <>
-                                <Text style={AuthStyles.text}>Input Admin Code</Text>
                                 <TextInput
                                     style={AuthStyles.textInput}
                                     placeholder="00000000"
@@ -345,7 +491,10 @@ export default SignUp = ({ navigation }) => {
                                 password !== chkPassword ||
                                 !correctPw ||
                                 !verifyCode ||
-                                !verificationId
+                                !verificationId ||
+                                sexSelected === -1 ||
+                                Number(birthday.year) === today.getFullYear() ||
+                                !address
                             }
                             onPress={() => submit()}
                         >
@@ -367,6 +516,22 @@ export default SignUp = ({ navigation }) => {
                     </View>
                 </TouchableOpacity>
             </KeyboardAwareScrollView>
+            <SegmentedPicker
+                ref={picker}
+                onConfirm={(select) => {
+                    setBirthday({ ...birthday, day: select.day });
+                }}
+                onValueChange={(select) => {
+                    if (select.column === "year") {
+                        setBirthday({ ...birthday, year: select.value });
+                    } else if (select.column === "month") {
+                        setBirthday({ ...birthday, month: select.value });
+                    }
+                }}
+                confirmText="확인"
+                defaultSelections={birthday}
+                options={generateOptions()}
+            />
         </SafeAreaView>
     );
 };

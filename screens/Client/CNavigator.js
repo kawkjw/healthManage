@@ -84,12 +84,20 @@ const MyStack = () => {
                                 temp[membership.id] = membership.data();
                             }
                         } else {
-                            const { end } = membership.data();
                             const today = new Date();
-                            if (end.toDate() < today) {
+                            if (membership.data().start === undefined) {
                                 Alert.alert(
                                     "경고",
-                                    `${enToKo(membership.id)} 회원권이 만료되었습니다.`
+                                    `${enToKo(
+                                        membership.id
+                                    )} 회원권 시작일 설정이 되지 않았습니다.\n관리자에게 문의해주시기 바랍니다.`,
+                                    [{ text: "확인" }]
+                                );
+                            } else if (membership.data().end.toDate() < today) {
+                                Alert.alert(
+                                    "경고",
+                                    `${enToKo(membership.id)} 회원권이 만료되었습니다.`,
+                                    [{ text: "확인" }]
                                 );
                             } else {
                                 kinds.push(membership.id);
@@ -105,10 +113,14 @@ const MyStack = () => {
                         if (kinds[0] === "pt") {
                             setEndDate(temp[kinds[0]].count + "번 남음");
                         } else {
-                            setEndDate(
-                                moment(temp[kinds[0]].end.toDate()).format("YYYY. MM. DD.") +
-                                    " 까지"
-                            );
+                            if (temp[kinds[0]].start !== undefined) {
+                                setEndDate(
+                                    moment(temp[kinds[0]].end.toDate()).format("YYYY. MM. DD.") +
+                                        " 까지"
+                                );
+                            } else {
+                                setEndDate("관리자에게 문의");
+                            }
                         }
                         if (kinds.length >= 2) {
                             string = string + ", " + enToKo(kinds[1]);
@@ -124,11 +136,15 @@ const MyStack = () => {
                         if (kind === "pt") {
                             stringTemp = stringTemp + `${temp[kind].count}번 남음`;
                         } else {
-                            stringTemp =
-                                stringTemp +
-                                `${temp[kind].month}개월권 (${moment(
-                                    temp[kind].end.toDate()
-                                ).format("YYYY. MM. DD.")} 까지)`;
+                            if (temp[kind].start !== undefined) {
+                                stringTemp =
+                                    stringTemp +
+                                    `${temp[kind].month}개월권 (${moment(
+                                        temp[kind].end.toDate()
+                                    ).format("YYYY. MM. DD.")} 까지)`;
+                            } else {
+                                stringTemp = stringTemp + "시작일 설정 필요";
+                            }
                         }
                         info = info + stringTemp + "\n";
                     });

@@ -168,14 +168,19 @@ export default Profile = ({ navigation }) => {
                                 expiredNum = expiredNum + 1;
                             }
                         } else {
-                            stringTemp =
-                                stringTemp +
-                                (temp[kind].end.toDate() < today
-                                    ? "만료됨"
-                                    : `${temp[kind].month}개월권 (${moment(
-                                          temp[kind].end.toDate()
-                                      ).format("YYYY. MM. DD.")} 까지)`);
-                            if (temp[kind].end.toDate() < today) {
+                            if (temp[kind].start !== undefined) {
+                                stringTemp =
+                                    stringTemp +
+                                    (temp[kind].end.toDate() < today
+                                        ? "만료됨"
+                                        : `${temp[kind].month}개월권 (${moment(
+                                              temp[kind].end.toDate()
+                                          ).format("YYYY. MM. DD.")} 까지)`);
+                                if (temp[kind].end.toDate() < today) {
+                                    expiredNum = expiredNum + 1;
+                                }
+                            } else {
+                                stringTemp = stringTemp + "시작일 설정 필요";
                                 expiredNum = expiredNum + 1;
                             }
                         }

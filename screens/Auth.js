@@ -106,6 +106,9 @@ export default Auth = () => {
                     adminCode,
                     verificationId,
                     verifyCode,
+                    sexSelected,
+                    birthday,
+                    address,
                 } = data;
                 const isAdmin = adminCode === ADMIN_CODE ? true : false;
                 const isTrainer = adminCode === TRAINER_CODE ? true : false;
@@ -120,6 +123,7 @@ export default Auth = () => {
                             phoneNumber: phoneNumber,
                             permission: isAdmin ? 0 : isTrainer ? 1 : 2,
                             emailVerified: userCredential.user.emailVerified,
+                            address: address,
                         };
 
                         const phoneCredential = firebase.auth.PhoneAuthProvider.credential(
@@ -151,6 +155,13 @@ export default Auth = () => {
                                         email: currentUser.email,
                                         permission: currentUser.permission,
                                         random: " ",
+                                        birthday: {
+                                            year: birthday.year,
+                                            month: birthday.month,
+                                            day: birthday.day,
+                                        },
+                                        sex: sexSelected === 0 ? "남성" : "여성",
+                                        address: currentUser.address,
                                     };
                                     db.collection("users").doc(currentUser.id).set(data);
                                     db.collection("emails").doc(currentUser.id).set({
