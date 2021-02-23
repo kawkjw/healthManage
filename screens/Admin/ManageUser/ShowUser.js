@@ -10,6 +10,7 @@ import {
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import { pushNotificationsToPerson } from "../../../config/MyExpo";
+import { enToKo } from "../../../config/hooks";
 
 export default ShowUser = ({ route }) => {
     const { user } = route.params;
@@ -79,26 +80,6 @@ export default ShowUser = ({ route }) => {
         });
     };
 
-    const enToKo = (s) => {
-        switch (s) {
-            case "health":
-                return "헬스";
-            case "spinning":
-                return "스피닝";
-            case "GX":
-                return "GX";
-            case "yoga":
-                return "요가";
-            case "zoomba":
-                return "줌바";
-            case "squash":
-                return "스쿼시";
-            case "pilates":
-                return "필라테스";
-            case "pt":
-                return "PT";
-        }
-    };
     const renderMembership = (kind, key) => {
         if (kind === "pt") {
             return (

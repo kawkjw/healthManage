@@ -8,40 +8,20 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import myBase, { arrayUnion, db } from "../../../config/MyBase";
+import myBase, { db } from "../../../config/MyBase";
 import { AuthStyles, MyStyles } from "../../../css/MyStyles";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { MaterialIcons } from "@expo/vector-icons";
 import moment from "moment";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { pushNotificationsToAdmin } from "../../../config/MyExpo";
+import { enToKo } from "../../../config/hooks";
 
 export default ExtendDate = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
     const [availExtend, setAvailExtend] = useState([]);
     const [extendDate, setExtendDate] = useState("");
     const [extendReason, setExtendReason] = useState("");
-
-    const enToKo = (s) => {
-        switch (s) {
-            case "health":
-                return "헬스";
-            case "spinning":
-                return "스피닝";
-            case "GX":
-                return "GX";
-            case "yoga":
-                return "요가";
-            case "zoomba":
-                return "줌바";
-            case "squash":
-                return "스쿼시";
-            case "pilates":
-                return "필라테스";
-            case "pt":
-                return "PT";
-        }
-    };
 
     useEffect(() => {
         const getMembsership = async () => {

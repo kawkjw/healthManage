@@ -23,6 +23,7 @@ import RadioForm, {
 import { RFPercentage } from "react-native-responsive-fontsize";
 import moment from "moment";
 import { MaterialIcons } from "@expo/vector-icons";
+import { enToKo } from "../../config/hooks";
 
 export default Profile = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -71,31 +72,6 @@ export default Profile = ({ navigation, route }) => {
         zoomba: [],
     });
     const [loading, setLoading] = useState(true);
-
-    const enToKo = (s) => {
-        switch (s) {
-            case "health":
-                return "헬스";
-            case "spinning":
-                return "스피닝";
-            case "yoga":
-                return "요가";
-            case "zoomba":
-                return "줌바";
-            case "squash":
-                return "스쿼시";
-            case "pilates":
-                return "필라테스";
-            case "pt":
-                return "PT";
-            case "gx":
-                return "GX";
-            case "yoga.zoomba":
-                return "(요가, 줌바)";
-            default:
-                return "여기를 눌러 설정해주세요.";
-        }
-    };
 
     const getPTClass = async (date) => {
         let list = [];

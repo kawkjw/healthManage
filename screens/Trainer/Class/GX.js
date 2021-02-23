@@ -6,7 +6,6 @@ import {
     View,
     TouchableOpacity,
     StyleSheet,
-    Alert,
     Modal,
     Platform,
     Dimensions,
@@ -20,6 +19,7 @@ import { getStatusBarHeight } from "react-native-status-bar-height";
 import { MaterialIcons } from "@expo/vector-icons";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import moment from "moment";
+import { enToKo } from "../../../config/hooks";
 
 export default GX = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -43,25 +43,6 @@ export default GX = ({ navigation, route }) => {
     const [loading, setLoading] = useState(true);
     const [modalClientInfo, setModalClientInfo] = useState(false);
     const [clientList, setClientList] = useState([]);
-
-    const enToKo = (s) => {
-        switch (s) {
-            case "health":
-                return "헬스";
-            case "spinning":
-                return "스피닝";
-            case "yoga":
-                return "요가";
-            case "zoomba":
-                return "줌바";
-            case "squash":
-                return "스쿼시";
-            case "pilates":
-                return "필라테스";
-            case "pt":
-                return "PT";
-        }
-    };
 
     useEffect(() => {
         const showCalendar = async () => {

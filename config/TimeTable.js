@@ -5,31 +5,11 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { enToKo } from "../config/hooks";
 
 export default TimeTable = ({ classData, kind = "pt", style, ...props }) => {
     const [timeLabel, setTimeLabel] = useState([]);
     const [data, setData] = useState([]);
-
-    const enToKo = (s) => {
-        switch (s) {
-            case "health":
-                return "헬스";
-            case "spinning":
-                return "스피닝";
-            case "yoga":
-                return "요가";
-            case "zoomba":
-                return "줌바";
-            case "squash":
-                return "스쿼시";
-            case "pilates":
-                return "필라테스";
-            case "pt":
-                return "PT";
-            default:
-                return "Wrong";
-        }
-    };
 
     useEffect(() => {
         const initialTimeLabelList = () => {

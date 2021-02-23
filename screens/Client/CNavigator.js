@@ -25,15 +25,14 @@ import * as Permissions from "expo-permissions";
 import Modal from "react-native-modal";
 import * as Notifications from "expo-notifications";
 import ExtendDate from "./Menus/ExtendDate";
+import { enToKo, enToMiniKo } from "../../config/hooks";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
     const { signOut } = useContext(AuthContext);
     const uid = myBase.auth().currentUser.uid;
     const [loading, setLoading] = useState(true);
-    const [endDate, setEndDate] = useState("");
     const [membershipString, setMembershipString] = useState("");
-    const [membershipInfo, setMembershipInfo] = useState("");
     const [notificationAvail, setNotificationAvail] = useState(false);
     const [messages, setMessages] = useState([]);
     const [modalNotification, setModalNotification] = useState(false);
@@ -42,121 +41,117 @@ const MyStack = () => {
     const [notificationUnsubscribe, setNotificationUnsubscribe] = useState(() => {});
     const [membershipUnsubscribe, setMembershipUnsubsribe] = useState(() => {});
 
-    const enToKo = (s) => {
-        switch (s) {
-            case "health":
-                return "헬스";
-            case "spinning":
-                return "스피닝";
-            case "GX":
-                return "GX";
-            case "yoga":
-                return "요가";
-            case "zoomba":
-                return "줌바";
-            case "squash":
-                return "스쿼시";
-            case "pilates":
-                return "필라테스";
-            case "pt":
-                return "PT";
-        }
-    };
-
-    const getMemberships = async () => {
-        const func = db
+    const getMemberships = async (today) => {
+        let kinds = [];
+        await db
             .collection("users")
             .doc(uid)
             .collection("memberships")
-            .orderBy("end", "asc")
-            .onSnapshot(
-                (memberships) => {
-                    let kinds = [];
-                    let temp = {};
-                    let ret = "";
-                    memberships.forEach((membership) => {
-                        if (membership.id === "pt") {
-                            const { count } = membership.data();
-                            if (count <= 0) {
-                                Alert.alert("경고", "남은 PT 횟수가 없습니다.");
-                            } else {
-                                kinds.push(membership.id);
-                                temp[membership.id] = membership.data();
-                            }
-                        } else {
-                            const today = new Date();
-                            if (membership.data().start === undefined) {
-                                Alert.alert(
-                                    "경고",
-                                    `${enToKo(
-                                        membership.id
-                                    )} 회원권 시작일 설정이 되지 않았습니다.\n관리자에게 문의해주시기 바랍니다.`,
-                                    [{ text: "확인" }]
-                                );
-                            } else if (membership.data().end.toDate() < today) {
-                                Alert.alert(
-                                    "경고",
-                                    `${enToKo(membership.id)} 회원권이 만료되었습니다.`,
-                                    [{ text: "확인" }]
-                                );
-                            } else {
-                                kinds.push(membership.id);
-                                temp[membership.id] = membership.data();
-                            }
-                        }
-                    });
-                    if (kinds.length === 0) {
-                        setMembershipString("회원권이 없습니다.");
-                    }
-                    if (kinds.length >= 1) {
-                        let string = enToKo(kinds[0]);
-                        if (kinds[0] === "pt") {
-                            setEndDate(temp[kinds[0]].count + "번 남음");
-                        } else {
-                            if (temp[kinds[0]].start !== undefined) {
-                                setEndDate(
-                                    moment(temp[kinds[0]].end.toDate()).format("YYYY. MM. DD.") +
-                                        " 까지"
-                                );
-                            } else {
-                                setEndDate("관리자에게 문의");
-                            }
-                        }
-                        if (kinds.length >= 2) {
-                            string = string + ", " + enToKo(kinds[1]);
-                        }
-                        if (kinds.length >= 3) {
-                            string = string + ", 등";
-                        }
-                        setMembershipString(string);
-                    }
-                    let info = "";
-                    kinds.map((kind) => {
-                        let stringTemp = enToKo(kind) + ": ";
-                        if (kind === "pt") {
-                            stringTemp = stringTemp + `${temp[kind].count}번 남음`;
-                        } else {
-                            if (temp[kind].start !== undefined) {
-                                stringTemp =
-                                    stringTemp +
-                                    `${temp[kind].month}개월권 (${moment(
-                                        temp[kind].end.toDate()
-                                    ).format("YYYY. MM. DD.")} 까지)`;
-                            } else {
-                                stringTemp = stringTemp + "시작일 설정 필요";
-                            }
-                        }
-                        info = info + stringTemp + "\n";
-                    });
-                    ret = info ? info.substring(0, info.length - 1) : "회원권이 없습니다.";
-                    setMembershipInfo(ret);
-                },
-                (error) => {
-                    console.log(error);
-                    func();
+            .doc("list")
+            .get()
+            .then((doc) => {
+                if (doc.data().classes !== undefined) {
+                    kinds = doc.data().classes;
                 }
-            );
-        return func;
+            })
+            .then(async () => {
+                let kindsWithoutPt = kinds.slice();
+                const index = kindsWithoutPt.indexOf("pt");
+                if (index > -1) kindsWithoutPt.splice(index, 1);
+                const promises = kindsWithoutPt.map(async (name) => {
+                    await db
+                        .collection("users")
+                        .doc(uid)
+                        .collection("memberships")
+                        .doc("list")
+                        .collection(name)
+                        .orderBy("start", "desc")
+                        .limit(1)
+                        .get()
+                        .then((docs) => {
+                            docs.forEach((doc) => {
+                                const { end } = doc.data();
+                                if (doc.data().start === undefined) {
+                                    Alert.alert(
+                                        "경고",
+                                        `${enToMiniKo(
+                                            name
+                                        )} 회원권 시작일 설정이 되지 않았습니다.\n관리자에게 문의해주시기 바랍니다.`,
+                                        [{ text: "확인" }]
+                                    );
+                                }
+                                if (end.toDate() < today) {
+                                    const i = kindsWithoutPt.indexOf(name);
+                                    if (i > -1) kindsWithoutPt.splice(i, 1);
+                                    if (doc.data().check === undefined) {
+                                        Alert.alert(
+                                            "경고",
+                                            `${enToMiniKo(name)} 회원권이 만료되었습니다.`,
+                                            [
+                                                {
+                                                    text: "확인",
+                                                    onPress: async () => {
+                                                        doc.ref.set(
+                                                            { check: true },
+                                                            { merge: true }
+                                                        );
+                                                    },
+                                                },
+                                            ]
+                                        );
+                                    }
+                                }
+                            });
+                        });
+                });
+                await Promise.all(promises);
+                if (kindsWithoutPt.length === 0) {
+                    setMembershipString("회원권이 없습니다.");
+                }
+                if (kindsWithoutPt.length >= 1) {
+                    let string = enToMiniKo(kindsWithoutPt[0]);
+                    if (kindsWithoutPt.length >= 2) {
+                        string = string + ", " + enToMiniKo(kindsWithoutPt[1]);
+                    }
+                    if (kindsWithoutPt.length >= 3) {
+                        string = string + ", 등";
+                    }
+                    setMembershipString(string);
+                }
+            });
+
+        if (kinds.indexOf("pt") !== -1) {
+            const func = db
+                .collection("users")
+                .doc(uid)
+                .collection("memberships")
+                .doc("list")
+                .collection("pt")
+                .orderBy("start", "desc")
+                .limit(1)
+                .onSnapshot(
+                    (docs) => {
+                        docs.forEach((doc) => {
+                            const { count } = doc.data();
+                            if (count === 0) {
+                                Alert.alert("경고", "남은 PT 횟수가 없습니다.", [
+                                    {
+                                        text: "확인",
+                                        onPress: async () => {
+                                            await doc.ref.update({ count: -1 });
+                                        },
+                                    },
+                                ]);
+                            }
+                        });
+                    },
+                    (error) => {
+                        func();
+                    }
+                );
+            return func;
+        }
+        return console.log;
     };
 
     const getNotifications = async () => {
@@ -253,6 +248,7 @@ const MyStack = () => {
 
     const setPermissionNotification = async (state) => {
         if (state === "active") {
+            const today = new Date();
             const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
             if (status !== "granted") {
                 setUnread(false);
@@ -263,12 +259,15 @@ const MyStack = () => {
                     setUnread(true);
                 }
             }
+            await getMemberships(today).then((ret) => {
+                setMembershipUnsubsribe(ret === undefined ? () => console.log : () => ret);
+            });
         }
     };
 
     useEffect(() => {
         AppState.addEventListener("change", setPermissionNotification);
-        execPromise();
+        execPromise(new Date());
         return () => {
             AppState.removeEventListener("change", setPermissionNotification);
         };
@@ -542,7 +541,7 @@ const MyStack = () => {
                     headerTitleAlign: "center",
                     headerLeft: () => renderNotificationButton(navigation),
                     headerRight: () => (
-                        <TouchableOpacity
+                        <View
                             style={{
                                 marginRight: 10,
                                 width: "100%",
@@ -550,17 +549,14 @@ const MyStack = () => {
                                 alignItems: "center",
                                 justifyContent: "center",
                             }}
-                            onPress={() => {
-                                Alert.alert("회원권 정보", membershipInfo);
-                            }}
                         >
+                            <Text style={{ fontSize: RFPercentage(2), marginBottom: 3 }}>
+                                회원권
+                            </Text>
                             <Text style={{ fontSize: RFPercentage(2) }}>
                                 {loading ? undefined : membershipString}
                             </Text>
-                            {loading ? undefined : endDate !== "" ? (
-                                <Text style={{ fontSize: RFPercentage(2) }}>{endDate}</Text>
-                            ) : undefined}
-                        </TouchableOpacity>
+                        </View>
                     ),
                 })}
             />

@@ -25,6 +25,7 @@ import Modal from "react-native-modal";
 import * as Notifications from "expo-notifications";
 import myBase, { db } from "../../config/MyBase";
 import moment from "moment";
+import { enToKo } from "../../config/hooks";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
@@ -38,23 +39,6 @@ const MyStack = () => {
     const [unread, setUnread] = useState(false);
     const [notificationNum, setNotificationNum] = useState(0);
     const [unsubscribe, setUnsubscribe] = useState(() => {});
-
-    const enToKo = (s) => {
-        switch (s) {
-            case "health":
-                return "헬스";
-            case "spinning":
-                return "스피닝";
-            case "GX":
-                return "GX(요가, 줌바)";
-            case "squash":
-                return "스쿼시";
-            case "pilates":
-                return "필라테스";
-            case "pt":
-                return "PT";
-        }
-    };
 
     const getNotifications = async () => {
         const today = new Date();

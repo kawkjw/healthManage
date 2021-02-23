@@ -16,7 +16,7 @@ import {
 } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import myBase, { db } from "../../config/MyBase";
-import { useInterval } from "../../config/hooks";
+import { useInterval, enToKo } from "../../config/hooks";
 import { MyStyles, AuthStyles } from "../../css/MyStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext } from "../Auth";
@@ -47,6 +47,7 @@ export default Profile = ({ navigation }) => {
     const [chkUsedEmail, setChkUsedEmail] = useState(false);
     const [locker, setLocker] = useState(0);
     const thisuser = db.collection("users").doc(uid);
+    const [textWidth, setTextWidth] = useState(0);
     const [membershipInfo, setMembershipInfo] = useState("");
     const [reservedClasses, setReservedClasses] = useState([]);
     const [canGenQR, setCanGenQR] = useState(false);
@@ -60,27 +61,6 @@ export default Profile = ({ navigation }) => {
         confirmExtend: false,
     });
     const { hasExtend, confirmExtend } = extendBool;
-
-    const enToKo = (s) => {
-        switch (s) {
-            case "health":
-                return "헬스";
-            case "spinning":
-                return "스피닝";
-            case "GX":
-                return "GX";
-            case "yoga":
-                return "요가";
-            case "zoomba":
-                return "줌바";
-            case "squash":
-                return "스쿼시";
-            case "pilates":
-                return "필라테스";
-            case "pt":
-                return "PT";
-        }
-    };
 
     const createRandom = async () => {
         if (uid !== null) {
@@ -118,6 +98,7 @@ export default Profile = ({ navigation }) => {
     };
 
     const getUserData = async () => {
+        const today = new Date();
         if (uid !== null) {
             const storage_uid = await AsyncStorage.getItem("userToken");
             if (uid !== storage_uid) {
@@ -150,18 +131,35 @@ export default Profile = ({ navigation }) => {
                 });
             await thisuser
                 .collection("memberships")
-                .orderBy("end", "asc")
+                .doc("list")
                 .get()
-                .then((snapshots) => {
-                    const today = new Date();
-                    snapshots.forEach((snapshot) => {
-                        kinds.push(snapshot.id);
-                        temp[snapshot.id] = snapshot.data();
+                .then((doc) => {
+                    if (doc.data().classes !== undefined) {
+                        kinds = doc.data().classes;
+                    }
+                    return kinds;
+                })
+                .then(async (list) => {
+                    const promises = list.map(async (name) => {
+                        await thisuser
+                            .collection("memberships")
+                            .doc("list")
+                            .collection(name)
+                            .orderBy("start", "desc")
+                            .limit(1)
+                            .get()
+                            .then((docs) => {
+                                docs.forEach((doc) => {
+                                    temp[name] = doc.data();
+                                });
+                            });
                     });
+                    await Promise.all(promises);
+
                     let info = "";
                     let expiredNum = 0;
                     kinds.map((kind) => {
-                        let stringTemp = enToKo(kind) + " : ";
+                        let stringTemp = enToKo(kind) + ":";
                         if (kind === "pt") {
                             stringTemp = stringTemp + `${temp[kind].count}번 남음`;
                             if (temp[kind].count <= 0) {
@@ -213,10 +211,7 @@ export default Profile = ({ navigation }) => {
                         });
                     }
                 });
-            const today = new Date();
-            const todayMonth = today.getMonth() + 1;
-            const monthString =
-                today.getFullYear() + "-" + (todayMonth < 10 ? "0" + todayMonth : todayMonth);
+            const monthString = moment(today).format("YYYY-MM");
             try {
                 const reserveDate = (
                     await thisuser.collection("reservation").doc(monthString).get()
@@ -273,6 +268,8 @@ export default Profile = ({ navigation }) => {
         if (state === "inactive") {
             setIsRun(false);
             resetRandom();
+        } else if (state === "active") {
+            getUserData();
         }
     };
 
@@ -940,22 +937,41 @@ export default Profile = ({ navigation }) => {
                                                     color="black"
                                                 />
                                                 {info.split(":").map((s, i) => (
-                                                    <Text
+                                                    <View
                                                         key={i}
-                                                        style={[
-                                                            {
+                                                        style={
+                                                            i === 0
+                                                                ? textWidth !== 0
+                                                                    ? {
+                                                                          width: textWidth,
+                                                                          alignItems: "flex-end",
+                                                                      }
+                                                                    : undefined
+                                                                : undefined
+                                                        }
+                                                        onLayout={({
+                                                            nativeEvent: {
+                                                                layout: { width },
+                                                            },
+                                                        }) => {
+                                                            if (i === 0) {
+                                                                setTextWidth(
+                                                                    textWidth < width
+                                                                        ? width
+                                                                        : textWidth
+                                                                );
+                                                            }
+                                                        }}
+                                                    >
+                                                        <Text
+                                                            style={{
                                                                 fontSize: RFPercentage(2),
                                                                 marginLeft: 3,
-                                                            },
-                                                            i === 0
-                                                                ? {
-                                                                      width: 52,
-                                                                  }
-                                                                : undefined,
-                                                        ]}
-                                                    >
-                                                        {(i === 1 ? ":" : "") + s}
-                                                    </Text>
+                                                            }}
+                                                        >
+                                                            {(i === 1 ? ": " : "") + s.trim()}
+                                                        </Text>
+                                                    </View>
                                                 ))}
                                             </>
                                         )}

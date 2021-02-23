@@ -3,32 +3,12 @@ import { Dimensions, SafeAreaView, Text, TouchableOpacity, ScrollView, Alert } f
 import { MyStyles } from "../../../css/MyStyles";
 import myBase, { db } from "../../../config/MyBase";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import { enToKo } from "../../../config/hooks";
 
 export default Class = ({ navigation }) => {
     const { width } = Dimensions.get("screen");
     const widthButton = width - 40;
     const [memberships, setMemberships] = useState([]);
-
-    const enToKo = (s) => {
-        switch (s) {
-            case "health":
-                return "헬스";
-            case "spinning":
-                return "스피닝";
-            case "GX":
-                return "GX";
-            case "yoga":
-                return "요가";
-            case "zoomba":
-                return "줌바";
-            case "squash":
-                return "스쿼시";
-            case "pilates":
-                return "필라테스";
-            case "pt":
-                return "PT";
-        }
-    };
 
     useEffect(() => {
         const getMemberships = async () => {
@@ -38,9 +18,17 @@ export default Class = ({ navigation }) => {
                 .collection("users")
                 .doc(uid)
                 .collection("memberships")
+                .doc("list")
                 .get()
-                .then((snapshots) => {
-                    if (snapshots.size === 0) {
+                .then((doc) => {
+                    let kinds = [];
+                    if (doc.data().classes !== undefined) {
+                        kinds = doc.data().classes;
+                    }
+                    return kinds;
+                })
+                .then(async (list) => {
+                    if (list.length === 0) {
                         Alert.alert("회원권이 없습니다.", "예약할 수 없습니다.", [
                             {
                                 text: "확인",
@@ -51,17 +39,33 @@ export default Class = ({ navigation }) => {
                         ]);
                     } else {
                         let availabeClass = [];
-                        snapshots.forEach((snapshot) => {
-                            const end = snapshot.data().end.toDate();
-                            if (snapshot.id === "pt") {
-                                const { count } = snapshot.data();
-                                if (count > 0) {
-                                    availabeClass.push(snapshot.id);
-                                }
-                            } else if (today < end) {
-                                availabeClass.push(snapshot.id);
-                            }
+                        const promises = list.map(async (kind) => {
+                            await db
+                                .collection("users")
+                                .doc(uid)
+                                .collection("memberships")
+                                .doc("list")
+                                .collection(kind)
+                                .orderBy("start", "desc")
+                                .limit(1)
+                                .get()
+                                .then((docs) => {
+                                    docs.forEach((doc) => {
+                                        if (doc.data().end !== undefined) {
+                                            const end = doc.data().end.toDate();
+                                            if (kind === "pt") {
+                                                const { count } = doc.data();
+                                                if (count > 0) {
+                                                    availabeClass.push(kind);
+                                                }
+                                            } else if (today < end) {
+                                                availabeClass.push(kind);
+                                            }
+                                        }
+                                    });
+                                });
                         });
+                        await Promise.all(promises);
                         setMemberships(availabeClass);
                     }
                 });
@@ -71,10 +75,19 @@ export default Class = ({ navigation }) => {
 
     const goClassReservation = (classname) => {
         if (classname === "yoga" || classname === "zoomba") {
-            if (memberships.indexOf("GX") === -1) {
+            if (memberships.indexOf("gx") === -1) {
                 Alert.alert("경고", "GX 회원권이 없습니다.", [{ text: "확인" }]);
             } else {
                 navigation.navigate("SelectDate", { classname: classname });
+            }
+        } else if (classname === "pilates") {
+            if (memberships.indexOf("pilates2") === -1 && memberships.indexOf("pilates3") === -1) {
+                Alert.alert("경고", "필라테스 회원권이 없습니다.", [{ text: "확인" }]);
+            } else {
+                navigation.navigate("SelectDate", {
+                    classname: classname,
+                    week: memberships.indexOf("pilates2") > -1 ? 2 : 3,
+                });
             }
         } else if (memberships.indexOf(classname) === -1) {
             Alert.alert("경고", `${enToKo(classname)} 회원권이 없습니다.`, [{ text: "확인" }]);
@@ -126,7 +139,8 @@ export default Class = ({ navigation }) => {
                 >
                     <Text
                         style={[
-                            memberships.indexOf("pilates") === -1
+                            memberships.indexOf("pilates2") === -1 &&
+                            memberships.indexOf("pilates3") === -1
                                 ? { color: "red" }
                                 : { color: "black" },
                             { fontSize: RFPercentage(2.3) },

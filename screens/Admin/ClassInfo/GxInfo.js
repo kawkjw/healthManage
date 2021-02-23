@@ -22,6 +22,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import myBase, { db } from "../../../config/MyBase";
 import moment from "moment";
+import { enToKo } from "../../../config/hooks";
 
 export default ClassInfo = ({ navigation }) => {
     const { width } = Dimensions.get("screen");
@@ -59,25 +60,6 @@ export default ClassInfo = ({ navigation }) => {
         maxClient: 0,
     });
     const [modalClientsInfo, setModalClientsInfo] = useState(false);
-
-    const enToKo = (s) => {
-        switch (s) {
-            case "health":
-                return "헬스";
-            case "spinning":
-                return "스피닝";
-            case "yoga":
-                return "요가";
-            case "zoomba":
-                return "줌바";
-            case "squash":
-                return "스쿼시";
-            case "pilates":
-                return "필라테스";
-            case "pt":
-                return "PT";
-        }
-    };
 
     useEffect(() => {
         const showCalendar = async () => {
