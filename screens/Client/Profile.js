@@ -161,7 +161,9 @@ export default Profile = ({ navigation }) => {
                     kinds.map((kind) => {
                         let stringTemp = enToKo(kind) + ":";
                         if (kind === "pt") {
-                            stringTemp = stringTemp + `${temp[kind].count}번 남음`;
+                            stringTemp =
+                                stringTemp +
+                                `${temp[kind].count}번 남음 (트레이너 ${temp[kind].trainer})`;
                             if (temp[kind].count <= 0) {
                                 expiredNum = expiredNum + 1;
                             }

@@ -8,6 +8,7 @@ import {
     Keyboard,
     Alert,
     ActivityIndicator,
+    Dimensions,
 } from "react-native";
 import { AuthContext } from "../Auth";
 import { AuthStyles } from "../../css/MyStyles";
@@ -77,6 +78,7 @@ export default SignUp = ({ navigation }) => {
 
     const { signUp } = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
+    const [showPasswordText, setShowPasswordText] = useState(false);
 
     useEffect(() => {
         if (password && password === chkPassword) {
@@ -220,7 +222,7 @@ export default SignUp = ({ navigation }) => {
             },
             {
                 key: "day",
-                items: pickerBirthday.day.slice(0, finalDate),
+                items: day.slice(0, finalDate),
             },
         ];
     };
@@ -351,10 +353,18 @@ export default SignUp = ({ navigation }) => {
                     </View>
                     <View style={AuthStyles.textView}>
                         <Text style={AuthStyles.text}>비밀번호</Text>
-                        <Text style={{ color: "#8c8c8c", marginBottom: 5 }}>
-                            길이는 8자 이상 15자 이하이며{"\n"}영문, 숫자, 특수문자 중 2가지 이상을
-                            혼합하여 입력해주세요
-                        </Text>
+                        {showPasswordText && (
+                            <Text
+                                style={{
+                                    color: "#8c8c8c",
+                                    marginBottom: 5,
+                                    fontSize: RFPercentage(1.7),
+                                }}
+                            >
+                                길이는 8자 이상 15자 이하이며{"\n"}영문, 숫자, 특수문자 중 2가지
+                                이상을 혼합하여 입력해주세요
+                            </Text>
+                        )}
                         <TextInput
                             style={[
                                 AuthStyles.textInput,
@@ -368,6 +378,12 @@ export default SignUp = ({ navigation }) => {
                             secureTextEntry={true}
                             value={password}
                             onChangeText={setPassword}
+                            onFocus={(e) => {
+                                setShowPasswordText(true);
+                            }}
+                            onBlur={(e) => {
+                                setShowPasswordText(false);
+                            }}
                         />
                     </View>
                     <View style={AuthStyles.textView}>
@@ -385,6 +401,12 @@ export default SignUp = ({ navigation }) => {
                             secureTextEntry={true}
                             value={chkPassword}
                             onChangeText={setChkPassword}
+                            onFocus={(e) => {
+                                setShowPasswordText(true);
+                            }}
+                            onBlur={(e) => {
+                                setShowPasswordText(false);
+                            }}
                         />
                     </View>
                     <View style={AuthStyles.textView}>
@@ -558,6 +580,9 @@ export default SignUp = ({ navigation }) => {
             </KeyboardAwareScrollView>
             <SegmentedPicker
                 ref={picker}
+                onCancel={(select) => {
+                    setBirthday({ ...birthday, day: select.day });
+                }}
                 onConfirm={(select) => {
                     setBirthday({ ...birthday, day: select.day });
                 }}

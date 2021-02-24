@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
     Alert,
     Keyboard,
@@ -11,17 +11,24 @@ import {
 import myBase, { db } from "../../../config/MyBase";
 import { AuthStyles, MyStyles } from "../../../css/MyStyles";
 import { RFPercentage } from "react-native-responsive-fontsize";
-import { MaterialIcons } from "@expo/vector-icons";
+import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import moment from "moment";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { pushNotificationsToAdmin } from "../../../config/MyExpo";
-import { enToKo } from "../../../config/hooks";
+import { enToMiniKo } from "../../../config/hooks";
+import SegmentedPicker from "react-native-segmented-picker";
 
 export default ExtendDate = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
     const [availExtend, setAvailExtend] = useState([]);
-    const [extendDate, setExtendDate] = useState("");
+    const [extendDate, setExtendDate] = useState({ date: "7" });
     const [extendReason, setExtendReason] = useState("");
+    const picker = useRef();
+    const dateList = [...Array(24).keys()].map((x) => ({
+        label: (x + 7).toString(),
+        value: (x + 7).toString(),
+        key: (x + 7).toString(),
+    }));
 
     useEffect(() => {
         const getMembsership = async () => {
@@ -121,15 +128,6 @@ export default ExtendDate = ({ navigation, route }) => {
         getMembsership();
     }, []);
 
-    useEffect(() => {
-        if (extendDate === "0") {
-            setExtendDate("");
-        }
-        if (Number(extendDate) > 30) {
-            setExtendDate("30");
-        }
-    }, [extendDate]);
-
     const onSubmit = async () => {
         let availList = [];
         const submitDate = new Date();
@@ -142,7 +140,7 @@ export default ExtendDate = ({ navigation, route }) => {
             .doc(uid)
             .collection("extends")
             .add({
-                extendDate: Number(extendDate),
+                extendDate: Number(extendDate.date),
                 extendReason: extendReason,
                 confirm: false,
                 submitDate: submitDate,
@@ -166,7 +164,7 @@ export default ExtendDate = ({ navigation, route }) => {
         await pushNotificationsToAdmin(
             myBase.auth().currentUser.displayName,
             "이용권 연장 신청",
-            `${extendDate}일 연장 신청`,
+            `${extendDate.date}일 연장 신청`,
             {
                 navigation: "SelectUser",
                 datas: {
@@ -212,7 +210,7 @@ export default ExtendDate = ({ navigation, route }) => {
                                         color="black"
                                     />
                                     <Text style={{ fontSize: RFPercentage(2), flex: 2 }}>
-                                        {enToKo(membership.name)}
+                                        {enToMiniKo(membership.name)}
                                     </Text>
                                     <Text style={{ fontSize: RFPercentage(2), flex: 2 }}>
                                         {membership.month + "개월권"}
@@ -238,17 +236,23 @@ export default ExtendDate = ({ navigation, route }) => {
                                     marginBottom: 10,
                                 }}
                             >
-                                <TextInput
-                                    style={[AuthStyles.textInput, { flex: 4, borderWidth: 0 }]}
-                                    keyboardType="number-pad"
-                                    placeholder="최대 30일까지"
-                                    value={extendDate}
-                                    onChangeText={setExtendDate}
-                                    maxLength={2}
-                                />
-                                <View style={{ flex: 1, alignItems: "flex-end", paddingRight: 10 }}>
-                                    <Text style={{ fontSize: RFPercentage(2.5) }}>일동안</Text>
+                                <View style={{ flex: 1, alignItems: "center" }}>
+                                    <Text style={{ fontSize: RFPercentage(2.5) }}>
+                                        {extendDate.date} 일동안
+                                    </Text>
                                 </View>
+                                <TouchableOpacity
+                                    onPress={() => {
+                                        Keyboard.dismiss();
+                                        picker.current.show();
+                                    }}
+                                >
+                                    <MaterialCommunityIcons
+                                        name="chevron-down"
+                                        size={30}
+                                        color="black"
+                                    />
+                                </TouchableOpacity>
                             </View>
                             <Text style={{ fontSize: RFPercentage(2) }}>연장 사유</Text>
                             <View
@@ -282,14 +286,14 @@ export default ExtendDate = ({ navigation, route }) => {
                                 onPress={() => {
                                     Alert.alert(
                                         "확실합니까?",
-                                        `연장 일수: ${extendDate}\n연장 사유: ${extendReason}`,
+                                        `연장 일수: ${extendDate.date}\n연장 사유: ${extendReason}`,
                                         [
                                             { text: "취소" },
                                             { text: "확인", onPress: () => onSubmit() },
                                         ]
                                     );
                                 }}
-                                disabled={!extendDate || !extendReason}
+                                disabled={!extendReason}
                             >
                                 <Text style={{ fontSize: RFPercentage(2), margin: 10 }}>제출</Text>
                             </TouchableOpacity>
@@ -297,6 +301,18 @@ export default ExtendDate = ({ navigation, route }) => {
                     </View>
                 </TouchableOpacity>
             </KeyboardAwareScrollView>
+            <SegmentedPicker
+                ref={picker}
+                onCancel={(select) => {
+                    setExtendDate({ date: select.date });
+                }}
+                onConfirm={(select) => {
+                    setExtendDate({ date: select.date });
+                }}
+                defaultSelections={extendDate}
+                options={[{ key: "date", items: dateList }]}
+                confirmText="확인"
+            />
         </SafeAreaView>
     );
 };
