@@ -3,7 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import React, { createContext, useEffect, useMemo, useReducer } from "react";
 import { Alert, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import myBase, { arrayDelete, db } from "../config/MyBase";
+import myBase, { arrayDelete, arrayUnion, db } from "../config/MyBase";
 import firebase from "firebase";
 import LoadingScreen from "./LoadingScreen";
 import AuthSuccess from "./AuthSuccess";
@@ -173,6 +173,7 @@ export default Auth = () => {
                                             name: currentUser.name,
                                             expoToken: [],
                                             admin: isAdmin === true,
+                                            trainer: isTrainer === true,
                                         });
                                     if (isTrainer) {
                                         db.collection("users").doc(currentUser.id).update({
@@ -201,8 +202,29 @@ export default Auth = () => {
                                                             .collection("users")
                                                             .doc(currentUser.id)
                                                             .collection("memberships")
-                                                            .doc(membership.name)
-                                                            .set(membership);
+                                                            .doc("list")
+                                                            .update({
+                                                                classes: arrayUnion(
+                                                                    membership.name
+                                                                ),
+                                                            })
+                                                            .catch(async () => {
+                                                                await db
+                                                                    .collection("users")
+                                                                    .doc(currentUser.id)
+                                                                    .collection("memberships")
+                                                                    .doc("list")
+                                                                    .set({
+                                                                        classes: [membership.name],
+                                                                    });
+                                                            });
+                                                        await db
+                                                            .collection("users")
+                                                            .doc(currentUser.id)
+                                                            .collection("memberships")
+                                                            .doc("list")
+                                                            .collection(membership.name)
+                                                            .add(membership);
                                                     }
                                                 );
                                                 await Promise.all(promises);

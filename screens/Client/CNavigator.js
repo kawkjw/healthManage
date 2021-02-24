@@ -41,7 +41,8 @@ const MyStack = () => {
     const [notificationUnsubscribe, setNotificationUnsubscribe] = useState(() => {});
     const [membershipUnsubscribe, setMembershipUnsubsribe] = useState(() => {});
 
-    const getMemberships = async (today) => {
+    const getMemberships = async () => {
+        const today = new Date();
         let kinds = [];
         await db
             .collection("users")
@@ -65,7 +66,7 @@ const MyStack = () => {
                         .collection("memberships")
                         .doc("list")
                         .collection(name)
-                        .orderBy("start", "desc")
+                        .orderBy("payDay", "desc")
                         .limit(1)
                         .get()
                         .then((docs) => {
@@ -127,7 +128,7 @@ const MyStack = () => {
                 .collection("memberships")
                 .doc("list")
                 .collection("pt")
-                .orderBy("start", "desc")
+                .orderBy("payDay", "desc")
                 .limit(1)
                 .onSnapshot(
                     (docs) => {
@@ -248,7 +249,6 @@ const MyStack = () => {
 
     const setPermissionNotification = async (state) => {
         if (state === "active") {
-            const today = new Date();
             const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
             if (status !== "granted") {
                 setUnread(false);
@@ -259,7 +259,7 @@ const MyStack = () => {
                     setUnread(true);
                 }
             }
-            await getMemberships(today).then((ret) => {
+            await getMemberships().then((ret) => {
                 setMembershipUnsubsribe(ret === undefined ? () => console.log : () => ret);
             });
         }
@@ -267,7 +267,7 @@ const MyStack = () => {
 
     useEffect(() => {
         AppState.addEventListener("change", setPermissionNotification);
-        execPromise(new Date());
+        execPromise();
         return () => {
             AppState.removeEventListener("change", setPermissionNotification);
         };
@@ -628,7 +628,7 @@ const MyStack = () => {
                 name="PT"
                 component={PT}
                 options={({ navigation, route }) => ({
-                    title: route.params.trainerName,
+                    title: route.params.trainerName + " 트레이너",
                     headerLeft: () => renderGoBackButton(navigation),
                 })}
             />

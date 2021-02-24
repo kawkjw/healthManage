@@ -174,13 +174,17 @@ export default ClassInfo = ({ navigation }) => {
                                     .collection("users")
                                     .doc(v.clientUid)
                                     .collection("memberships")
-                                    .doc("pt")
+                                    .doc("list")
+                                    .collection("pt")
+                                    .where("count", ">", 0)
                                     .get()
-                                    .then((ptDoc) => {
-                                        if (ptDoc.exists) {
-                                            count = ptDoc.data().count;
-                                        } else {
+                                    .then((ptDocs) => {
+                                        if (ptDocs.size === 0) {
                                             count = -1;
+                                        } else {
+                                            ptDocs.forEach((doc) => {
+                                                count = count + doc.data().count;
+                                            });
                                         }
                                     });
                                 changed[index]["clientName"] = name;

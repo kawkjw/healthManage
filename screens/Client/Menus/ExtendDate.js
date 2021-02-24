@@ -44,48 +44,75 @@ export default ExtendDate = ({ navigation, route }) => {
                             .collection("users")
                             .doc(uid)
                             .collection("memberships")
-                            .where("month", ">=", 6)
+                            .doc("list")
                             .get()
-                            .then((memberships) => {
-                                if (memberships.size === 0) {
-                                    Alert.alert("경고", "연장 가능한 이용권이 없습니다.");
+                            .then((doc) => {
+                                let kinds = [];
+                                if (doc.data().classes !== undefined) {
+                                    kinds = doc.data().classes;
+                                }
+                                let kindsWithoutPt = kinds.slice();
+                                const index = kindsWithoutPt.indexOf("pt");
+                                if (index > -1) kindsWithoutPt.splice(index, 1);
+                                return kindsWithoutPt;
+                            })
+                            .then(async (list) => {
+                                if (list.length === 0) {
+                                    Alert.alert("경고", "연장 가능한 이용권이 없습니다.", [
+                                        { text: "확인" },
+                                    ]);
+                                    navigation.goBack();
+                                }
+                                let temp = [];
+                                const promises = list.map(async (kind) => {
+                                    await db
+                                        .collection("users")
+                                        .doc(uid)
+                                        .collection("memberships")
+                                        .doc("list")
+                                        .collection(kind)
+                                        .orderBy("start", "desc")
+                                        .limit(1)
+                                        .get()
+                                        .then((docs) => {
+                                            docs.forEach((doc) => {
+                                                if (
+                                                    doc.data().start !== undefined &&
+                                                    doc.data().month >= 6
+                                                ) {
+                                                    if (doc.data().extended === undefined) {
+                                                        temp.push({
+                                                            ...doc.data(),
+                                                            remain: doc.data().month === 6 ? 1 : 2,
+                                                        });
+                                                    } else if (
+                                                        doc.data().month === 12 &&
+                                                        doc.data().extended === 1
+                                                    ) {
+                                                        temp.push({
+                                                            ...doc.data(),
+                                                            remain: 1,
+                                                        });
+                                                    }
+                                                }
+                                            });
+                                        });
+                                });
+                                await Promise.all(promises);
+                                if (temp.length === 0) {
+                                    Alert.alert("경고", "연장 가능한 이용권이 없습니다.", [
+                                        { text: "확인" },
+                                    ]);
                                     navigation.goBack();
                                 } else {
-                                    let temp = [];
-                                    memberships.docs
-                                        .sort((a, b) => {
-                                            return a.data().sort - b.data().sort;
-                                        })
-                                        .forEach((membership) => {
-                                            if (membership.data().extended === undefined) {
-                                                temp.push({
-                                                    ...membership.data(),
-                                                    name: membership.id,
-                                                    remain: membership.data().month === 6 ? 1 : 2,
-                                                });
-                                            } else if (
-                                                membership.data().month === 12 &&
-                                                membership.data().extended === 1
-                                            ) {
-                                                temp.push({
-                                                    ...membership.data(),
-                                                    name: membership.id,
-                                                    remain: 1,
-                                                });
-                                            }
-                                        });
-                                    if (temp.length === 0) {
-                                        Alert.alert("경고", "연장 가능한 이용권이 없습니다.");
-                                        navigation.goBack();
-                                    } else {
-                                        setAvailExtend(temp);
-                                    }
+                                    setAvailExtend(temp);
                                 }
                             });
                     } else {
                         Alert.alert(
                             "경고",
-                            "승인 대기 중입니다.\n승인 완료 후 신청해 주시기 바랍니다."
+                            "승인 대기 중입니다.\n승인 완료 후 신청해 주시기 바랍니다.",
+                            [{ text: "확인" }]
                         );
                         navigation.goBack();
                     }

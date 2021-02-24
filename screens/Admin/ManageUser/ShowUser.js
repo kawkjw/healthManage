@@ -21,21 +21,41 @@ export default ShowUser = ({ route }) => {
     const [locker, setLocker] = useState(0);
     const [extendList, setExtendList] = useState([]);
     const [change, setChange] = useState(false);
+    const [textWidth, setTextWidth] = useState(0);
 
     const getMembership = async () => {
         await db
             .collection("users")
             .doc(user.uid)
             .collection("memberships")
-            .orderBy("sort", "asc")
+            .doc("list")
             .get()
-            .then((snapshots) => {
+            .then((doc) => {
                 let kinds = [];
+                if (doc.data().classes !== undefined) {
+                    kinds = doc.data().classes;
+                }
+                return kinds;
+            })
+            .then(async (kinds) => {
                 let temp = {};
-                snapshots.forEach((snapshot) => {
-                    kinds.push(snapshot.id);
-                    temp[snapshot.id] = snapshot.data();
+                const promises = kinds.map(async (kind) => {
+                    await db
+                        .collection("users")
+                        .doc(user.uid)
+                        .collection("memberships")
+                        .doc("list")
+                        .collection(kind)
+                        .orderBy("payDay", "desc")
+                        .limit(1)
+                        .get()
+                        .then((docs) => {
+                            docs.forEach((doc) => {
+                                temp[kind] = doc.data();
+                            });
+                        });
                 });
+                await Promise.all(promises);
                 setMembershipKinds(kinds);
                 setMembership(temp);
             });
@@ -95,11 +115,26 @@ export default ShowUser = ({ route }) => {
                         name="check-circle-outline"
                         size={RFPercentage(2)}
                         color="black"
+                        style={{ marginRight: 3 }}
                     />
-                    <View style={{ flex: 1, alignItems: "flex-end" }}>
-                        <Text style={{ fontSize: RFPercentage(2) }}>{enToKo(kind)} : </Text>
+                    <View
+                        style={[
+                            { alignItems: "flex-end" },
+                            textWidth !== 0 ? { width: textWidth } : undefined,
+                        ]}
+                        onLayout={({
+                            nativeEvent: {
+                                layout: { width },
+                            },
+                        }) => {
+                            if (textWidth < width) {
+                                setTextWidth(width);
+                            }
+                        }}
+                    >
+                        <Text style={{ fontSize: RFPercentage(2) }}>{enToKo(kind)}: </Text>
                     </View>
-                    <Text style={{ flex: 4, fontSize: RFPercentage(2) }}>
+                    <Text style={{ fontSize: RFPercentage(2) }}>
                         {membership[kind].count}회 남음
                     </Text>
                 </View>
@@ -118,14 +153,29 @@ export default ShowUser = ({ route }) => {
                         name="check-circle-outline"
                         size={RFPercentage(2)}
                         color="black"
+                        style={{ marginRight: 3 }}
                     />
-                    <View style={{ flex: 1, alignItems: "flex-end" }}>
-                        <Text style={{ fontSize: RFPercentage(2) }}>{enToKo(kind)} : </Text>
+                    <View
+                        style={[
+                            { alignItems: "flex-end" },
+                            textWidth !== 0 ? { width: textWidth } : undefined,
+                        ]}
+                        onLayout={({
+                            nativeEvent: {
+                                layout: { width },
+                            },
+                        }) => {
+                            if (textWidth < width) {
+                                setTextWidth(width);
+                            }
+                        }}
+                    >
+                        <Text style={{ fontSize: RFPercentage(2) }}>{enToKo(kind)}: </Text>
                     </View>
-                    <Text style={{ flex: 4, fontSize: RFPercentage(2) }}>
-                        {moment(membership[kind].start.toDate()).format("YYYY. MM. DD.") +
+                    <Text style={{ fontSize: RFPercentage(2) }}>
+                        {moment(membership[kind].start.toDate()).format("YY. MM. DD.") +
                             " ~ " +
-                            moment(membership[kind].end.toDate()).format("YYYY. MM. DD.") +
+                            moment(membership[kind].end.toDate()).format("YY. MM. DD.") +
                             " "}
                         ({membership[kind].month}개월권)
                     </Text>
@@ -149,14 +199,19 @@ export default ShowUser = ({ route }) => {
                 .collection("users")
                 .doc(user.uid)
                 .collection("memberships")
-                .doc(memName)
+                .doc("list")
+                .collection(memName)
+                .orderBy("payDay", "desc")
+                .limit(1)
                 .get()
-                .then((doc) => {
-                    if (doc.data().extended === undefined) {
-                        doc.ref.set({ end: changeEnd, extended: 1 }, { merge: true });
-                    } else if (doc.data().month === 12 && doc.data().extended === 1) {
-                        doc.ref.set({ end: changeEnd, extended: 2 }, { merge: true });
-                    }
+                .then((docs) => {
+                    docs.forEach((doc) => {
+                        if (doc.data().extended === undefined) {
+                            doc.ref.set({ end: changeEnd, extended: 1 }, { merge: true });
+                        } else if (doc.data().month === 12 && doc.data().extended === 1) {
+                            doc.ref.set({ end: changeEnd, extended: 2 }, { merge: true });
+                        }
+                    });
                 });
         });
         await db

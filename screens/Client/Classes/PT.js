@@ -203,9 +203,23 @@ export default PT = ({ navigation, route }) => {
     };
 
     const reservePTClass = async (timeStr) => {
-        const { count } = (
-            await db.collection("users").doc(uid).collection("memberships").doc("pt").get()
-        ).data();
+        let count = 0;
+        let ptId = "";
+        await db
+            .collection("users")
+            .doc(uid)
+            .collection("memberships")
+            .doc("list")
+            .collection("pt")
+            .orderBy("payDay", "desc")
+            .limit(1)
+            .get()
+            .then((docs) => {
+                docs.forEach((doc) => {
+                    count = doc.data().count;
+                    ptId = doc.id;
+                });
+            });
         if (count <= 0) {
             Alert.alert("경고", "남은 PT 횟수가 없습니다. ", [
                 {
@@ -281,7 +295,9 @@ export default PT = ({ navigation, route }) => {
                         .collection("users")
                         .doc(uid)
                         .collection("memberships")
-                        .doc("pt")
+                        .doc("list")
+                        .collection("pt")
+                        .doc(ptId)
                         .update({ count: count - 1 });
                     await pushNotificationsToPerson(
                         myBase.auth().currentUser.displayName,
@@ -462,7 +478,7 @@ export default PT = ({ navigation, route }) => {
                             setSelectedDate(0);
                         }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2) }}>Close</Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>닫기</Text>
                     </TouchableOpacity>
                     <View style={{ height: 30 }}></View>
                     <Text

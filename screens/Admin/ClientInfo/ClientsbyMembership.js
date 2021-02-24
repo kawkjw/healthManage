@@ -43,24 +43,34 @@ export default ClientbyMembership = ({ navigation, route }) => {
 
     useEffect(() => {
         const getClientInfos = async () => {
+            const today = new Date();
             setLoading(true);
             const membershipsGroup = db.collectionGroup("memberships");
             await membershipsGroup
-                .where("name", "==", route.params.membershipName)
+                .where("classes", "array-contains", route.params.membershipName)
                 .get()
-                .then((snapshots) => {
-                    let list = [];
+                .then(async (snapshots) => {
+                    let refList = [];
                     snapshots.forEach((snapshot) => {
-                        if (snapshot.id === route.params.membershipName) {
-                            list.push({
-                                path: snapshot.ref.parent.parent.path,
-                            });
-                        }
+                        refList.push(snapshot.ref);
                     });
+                    let list = [];
+                    const promises = refList.map(async (ref) => {
+                        await ref
+                            .collection(route.params.membershipName)
+                            .where("end", ">", today)
+                            .get()
+                            .then((docs) => {
+                                if (docs.size > 0) {
+                                    list.push({ path: ref.parent.parent.path });
+                                }
+                            });
+                    });
+                    await Promise.all(promises);
                     return list;
                 })
                 .then(async (list) => {
-                    let temp = list;
+                    let temp = list.slice();
                     let num = new Array(14).fill(0);
                     const promises = list.map(async (v, index) => {
                         await db

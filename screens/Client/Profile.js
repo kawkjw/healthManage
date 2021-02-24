@@ -145,7 +145,7 @@ export default Profile = ({ navigation }) => {
                             .collection("memberships")
                             .doc("list")
                             .collection(name)
-                            .orderBy("start", "desc")
+                            .orderBy("payDay", "desc")
                             .limit(1)
                             .get()
                             .then((docs) => {
@@ -490,7 +490,7 @@ export default Profile = ({ navigation }) => {
                             setIsRun(!isRun);
                             setCount(15);
                         } else {
-                            Alert.alert("경고", "회원권이 없습니다.");
+                            Alert.alert("경고", "회원권이 없습니다.", [{ text: "확인" }]);
                         }
                     }}
                 >
@@ -935,11 +935,12 @@ export default Profile = ({ navigation }) => {
                                                     name="check-circle-outline"
                                                     size={20}
                                                     color="black"
+                                                    style={{ marginRight: 3 }}
                                                 />
                                                 {info.split(":").map((s, i) => (
                                                     <View
                                                         key={i}
-                                                        style={
+                                                        style={[
                                                             i === 0
                                                                 ? textWidth !== 0
                                                                     ? {
@@ -947,29 +948,25 @@ export default Profile = ({ navigation }) => {
                                                                           alignItems: "flex-end",
                                                                       }
                                                                     : undefined
-                                                                : undefined
-                                                        }
+                                                                : undefined,
+                                                        ]}
                                                         onLayout={({
                                                             nativeEvent: {
                                                                 layout: { width },
                                                             },
                                                         }) => {
                                                             if (i === 0) {
-                                                                setTextWidth(
-                                                                    textWidth < width
-                                                                        ? width
-                                                                        : textWidth
-                                                                );
+                                                                if (textWidth < width)
+                                                                    setTextWidth(width);
                                                             }
                                                         }}
                                                     >
                                                         <Text
                                                             style={{
                                                                 fontSize: RFPercentage(2),
-                                                                marginLeft: 3,
                                                             }}
                                                         >
-                                                            {(i === 1 ? ": " : "") + s.trim()}
+                                                            {(i === 1 ? ": " : "") + s}
                                                         </Text>
                                                     </View>
                                                 ))}

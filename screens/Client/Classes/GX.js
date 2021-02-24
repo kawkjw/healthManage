@@ -19,6 +19,7 @@ import moment from "moment";
 import { RFPercentage } from "react-native-responsive-fontsize";
 
 export default GX = ({ navigation, route }) => {
+    const uid = myBase.auth().currentUser.uid;
     const { width } = Dimensions.get("screen");
     const widthButton = width - 40;
     const { classname, date } = route.params;
@@ -148,9 +149,6 @@ export default GX = ({ navigation, route }) => {
                 },
             ]);
         } else {
-            const { uid } = (
-                await db.collection("users").doc(myBase.auth().currentUser.uid).get()
-            ).data();
             await classInDB
                 .collection("clients")
                 .where("uid", "==", uid)
@@ -166,7 +164,7 @@ export default GX = ({ navigation, route }) => {
                         });
                         await db
                             .collection("users")
-                            .doc(myBase.auth().currentUser.uid)
+                            .doc(uid)
                             .collection("reservation")
                             .doc(date)
                             .collection(selectDate.toString())
@@ -180,7 +178,7 @@ export default GX = ({ navigation, route }) => {
                             });
                         await db
                             .collection("users")
-                            .doc(myBase.auth().currentUser.uid)
+                            .doc(uid)
                             .collection("reservation")
                             .doc(date)
                             .update({
@@ -188,7 +186,7 @@ export default GX = ({ navigation, route }) => {
                             })
                             .catch((error) => {
                                 db.collection("users")
-                                    .doc(myBase.auth().currentUser.uid)
+                                    .doc(uid)
                                     .collection("reservation")
                                     .doc(date)
                                     .set({ date: [selectDate.toString()] });

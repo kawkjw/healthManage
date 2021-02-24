@@ -9,6 +9,7 @@ export default Class = ({ navigation }) => {
     const { width } = Dimensions.get("screen");
     const widthButton = width - 40;
     const [memberships, setMemberships] = useState([]);
+    const [ptTrainerInfo, setPtTrainerInfo] = useState({ name: "", uid: "" });
 
     useEffect(() => {
         const getMemberships = async () => {
@@ -46,10 +47,11 @@ export default Class = ({ navigation }) => {
                                 .collection("memberships")
                                 .doc("list")
                                 .collection(kind)
-                                .orderBy("start", "desc")
+                                .orderBy("payDay", "desc")
                                 .limit(1)
                                 .get()
-                                .then((docs) => {
+                                .then(async (docs) => {
+                                    let ptTrianer = "";
                                     docs.forEach((doc) => {
                                         if (doc.data().end !== undefined) {
                                             const end = doc.data().end.toDate();
@@ -57,12 +59,24 @@ export default Class = ({ navigation }) => {
                                                 const { count } = doc.data();
                                                 if (count > 0) {
                                                     availabeClass.push(kind);
+                                                    ptTrianer = doc.data().trainer;
                                                 }
                                             } else if (today < end) {
                                                 availabeClass.push(kind);
                                             }
                                         }
                                     });
+                                    await db
+                                        .collection("notifications")
+                                        .where("trainer", "==", true)
+                                        .where("name", "==", ptTrianer)
+                                        .limit(1)
+                                        .get()
+                                        .then((docs) => {
+                                            docs.forEach((doc) => {
+                                                setPtTrainerInfo({ name: ptTrianer, uid: doc.id });
+                                            });
+                                        });
                                 });
                         });
                         await Promise.all(promises);
@@ -93,7 +107,10 @@ export default Class = ({ navigation }) => {
             Alert.alert("경고", `${enToKo(classname)} 회원권이 없습니다.`, [{ text: "확인" }]);
         } else {
             if (classname === "pt") {
-                navigation.navigate("SelectTrainer");
+                navigation.navigate("PT", {
+                    trainerName: ptTrainerInfo.name,
+                    trainerUid: ptTrainerInfo.uid,
+                });
             } else {
                 navigation.navigate("SelectDate", { classname: classname });
             }

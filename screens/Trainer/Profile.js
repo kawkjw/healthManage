@@ -56,7 +56,7 @@ export default Profile = ({ navigation, route }) => {
     ];
     const [radioGxSelected, setRadioGxSelected] = useState(-1);
     const [todayClassInfo, setTodayClassInfo] = useState({
-        pt: [],
+        //pt: [],
         pilates: [],
         spinning: [],
         squash: [],
@@ -161,16 +161,13 @@ export default Profile = ({ navigation, route }) => {
                         } else {
                             setUserInfo({
                                 ...userInfo,
+                                name: userData.name,
+                                phoneNumber: userData.phoneNumber,
+                                email: userData.email,
+                                className: userData.className.split("."),
                                 permission: userData.permission,
                             });
                         }
-                        setUserInfo({
-                            ...userInfo,
-                            name: userData.name,
-                            phoneNumber: userData.phoneNumber,
-                            email: userData.email,
-                            className: userData.className.split("."),
-                        });
                     }
                     return user.data().className.split(".");
                 })
@@ -254,6 +251,109 @@ export default Profile = ({ navigation, route }) => {
                 await db.collection("users").doc(uid).update({ className: str });
                 setModalSetClass(false);
                 setUserInfo({ ...userInfo, className: str.split(".") });
+            }
+        }
+    };
+
+    const renderClass = (obj) => {
+        const renderNoClass = (
+            <Text
+                style={{
+                    marginBottom: 5,
+                    marginLeft: 7,
+                    fontSize: RFPercentage(2),
+                }}
+            >
+                수업이 없습니다.
+            </Text>
+        );
+        if (className[0] === "pt") {
+            if (obj.pt === undefined) {
+                return renderNoClass;
+            } else {
+                if (obj.pt.length === 0) {
+                    return renderNoClass;
+                }
+                return obj.pt.map((value, index) => (
+                    <View
+                        key={index}
+                        style={{
+                            flexDirection: "row",
+                            marginBottom: 5,
+                            marginLeft: 7,
+                        }}
+                    >
+                        <MaterialIcons
+                            name="circle"
+                            size={RFPercentage(1.5)}
+                            color="black"
+                            style={{ alignSelf: "center" }}
+                        />
+                        <Text
+                            style={{
+                                fontSize: RFPercentage(2),
+                                marginLeft: 5,
+                            }}
+                        >
+                            {value.time + " " + value.clientName + " "}
+                        </Text>
+                        <TouchableOpacity
+                            onPress={() => Linking.openURL(`tel:${value.clientPhone}`)}
+                        >
+                            <Text
+                                style={{
+                                    fontSize: RFPercentage(2),
+                                    color: "blue",
+                                }}
+                            >
+                                {value.clientPhone}
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                ));
+            }
+        } else {
+            if (obj[className[1]] === undefined) {
+                return renderNoClass;
+            } else {
+                if (obj[className[1]].length === 0) {
+                    return renderNoClass;
+                }
+                let list = obj[className[1]];
+                if (className[1] === "yoga") {
+                    list.concat(obj[className[2]]);
+                }
+                return list.map((value, index) => (
+                    <View
+                        key={index}
+                        style={{
+                            flexDirection: "row",
+                            marginBottom: 5,
+                            marginLeft: 7,
+                        }}
+                    >
+                        <MaterialIcons
+                            name="circle"
+                            size={RFPercentage(1.5)}
+                            color="black"
+                            style={{ alignSelf: "center" }}
+                        />
+                        <Text
+                            style={{
+                                fontSize: RFPercentage(2),
+                                marginLeft: 5,
+                            }}
+                        >
+                            {moment(value.info.start.toDate()).format("HH:mm") +
+                                " ~ " +
+                                moment(value.info.end.toDate()).format("HH:mm") +
+                                " " +
+                                value.info.currentClient +
+                                "/" +
+                                value.info.maxClient}
+                        </Text>
+                    </View>
+                ));
             }
         }
     };
@@ -574,100 +674,8 @@ export default Profile = ({ navigation, route }) => {
                             >
                                 로딩 중
                             </Text>
-                        ) : className[0] === "pt" ? (
-                            todayClassInfo["pt"].length === 0 ? (
-                                <Text
-                                    style={{
-                                        marginBottom: 5,
-                                        marginLeft: 7,
-                                        fontSize: RFPercentage(2),
-                                    }}
-                                >
-                                    수업이 없습니다.
-                                </Text>
-                            ) : (
-                                todayClassInfo["pt"].map((value, index) => (
-                                    <View
-                                        key={index}
-                                        style={{
-                                            flexDirection: "row",
-                                            marginBottom: 5,
-                                            marginLeft: 7,
-                                        }}
-                                    >
-                                        <MaterialIcons
-                                            name="circle"
-                                            size={RFPercentage(1.5)}
-                                            color="black"
-                                            style={{ alignSelf: "center" }}
-                                        />
-                                        <Text
-                                            style={{
-                                                fontSize: RFPercentage(2),
-                                                marginLeft: 5,
-                                            }}
-                                        >
-                                            {value.time + " " + value.clientName + " "}
-                                        </Text>
-                                        <TouchableOpacity
-                                            onPress={() =>
-                                                Linking.openURL(`tel:${value.clientPhone}`)
-                                            }
-                                        >
-                                            <Text
-                                                style={{
-                                                    fontSize: RFPercentage(2),
-                                                    color: "blue",
-                                                }}
-                                            >
-                                                {value.clientPhone}
-                                            </Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                ))
-                            )
-                        ) : todayClassInfo[className[1]].length === 0 ? (
-                            <Text
-                                style={{
-                                    marginBottom: 5,
-                                    marginLeft: 7,
-                                    fontSize: RFPercentage(2),
-                                }}
-                            >
-                                수업이 없습니다.
-                            </Text>
                         ) : (
-                            todayClassInfo[className[1]].map((value, index) => (
-                                <View
-                                    key={index}
-                                    style={{
-                                        flexDirection: "row",
-                                        marginBottom: 5,
-                                        marginLeft: 7,
-                                    }}
-                                >
-                                    <MaterialIcons
-                                        name="circle"
-                                        size={RFPercentage(1.5)}
-                                        color="black"
-                                        style={{ alignSelf: "center" }}
-                                    />
-                                    <Text
-                                        style={{
-                                            fontSize: RFPercentage(2),
-                                            marginLeft: 5,
-                                        }}
-                                    >
-                                        {moment(value.info.start.toDate()).format("HH:mm") +
-                                            " ~ " +
-                                            moment(value.info.end.toDate()).format("HH:mm") +
-                                            " " +
-                                            value.info.currentClient +
-                                            "/" +
-                                            value.info.maxClient}
-                                    </Text>
-                                </View>
-                            ))
+                            renderClass(todayClassInfo)
                         )}
                         <Text style={{ fontSize: RFPercentage(2.3) }}>내일 수업</Text>
                         {loading ? (
@@ -680,100 +688,8 @@ export default Profile = ({ navigation, route }) => {
                             >
                                 로딩 중
                             </Text>
-                        ) : className[0] === "pt" ? (
-                            tomorrowClassInfo["pt"].length === 0 ? (
-                                <Text
-                                    style={{
-                                        marginBottom: 5,
-                                        marginLeft: 7,
-                                        fontSize: RFPercentage(2),
-                                    }}
-                                >
-                                    수업이 없습니다.
-                                </Text>
-                            ) : (
-                                tomorrowClassInfo["pt"].map((value, index) => (
-                                    <View
-                                        key={index}
-                                        style={{
-                                            flexDirection: "row",
-                                            marginBottom: 5,
-                                            marginLeft: 7,
-                                        }}
-                                    >
-                                        <MaterialIcons
-                                            name="circle"
-                                            size={RFPercentage(1.5)}
-                                            color="black"
-                                            style={{ alignSelf: "center" }}
-                                        />
-                                        <Text
-                                            style={{
-                                                fontSize: RFPercentage(2),
-                                                marginLeft: 5,
-                                            }}
-                                        >
-                                            {value.time + " " + value.clientName + " "}
-                                        </Text>
-                                        <TouchableOpacity
-                                            onPress={() =>
-                                                Linking.openURL(`tel:${value.clientPhone}`)
-                                            }
-                                        >
-                                            <Text
-                                                style={{
-                                                    fontSize: RFPercentage(2),
-                                                    color: "blue",
-                                                }}
-                                            >
-                                                {value.clientPhone}
-                                            </Text>
-                                        </TouchableOpacity>
-                                    </View>
-                                ))
-                            )
-                        ) : tomorrowClassInfo[className[1]].length === 0 ? (
-                            <Text
-                                style={{
-                                    marginBottom: 5,
-                                    marginLeft: 7,
-                                    fontSize: RFPercentage(2),
-                                }}
-                            >
-                                수업이 없습니다.
-                            </Text>
                         ) : (
-                            tomorrowClassInfo[className[1]].map((value, index) => (
-                                <View
-                                    key={index}
-                                    style={{
-                                        flexDirection: "row",
-                                        marginBottom: 5,
-                                        marginLeft: 7,
-                                    }}
-                                >
-                                    <MaterialIcons
-                                        name="circle"
-                                        size={RFPercentage(1.5)}
-                                        color="black"
-                                        style={{ alignSelf: "center" }}
-                                    />
-                                    <Text
-                                        style={{
-                                            fontSize: RFPercentage(2),
-                                            marginLeft: 5,
-                                        }}
-                                    >
-                                        {moment(value.info.start.toDate()).format("HH:mm") +
-                                            " ~ " +
-                                            moment(value.info.end.toDate()).format("HH:mm") +
-                                            " " +
-                                            value.info.currentClient +
-                                            "/" +
-                                            value.info.maxClient}
-                                    </Text>
-                                </View>
-                            ))
+                            renderClass(tomorrowClassInfo)
                         )}
                     </View>
                 )}

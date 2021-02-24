@@ -449,16 +449,19 @@ export default PT = ({ navigation, route }) => {
                 .collection("users")
                 .doc(clientUid)
                 .collection("memberships")
-                .doc("pt")
+                .doc("list")
+                .collection("pt")
+                .orderBy("payDay", "desc")
+                .limit(1)
                 .get()
-                .then(async (doc) => {
-                    const { count } = doc.data();
-                    await db
-                        .collection("users")
-                        .doc(clientUid)
-                        .collection("memberships")
-                        .doc("pt")
-                        .update({ count: count + 1 });
+                .then(async (docs) => {
+                    let docRef;
+                    let count = 0;
+                    docs.forEach((doc) => {
+                        count = doc.data();
+                        docRef = doc.ref;
+                    });
+                    await docRef.update({ count: count + 1 });
                 });
             Alert.alert("취소됨", "예약이 취소되었습니다.", [
                 {
