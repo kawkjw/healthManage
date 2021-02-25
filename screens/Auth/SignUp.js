@@ -358,7 +358,7 @@ export default SignUp = ({ navigation }) => {
                                 style={{
                                     color: "#8c8c8c",
                                     marginBottom: 5,
-                                    fontSize: RFPercentage(1.7),
+                                    fontSize: RFPercentage(2),
                                 }}
                             >
                                 길이는 8자 이상 15자 이하이며{"\n"}영문, 숫자, 특수문자 중 2가지

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Alert, Image, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
 import { db } from "../../../config/MyBase";
 import moment from "moment";
@@ -10,9 +10,10 @@ import {
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import { pushNotificationsToPerson } from "../../../config/MyExpo";
-import { enToKo } from "../../../config/hooks";
+import { DataContext } from "../../Auth";
 
 export default ShowUser = ({ route }) => {
+    const { classNames } = useContext(DataContext);
     const { user } = route.params;
     const today = new Date();
     const [isLoading, setIsLoading] = useState(true);
@@ -132,7 +133,9 @@ export default ShowUser = ({ route }) => {
                             }
                         }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2) }}>{enToKo(kind)}: </Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>
+                            {classNames[kind] !== undefined ? classNames[kind].ko : "Error"}:{" "}
+                        </Text>
                     </View>
                     <Text style={{ fontSize: RFPercentage(2) }}>
                         {membership[kind].count}회 남음
@@ -170,7 +173,9 @@ export default ShowUser = ({ route }) => {
                             }
                         }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2) }}>{enToKo(kind)}: </Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>
+                            {classNames[kind] !== undefined ? classNames[kind].ko : "Error"}:{" "}
+                        </Text>
                     </View>
                     <Text style={{ fontSize: RFPercentage(2) }}>
                         {moment(membership[kind].start.toDate()).format("YY. MM. DD.") +

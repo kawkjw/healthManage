@@ -1,6 +1,6 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
-import React, { createContext, useEffect, useMemo, useReducer } from "react";
+import React, { createContext, useEffect, useMemo, useReducer, useState } from "react";
 import { Alert, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import myBase, { arrayDelete, arrayUnion, db } from "../config/MyBase";
@@ -18,6 +18,7 @@ import { RFPercentage } from "react-native-responsive-fontsize";
 const Stack = createStackNavigator();
 
 export const AuthContext = createContext();
+export const DataContext = createContext();
 
 export default Auth = () => {
     const [state, dispatch] = useReducer(
@@ -49,19 +50,44 @@ export default Auth = () => {
             userToken: null,
         }
     );
+    const [classNames, setClassNames] = useState({});
+
+    const restoreToken = async () => {
+        let userToken;
+        try {
+            userToken = await AsyncStorage.getItem("userToken");
+            return userToken;
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    const getter = async () => {
+        await getClassNames().then(async () => {
+            await restoreToken().then((token) => {
+                dispatch({ type: "RESTORE_TOKEN", token: token });
+            });
+        });
+    };
 
     useEffect(() => {
-        const restoreToken = async () => {
-            let userToken;
-            try {
-                userToken = await AsyncStorage.getItem("userToken");
-            } catch (error) {
-                console.log(error);
-            }
-            dispatch({ type: "RESTORE_TOKEN", token: userToken });
-        };
-        restoreToken();
+        getter();
     }, []);
+
+    const getClassNames = async () => {
+        let obj = {};
+        await db
+            .collection("classNames")
+            .get()
+            .then((names) => {
+                names.forEach((name) => {
+                    obj[name.id] = name.data();
+                });
+                setClassNames(obj);
+            });
+    };
+
+    const dataContext = useMemo(() => ({ classNames: classNames }), [classNames]);
 
     const authContext = useMemo(
         () => ({
@@ -309,57 +335,59 @@ export default Auth = () => {
 
     return (
         <AuthContext.Provider value={authContext}>
-            <NavigationContainer>
-                <Stack.Navigator>
-                    {state.isLoading ? (
-                        <Stack.Screen
-                            name="Loading"
-                            component={LoadingScreen}
-                            options={{ headerShown: false }}
-                        />
-                    ) : state.userToken == null ? (
-                        <>
+            <DataContext.Provider value={dataContext}>
+                <NavigationContainer>
+                    <Stack.Navigator>
+                        {state.isLoading ? (
                             <Stack.Screen
-                                name="signin"
-                                component={SignIn}
+                                name="Loading"
+                                component={LoadingScreen}
+                                options={{ headerShown: false }}
+                            />
+                        ) : state.userToken === null ? (
+                            <>
+                                <Stack.Screen
+                                    name="signin"
+                                    component={SignIn}
+                                    options={{
+                                        title: "더끌림 피트니스",
+                                        animationTypeForReplace: state.isSignout ? "pop" : "push",
+                                    }}
+                                />
+                                <Stack.Screen
+                                    name="resetpw"
+                                    component={ResetPw}
+                                    options={({ navigation }) => ({
+                                        title: "비밀번호 초기화",
+                                        gestureEnabled: false,
+                                        animationTypeForReplace: state.isSignout ? "pop" : "push",
+                                        headerLeft: () => renderGoBackButton(navigation),
+                                    })}
+                                />
+                                <Stack.Screen
+                                    name="signup"
+                                    component={SignUp}
+                                    options={({ navigation }) => ({
+                                        title: "회원가입",
+                                        gestureEnabled: false,
+                                        animationTypeForReplace: state.isSignout ? "pop" : "push",
+                                        headerLeft: () => renderGoBackButton(navigation),
+                                    })}
+                                />
+                            </>
+                        ) : (
+                            <Stack.Screen
+                                name="AuthSuccess"
+                                component={AuthSuccess}
                                 options={{
-                                    title: "더끌림 피트니스",
-                                    animationTypeForReplace: state.isSignout ? "pop" : "push",
+                                    headerShown: false,
+                                    animationEnabled: false,
                                 }}
                             />
-                            <Stack.Screen
-                                name="resetpw"
-                                component={ResetPw}
-                                options={({ navigation }) => ({
-                                    title: "비밀번호 초기화",
-                                    gestureEnabled: false,
-                                    animationTypeForReplace: state.isSignout ? "pop" : "push",
-                                    headerLeft: () => renderGoBackButton(navigation),
-                                })}
-                            />
-                            <Stack.Screen
-                                name="signup"
-                                component={SignUp}
-                                options={({ navigation }) => ({
-                                    title: "회원가입",
-                                    gestureEnabled: false,
-                                    animationTypeForReplace: state.isSignout ? "pop" : "push",
-                                    headerLeft: () => renderGoBackButton(navigation),
-                                })}
-                            />
-                        </>
-                    ) : (
-                        <Stack.Screen
-                            name="AuthSuccess"
-                            component={AuthSuccess}
-                            options={{
-                                headerShown: false,
-                                animationEnabled: false,
-                            }}
-                        />
-                    )}
-                </Stack.Navigator>
-            </NavigationContainer>
+                        )}
+                    </Stack.Navigator>
+                </NavigationContainer>
+            </DataContext.Provider>
         </AuthContext.Provider>
     );
 };

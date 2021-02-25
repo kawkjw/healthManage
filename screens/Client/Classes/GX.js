@@ -28,6 +28,7 @@ export default GX = ({ navigation, route }) => {
     const [modalClass, setModalClass] = useState(false);
     const [selectDate, setSelectDate] = useState(0);
     const [classList, setClassList] = useState([]);
+    const [availReserve, setAvailReserve] = useState(false);
 
     useEffect(() => {
         const showCalendar = async () => {
@@ -64,8 +65,8 @@ export default GX = ({ navigation, route }) => {
                 const d = new Date(date + "-" + (i < 10 ? "0" + i : i));
                 let item = {
                     id: i.toString(),
-                    pressable:
-                        d >= new Date(today.getFullYear(), today.getMonth(), today.getDate()),
+                    pressable: true,
+                    //d >= new Date(today.getFullYear(), today.getMonth(), today.getDate()),
                     isToday:
                         i === today.getDate() &&
                         Number(date.split("-")[1]) === today.getMonth() + 1 &&
@@ -96,6 +97,35 @@ export default GX = ({ navigation, route }) => {
 
     useEffect(() => {
         const getClass = async () => {
+            let avail = true;
+            if (classname === "pilates" || classname === "squash") {
+                const weekDayDates = [...Array(5).keys()].map((x) =>
+                    moment(new Date(date + "-" + (selectDate < 10 ? "0" + selectDate : selectDate)))
+                        .weekday(x + 1)
+                        .toDate()
+                        .getDate()
+                        .toString()
+                );
+                let hasReservation = 0;
+                const promises = weekDayDates.map(async (d) => {
+                    await db
+                        .collection("users")
+                        .doc(uid)
+                        .collection("reservation")
+                        .doc(date)
+                        .collection(d)
+                        .where("className", "==", classname)
+                        .get()
+                        .then((docs) => {
+                            hasReservation = hasReservation + docs.size;
+                        });
+                });
+                await Promise.all(promises);
+                if (hasReservation >= route.params.week) {
+                    avail = false;
+                }
+            }
+            setAvailReserve(avail);
             let list = [];
             await db
                 .collection("classes")
@@ -274,11 +304,7 @@ export default GX = ({ navigation, route }) => {
                 numColumns={7}
                 keyExtractor={(item, index) => index}
             />
-            <Modal
-                animationType="slide"
-                visible={modalClass}
-                //transparent={true}
-            >
+            <Modal animationType="slide" visible={modalClass}>
                 <SafeAreaView
                     style={{
                         flex: 1,
@@ -300,7 +326,7 @@ export default GX = ({ navigation, route }) => {
                             setSelectDate(0);
                         }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2) }}>Close</Text>
+                        <Text style={{ fontSize: RFPercentage(2) }}>닫기</Text>
                     </TouchableOpacity>
                     <View style={{ height: 30 }}></View>
                     <ScrollView
@@ -320,28 +346,40 @@ export default GX = ({ navigation, route }) => {
                                     { width: widthButton, marginBottom: 20 },
                                 ]}
                                 onPress={() => {
-                                    Alert.alert(
-                                        selectDate.toString() + "일 " + c.start + "~" + c.end,
-                                        "확실합니까?",
-                                        [
-                                            { text: "취소" },
-                                            {
-                                                text: "확인",
-                                                onPress: () => reserveClass(c.cid),
-                                            },
-                                        ]
-                                    );
+                                    if (availReserve) {
+                                        Alert.alert(
+                                            selectDate.toString() + "일 " + c.start + "~" + c.end,
+                                            "확실합니까?",
+                                            [
+                                                { text: "취소" },
+                                                {
+                                                    text: "확인",
+                                                    onPress: () => reserveClass(c.cid),
+                                                },
+                                            ]
+                                        );
+                                    } else {
+                                        Alert.alert(
+                                            "경고",
+                                            `이미 주${route.params.week}회 예약하셨습니다.`,
+                                            [{ text: "확인" }]
+                                        );
+                                    }
                                 }}
                                 disabled={c.isToday}
                             >
-                                <Text>
+                                <Text style={{ fontSize: RFPercentage(2.3), marginBottom: 5 }}>
                                     {selectDate}일 {c.start}~{c.end} ({c.currentClient}/
                                     {c.maxClient})
                                 </Text>
-                                <Text>트레이너 : {c.trainer}</Text>
+                                <Text style={{ fontSize: RFPercentage(2.3) }}>
+                                    트레이너 : {c.trainer}
+                                </Text>
                             </TouchableOpacity>
                         ))}
-                        {classList.length === 0 ? <Text>No Class</Text> : undefined}
+                        {classList.length === 0 ? (
+                            <Text style={{ fontSize: RFPercentage(2.3) }}>수업이 없습니다.</Text>
+                        ) : undefined}
                     </ScrollView>
                 </SafeAreaView>
             </Modal>

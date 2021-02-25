@@ -16,10 +16,10 @@ import {
 } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import myBase, { db } from "../../config/MyBase";
-import { useInterval, enToKo } from "../../config/hooks";
+import { useInterval } from "../../config/hooks";
 import { MyStyles, AuthStyles } from "../../css/MyStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { AuthContext } from "../Auth";
+import { AuthContext, DataContext } from "../Auth";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import firebase from "firebase";
 import moment from "moment";
@@ -40,6 +40,7 @@ export default Profile = ({ navigation }) => {
     const [modalPhoneVisible, setModalPhoneVisible] = useState(false);
     const [changePhone, setChangePhone] = useState("");
     const { signOut } = useContext(AuthContext);
+    const { classNames } = useContext(DataContext);
     const [modalEmailVisible, setModalEmailVisible] = useState(false);
     const [changeEmail, setChangeEmail] = useState("");
     const [password, setPassword] = useState("");
@@ -159,7 +160,8 @@ export default Profile = ({ navigation }) => {
                     let info = "";
                     let expiredNum = 0;
                     kinds.map((kind) => {
-                        let stringTemp = enToKo(kind) + ":";
+                        let stringTemp =
+                            (classNames[kind] !== undefined ? classNames[kind].ko : "Error") + ":";
                         if (kind === "pt") {
                             stringTemp =
                                 stringTemp +
@@ -1001,7 +1003,9 @@ export default Profile = ({ navigation }) => {
                                                 marginBottom: 3,
                                             }}
                                         >
-                                            {enToKo(reservedClass.className) +
+                                            {(classNames[reservedClass.className] !== undefined
+                                                ? classNames[reservedClass.className].ko
+                                                : "Error") +
                                                 "(강사 " +
                                                 reservedClass.trainer +
                                                 ")"}{" "}

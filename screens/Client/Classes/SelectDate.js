@@ -50,12 +50,20 @@ export default SelectDate = ({ navigation, route }) => {
                                 { width: widthButton, marginBottom: 20 },
                                 i === sixDate.length - 1 ? { marginBottom: 40 } : undefined,
                             ]}
-                            onPress={() =>
-                                navigation.navigate("GX", {
-                                    classname: classname,
-                                    date: d,
-                                })
-                            }
+                            onPress={() => {
+                                if (classname === "pilates" || classname === "squash") {
+                                    navigation.navigate("GX", {
+                                        classname: classname,
+                                        date: d,
+                                        week: route.params.week,
+                                    });
+                                } else {
+                                    navigation.navigate("GX", {
+                                        classname: classname,
+                                        date: d,
+                                    });
+                                }
+                            }}
                         >
                             <Text style={{ fontSize: RFPercentage(2.3) }}>{d}</Text>
                         </TouchableOpacity>

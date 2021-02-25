@@ -5,9 +5,8 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { enToKo } from "../config/hooks";
 
-export default TimeTable = ({ classData, kind = "pt", style, ...props }) => {
+export default TimeTable = ({ classData, kind = "pt", nameList = {}, style, ...props }) => {
     const [timeLabel, setTimeLabel] = useState([]);
     const [data, setData] = useState([]);
 
@@ -187,7 +186,9 @@ export default TimeTable = ({ classData, kind = "pt", style, ...props }) => {
                                                           " PT (" +
                                                           c.classInfo.remainCount +
                                                           "회 남음)"
-                                                    : enToKo(c.classInfo.className) +
+                                                    : (nameList[c.classInfo.className] !== undefined
+                                                          ? nameList[c.classInfo.className].ko
+                                                          : "Error") +
                                                       " (" +
                                                       c.classInfo.currentClient +
                                                       "/" +

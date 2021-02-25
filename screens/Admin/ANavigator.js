@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Text, TouchableOpacity, View, ScrollView, AppState, Linking } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./Home";
-import { AuthContext } from "../Auth";
+import { AuthContext, DataContext } from "../Auth";
 import Locker from "./Locker";
 import FindUser from "./ManageUser/FindUser";
 import SelectUser from "./ManageUser/SelectUser";
@@ -25,11 +25,11 @@ import Modal from "react-native-modal";
 import * as Notifications from "expo-notifications";
 import myBase, { db } from "../../config/MyBase";
 import moment from "moment";
-import { enToKo } from "../../config/hooks";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
     const { signOut } = useContext(AuthContext);
+    const { classNames } = useContext(DataContext);
     const uid = myBase.auth().currentUser.uid;
 
     const [loading, setLoading] = useState(true);
@@ -481,7 +481,10 @@ const MyStack = () => {
                 name="ClientsbyMembership"
                 component={ClientsbyMembership}
                 options={({ navigation, route }) => ({
-                    headerTitle: enToKo(route.params.membershipName),
+                    headerTitle:
+                        classNames[route.params.membershipName] !== undefined
+                            ? classNames[route.params.membershipName].ko
+                            : "Error",
                     headerLeft: () => renderGoBackButton(navigation),
                 })}
             />

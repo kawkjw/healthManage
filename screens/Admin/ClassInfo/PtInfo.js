@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
     Dimensions,
     FlatList,
@@ -20,10 +20,12 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import myBase, { db } from "../../../config/MyBase";
 import TimeTable from "../../../config/TimeTable";
+import { DataContext } from "../../Auth";
 
 export default ClassInfo = ({ navigation }) => {
     const { width } = Dimensions.get("screen");
     const uid = myBase.auth().currentUser.uid;
+    const { classNames } = useContext(DataContext);
     const today = new Date();
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState([]);
@@ -436,7 +438,12 @@ export default ClassInfo = ({ navigation }) => {
                             />
                         </View>
                     ) : (
-                        <TimeTable kind="pt" classData={classData} style={{ marginTop: 10 }} />
+                        <TimeTable
+                            kind="pt"
+                            classData={classData}
+                            style={{ marginTop: 10 }}
+                            nameList={classNames}
+                        />
                     )}
                 </SafeAreaView>
             </Modal>

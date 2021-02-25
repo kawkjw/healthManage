@@ -11,7 +11,7 @@ import {
     View,
 } from "react-native";
 import myBase, { arrayUnion, db } from "../../config/MyBase";
-import { AuthContext } from "../Auth";
+import { AuthContext, DataContext } from "../Auth";
 import { AuthStyles, MyStyles } from "../../css/MyStyles";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import Modal from "react-native-modal";
@@ -23,7 +23,6 @@ import RadioForm, {
 import { RFPercentage } from "react-native-responsive-fontsize";
 import moment from "moment";
 import { MaterialIcons } from "@expo/vector-icons";
-import { enToKo } from "../../config/hooks";
 
 export default Profile = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -31,6 +30,7 @@ export default Profile = ({ navigation, route }) => {
     const today = new Date();
 
     const { signOut } = useContext(AuthContext);
+    const { classNames } = useContext(DataContext);
     const uid = myBase.auth().currentUser.uid;
     const [userInfo, setUserInfo] = useState({
         name: "",
@@ -55,22 +55,8 @@ export default Profile = ({ navigation, route }) => {
         { label: "GX", value: "yoga.zoomba" },
     ];
     const [radioGxSelected, setRadioGxSelected] = useState(-1);
-    const [todayClassInfo, setTodayClassInfo] = useState({
-        //pt: [],
-        pilates: [],
-        spinning: [],
-        squash: [],
-        yoga: [],
-        zoomba: [],
-    });
-    const [tomorrowClassInfo, setTomorrowClassInfo] = useState({
-        pt: [],
-        pilates: [],
-        spinning: [],
-        squash: [],
-        yoga: [],
-        zoomba: [],
-    });
+    const [todayClassInfo, setTodayClassInfo] = useState({});
+    const [tomorrowClassInfo, setTomorrowClassInfo] = useState({});
     const [loading, setLoading] = useState(true);
 
     const getPTClass = async (date) => {
@@ -134,12 +120,13 @@ export default Profile = ({ navigation, route }) => {
                             .doc(id);
                         let classInfo = {};
                         classInfo["info"] = (await classForId.get()).data();
+                        classInfo["name"] = className;
                         list.push(classInfo);
-                        list.sort((a, b) => {
-                            return a.info.start.seconds - b.info.start.seconds;
-                        });
                     });
                     await Promise.all(promises);
+                    list.sort((a, b) => {
+                        return a.info.start.seconds - b.info.start.seconds;
+                    });
                     allList[className] = list;
                 });
         });
@@ -322,6 +309,9 @@ export default Profile = ({ navigation, route }) => {
                 let list = obj[className[1]];
                 if (className[1] === "yoga") {
                     list.concat(obj[className[2]]);
+                    list.sort((a, b) => {
+                        return a.info.start.seconds - b.info.start.seconds;
+                    });
                 }
                 return list.map((value, index) => (
                     <View
@@ -344,6 +334,9 @@ export default Profile = ({ navigation, route }) => {
                                 marginLeft: 5,
                             }}
                         >
+                            {(classNames[value.name] !== undefined
+                                ? classNames[value.name].ko
+                                : "Error") + " "}
                             {moment(value.info.start.toDate()).format("HH:mm") +
                                 " ~ " +
                                 moment(value.info.end.toDate()).format("HH:mm") +
@@ -389,7 +382,9 @@ export default Profile = ({ navigation, route }) => {
                                     : undefined,
                             ]}
                         >
-                            {enToKo(className[0]) + " "}
+                            {classNames[className[0]] !== undefined
+                                ? classNames[className[0]].ko
+                                : "여기를 눌러 설정해주세요."}
                             {className[0] === "pt"
                                 ? "(" + className[1] + ":00 ~ " + className[2] + ":00)"
                                 : className[0] === "gx"
@@ -398,8 +393,12 @@ export default Profile = ({ navigation, route }) => {
                                       .slice(1)
                                       .map((value, index) =>
                                           index === className.slice(1).length - 1
-                                              ? enToKo(value)
-                                              : enToKo(value) + ","
+                                              ? classNames[value] !== undefined
+                                                  ? classNames[value].ko
+                                                  : "Error"
+                                              : (classNames[value] !== undefined
+                                                    ? classNames[value].ko
+                                                    : "Error") + ","
                                       )
                                       .join(" ") +
                                   ")"
@@ -452,7 +451,16 @@ export default Profile = ({ navigation, route }) => {
                                             if (radioSelected === 1 && radioGxSelected !== -1) {
                                                 gxStr =
                                                     gxStr +
-                                                    enToKo(radioGxOptions[radioGxSelected].value);
+                                                    (classNames[
+                                                        radioGxOptions[radioGxSelected].value
+                                                    ] !== undefined
+                                                        ? classNames[
+                                                              radioGxOptions[radioGxSelected].value
+                                                          ].ko
+                                                        : radioGxOptions[radioGxSelected].value ===
+                                                          "yoga.zoomba"
+                                                        ? "(요가, 줌바)"
+                                                        : "Error");
                                             }
                                             Alert.alert(
                                                 (radioSelected === 0

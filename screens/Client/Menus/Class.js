@@ -1,15 +1,16 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { Dimensions, SafeAreaView, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { MyStyles } from "../../../css/MyStyles";
 import myBase, { db } from "../../../config/MyBase";
 import { RFPercentage } from "react-native-responsive-fontsize";
-import { enToKo } from "../../../config/hooks";
+import { DataContext } from "../../Auth";
 
 export default Class = ({ navigation }) => {
     const { width } = Dimensions.get("screen");
     const widthButton = width - 40;
     const [memberships, setMemberships] = useState([]);
     const [ptTrainerInfo, setPtTrainerInfo] = useState({ name: "", uid: "" });
+    const { classNames } = useContext(DataContext);
 
     useEffect(() => {
         const getMemberships = async () => {
@@ -104,7 +105,13 @@ export default Class = ({ navigation }) => {
                 });
             }
         } else if (memberships.indexOf(classname) === -1) {
-            Alert.alert("경고", `${enToKo(classname)} 회원권이 없습니다.`, [{ text: "확인" }]);
+            Alert.alert(
+                "경고",
+                `${
+                    classNames[classname] !== undefined ? classNames[classname].ko : "Error"
+                } 회원권이 없습니다.`,
+                [{ text: "확인" }]
+            );
         } else {
             if (classname === "pt") {
                 navigation.navigate("PT", {

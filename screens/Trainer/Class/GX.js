@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
     Text,
     SafeAreaView,
@@ -8,7 +8,6 @@ import {
     StyleSheet,
     Modal,
     Platform,
-    Dimensions,
     Image,
     Linking,
 } from "react-native";
@@ -19,11 +18,11 @@ import { getStatusBarHeight } from "react-native-status-bar-height";
 import { MaterialIcons } from "@expo/vector-icons";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import moment from "moment";
-import { enToKo } from "../../../config/hooks";
+import { DataContext } from "../../Auth";
 
 export default GX = ({ navigation, route }) => {
-    const { width } = Dimensions.get("screen");
     const uid = myBase.auth().currentUser.uid;
+    const { classNames } = useContext(DataContext);
     const classNameList = route.params.className;
     const today = new Date();
     const [data, setData] = useState([]);
@@ -384,7 +383,11 @@ export default GX = ({ navigation, route }) => {
                     ) : (
                         classNameList.map((className, index) => (
                             <View key={index} style={{ paddingLeft: 7, paddingTop: 10 }}>
-                                <Text style={{ paddingLeft: 12 }}>{enToKo(className)}</Text>
+                                <Text style={{ paddingLeft: 12 }}>
+                                    {classNames[className] !== undefined
+                                        ? classNames[className].ko
+                                        : "Error"}
+                                </Text>
                                 <FlatList
                                     data={classList[className]}
                                     renderItem={({ item }) => (

@@ -3,7 +3,7 @@ import { Alert, AppState, Linking, ScrollView, Text, TouchableOpacity, View } fr
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./Home";
 import Profile from "./Profile";
-import { AuthContext } from "../Auth";
+import { AuthContext, DataContext } from "../Auth";
 import Menu from "./Menu";
 import Info from "./Menus/Info";
 import QRScan from "./Infos/QRScan";
@@ -25,11 +25,11 @@ import * as Permissions from "expo-permissions";
 import Modal from "react-native-modal";
 import * as Notifications from "expo-notifications";
 import ExtendDate from "./Menus/ExtendDate";
-import { enToKo, enToMiniKo } from "../../config/hooks";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
     const { signOut } = useContext(AuthContext);
+    const { classNames } = useContext(DataContext);
     const uid = myBase.auth().currentUser.uid;
     const [loading, setLoading] = useState(true);
     const [membershipString, setMembershipString] = useState("");
@@ -75,9 +75,11 @@ const MyStack = () => {
                                 if (doc.data().start === undefined) {
                                     Alert.alert(
                                         "경고",
-                                        `${enToMiniKo(
-                                            name
-                                        )} 회원권 시작일 설정이 되지 않았습니다.\n관리자에게 문의해주시기 바랍니다.`,
+                                        `${
+                                            classNames[name] !== undefined
+                                                ? classNames[name].miniKo
+                                                : "Error"
+                                        } 회원권 시작일 설정이 되지 않았습니다.\n관리자에게 문의해주시기 바랍니다.`,
                                         [{ text: "확인" }]
                                     );
                                 }
@@ -87,7 +89,11 @@ const MyStack = () => {
                                     if (doc.data().check === undefined) {
                                         Alert.alert(
                                             "경고",
-                                            `${enToMiniKo(name)} 회원권이 만료되었습니다.`,
+                                            `${
+                                                classNames[name] !== undefined
+                                                    ? classNames[name].miniKo
+                                                    : "Error"
+                                            } 회원권이 만료되었습니다.`,
                                             [
                                                 {
                                                     text: "확인",
@@ -110,9 +116,17 @@ const MyStack = () => {
                     setMembershipString("회원권이 없습니다.");
                 }
                 if (kindsWithoutPt.length >= 1) {
-                    let string = enToMiniKo(kindsWithoutPt[0]);
+                    let string =
+                        classNames[kindsWithoutPt[0]] !== undefined
+                            ? classNames[kindsWithoutPt[0]].miniKo
+                            : "Error";
                     if (kindsWithoutPt.length >= 2) {
-                        string = string + ", " + enToMiniKo(kindsWithoutPt[1]);
+                        string =
+                            string +
+                            ", " +
+                            (classNames[kindsWithoutPt[1]] !== undefined
+                                ? classNames[kindsWithoutPt[1]].miniKo
+                                : "Error");
                     }
                     if (kindsWithoutPt.length >= 3) {
                         string = string + ", 등";
@@ -644,7 +658,10 @@ const MyStack = () => {
                 name="SelectDate"
                 component={SelectDate}
                 options={({ navigation, route }) => ({
-                    title: enToKo(route.params.classname),
+                    title:
+                        classNames[route.params.classname] !== undefined
+                            ? classNames[route.params.classname].ko
+                            : "Error",
                     headerLeft: () => renderGoBackButton(navigation),
                 })}
             />
