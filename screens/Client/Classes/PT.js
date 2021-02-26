@@ -25,7 +25,7 @@ import { RFPercentage } from "react-native-responsive-fontsize";
 
 export default PT = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
-    const { trainerName, trainerUid } = route.params;
+    const { trainerName, trainerUid, ptName } = route.params;
     const uid = myBase.auth().currentUser.uid;
     const today = new Date();
     const [data, setData] = useState([]);
@@ -65,7 +65,7 @@ export default PT = ({ navigation, route }) => {
             let classDate = [];
             await db
                 .collection("classes")
-                .doc("pt")
+                .doc(ptName)
                 .collection(trainerUid)
                 .doc(yearMonthStr)
                 .get()
@@ -146,7 +146,7 @@ export default PT = ({ navigation, route }) => {
             selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
         await db
             .collection("classes")
-            .doc("pt")
+            .doc(ptName)
             .collection(trainerUid)
             .doc(yearMonthStr)
             .collection(selectedDate.toString())
@@ -210,7 +210,7 @@ export default PT = ({ navigation, route }) => {
             .doc(uid)
             .collection("memberships")
             .doc("list")
-            .collection("pt")
+            .collection(ptName === "pt" ? ptName : ptName + "pt")
             .orderBy("payDay", "desc")
             .limit(1)
             .get()
@@ -238,7 +238,7 @@ export default PT = ({ navigation, route }) => {
                 selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
             const classDBInTimeStr = db
                 .collection("classes")
-                .doc("pt")
+                .doc(ptName)
                 .collection(trainerUid)
                 .doc(yearMonthStr)
                 .collection(selectedDate.toString())
@@ -270,8 +270,8 @@ export default PT = ({ navigation, route }) => {
                         .collection(selectedDate.toString())
                         .doc(timeStr)
                         .set({
-                            classId: "pt",
-                            className: "pt",
+                            classId: ptName === "pt" ? ptName : ptName + "pt",
+                            className: ptName === "pt" ? ptName : ptName + "pt",
                             start: startDate,
                             end: endDate,
                             trainer: trainerName,
@@ -296,7 +296,7 @@ export default PT = ({ navigation, route }) => {
                         .doc(uid)
                         .collection("memberships")
                         .doc("list")
-                        .collection("pt")
+                        .collection(ptName === "pt" ? ptName : ptName + "pt")
                         .doc(ptId)
                         .update({ count: count - 1 });
                     await pushNotificationsToPerson(

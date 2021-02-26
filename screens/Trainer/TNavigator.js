@@ -17,6 +17,7 @@ import Modal from "react-native-modal";
 import * as Notifications from "expo-notifications";
 import myBase, { db } from "../../config/MyBase";
 import moment from "moment";
+import SelectSquashKind from "./Class/SelectSquashKind";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
@@ -298,13 +299,37 @@ const MyStack = () => {
                                                         checkNotification(message.id);
                                                     }
                                                     if (message.data.navigation === "PT") {
-                                                        navigation.navigate(
-                                                            message.data.navigation,
-                                                            {
-                                                                limit: limit,
-                                                                ...message.data.datas,
-                                                            }
-                                                        );
+                                                        if (limit[0] === "squash") {
+                                                            navigation.reset({
+                                                                index: 2,
+                                                                routes: [
+                                                                    { name: "HomeScreen" },
+                                                                    {
+                                                                        name: "SelectSquashKind",
+                                                                        params: {
+                                                                            limit: limit.slice(1),
+                                                                        },
+                                                                    },
+                                                                    {
+                                                                        name: "PT",
+                                                                        params: {
+                                                                            ...message.data.datas,
+                                                                            ptName: "squash",
+                                                                            limit: limit.slice(1),
+                                                                        },
+                                                                    },
+                                                                ],
+                                                            });
+                                                        } else {
+                                                            navigation.navigate(
+                                                                message.data.navigation,
+                                                                {
+                                                                    ptName: "pt",
+                                                                    limit: limit,
+                                                                    ...message.data.datas,
+                                                                }
+                                                            );
+                                                        }
                                                     }
                                                 }}
                                             >
@@ -443,6 +468,14 @@ const MyStack = () => {
                 name="PT"
                 component={PT}
                 options={({ navigation }) => ({ headerLeft: () => renderGoBackButton(navigation) })}
+            />
+            <Stack.Screen
+                name="SelectSquashKind"
+                component={SelectSquashKind}
+                options={({ navigation }) => ({
+                    title: "스쿼시",
+                    headerLeft: () => renderGoBackButton(navigation),
+                })}
             />
         </Stack.Navigator>
     );

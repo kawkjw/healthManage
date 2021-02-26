@@ -102,7 +102,7 @@ export default ShowUser = ({ route }) => {
     };
 
     const renderMembership = (kind, key) => {
-        if (kind === "pt") {
+        if (kind === "pt" || kind === "squashpt") {
             return (
                 <View
                     key={key}
@@ -138,7 +138,7 @@ export default ShowUser = ({ route }) => {
                         </Text>
                     </View>
                     <Text style={{ fontSize: RFPercentage(2) }}>
-                        {membership[kind].count}회 남음
+                        {membership[kind].count}회 남음(트레이너 {membership[kind].trainer})
                     </Text>
                 </View>
             );

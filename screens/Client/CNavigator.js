@@ -14,7 +14,7 @@ import Class from "./Menus/Class";
 import PT from "./Classes/PT";
 import SelectDate from "./Classes/SelectDate";
 import GX from "./Classes/GX";
-import SelectTrainer from "./Classes/SelectTrainer";
+import SelectSquashKind from "./Classes/SelectSquashKind";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import {
     widthPercentageToDP as wp,
@@ -666,10 +666,10 @@ const MyStack = () => {
                 })}
             />
             <Stack.Screen
-                name="SelectTrainer"
-                component={SelectTrainer}
+                name="SelectSquashKind"
+                component={SelectSquashKind}
                 options={({ navigation }) => ({
-                    title: "트레이너",
+                    title: "스쿼시",
                     headerLeft: () => renderGoBackButton(navigation),
                 })}
             />

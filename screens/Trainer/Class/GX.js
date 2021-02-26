@@ -133,61 +133,63 @@ export default GX = ({ navigation, route }) => {
             selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
         let allList = {};
         const exec = classNameList.map(async (className) => {
-            await db
-                .collection("users")
-                .doc(uid)
-                .collection("classes")
-                .doc(yearMonthStr)
-                .collection("date")
-                .doc(selectedDate.toString())
-                .get()
-                .then(async (doc) => {
-                    let classId = doc.data().list;
-                    return classId;
-                })
-                .then(async (classId) => {
-                    let list = [];
-                    const promises = classId.map(async (id) => {
-                        const classForId = db
-                            .collection("classes")
-                            .doc(className)
-                            .collection("class")
-                            .doc(yearMonthStr)
-                            .collection(selectedDate.toString())
-                            .doc(id);
-                        let classInfo = {};
-                        classInfo["info"] = (await classForId.get()).data();
-                        await classForId
-                            .collection("clients")
-                            .get()
-                            .then(async (clients) => {
-                                let clientUids = [];
-                                clients.forEach((client) => {
-                                    clientUids.push(client.data().uid);
+            if (classNames[className] !== undefined) {
+                await db
+                    .collection("users")
+                    .doc(uid)
+                    .collection("classes")
+                    .doc(yearMonthStr)
+                    .collection("date")
+                    .doc(selectedDate.toString())
+                    .get()
+                    .then(async (doc) => {
+                        let classId = doc.data().list;
+                        return classId;
+                    })
+                    .then(async (classId) => {
+                        let list = [];
+                        const promises = classId.map(async (id) => {
+                            const classForId = db
+                                .collection("classes")
+                                .doc(className)
+                                .collection("class")
+                                .doc(yearMonthStr)
+                                .collection(selectedDate.toString())
+                                .doc(id);
+                            let classInfo = {};
+                            classInfo["info"] = (await classForId.get()).data();
+                            await classForId
+                                .collection("clients")
+                                .get()
+                                .then(async (clients) => {
+                                    let clientUids = [];
+                                    clients.forEach((client) => {
+                                        clientUids.push(client.data().uid);
+                                    });
+                                    let clientList = [];
+                                    const clientPromise = clientUids.map(async (uid) => {
+                                        const { name, phoneNumber } = (
+                                            await db.collection("users").doc(uid).get()
+                                        ).data();
+                                        clientList.push({ name, phoneNumber });
+                                    });
+                                    await Promise.all(clientPromise);
+                                    clientList.sort((a, b) => {
+                                        return a.name - b.name;
+                                    });
+                                    classInfo["clients"] = clientList;
                                 });
-                                let clientList = [];
-                                const clientPromise = clientUids.map(async (uid) => {
-                                    const { name, phoneNumber } = (
-                                        await db.collection("users").doc(uid).get()
-                                    ).data();
-                                    clientList.push({ name, phoneNumber });
-                                });
-                                await Promise.all(clientPromise);
-                                clientList.sort((a, b) => {
-                                    return a.name - b.name;
-                                });
-                                classInfo["clients"] = clientList;
-                            });
-                        if (classInfo.info !== undefined) {
-                            list.push(classInfo);
-                        }
+                            if (classInfo.info !== undefined) {
+                                list.push(classInfo);
+                            }
+                        });
+                        await Promise.all(promises);
+                        list.sort((a, b) => {
+                            return a.info.start.seconds - b.info.start.seconds;
+                        });
+                        allList[className] = list;
                     });
-                    await Promise.all(promises);
-                    list.sort((a, b) => {
-                        return a.info.start.seconds - b.info.start.seconds;
-                    });
-                    allList[className] = list;
-                });
+            }
         });
         await Promise.all(exec);
         return allList;

@@ -54,7 +54,7 @@ export const MyStyles = StyleSheet.create({
         padding: 15,
     },
     profileText: {
-        marginBottom: 5,
+        marginBottom: 3,
         fontSize: RFPercentage(2),
     },
     flexCenter: {

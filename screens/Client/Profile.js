@@ -23,7 +23,7 @@ import { AuthContext, DataContext } from "../Auth";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import firebase from "firebase";
 import moment from "moment";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { FirebaseRecaptchaVerifierModal, FirebaseRecaptchaBanner } from "expo-firebase-recaptcha";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
@@ -51,6 +51,7 @@ export default Profile = ({ navigation }) => {
     const [textWidth, setTextWidth] = useState(0);
     const [membershipInfo, setMembershipInfo] = useState("");
     const [reservedClasses, setReservedClasses] = useState([]);
+    const [nextReservedClasses, setNextReservedClasses] = useState([]);
     const [canGenQR, setCanGenQR] = useState(false);
     const appVerifier = useRef(null);
     const [verificationId, setVerificationId] = useState("");
@@ -162,7 +163,7 @@ export default Profile = ({ navigation }) => {
                     kinds.map((kind) => {
                         let stringTemp =
                             (classNames[kind] !== undefined ? classNames[kind].ko : "Error") + ":";
-                        if (kind === "pt") {
+                        if (kind === "pt" || kind === "squashpt") {
                             stringTemp =
                                 stringTemp +
                                 `${temp[kind].count}번 남음 (트레이너 ${temp[kind].trainer})`;
@@ -216,6 +217,9 @@ export default Profile = ({ navigation }) => {
                     }
                 });
             const monthString = moment(today).format("YYYY-MM");
+            const nextMonthString = moment()
+                .month(today.getMonth() + 1)
+                .format("YYYY-MM");
             try {
                 const reserveDate = (
                     await thisuser.collection("reservation").doc(monthString).get()
@@ -244,7 +248,7 @@ export default Profile = ({ navigation }) => {
                                     c["trainer"] = data.trainer;
                                     c["startTime"] = moment(start).format("HH:mm");
                                     c["endTime"] = moment(end).format("HH:mm");
-                                    if (data.className === "pt") {
+                                    if (data.className === "pt" || data.className === "squashpt") {
                                         c["confirm"] = data.confirm;
                                     }
                                     reserved.push(c);
@@ -256,6 +260,45 @@ export default Profile = ({ navigation }) => {
                 setReservedClasses(reserved);
             } catch (error) {
                 setReservedClasses([]);
+            }
+            try {
+                const reserveDate = (
+                    await thisuser.collection("reservation").doc(nextMonthString).get()
+                ).data().date;
+                let reserved = [];
+                reserveDate.sort((a, b) => {
+                    return Number(a) - Number(b);
+                });
+                const promises = reserveDate.map(async (d) => {
+                    await thisuser
+                        .collection("reservation")
+                        .doc(nextMonthString)
+                        .collection(d)
+                        .orderBy("start", "asc")
+                        .get()
+                        .then((reservations) => {
+                            reservations.forEach((reservation) => {
+                                const data = reservation.data();
+                                const start = data.start.toDate();
+                                const end = data.end.toDate();
+                                let c = {};
+                                c["cid"] = data.classId;
+                                c["className"] = data.className;
+                                c["classDate"] = nextMonthString + "-" + (d < 10 ? "0" + d : d);
+                                c["trainer"] = data.trainer;
+                                c["startTime"] = moment(start).format("HH:mm");
+                                c["endTime"] = moment(end).format("HH:mm");
+                                if (data.className === "pt" || data.className === "squashpt") {
+                                    c["confirm"] = data.confirm;
+                                }
+                                reserved.push(c);
+                            });
+                        });
+                });
+                await Promise.all(promises);
+                setNextReservedClasses(reserved);
+            } catch (error) {
+                setNextReservedClasses([]);
             }
             setLoading(false);
         }
@@ -991,32 +1034,157 @@ export default Profile = ({ navigation }) => {
                                         이번 달 수업 예약 정보
                                     </Text>
                                     {reservedClasses.length === 0 ? (
-                                        <Text style={{ fontSize: RFPercentage(2), paddingLeft: 5 }}>
-                                            예약된 수업이 없습니다.
-                                        </Text>
+                                        <View
+                                            style={{ flexDirection: "row", alignItems: "center" }}
+                                        >
+                                            <Ionicons
+                                                name="close-circle-sharp"
+                                                size={20}
+                                                color="black"
+                                                style={{ marginRight: 4 }}
+                                            />
+                                            <Text style={{ fontSize: RFPercentage(2) }}>
+                                                예약된 수업이 없습니다.
+                                            </Text>
+                                        </View>
                                     ) : null}
                                     {reservedClasses.map((reservedClass, index) => (
-                                        <Text
-                                            key={index}
-                                            style={{
-                                                fontSize: RFPercentage(2),
-                                                marginBottom: 3,
-                                            }}
+                                        <View key={index}>
+                                            <View
+                                                style={{
+                                                    flexDirection: "row",
+                                                    alignItems: "center",
+                                                }}
+                                            >
+                                                <Ionicons
+                                                    name="checkmark-circle"
+                                                    size={20}
+                                                    color="black"
+                                                    style={{ marginRight: 4 }}
+                                                />
+                                                <Text
+                                                    style={{
+                                                        fontSize: RFPercentage(2),
+                                                    }}
+                                                >
+                                                    {(classNames[reservedClass.className] !==
+                                                    undefined
+                                                        ? classNames[reservedClass.className].miniKo
+                                                        : "Error") +
+                                                        "(강사 " +
+                                                        reservedClass.trainer +
+                                                        ")"}
+                                                </Text>
+                                            </View>
+                                            <View style={{ flexDirection: "row", paddingLeft: 7 }}>
+                                                <Ionicons
+                                                    name="return-down-forward-sharp"
+                                                    size={RFPercentage(2)}
+                                                    color="black"
+                                                    style={{ marginRight: 4 }}
+                                                />
+                                                <Text
+                                                    style={{
+                                                        fontSize: RFPercentage(2),
+                                                        marginBottom: 3,
+                                                    }}
+                                                >
+                                                    {reservedClass.classDate}{" "}
+                                                    {reservedClass.startTime +
+                                                        "~" +
+                                                        reservedClass.endTime}
+                                                    {reservedClass.className === "pt" ||
+                                                    reservedClass.className === "squashpt"
+                                                        ? reservedClass.confirm
+                                                            ? " (승인O)"
+                                                            : " (승인X)"
+                                                        : null}
+                                                </Text>
+                                            </View>
+                                        </View>
+                                    ))}
+                                </View>
+                                <View style={{ marginTop: 3 }}>
+                                    <Text
+                                        style={[
+                                            MyStyles.profileText,
+                                            {
+                                                fontWeight: "bold",
+                                                fontSize: RFPercentage(2.5),
+                                            },
+                                        ]}
+                                    >
+                                        다음 달 수업 예약 정보
+                                    </Text>
+                                    {nextReservedClasses.length === 0 ? (
+                                        <View
+                                            style={{ flexDirection: "row", alignItems: "center" }}
                                         >
-                                            {(classNames[reservedClass.className] !== undefined
-                                                ? classNames[reservedClass.className].ko
-                                                : "Error") +
-                                                "(강사 " +
-                                                reservedClass.trainer +
-                                                ")"}{" "}
-                                            {reservedClass.classDate}{" "}
-                                            {reservedClass.startTime + "~" + reservedClass.endTime}
-                                            {reservedClass.className === "pt"
-                                                ? reservedClass.confirm
-                                                    ? " (승인O)"
-                                                    : " (승인X)"
-                                                : null}
-                                        </Text>
+                                            <Ionicons
+                                                name="close-circle-sharp"
+                                                size={20}
+                                                color="black"
+                                                style={{ marginRight: 4 }}
+                                            />
+                                            <Text style={{ fontSize: RFPercentage(2) }}>
+                                                예약된 수업이 없습니다.
+                                            </Text>
+                                        </View>
+                                    ) : null}
+                                    {nextReservedClasses.map((reservedClass, index) => (
+                                        <View key={index}>
+                                            <View
+                                                style={{
+                                                    flexDirection: "row",
+                                                    alignItems: "center",
+                                                }}
+                                            >
+                                                <Ionicons
+                                                    name="checkmark-circle"
+                                                    size={20}
+                                                    color="black"
+                                                    style={{ marginRight: 4 }}
+                                                />
+                                                <Text
+                                                    style={{
+                                                        fontSize: RFPercentage(2),
+                                                    }}
+                                                >
+                                                    {(classNames[reservedClass.className] !==
+                                                    undefined
+                                                        ? classNames[reservedClass.className].miniKo
+                                                        : "Error") +
+                                                        "(강사 " +
+                                                        reservedClass.trainer +
+                                                        ")"}
+                                                </Text>
+                                            </View>
+                                            <View style={{ flexDirection: "row", paddingLeft: 7 }}>
+                                                <Ionicons
+                                                    name="return-down-forward-sharp"
+                                                    size={RFPercentage(2)}
+                                                    color="black"
+                                                    style={{ marginRight: 4 }}
+                                                />
+                                                <Text
+                                                    style={{
+                                                        fontSize: RFPercentage(2),
+                                                        marginBottom: 3,
+                                                    }}
+                                                >
+                                                    {reservedClass.classDate}{" "}
+                                                    {reservedClass.startTime +
+                                                        "~" +
+                                                        reservedClass.endTime}
+                                                    {reservedClass.className === "pt" ||
+                                                    reservedClass.className === "squashpt"
+                                                        ? reservedClass.confirm
+                                                            ? " (승인O)"
+                                                            : " (승인X)"
+                                                        : null}
+                                                </Text>
+                                            </View>
+                                        </View>
                                     ))}
                                 </View>
                                 <View style={{ height: 30 }}></View>

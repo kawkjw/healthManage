@@ -233,6 +233,29 @@ export default Profile = ({ navigation, route }) => {
             if (radioGxSelected === -1) {
                 Alert.alert("경고", "하나를 선택해주세요.");
                 return;
+            } else if (radioGxSelected === 1) {
+                if (Number(ptStartTime) >= Number(ptEndTime)) {
+                    Alert.alert("경고", "잘못된 범위의 시간입니다.");
+                    return;
+                } else if (Number(ptStartTime) < 8 || Number(ptEndTime) > 22) {
+                    Alert.alert("경고", "최소 : 8, 최대 : 22");
+                    return;
+                } else {
+                    let str =
+                        "gx.squash." +
+                        (Number(ptStartTime) < 10
+                            ? "0" + Number(ptStartTime)
+                            : Number(ptStartTime)) +
+                        "." +
+                        (Number(ptEndTime) < 10 ? "0" + Number(ptEndTime) : Number(ptEndTime));
+                    await db.collection("users").doc(uid).update({ className: str });
+                    await db
+                        .collection("classes")
+                        .doc("squash")
+                        .update({ trainerList: arrayUnion(uid) });
+                    setModalSetClass(false);
+                    setUserInfo({ ...userInfo, className: str.split(".") });
+                }
             } else {
                 let str = "gx." + radioGxOptions[radioGxSelected].value;
                 await db.collection("users").doc(uid).update({ className: str });
@@ -388,20 +411,27 @@ export default Profile = ({ navigation, route }) => {
                             {className[0] === "pt"
                                 ? "(" + className[1] + ":00 ~ " + className[2] + ":00)"
                                 : className[0] === "gx"
-                                ? "(" +
-                                  className
-                                      .slice(1)
-                                      .map((value, index) =>
-                                          index === className.slice(1).length - 1
-                                              ? classNames[value] !== undefined
+                                ? className[1] === "squash"
+                                    ? "(" +
+                                      (classNames[className[1]] !== undefined
+                                          ? classNames[className[1]].ko
+                                          : "Error") +
+                                      "(" +
+                                      className[2] +
+                                      ":00 ~ " +
+                                      className[3] +
+                                      ":00)" +
+                                      ")"
+                                    : "(" +
+                                      className
+                                          .slice(1)
+                                          .map((value) =>
+                                              classNames[value] !== undefined
                                                   ? classNames[value].ko
                                                   : "Error"
-                                              : (classNames[value] !== undefined
-                                                    ? classNames[value].ko
-                                                    : "Error") + ","
-                                      )
-                                      .join(" ") +
-                                  ")"
+                                          )
+                                          .join(", ") +
+                                      ")"
                                 : null}
                         </Text>
                     </TouchableOpacity>
@@ -461,6 +491,15 @@ export default Profile = ({ navigation, route }) => {
                                                           "yoga.zoomba"
                                                         ? "(요가, 줌바)"
                                                         : "Error");
+                                                if (radioGxSelected === 1) {
+                                                    gxStr =
+                                                        gxStr +
+                                                        "(" +
+                                                        `${Number(ptStartTime)}시부터 ${Number(
+                                                            ptEndTime
+                                                        )}시까지` +
+                                                        ")";
+                                                }
                                             }
                                             Alert.alert(
                                                 (radioSelected === 0
@@ -662,6 +701,65 @@ export default Profile = ({ navigation, route }) => {
                                                     </View>
                                                 ))}
                                             </RadioForm>
+                                            {radioGxSelected === 1 && (
+                                                <View style={{ paddingLeft: 20, marginTop: 5 }}>
+                                                    <Text
+                                                        style={{
+                                                            fontSize: RFPercentage(2),
+                                                            marginBottom: 5,
+                                                        }}
+                                                    >
+                                                        스쿼시 개인 수업 가능한 시간대
+                                                    </Text>
+                                                    <View
+                                                        style={{
+                                                            flexDirection: "row",
+                                                            alignItems: "center",
+                                                        }}
+                                                    >
+                                                        <TextInput
+                                                            style={[
+                                                                AuthStyles.textInput,
+                                                                { flex: 1 },
+                                                            ]}
+                                                            value={ptStartTime}
+                                                            onChangeText={setPtStartTime}
+                                                            keyboardType="number-pad"
+                                                            placeholder={"00"}
+                                                            maxLength={2}
+                                                        />
+                                                        <Text
+                                                            style={{
+                                                                flex: 1,
+                                                                fontSize: RFPercentage(2.5),
+                                                                marginLeft: 5,
+                                                            }}
+                                                        >
+                                                            시부터
+                                                        </Text>
+                                                        <TextInput
+                                                            style={[
+                                                                AuthStyles.textInput,
+                                                                { flex: 1 },
+                                                            ]}
+                                                            value={ptEndTime}
+                                                            onChangeText={setPtEndTime}
+                                                            keyboardType="number-pad"
+                                                            placeholder={"24"}
+                                                            maxLength={2}
+                                                        />
+                                                        <Text
+                                                            style={{
+                                                                flex: 1,
+                                                                fontSize: RFPercentage(2.5),
+                                                                marginLeft: 5,
+                                                            }}
+                                                        >
+                                                            시까지
+                                                        </Text>
+                                                    </View>
+                                                </View>
+                                            )}
                                         </View>
                                     ) : null}
                                 </View>

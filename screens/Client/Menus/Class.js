@@ -10,6 +10,7 @@ export default Class = ({ navigation }) => {
     const widthButton = width - 40;
     const [memberships, setMemberships] = useState([]);
     const [ptTrainerInfo, setPtTrainerInfo] = useState({ name: "", uid: "" });
+    const [squashPtTrainerInfo, setSquashPtTrainerInfo] = useState({ name: "", uid: "" });
     const { classNames } = useContext(DataContext);
 
     useEffect(() => {
@@ -53,6 +54,7 @@ export default Class = ({ navigation }) => {
                                 .get()
                                 .then(async (docs) => {
                                     let ptTrianer = "";
+                                    let squashPtTrainer = "";
                                     docs.forEach((doc) => {
                                         if (doc.data().end !== undefined) {
                                             const end = doc.data().end.toDate();
@@ -62,22 +64,49 @@ export default Class = ({ navigation }) => {
                                                     availabeClass.push(kind);
                                                     ptTrianer = doc.data().trainer;
                                                 }
+                                            } else if (kind === "squashpt") {
+                                                const { count } = doc.data();
+                                                if (count > 0) {
+                                                    availabeClass.push(kind);
+                                                    squashPtTrainer = doc.data().trainer;
+                                                }
                                             } else if (today < end) {
                                                 availabeClass.push(kind);
                                             }
                                         }
                                     });
-                                    await db
-                                        .collection("notifications")
-                                        .where("trainer", "==", true)
-                                        .where("name", "==", ptTrianer)
-                                        .limit(1)
-                                        .get()
-                                        .then((docs) => {
-                                            docs.forEach((doc) => {
-                                                setPtTrainerInfo({ name: ptTrianer, uid: doc.id });
+                                    if (ptTrianer !== "") {
+                                        await db
+                                            .collection("notifications")
+                                            .where("trainer", "==", true)
+                                            .where("name", "==", ptTrianer)
+                                            .limit(1)
+                                            .get()
+                                            .then((docs) => {
+                                                docs.forEach((doc) => {
+                                                    setPtTrainerInfo({
+                                                        name: ptTrianer,
+                                                        uid: doc.id,
+                                                    });
+                                                });
                                             });
-                                        });
+                                    }
+                                    if (squashPtTrainer !== "") {
+                                        await db
+                                            .collection("notifications")
+                                            .where("trainer", "==", true)
+                                            .where("name", "==", squashPtTrainer)
+                                            .limit(1)
+                                            .get()
+                                            .then((docs) => {
+                                                docs.forEach((doc) => {
+                                                    setSquashPtTrainerInfo({
+                                                        name: squashPtTrainer,
+                                                        uid: doc.id,
+                                                    });
+                                                });
+                                            });
+                                    }
                                 });
                         });
                         await Promise.all(promises);
@@ -101,7 +130,21 @@ export default Class = ({ navigation }) => {
             } else {
                 navigation.navigate("SelectDate", {
                     classname: classname,
-                    week: memberships.indexOf("pilates2") > -1 ? 2 : 3,
+                    week: memberships.indexOf("pilates3") > -1 ? 3 : 2,
+                });
+            }
+        } else if (classname === "squash") {
+            if (
+                memberships.indexOf("squashpt") === -1 &&
+                memberships.indexOf("squashgroup") === -1
+            ) {
+                Alert.alert("경고", "스워시 개인 또는 단체 수업권이 없습니다.", [{ text: "확인" }]);
+            } else {
+                navigation.navigate("SelectSquashKind", {
+                    availPt: memberships.indexOf("squashpt") > -1,
+                    availGroup: memberships.indexOf("squashgroup") > -1,
+                    trainerName: squashPtTrainerInfo.name,
+                    trainerUid: squashPtTrainerInfo.uid,
                 });
             }
         } else if (memberships.indexOf(classname) === -1) {
@@ -115,6 +158,7 @@ export default Class = ({ navigation }) => {
         } else {
             if (classname === "pt") {
                 navigation.navigate("PT", {
+                    ptName: "pt",
                     trainerName: ptTrainerInfo.name,
                     trainerUid: ptTrainerInfo.uid,
                 });
@@ -202,7 +246,8 @@ export default Class = ({ navigation }) => {
                 >
                     <Text
                         style={[
-                            memberships.indexOf("squash") === -1
+                            memberships.indexOf("squashpt") === -1 &&
+                            memberships.indexOf("squashgroup") === -1
                                 ? { color: "red" }
                                 : { color: "black" },
                             { fontSize: RFPercentage(2.3) },

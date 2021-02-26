@@ -30,6 +30,7 @@ export default PT = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
     const startLimit = route.params.limit[0];
     const endLimit = route.params.limit[1];
+    const ptName = route.params.ptName;
     const today = new Date();
     const [data, setData] = useState([]);
     const [change, setChange] = useState(true);
@@ -54,7 +55,7 @@ export default PT = ({ navigation, route }) => {
             setSelectedMonth(route.params.month);
             setChange(!change);
             setSelectedDate(route.params.date);
-            setTimeout(() => setModalTimeTable(true), 500);
+            setTimeout(() => setModalTimeTable(true), 1000);
         }
     }, []);
 
@@ -79,7 +80,7 @@ export default PT = ({ navigation, route }) => {
             let classDate = [];
             await db
                 .collection("classes")
-                .doc("pt")
+                .doc(ptName)
                 .collection(uid)
                 .doc(yearMonthStr)
                 .get()
@@ -167,7 +168,7 @@ export default PT = ({ navigation, route }) => {
             obj["str"] = s;
             await db
                 .collection("classes")
-                .doc("pt")
+                .doc(ptName)
                 .collection(uid)
                 .doc(yearMonthStr)
                 .collection(selectedDate.toString())
@@ -202,7 +203,7 @@ export default PT = ({ navigation, route }) => {
         if (finishSetUp) {
             await db
                 .collection("classes")
-                .doc("pt")
+                .doc(ptName)
                 .collection(uid)
                 .doc(yearMonthStr)
                 .update({ class: arrayUnion(selectedDate.toString()) })
@@ -210,7 +211,7 @@ export default PT = ({ navigation, route }) => {
                 .catch(async (error) => {
                     await db
                         .collection("classes")
-                        .doc("pt")
+                        .doc(ptName)
                         .collection(uid)
                         .doc(yearMonthStr)
                         .set({
@@ -257,7 +258,7 @@ export default PT = ({ navigation, route }) => {
             selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
         await db
             .collection("classes")
-            .doc("pt")
+            .doc(ptName)
             .collection(uid)
             .doc(yearMonthStr)
             .collection(selectedDate.toString())
@@ -273,7 +274,7 @@ export default PT = ({ navigation, route }) => {
             selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
         await db
             .collection("classes")
-            .doc("pt")
+            .doc(ptName)
             .collection(uid)
             .doc(yearMonthStr)
             .collection(selectedDate.toString())
@@ -289,7 +290,7 @@ export default PT = ({ navigation, route }) => {
             selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
         await db
             .collection("classes")
-            .doc("pt")
+            .doc(ptName)
             .collection(uid)
             .doc(yearMonthStr)
             .collection(selectedDate.toString())
@@ -306,7 +307,7 @@ export default PT = ({ navigation, route }) => {
         const { hasReservation } = (
             await db
                 .collection("classes")
-                .doc("pt")
+                .doc(ptName)
                 .collection(uid)
                 .doc(yearMonthStr)
                 .collection(selectedDate.toString())
@@ -316,7 +317,7 @@ export default PT = ({ navigation, route }) => {
         if (hasReservation) {
             await db
                 .collection("classes")
-                .doc("pt")
+                .doc(ptName)
                 .collection(uid)
                 .doc(yearMonthStr)
                 .collection(selectedDate.toString())
@@ -324,7 +325,7 @@ export default PT = ({ navigation, route }) => {
                 .update({ confirm: true });
             await db
                 .collection("classes")
-                .doc("pt")
+                .doc(ptName)
                 .collection(uid)
                 .doc(yearMonthStr)
                 .update({ hasClass: arrayUnion(selectedDate.toString()) });
@@ -384,7 +385,7 @@ export default PT = ({ navigation, route }) => {
         const { hasReservation } = (
             await db
                 .collection("classes")
-                .doc("pt")
+                .doc(ptName)
                 .collection(uid)
                 .doc(yearMonthStr)
                 .collection(selectedDate.toString())
@@ -394,7 +395,7 @@ export default PT = ({ navigation, route }) => {
         if (hasReservation) {
             await db
                 .collection("classes")
-                .doc("pt")
+                .doc(ptName)
                 .collection(uid)
                 .doc(yearMonthStr)
                 .collection(selectedDate.toString())
@@ -450,7 +451,7 @@ export default PT = ({ navigation, route }) => {
                 .doc(clientUid)
                 .collection("memberships")
                 .doc("list")
-                .collection("pt")
+                .collection(ptName === "pt" ? ptName : ptName + "pt")
                 .orderBy("payDay", "desc")
                 .limit(1)
                 .get()

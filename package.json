@@ -41,6 +41,7 @@
     "react-native-svg": "12.1.0",
     "react-native-web": "~0.13.12",
     "react-native-webview": "11.0.0",
+    "react-native-xml2js": "^1.0.3",
     "zlib": "^1.0.5"
   },
   "devDependencies": {

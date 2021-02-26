@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import {
     SafeAreaView,
     View,
@@ -19,6 +19,21 @@ export default Home = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
     const widthButton = width - 40;
     const uid = myBase.auth().currentUser.uid;
+    const [myClass, setMyClass] = useState("");
+
+    const getMyClass = () => {
+        const func = db
+            .collection("users")
+            .doc(uid)
+            .onSnapshot(
+                (doc) => {
+                    setMyClass(doc.data().className);
+                },
+                (error) => {
+                    func();
+                }
+            );
+    };
 
     useEffect(() => {
         const notificationSubscription = Notifications.addNotificationReceivedListener(
@@ -39,7 +54,6 @@ export default Home = ({ navigation, route }) => {
                 if (data.navigation) {
                     if (data.datas) {
                         const { datas } = data;
-                        const { className } = (await db.collection("users").doc(uid).get()).data();
                         if (data.navigation !== "PT") {
                             navigation.reset({
                                 index: 1,
@@ -48,7 +62,7 @@ export default Home = ({ navigation, route }) => {
                                     { name: data.navigation, params: datas },
                                 ],
                             });
-                        } else {
+                        } else if (myClass.split(".")[0] === "pt") {
                             navigation.reset({
                                 index: 1,
                                 routes: [
@@ -57,7 +71,29 @@ export default Home = ({ navigation, route }) => {
                                         name: "PT",
                                         params: {
                                             ...datas,
-                                            limit: className.split(".").slice(1),
+                                            ptName: "pt",
+                                            limit: myClass.split(".").slice(1),
+                                        },
+                                    },
+                                ],
+                            });
+                        } else if (myClass.split(".")[1] === "squash") {
+                            navigation.reset({
+                                index: 2,
+                                routes: [
+                                    { name: "HomeScreen" },
+                                    {
+                                        name: "SelectSquashKind",
+                                        params: {
+                                            limit: myClass.split(".").slice(2),
+                                        },
+                                    },
+                                    {
+                                        name: "PT",
+                                        params: {
+                                            ...datas,
+                                            ptName: "squash",
+                                            limit: myClass.split(".").slice(2),
                                         },
                                     },
                                 ],
@@ -73,6 +109,7 @@ export default Home = ({ navigation, route }) => {
                 await Notifications.setBadgeCountAsync(0);
             }
         );
+        getMyClass();
         return () => {
             Notifications.removeNotificationSubscription(notificationSubscription);
             Notifications.removeNotificationSubscription(responseSubscription);
@@ -80,20 +117,23 @@ export default Home = ({ navigation, route }) => {
     }, []);
 
     const goMyClass = async () => {
-        const { className } = (await db.collection("users").doc(uid).get()).data();
-        if (className === "Need to Set Up") {
+        if (myClass.split(".")[0] === "pt") {
+            navigation.navigate("PT", { ptName: "pt", limit: myClass.split(".").slice(1) });
+        } else if (myClass.split(".")[0] === "gx") {
+            if (myClass.split(".")[1] === "squash") {
+                navigation.navigate("SelectSquashKind", { limit: myClass.split(".").slice(2) });
+            } else {
+                navigation.navigate("GX", {
+                    className: myClass.split(".").slice(1),
+                });
+            }
+        } else {
             Alert.alert("경고", "담당 과목 설정이 안되어 있습니다.\n내 정보에서 설정해주세요.", [
                 {
                     text: "확인",
                     onPress: () => navigation.navigate("Profile", { showModal: true }),
                 },
             ]);
-        } else if (className.split(".")[0] === "pt") {
-            navigation.navigate("PT", { limit: className.split(".").slice(1) });
-        } else if (className.split(".")[0] === "gx") {
-            navigation.navigate("GX", {
-                className: className.split(".").slice(1),
-            });
         }
     };
 
