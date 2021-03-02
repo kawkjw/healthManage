@@ -24,9 +24,9 @@ import { pushNotificationsToPerson } from "../../../config/MyExpo";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { getHoliday } from "../../../config/hooks";
 
-export default PT = ({ navigation, route }) => {
+export default OT = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
-    const { trainerName, trainerUid, ptName } = route.params;
+    const { trainerName, trainerUid } = route.params;
     const uid = myBase.auth().currentUser.uid;
     const today = new Date();
     const [data, setData] = useState([]);
@@ -66,7 +66,7 @@ export default PT = ({ navigation, route }) => {
             let classDate = [];
             await db
                 .collection("classes")
-                .doc(ptName)
+                .doc("pt")
                 .collection(trainerUid)
                 .doc(yearMonthStr)
                 .get()
@@ -151,7 +151,7 @@ export default PT = ({ navigation, route }) => {
             selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
         await db
             .collection("classes")
-            .doc(ptName)
+            .doc("pt")
             .collection(trainerUid)
             .doc(yearMonthStr)
             .collection(selectedDate.toString())
@@ -209,28 +209,28 @@ export default PT = ({ navigation, route }) => {
 
     const reservePTClass = async (timeStr) => {
         let count = 0;
-        let ptId = "";
-        let isGroup = false;
+        let healthId = "";
         await db
             .collection("users")
             .doc(uid)
             .collection("memberships")
             .doc("list")
-            .collection(ptName === "pt" ? ptName : ptName + "pt")
+            .collection("health")
             .orderBy("payDay", "desc")
             .limit(1)
             .get()
             .then((docs) => {
                 docs.forEach((doc) => {
-                    count = doc.data().count;
-                    ptId = doc.id;
-                    if (ptName === "pt") {
-                        isGroup = doc.data().group;
+                    if (doc.data().otCount !== undefined) {
+                        count = doc.data().otCount;
+                    } else {
+                        count = 2;
                     }
+                    healthId = doc.id;
                 });
             });
         if (count <= 0) {
-            Alert.alert("경고", "남은 PT 횟수가 없습니다. ", [
+            Alert.alert("경고", "남은 OT 횟수가 없습니다. ", [
                 {
                     text: "확인",
                     onPress: () => {
@@ -247,7 +247,7 @@ export default PT = ({ navigation, route }) => {
                 selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
             const classDBInTimeStr = db
                 .collection("classes")
-                .doc(ptName)
+                .doc("pt")
                 .collection(trainerUid)
                 .doc(yearMonthStr)
                 .collection(selectedDate.toString())
@@ -258,7 +258,7 @@ export default PT = ({ navigation, route }) => {
                         hasReservation: true,
                         confirm: false,
                         clientUid: uid,
-                        isGroup: isGroup,
+                        ot: true,
                     });
                     const startDate = new Date(
                         selectedYear,
@@ -280,8 +280,8 @@ export default PT = ({ navigation, route }) => {
                         .collection(selectedDate.toString())
                         .doc(timeStr)
                         .set({
-                            classId: ptName === "pt" ? ptName : ptName + "pt",
-                            className: ptName === "pt" ? ptName : ptName + "pt",
+                            classId: "ot",
+                            className: "ot",
                             start: startDate,
                             end: endDate,
                             trainer: trainerName,
@@ -306,13 +306,13 @@ export default PT = ({ navigation, route }) => {
                         .doc(uid)
                         .collection("memberships")
                         .doc("list")
-                        .collection(ptName === "pt" ? ptName : ptName + "pt")
-                        .doc(ptId)
-                        .update({ count: count - 1 });
+                        .collection("health")
+                        .doc(healthId)
+                        .set({ otCount: count - 1 }, { merge: true });
                     await pushNotificationsToPerson(
                         myBase.auth().currentUser.displayName,
                         trainerUid,
-                        "새 PT 예약",
+                        "새 OT 예약",
                         `${selectedDate}일 ${timeStr}`,
                         {
                             navigation: "PT",
@@ -630,7 +630,7 @@ export default PT = ({ navigation, route }) => {
                                                     </Text>
                                                 </TouchableOpacity>
                                             )
-                                        ) : availTime.isToday ? null : (
+                                        ) : (
                                             <View style={{ flex: 1 }} />
                                         )}
                                     </View>

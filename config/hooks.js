@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from "react";
-import { db } from "./MyBase";
+import { SERVICE_KEY } from "@env";
 
 export const useInterval = (callback, delay) => {
     const savedCallBack = useRef();
@@ -19,77 +19,45 @@ export const useInterval = (callback, delay) => {
     }, [delay]);
 };
 
-const getName = async (s) => {
-    let ko = "";
-    await db
-        .collection("classNames")
-        .doc(s)
-        .get()
+export const getHoliday = async (year, month) => {
+    const url = "http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo";
+    let queryParams = "?" + encodeURIComponent("ServiceKey") + "=" + SERVICE_KEY;
+    queryParams += "&" + encodeURIComponent("pageNo") + "=" + encodeURIComponent("1");
+    queryParams += "&" + encodeURIComponent("numOfRows") + "=" + encodeURIComponent("15");
+    queryParams += "&" + encodeURIComponent("solYear") + "=" + encodeURIComponent(year.toString());
+    queryParams +=
+        "&" +
+        encodeURIComponent("solMonth") +
+        "=" +
+        encodeURIComponent(month < 10 ? "0" + month : month.toString());
+    queryParams += "&" + encodeURIComponent("_type") + "=" + encodeURIComponent("json");
+
+    const endDate = new Date(year, month, 0);
+    let holidayJson = [];
+    await fetch(url + queryParams)
+        .then((response) => response.text())
         .then((data) => {
-            ko = data.data().ko;
-        })
-        .catch(() => {
-            ko = "Error";
+            const {
+                response: {
+                    body: {
+                        totalCount,
+                        items: { item },
+                    },
+                },
+            } = JSON.parse(data);
+            if (totalCount === 0) {
+                holidayJson = [];
+            } else if (totalCount === 1) {
+                holidayJson = [item];
+            } else {
+                holidayJson = item;
+            }
         });
-    return ko;
-};
-
-export const enToKo = (s) => {
-    switch (s) {
-        case "health":
-            return "헬스";
-        case "spinning":
-            return "스피닝";
-        case "yoga":
-            return "요가";
-        case "zoomba":
-            return "줌바";
-        case "squash":
-            return "스쿼시";
-        case "pilates":
-            return "필라테스";
-        case "pilates2":
-            return "필라테스(주2회)";
-        case "pilates3":
-            return "필라테스(주3회)";
-        case "pt":
-            return "PT";
-        case "gx":
-            return "GX";
-        case "GX":
-            return "GX(요가, 줌바)";
-        case "yoga.zoomba":
-            return "(요가, 줌바)";
-        case "Need to Set Up":
-            return "여기를 눌러 설정해주세요.";
-        default:
-            return getName(s);
-    }
-};
-
-export const enToMiniKo = (s) => {
-    switch (s) {
-        case "health":
-            return "헬스";
-        case "spinning":
-            return "스피닝";
-        case "yoga":
-            return "요가";
-        case "zoomba":
-            return "줌바";
-        case "squash":
-            return "스쿼시";
-        case "pilates":
-            return "필라테스";
-        case "pilates2":
-            return "필라테스";
-        case "pilates3":
-            return "필라테스";
-        case "pt":
-            return "PT";
-        case "gx":
-            return "GX";
-        default:
-            return "Error";
-    }
+    let holidayList = Array(endDate.getDate() + 1).fill(false);
+    holidayJson.forEach((holiday) => {
+        if (holiday.isHoliday === "Y") {
+            holidayList[Number(holiday.locdate.toString().substr(-2))] = true;
+        }
+    });
+    return holidayList;
 };

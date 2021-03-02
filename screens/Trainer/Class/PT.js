@@ -24,6 +24,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import { pushNotificationsToPerson } from "../../../config/MyExpo";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import { getHoliday } from "../../../config/hooks";
 
 export default PT = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -95,6 +96,7 @@ export default PT = ({ navigation, route }) => {
             classDate.push("-1");
             let index = 0;
             const endDate = new Date(selectedYear, selectedMonth, 0);
+            const holidayList = await getHoliday(selectedYear, selectedMonth);
             for (let i = 1; i <= endDate.getDate(); i++) {
                 const d = new Date(yearMonthStr + "-" + (i < 10 ? "0" + i : i) + "T00:00");
                 let item = {
@@ -106,6 +108,8 @@ export default PT = ({ navigation, route }) => {
                         selectedYear === today.getFullYear(),
                 };
                 if (d.getDay() === 0) {
+                    item["color"] = "red";
+                } else if (holidayList[i]) {
                     item["color"] = "red";
                 } else if (d.getDay() === 6) {
                     item["color"] = "blue";
@@ -189,6 +193,20 @@ export default PT = ({ navigation, route }) => {
                             obj["clientPhone"] = phoneNumber;
                             obj["clientUid"] = bool.data().clientUid;
                             obj["confirm"] = bool.data().confirm;
+                            if (bool.data().isGroup !== undefined) {
+                                if (bool.data().isGroup === true) {
+                                    obj["isGroup"] = true;
+                                } else {
+                                    obj["isGroup"] = false;
+                                }
+                            } else {
+                                obj["isGroup"] = false;
+                            }
+                            if (bool.data().ot !== undefined) {
+                                obj["isOT"] = true;
+                            } else {
+                                obj["isOT"] = false;
+                            }
                         }
                     } else {
                         obj["submit"] = false;
@@ -772,7 +790,12 @@ export default PT = ({ navigation, route }) => {
                                                                         fontSize: RFPercentage(2),
                                                                     }}
                                                                 >
-                                                                    {availTime.clientName}
+                                                                    {(availTime.isOT
+                                                                        ? "OT: "
+                                                                        : availTime.isGroup
+                                                                        ? "PT 그룹: "
+                                                                        : "PT: ") +
+                                                                        availTime.clientName}
                                                                 </Text>
                                                                 <TouchableOpacity
                                                                     onPress={() =>

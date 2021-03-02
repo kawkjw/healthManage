@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Button, Text, StyleSheet } from "react-native";
+import { View, Button, Text, StyleSheet, Linking } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import base64 from "base-64";
 
@@ -48,7 +48,7 @@ export default QRScan = ({ navigation }) => {
                     justifyContent: "center",
                 }}
             >
-                <Text>Can't access camera</Text>
+                <Button title="카메라 권한이 없습니다." onPress={() => Linking.openSettings()} />
             </View>
         );
     }

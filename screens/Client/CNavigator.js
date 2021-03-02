@@ -25,6 +25,8 @@ import * as Permissions from "expo-permissions";
 import Modal from "react-native-modal";
 import * as Notifications from "expo-notifications";
 import ExtendDate from "./Menus/ExtendDate";
+import SelectTrainer from "./Infos/SelectTrainer";
+import OT from "./Infos/OT";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
@@ -622,6 +624,22 @@ const MyStack = () => {
                 component={QRScan}
                 options={({ navigation }) => ({
                     title: "QR코드 스캔",
+                    headerLeft: () => renderGoBackButton(navigation),
+                })}
+            />
+            <Stack.Screen
+                name="SelectTrainer"
+                component={SelectTrainer}
+                options={({ navigation }) => ({
+                    title: "트레이너 선택",
+                    headerLeft: () => renderGoBackButton(navigation),
+                })}
+            />
+            <Stack.Screen
+                name="OT"
+                component={OT}
+                options={({ navigation, route }) => ({
+                    title: route.params.trainerName + " 트레이너",
                     headerLeft: () => renderGoBackButton(navigation),
                 })}
             />

@@ -17,6 +17,7 @@ import { MyStyles } from "../../../css/MyStyles";
 import myBase, { arrayUnion, db } from "../../../config/MyBase";
 import moment from "moment";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import { getHoliday } from "../../../config/hooks";
 
 export default GX = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
@@ -61,18 +62,24 @@ export default GX = ({ navigation, route }) => {
             classDate.push("-1");
             let index = 0;
             const endDate = new Date(date.split("-")[0], date.split("-")[1], 0);
+            const holidayList = await getHoliday(
+                Number(date.split("-")[0]),
+                Number(date.split("-")[1])
+            );
             for (let i = 1; i <= endDate.getDate(); i++) {
                 const d = new Date(date + "-" + (i < 10 ? "0" + i : i));
                 let item = {
                     id: i.toString(),
-                    pressable: true,
-                    //d >= new Date(today.getFullYear(), today.getMonth(), today.getDate()),
+                    pressable:
+                        d >= new Date(today.getFullYear(), today.getMonth(), today.getDate()),
                     isToday:
                         i === today.getDate() &&
                         Number(date.split("-")[1]) === today.getMonth() + 1 &&
                         Number(date.split("-")[0]) === today.getFullYear(),
                 };
                 if (d.getDay() === 0) {
+                    item["color"] = "red";
+                } else if (holidayList[i]) {
                     item["color"] = "red";
                 } else if (d.getDay() === 6) {
                     item["color"] = "blue";

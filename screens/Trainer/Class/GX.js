@@ -19,6 +19,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import moment from "moment";
 import { DataContext } from "../../Auth";
+import { getHoliday } from "../../../config/hooks";
 
 export default GX = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
@@ -77,10 +78,13 @@ export default GX = ({ navigation, route }) => {
             classDate.push("-1");
             let index = 0;
             const endDate = new Date(selectedYear, selectedMonth, 0);
+            const holidayList = await getHoliday(selectedYear, selectedMonth);
             for (let i = 1; i <= endDate.getDate(); i++) {
                 const d = new Date(yearMonthStr + "-" + (i < 10 ? "0" + i : i));
                 let item = { id: i.toString(), pressable: true };
                 if (d.getDay() === 0) {
+                    item["color"] = "red";
+                } else if (holidayList[i]) {
                     item["color"] = "red";
                 } else if (d.getDay() === 6) {
                     item["color"] = "blue";

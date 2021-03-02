@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Dimensions, SafeAreaView, Text, TouchableOpacity } from "react-native";
+import { Alert, Dimensions, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import myBase, { db } from "../../../config/MyBase";
 import { MyStyles } from "../../../css/MyStyles";
@@ -41,6 +41,7 @@ export default SelectSquashKind = ({ navigation, route }) => {
 
     return (
         <SafeAreaView style={MyStyles.container}>
+            <View style={{ height: 20 }} />
             <TouchableOpacity
                 style={[
                     MyStyles.phoneButton,
