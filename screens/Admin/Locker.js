@@ -186,7 +186,7 @@ export default Locker = () => {
     return (
         <View style={styles.container}>
             <Dialog.Container visible={visible}>
-                <Dialog.Title>Input phone number</Dialog.Title>
+                <Dialog.Title>휴대폰 번호 입력</Dialog.Title>
                 <Dialog.Input
                     value={phoneNumber}
                     onChangeText={setPhoneNumber}

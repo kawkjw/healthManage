@@ -25,6 +25,8 @@ import Modal from "react-native-modal";
 import * as Notifications from "expo-notifications";
 import myBase, { db } from "../../config/MyBase";
 import moment from "moment";
+import InputPassword from "./InputPassword";
+import Sales from "./Sales";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
@@ -199,7 +201,11 @@ const MyStack = () => {
                                 top: 0,
                                 right: 0,
                             },
-                            unread ? { backgroundColor: "red" } : { backgroundColor: "white" },
+                            notificationAvail
+                                ? unread
+                                    ? { backgroundColor: "red" }
+                                    : { backgroundColor: "white" }
+                                : undefined,
                         ]}
                     />
                     <MaterialIcons
@@ -509,6 +515,22 @@ const MyStack = () => {
                 component={PtInfo}
                 options={({ navigation }) => ({
                     headerTitle: "PT",
+                    headerLeft: () => renderGoBackButton(navigation),
+                })}
+            />
+            <Stack.Screen
+                name="InputPassword"
+                component={InputPassword}
+                options={({ navigation }) => ({
+                    headerTitle: "비밀번호 입력",
+                    headerLeft: () => renderGoBackButton(navigation),
+                })}
+            />
+            <Stack.Screen
+                name="Sales"
+                component={Sales}
+                options={({ navigation }) => ({
+                    headerTitle: "결산",
                     headerLeft: () => renderGoBackButton(navigation),
                 })}
             />

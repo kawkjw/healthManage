@@ -14,6 +14,7 @@ import ResetPw from "./Auth/ResetPw";
 import { ADMIN_CODE, TRAINER_CODE } from "@env";
 import { pushNotificationsToAdmin } from "../config/MyExpo";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import * as Crypto from "expo-crypto";
 
 const Stack = createStackNavigator();
 
@@ -136,8 +137,12 @@ export default Auth = () => {
                     birthday,
                     address,
                 } = data;
-                const isAdmin = adminCode === ADMIN_CODE ? true : false;
-                const isTrainer = adminCode === TRAINER_CODE ? true : false;
+                const adminDigest = await Crypto.digestStringAsync(
+                    Crypto.CryptoDigestAlgorithm.SHA256,
+                    adminCode
+                );
+                const isAdmin = adminDigest === ADMIN_CODE ? true : false;
+                const isTrainer = adminDigest === TRAINER_CODE ? true : false;
                 await myBase
                     .auth()
                     .createUserWithEmailAndPassword(email, password)
@@ -221,40 +226,63 @@ export default Auth = () => {
                                             .doc(phoneId)
                                             .get()
                                             .then(async (temp) => {
-                                                const data = temp.data();
-                                                const promises = data.memberships.map(
-                                                    async (membership) => {
-                                                        await db
-                                                            .collection("users")
-                                                            .doc(currentUser.id)
-                                                            .collection("memberships")
-                                                            .doc("list")
-                                                            .update({
-                                                                classes: arrayUnion(
-                                                                    membership.name
-                                                                ),
-                                                            })
-                                                            .catch(async () => {
-                                                                await db
-                                                                    .collection("users")
-                                                                    .doc(currentUser.id)
-                                                                    .collection("memberships")
-                                                                    .doc("list")
-                                                                    .set({
-                                                                        classes: [membership.name],
-                                                                    });
+                                                let classes = [];
+                                                await temp.ref
+                                                    .collection("memberships")
+                                                    .doc("list")
+                                                    .get()
+                                                    .then((doc) => {
+                                                        if (doc.data().classes !== undefined) {
+                                                            classes = doc.data().classes;
+                                                        }
+                                                    });
+                                                await db
+                                                    .collection("users")
+                                                    .doc(currentUser.id)
+                                                    .collection("memberships")
+                                                    .doc("list")
+                                                    .set({
+                                                        classes: [],
+                                                    });
+                                                const promises = classes.map(async (name) => {
+                                                    await temp.ref
+                                                        .collection("memberships")
+                                                        .doc("list")
+                                                        .collection(name)
+                                                        .get()
+                                                        .then((docs) => {
+                                                            let list = [];
+                                                            docs.forEach((doc) => {
+                                                                let obj = doc.data();
+                                                                list.push(obj);
                                                             });
-                                                        await db
-                                                            .collection("users")
-                                                            .doc(currentUser.id)
-                                                            .collection("memberships")
-                                                            .doc("list")
-                                                            .collection(membership.name)
-                                                            .add(membership);
-                                                    }
-                                                );
+                                                            return list;
+                                                        })
+                                                        .then(async (list) => {
+                                                            await db
+                                                                .collection("users")
+                                                                .doc(currentUser.id)
+                                                                .collection("memberships")
+                                                                .doc("list")
+                                                                .update({
+                                                                    classes: arrayUnion(name),
+                                                                });
+                                                            const addPromises = list.map(
+                                                                async (d) => {
+                                                                    await db
+                                                                        .collection("users")
+                                                                        .doc(currentUser.id)
+                                                                        .collection("memberships")
+                                                                        .doc("list")
+                                                                        .collection(name)
+                                                                        .add(d);
+                                                                }
+                                                            );
+                                                            await Promise.all(addPromises);
+                                                        });
+                                                });
                                                 await Promise.all(promises);
-                                                temp.ref.delete();
+                                                //temp.ref.delete();
                                             });
                                     }
                                 }

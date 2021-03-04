@@ -115,6 +115,16 @@ export default Home = ({ navigation, route }) => {
                 >
                     <Text style={{ fontSize: RFPercentage(2.3) }}>고객 정보</Text>
                 </TouchableOpacity>
+                <TouchableOpacity
+                    style={[
+                        MyStyles.phoneButton,
+                        MyStyles.buttonShadow,
+                        { width: widthButton, marginBottom: 20 },
+                    ]}
+                    onPress={() => navigation.navigate("InputPassword")}
+                >
+                    <Text style={{ fontSize: RFPercentage(2.3) }}>결산</Text>
+                </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>
     );
