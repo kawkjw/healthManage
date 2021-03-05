@@ -9,7 +9,7 @@ import {
     View,
 } from "react-native";
 import myBase, { db } from "../../../config/MyBase";
-import { AuthStyles, MyStyles } from "../../../css/MyStyles";
+import { AuthStyles, MyStyles, TextSize } from "../../../css/MyStyles";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import moment from "moment";
@@ -193,7 +193,7 @@ export default ExtendDate = ({ navigation, route }) => {
                 >
                     <View style={{ paddingHorizontal: 20 }}>
                         <View style={[{ marginVertical: 15, padding: 15 }, MyStyles.buttonShadow]}>
-                            <Text style={{ fontSize: RFPercentage(2.4) }}>연장 가능한 이용권</Text>
+                            <Text style={TextSize.largeSize}>연장 가능한 이용권</Text>
                             {availExtend.map((membership, index) => (
                                 <View
                                     key={index}
@@ -209,24 +209,24 @@ export default ExtendDate = ({ navigation, route }) => {
                                         size={RFPercentage(1.2)}
                                         color="black"
                                     />
-                                    <Text style={{ fontSize: RFPercentage(2), flex: 2 }}>
+                                    <Text style={[TextSize.normalSize, { flex: 2 }]}>
                                         {enToMiniKo(membership.name)}
                                     </Text>
-                                    <Text style={{ fontSize: RFPercentage(2), flex: 2 }}>
+                                    <Text style={[TextSize.normalSize, { flex: 2 }]}>
                                         {membership.month + "개월권"}
                                     </Text>
-                                    <Text style={{ fontSize: RFPercentage(2), flex: 4 }}>
+                                    <Text style={[TextSize.normalSize, { flex: 4 }]}>
                                         {moment(membership.end.toDate()).format("YYYY. MM. DD") +
                                             "까지"}
                                     </Text>
-                                    <Text style={{ fontSize: RFPercentage(2), flex: 3 }}>
+                                    <Text style={[TextSize.normalSize, { flex: 3 }]}>
                                         {membership.remain + "번 연장 가능"}
                                     </Text>
                                 </View>
                             ))}
                         </View>
                         <View style={[MyStyles.buttonShadow, { padding: 15 }]}>
-                            <Text style={{ fontSize: RFPercentage(2) }}>연장할 일수</Text>
+                            <Text style={TextSize.normalSize}>연장할 일수</Text>
                             <View
                                 style={{
                                     flexDirection: "row",
@@ -237,9 +237,7 @@ export default ExtendDate = ({ navigation, route }) => {
                                 }}
                             >
                                 <View style={{ flex: 1, alignItems: "center" }}>
-                                    <Text style={{ fontSize: RFPercentage(2.5) }}>
-                                        {extendDate.date} 일동안
-                                    </Text>
+                                    <Text style={TextSize.largeSize}>{extendDate.date} 일동안</Text>
                                 </View>
                                 <TouchableOpacity
                                     onPress={() => {
@@ -254,7 +252,7 @@ export default ExtendDate = ({ navigation, route }) => {
                                     />
                                 </TouchableOpacity>
                             </View>
-                            <Text style={{ fontSize: RFPercentage(2) }}>연장 사유</Text>
+                            <Text style={TextSize.normalSize}>연장 사유</Text>
                             <View
                                 style={{
                                     borderWidth: 1,
@@ -295,7 +293,7 @@ export default ExtendDate = ({ navigation, route }) => {
                                 }}
                                 disabled={!extendReason}
                             >
-                                <Text style={{ fontSize: RFPercentage(2), margin: 10 }}>제출</Text>
+                                <Text style={[TextSize.normalSize, { margin: 10 }]}>제출</Text>
                             </TouchableOpacity>
                         </View>
                     </View>

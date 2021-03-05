@@ -1,43 +1,11 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Alert, Dimensions, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
-import { RFPercentage } from "react-native-responsive-fontsize";
-import myBase, { db } from "../../../config/MyBase";
-import { MyStyles } from "../../../css/MyStyles";
+import { MyStyles, TextSize } from "../../../css/MyStyles";
 
 export default SelectSquashKind = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
     const widthButton = width - 40;
     const { availPt, availGroup } = route.params;
-    const [trainerList, setTrainerList] = useState([]);
-
-    useEffect(() => {
-        const getPTTrainer = async () => {
-            let list = [];
-            let uidList = [];
-            await db
-                .collection("classes")
-                .doc("pt")
-                .get()
-                .then((snapshot) => {
-                    uidList = snapshot.data().trainerList;
-                });
-            const promises = uidList.map(async (data) => {
-                await db
-                    .collection("notifications")
-                    .doc(data)
-                    .get()
-                    .then((snapshot) => {
-                        let temp = {};
-                        temp["uid"] = data;
-                        temp["name"] = snapshot.data().name;
-                        list.push(temp);
-                    });
-            });
-            await Promise.all(promises);
-            setTrainerList(list);
-        };
-        //getPTTrainer();
-    }, []);
 
     return (
         <SafeAreaView style={MyStyles.container}>
@@ -62,8 +30,8 @@ export default SelectSquashKind = ({ navigation, route }) => {
             >
                 <Text
                     style={[
+                        TextSize.largeSize,
                         availPt === false ? { color: "red" } : { color: "black" },
-                        { fontSize: RFPercentage(2.3) },
                     ]}
                 >
                     개인 수업
@@ -88,8 +56,8 @@ export default SelectSquashKind = ({ navigation, route }) => {
             >
                 <Text
                     style={[
+                        TextSize.largeSize,
                         availGroup === false ? { color: "red" } : { color: "black" },
-                        { fontSize: RFPercentage(2.3) },
                     ]}
                 >
                     그룹 수업

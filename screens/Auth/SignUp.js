@@ -8,10 +8,10 @@ import {
     Keyboard,
     Alert,
     ActivityIndicator,
-    Dimensions,
+    Platform,
 } from "react-native";
 import { AuthContext } from "../Auth";
-import { AuthStyles } from "../../css/MyStyles";
+import { AuthStyles, TextSize } from "../../css/MyStyles";
 import CheckBox from "../../config/CheckBox";
 import myBase, { db } from "../../config/MyBase";
 import firebase from "firebase";
@@ -73,7 +73,7 @@ export default SignUp = ({ navigation }) => {
             key: (d + 1).toString(),
         })),
     };
-    const [address, setAddress] = useState("");
+    const [address, setAddress] = useState("주소 검색");
     const [modalAddress, setModalAddress] = useState(false);
 
     const { signUp } = useContext(AuthContext);
@@ -229,18 +229,16 @@ export default SignUp = ({ navigation }) => {
 
     return (
         <SafeAreaView style={AuthStyles.container}>
-            <FirebaseRecaptchaVerifierModal
-                ref={appVerifier}
-                firebaseConfig={myBase.options}
-                attemptInvisibleVerification={true}
-            />
+            <FirebaseRecaptchaVerifierModal ref={appVerifier} firebaseConfig={myBase.options} />
             <Modal
                 isVisible={modalAddress}
                 style={{ justifyContent: "flex-end", margin: 0 }}
                 onBackdropPress={() => setModalAddress(false)}
+                onBackButtonPress={() => setModalAddress(false)}
             >
                 <View
                     style={{
+                        flex: 1,
                         backgroundColor: "white",
                         height: hp("85%"),
                     }}
@@ -260,15 +258,17 @@ export default SignUp = ({ navigation }) => {
                 </View>
             </Modal>
             <KeyboardAwareScrollView
-                style={{ alignSelf: "stretch" }}
-                contentContainerStyle={{ height: hp("90%") }}
+                contentContainerStyle={{ paddingHorizontal: -30 }}
                 keyboardShouldPersistTaps="always"
                 showsVerticalScrollIndicator={false}
-                scrollEnabled={false}
+                scrollEnabled={true}
+                extraHeight={Platform.select({ android: 150 })}
+                enableOnAndroid={true}
+                enableAutomaticScroll
                 extraScrollHeight={120}
             >
                 <TouchableOpacity
-                    style={AuthStyles.touchScreen}
+                    style={[AuthStyles.touchScreen, { height: hp("90%") }]}
                     onPress={Keyboard.dismiss}
                     accessible={false}
                     activeOpacity={1}
@@ -419,21 +419,19 @@ export default SignUp = ({ navigation }) => {
                             }}
                         >
                             <View style={{ flex: 2, alignItems: "center" }}>
-                                <Text style={{ fontSize: RFPercentage(2.5) }}>{birthday.year}</Text>
+                                <Text style={TextSize.largerSize}>{birthday.year}</Text>
                             </View>
                             <View style={{ alignItems: "center" }}>
-                                <Text style={{ fontSize: RFPercentage(2.5) }}>{" / "}</Text>
+                                <Text style={TextSize.largerSize}>{" / "}</Text>
                             </View>
                             <View style={{ flex: 2, alignItems: "center" }}>
-                                <Text style={{ fontSize: RFPercentage(2.5) }}>
-                                    {birthday.month}
-                                </Text>
+                                <Text style={TextSize.largerSize}>{birthday.month}</Text>
                             </View>
                             <View style={{ alignItems: "center" }}>
-                                <Text style={{ fontSize: RFPercentage(2.5) }}>{" / "}</Text>
+                                <Text style={TextSize.largerSize}>{" / "}</Text>
                             </View>
                             <View style={{ flex: 2, alignItems: "center" }}>
-                                <Text style={{ fontSize: RFPercentage(2.5) }}>{birthday.day}</Text>
+                                <Text style={TextSize.largerSize}>{birthday.day}</Text>
                             </View>
                             <TouchableOpacity
                                 onPress={() => {
@@ -452,14 +450,18 @@ export default SignUp = ({ navigation }) => {
                     <View style={AuthStyles.textView}>
                         <Text style={AuthStyles.text}>주소</Text>
                         <View style={{ flexDirection: "row" }}>
-                            <TextInput
-                                style={[AuthStyles.textInput, { marginRight: 5, flex: 3 }]}
-                                placeholder="경기도 오산시 궐동"
-                                keyboardType="default"
-                                value={address}
-                                onChangeText={setAddress}
-                                editable={false}
-                            />
+                            <View style={{ borderWidth: 1, padding: 5, marginRight: 5, flex: 3 }}>
+                                <Text
+                                    style={[
+                                        TextSize.largeSize,
+                                        address === "주소 검색"
+                                            ? { color: "grey" }
+                                            : { color: "black" },
+                                    ]}
+                                >
+                                    {address}
+                                </Text>
+                            </View>
                             <TouchableOpacity
                                 style={[AuthStyles.authButton, { marginLeft: 5 }]}
                                 onPress={() => {
@@ -479,7 +481,7 @@ export default SignUp = ({ navigation }) => {
                                 Keyboard.dismiss();
                             }}
                             text=" 관리자 코드 입력"
-                            textStyle={{ fontSize: RFPercentage(2) }}
+                            textStyle={TextSize.normalSize}
                             size={RFPercentage(2.5)}
                             style={[{ width: "40%" }, selected && { marginBottom: 10 }]}
                         />
@@ -556,12 +558,12 @@ export default SignUp = ({ navigation }) => {
                                 !verificationId ||
                                 sexSelected === -1 ||
                                 Number(birthday.year) === today.getFullYear() ||
-                                !address
+                                address === "주소 검색"
                             }
                             onPress={() => submit()}
                         >
                             {loading ? (
-                                <ActivityIndicator />
+                                <ActivityIndicator color="black" />
                             ) : (
                                 <Text style={AuthStyles.authText}>회원가입</Text>
                             )}

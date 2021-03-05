@@ -10,7 +10,6 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import { RFPercentage } from "react-native-responsive-fontsize";
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
@@ -22,6 +21,7 @@ import myBase, { db } from "../../../config/MyBase";
 import TimeTable from "../../../config/TimeTable";
 import { DataContext } from "../../Auth";
 import { getHoliday } from "../../../config/hooks";
+import { TextSize } from "../../../css/MyStyles";
 
 export default ClassInfo = ({ navigation }) => {
     const { width } = Dimensions.get("screen");
@@ -282,7 +282,7 @@ export default ClassInfo = ({ navigation }) => {
                     }}
                 >
                     <TouchableOpacity onPress={() => picker.current.show()}>
-                        <Text style={{ fontSize: RFPercentage(2.5) }}>
+                        <Text style={TextSize.largeSize}>
                             {selectedYear +
                                 "-" +
                                 (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth)}
@@ -417,7 +417,7 @@ export default ClassInfo = ({ navigation }) => {
                             setSelectedDate(0);
                         }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2) }}>닫기</Text>
+                        <Text style={TextSize.normalSize}>닫기</Text>
                     </TouchableOpacity>
                     <View
                         style={{
@@ -426,7 +426,7 @@ export default ClassInfo = ({ navigation }) => {
                             justifyContent: "center",
                         }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2.5) }}>{selectedDate + "일"}</Text>
+                        <Text style={TextSize.largeSize}>{selectedDate + "일"}</Text>
                     </View>
                     {loadingInModal ? (
                         <View

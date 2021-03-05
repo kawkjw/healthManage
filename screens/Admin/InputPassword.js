@@ -7,12 +7,12 @@ import {
     TextInput,
     TouchableOpacity,
     View,
+    KeyboardAvoidingView,
 } from "react-native";
 import * as Crypto from "expo-crypto";
 import { ADMIN_PW } from "@env";
-import { AuthStyles, MyStyles } from "../../css/MyStyles";
+import { AuthStyles, MyStyles, TextSize } from "../../css/MyStyles";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
-import { RFPercentage } from "react-native-responsive-fontsize";
 import { AuthContext } from "../Auth";
 
 export default InputPassword = ({ navigation, route }) => {
@@ -52,13 +52,15 @@ export default InputPassword = ({ navigation, route }) => {
                 activeOpacity={1}
                 accessible={false}
             >
-                <View
+                <KeyboardAvoidingView
                     style={{
                         paddingHorizontal: 40,
                         height: hp("90%"),
                         alignSelf: "stretch",
                         justifyContent: "center",
                     }}
+                    behavior="position"
+                    keyboardVerticalOffset={-100}
                 >
                     <TextInput
                         value={password}
@@ -81,9 +83,9 @@ export default InputPassword = ({ navigation, route }) => {
                         disabled={!password}
                         onPress={checkPassword}
                     >
-                        <Text style={{ fontSize: RFPercentage(2.3) }}>확인</Text>
+                        <Text style={TextSize.largeSize}>확인</Text>
                     </TouchableOpacity>
-                </View>
+                </KeyboardAvoidingView>
             </TouchableOpacity>
         </SafeAreaView>
     );

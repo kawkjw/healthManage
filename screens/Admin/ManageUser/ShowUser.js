@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Alert, Image, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
 import { db } from "../../../config/MyBase";
 import moment from "moment";
-import { MyStyles } from "../../../css/MyStyles";
+import { MyStyles, TextSize } from "../../../css/MyStyles";
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
@@ -133,11 +133,11 @@ export default ShowUser = ({ route }) => {
                             }
                         }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2) }}>
+                        <Text style={TextSize.normalSize}>
                             {classNames[kind] !== undefined ? classNames[kind].ko : "Error"}:{" "}
                         </Text>
                     </View>
-                    <Text style={{ fontSize: RFPercentage(2) }}>
+                    <Text style={TextSize.normalSize}>
                         {membership[kind].count}회 남음(트레이너 {membership[kind].trainer})
                     </Text>
                 </View>
@@ -173,11 +173,11 @@ export default ShowUser = ({ route }) => {
                             }
                         }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2) }}>
+                        <Text style={TextSize.normalSize}>
                             {classNames[kind] !== undefined ? classNames[kind].ko : "Error"}:{" "}
                         </Text>
                     </View>
-                    <Text style={{ fontSize: RFPercentage(2) }}>
+                    <Text style={TextSize.normalSize}>
                         {moment(membership[kind].start.toDate()).format("YY. MM. DD.") +
                             " ~ " +
                             moment(membership[kind].end.toDate()).format("YY. MM. DD.") +
@@ -277,13 +277,11 @@ export default ShowUser = ({ route }) => {
                     ]}
                 >
                     <View style={{ marginBottom: 10 }}>
-                        <Text style={{ fontSize: RFPercentage(2) }}>이름 : {user.name}</Text>
-                        <Text style={{ fontSize: RFPercentage(2) }}>성별 : {user.sex}</Text>
-                        <Text style={{ fontSize: RFPercentage(2) }}>이메일 : {user.email}</Text>
-                        <Text style={{ fontSize: RFPercentage(2) }}>
-                            휴대폰번호 : {user.phoneNumber}
-                        </Text>
-                        <Text style={{ fontSize: RFPercentage(2) }}>
+                        <Text style={TextSize.normalSize}>이름 : {user.name}</Text>
+                        <Text style={TextSize.normalSize}>성별 : {user.sex}</Text>
+                        <Text style={TextSize.normalSize}>이메일 : {user.email}</Text>
+                        <Text style={TextSize.normalSize}>휴대폰번호 : {user.phoneNumber}</Text>
+                        <Text style={TextSize.normalSize}>
                             생년월일 :{" "}
                             {moment(
                                 new Date(
@@ -294,14 +292,14 @@ export default ShowUser = ({ route }) => {
                             ).format("YYYY/MM/DD") +
                                 ` (${today.getFullYear() - Number(user.birthday.year) + 1}세)`}
                         </Text>
-                        <Text style={{ fontSize: RFPercentage(2) }}>주소 : {user.address}</Text>
-                        <Text style={{ fontSize: RFPercentage(2) }}>
+                        <Text style={TextSize.normalSize}>주소 : {user.address}</Text>
+                        <Text style={TextSize.normalSize}>
                             보관함 번호 : {locker === 0 ? "없음" : locker}
                         </Text>
                     </View>
 
                     <View style={{ marginBottom: 5 }}>
-                        <Text style={{ fontSize: RFPercentage(2.3) }}>이용권 현황</Text>
+                        <Text style={TextSize.largeSize}>이용권 현황</Text>
                         {membershipKinds.length === 0 ? (
                             <View
                                 style={{
@@ -316,10 +314,12 @@ export default ShowUser = ({ route }) => {
                                     color="black"
                                 />
                                 <Text
-                                    style={{
-                                        fontSize: RFPercentage(2),
-                                        marginLeft: 3,
-                                    }}
+                                    style={[
+                                        TextSize.normalSize,
+                                        {
+                                            marginLeft: 3,
+                                        },
+                                    ]}
                                 >
                                     이용권이 없습니다.
                                 </Text>
@@ -329,7 +329,7 @@ export default ShowUser = ({ route }) => {
                         )}
                     </View>
 
-                    <Text style={{ fontSize: RFPercentage(2.3) }}>이용권 연장 확인</Text>
+                    <Text style={TextSize.largeSize}>이용권 연장 확인</Text>
                     {extendList.length !== 0 ? (
                         extendList.map((obj, index) => (
                             <View
@@ -347,7 +347,7 @@ export default ShowUser = ({ route }) => {
                                             size={RFPercentage(2)}
                                             color="black"
                                         />
-                                        <Text style={{ fontSize: RFPercentage(2) }}>
+                                        <Text style={TextSize.normalSize}>
                                             {obj.extendDate}일 연장(
                                             {moment(obj.submitDate.toDate()).format("YY. MM. DD.") +
                                                 "에 신청"}
@@ -366,17 +366,19 @@ export default ShowUser = ({ route }) => {
                                             color="black"
                                             style={{ marginRight: 4 }}
                                         />
-                                        <Text style={{ fontSize: RFPercentage(2) }}>
+                                        <Text style={TextSize.normalSize}>
                                             사유: {obj.extendReason}
                                         </Text>
                                     </View>
                                 </View>
                                 {obj.confirm ? (
                                     <Text
-                                        style={{
-                                            fontSize: RFPercentage(2),
-                                            marginRight: RFPercentage(1.3),
-                                        }}
+                                        style={[
+                                            TextSize.normalSize,
+                                            {
+                                                marginRight: RFPercentage(1.3),
+                                            },
+                                        ]}
                                     >
                                         승인완료
                                     </Text>
@@ -399,7 +401,7 @@ export default ShowUser = ({ route }) => {
                                                 ])
                                             }
                                         >
-                                            <Text style={{ fontSize: RFPercentage(2) }}>승인</Text>
+                                            <Text style={TextSize.normalSize}>승인</Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity
                                             style={[
@@ -419,10 +421,12 @@ export default ShowUser = ({ route }) => {
                                             }
                                         >
                                             <Text
-                                                style={{
-                                                    fontSize: RFPercentage(2),
-                                                    color: "red",
-                                                }}
+                                                style={[
+                                                    TextSize.normalSize,
+                                                    {
+                                                        color: "red",
+                                                    },
+                                                ]}
                                             >
                                                 취소
                                             </Text>
@@ -445,10 +449,12 @@ export default ShowUser = ({ route }) => {
                                 color="black"
                             />
                             <Text
-                                style={{
-                                    fontSize: RFPercentage(2),
-                                    marginLeft: 3,
-                                }}
+                                style={[
+                                    TextSize.normalSize,
+                                    {
+                                        marginLeft: 3,
+                                    },
+                                ]}
                             >
                                 연장 신청 내역이 없습니다.
                             </Text>

@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { SafeAreaView, ScrollView, Text, View } from "react-native";
-import { RFPercentage } from "react-native-responsive-fontsize";
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { TextSize } from "../css/MyStyles";
 
 export default TimeTable = ({ classData, kind = "pt", nameList = {}, style, ...props }) => {
     const [timeLabel, setTimeLabel] = useState([]);
@@ -81,13 +81,7 @@ export default TimeTable = ({ classData, kind = "pt", nameList = {}, style, ...p
                             alignItems: "center",
                         }}
                     >
-                        <Text
-                            style={{
-                                fontSize: RFPercentage(2.5),
-                            }}
-                        >
-                            Time
-                        </Text>
+                        <Text style={TextSize.largeSize}>Time</Text>
                     </View>
                     {timeLabel.map((label, index) => (
                         <View
@@ -107,13 +101,7 @@ export default TimeTable = ({ classData, kind = "pt", nameList = {}, style, ...p
                                     : undefined,
                             ]}
                         >
-                            <Text
-                                style={{
-                                    fontSize: RFPercentage(2.5),
-                                }}
-                            >
-                                {label}
-                            </Text>
+                            <Text style={TextSize.largeSize}>{label}</Text>
                         </View>
                     ))}
                 </View>
@@ -143,13 +131,7 @@ export default TimeTable = ({ classData, kind = "pt", nameList = {}, style, ...p
                                         borderBottomWidth: 1,
                                     }}
                                 >
-                                    <Text
-                                        style={{
-                                            fontSize: RFPercentage(2.5),
-                                        }}
-                                    >
-                                        {d.name}
-                                    </Text>
+                                    <Text style={TextSize.largeSize}>{d.name}</Text>
                                 </View>
                                 {d.classes.map((c, index) => (
                                     <View

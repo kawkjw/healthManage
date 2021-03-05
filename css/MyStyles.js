@@ -55,7 +55,7 @@ export const MyStyles = StyleSheet.create({
     },
     profileText: {
         marginBottom: 3,
-        fontSize: RFPercentage(2),
+        fontSize: RFPercentage(1.9),
     },
     flexCenter: {
         flex: 1,
@@ -71,7 +71,6 @@ export const AuthStyles = StyleSheet.create({
         justifyContent: "center",
     },
     touchScreen: {
-        flex: 1,
         alignSelf: "stretch",
         justifyContent: "center",
         paddingHorizontal: 30,
@@ -79,10 +78,10 @@ export const AuthStyles = StyleSheet.create({
     textInput: {
         borderWidth: 1,
         padding: 5,
-        fontSize: RFPercentage(2.5),
+        fontSize: RFPercentage(2.2),
     },
     text: {
-        fontSize: RFPercentage(2),
+        fontSize: RFPercentage(1.9),
         marginBottom: 5,
     },
     textView: {
@@ -109,7 +108,13 @@ export const AuthStyles = StyleSheet.create({
         }),
     },
     authText: {
-        fontSize: RFPercentage(2),
+        fontSize: RFPercentage(1.9),
         color: "#1e90ff",
     },
+});
+
+export const TextSize = StyleSheet.create({
+    normalSize: { fontSize: RFPercentage(1.9) },
+    largeSize: { fontSize: RFPercentage(2.2) },
+    largerSize: { fontSize: RFPercentage(2.5) },
 });

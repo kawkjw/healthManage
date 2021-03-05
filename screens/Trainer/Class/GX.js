@@ -16,10 +16,10 @@ import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import SegmentedPicker from "react-native-segmented-picker";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import { MaterialIcons } from "@expo/vector-icons";
-import { RFPercentage } from "react-native-responsive-fontsize";
 import moment from "moment";
 import { DataContext } from "../../Auth";
 import { getHoliday } from "../../../config/hooks";
+import { TextSize } from "../../../css/MyStyles";
 
 export default GX = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
@@ -261,7 +261,7 @@ export default GX = ({ navigation, route }) => {
                     }}
                 >
                     <TouchableOpacity onPress={() => picker.current.show()}>
-                        <Text style={{ fontSize: RFPercentage(2.5) }}>
+                        <Text style={TextSize.largeSize}>
                             {selectedYear +
                                 "-" +
                                 (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth)}
@@ -362,7 +362,7 @@ export default GX = ({ navigation, route }) => {
                             setLoading(true);
                         }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2) }}>닫기</Text>
+                        <Text style={TextSize.normalSize}>닫기</Text>
                     </TouchableOpacity>
                     <View
                         style={{
@@ -371,7 +371,7 @@ export default GX = ({ navigation, route }) => {
                             justifyContent: "center",
                         }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2.5) }}>{selectedDate + "일"}</Text>
+                        <Text style={TextSize.largeSize}>{selectedDate + "일"}</Text>
                     </View>
                     {loading ? (
                         <View
@@ -456,25 +456,29 @@ export default GX = ({ navigation, route }) => {
                             setLoading(true);
                         }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2) }}>닫기</Text>
+                        <Text style={TextSize.normalSize}>닫기</Text>
                     </TouchableOpacity>
                     <View style={{ height: 50 }}></View>
                     <View style={{ paddingHorizontal: 10 }}>
                         <Text
-                            style={{
-                                fontSize: RFPercentage(3),
-                                marginBottom: 5,
-                            }}
+                            style={[
+                                TextSize.largerSize,
+                                {
+                                    marginBottom: 5,
+                                },
+                            ]}
                         >
                             고객 명단
                         </Text>
                         {clientList.length === 0 ? (
                             <Text
-                                style={{
-                                    paddingLeft: 10,
-                                    fontSize: RFPercentage(2.3),
-                                    color: "red",
-                                }}
+                                style={[
+                                    TextSize.largeSize,
+                                    {
+                                        paddingLeft: 10,
+                                        color: "red",
+                                    },
+                                ]}
                             >
                                 예약한 고객이 없습니다.
                             </Text>
@@ -493,11 +497,7 @@ export default GX = ({ navigation, route }) => {
                                             alignItems: "flex-end",
                                         }}
                                     >
-                                        <Text
-                                            style={{
-                                                fontSize: RFPercentage(2),
-                                            }}
-                                        >
+                                        <Text style={TextSize.normalSize}>
                                             {(index + 1).toString() + ". "}
                                         </Text>
                                     </View>
@@ -507,22 +507,18 @@ export default GX = ({ navigation, route }) => {
                                             alignItems: "center",
                                         }}
                                     >
-                                        <Text
-                                            style={{
-                                                fontSize: RFPercentage(2),
-                                            }}
-                                        >
-                                            {client.name}
-                                        </Text>
+                                        <Text style={TextSize.normalSize}>{client.name}</Text>
                                     </View>
                                     <TouchableOpacity
                                         onPress={() => Linking.openURL(`tel:${client.phoneNumber}`)}
                                     >
                                         <Text
-                                            style={{
-                                                color: "blue",
-                                                fontSize: RFPercentage(2),
-                                            }}
+                                            style={[
+                                                TextSize.normalSize,
+                                                {
+                                                    color: "blue",
+                                                },
+                                            ]}
                                         >
                                             {client.phoneNumber}
                                         </Text>

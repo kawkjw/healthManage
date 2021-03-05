@@ -1,7 +1,6 @@
 import React from "react";
 import { Dimensions, SafeAreaView, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
-import { MyStyles } from "../../css/MyStyles";
-import { RFPercentage } from "react-native-responsive-fontsize";
+import { MyStyles, TextSize } from "../../css/MyStyles";
 
 export default Menu = ({ navigation }) => {
     const { width } = Dimensions.get("screen");
@@ -25,7 +24,7 @@ export default Menu = ({ navigation }) => {
                     ]}
                     onPress={() => navigation.navigate("Info")}
                 >
-                    <Text style={{ fontSize: RFPercentage(2.3) }}>정보</Text>
+                    <Text style={TextSize.largeSize}>정보</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -35,7 +34,7 @@ export default Menu = ({ navigation }) => {
                     ]}
                     onPress={() => navigation.navigate("Class")}
                 >
-                    <Text style={{ fontSize: RFPercentage(2.3) }}>예약</Text>
+                    <Text style={TextSize.largeSize}>예약</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -51,7 +50,7 @@ export default Menu = ({ navigation }) => {
                         )
                     }
                 >
-                    <Text style={{ fontSize: RFPercentage(2.3) }}>회원권 연장 신청</Text>
+                    <Text style={TextSize.largeSize}>회원권 연장 신청</Text>
                 </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>

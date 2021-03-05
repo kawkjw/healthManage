@@ -18,6 +18,8 @@ import * as Notifications from "expo-notifications";
 import myBase, { db } from "../../config/MyBase";
 import moment from "moment";
 import SelectSquashKind from "./Class/SelectSquashKind";
+import { TextSize } from "../../css/MyStyles";
+import { displayedAt } from "../../config/hooks";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
@@ -220,6 +222,7 @@ const MyStack = () => {
                         margin: 0,
                     }}
                     onBackdropPress={() => setModalNotification(false)}
+                    onBackButtonPress={() => setModalNotification(false)}
                 >
                     <View
                         style={{
@@ -238,17 +241,19 @@ const MyStack = () => {
                                 onPress={() => setModalNotification(false)}
                             >
                                 <Text
-                                    style={{
-                                        margin: 7,
-                                        fontSize: RFPercentage(2),
-                                    }}
+                                    style={[
+                                        TextSize.normalSize,
+                                        {
+                                            margin: 7,
+                                        },
+                                    ]}
                                 >
                                     닫기
                                 </Text>
                             </TouchableOpacity>
                             <TouchableOpacity
                                 style={{
-                                    padding: 5,
+                                    margin: 5,
                                     width: wp("20%"),
                                     alignItems: "center",
                                     position: "absolute",
@@ -260,26 +265,22 @@ const MyStack = () => {
                                 }}
                             >
                                 <Text
-                                    style={{
-                                        margin: 7,
-                                        fontSize: RFPercentage(2),
-                                    }}
+                                    style={[
+                                        TextSize.normalSize,
+                                        {
+                                            padding: 7,
+                                        },
+                                    ]}
                                 >
                                     모두 읽음
                                 </Text>
                             </TouchableOpacity>
                         </View>
-                        <View style={{ borderWidth: "0.5" }} />
+                        <View style={{ borderWidth: 1 }} />
                         <View>
                             {messages.length === 0 ? (
                                 <View style={{ padding: 10 }}>
-                                    <Text
-                                        style={{
-                                            fontSize: RFPercentage(2.5),
-                                        }}
-                                    >
-                                        알림 없음
-                                    </Text>
+                                    <Text style={TextSize.largeSize}>알림 없음</Text>
                                 </View>
                             ) : (
                                 <ScrollView>
@@ -374,9 +375,7 @@ const MyStack = () => {
                                                                       },
                                                             ]}
                                                         >
-                                                            {moment(
-                                                                message.sendDate.toDate()
-                                                            ).format("MM.DD. HH:mm") + " 에 보냄"}
+                                                            {displayedAt(message.sendDate.toDate())}
                                                         </Text>
                                                     </View>
                                                 </View>
@@ -454,7 +453,7 @@ const MyStack = () => {
                                 signOut();
                             }}
                         >
-                            <Text style={{ fontSize: RFPercentage(2) }}>로그아웃</Text>
+                            <Text style={TextSize.normalSize}>로그아웃</Text>
                         </TouchableOpacity>
                     ),
                 })}

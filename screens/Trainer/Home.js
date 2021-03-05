@@ -10,10 +10,9 @@ import {
     ScrollView,
     Alert,
 } from "react-native";
-import { MyStyles } from "../../css/MyStyles";
+import { MyStyles, TextSize } from "../../css/MyStyles";
 import * as Notifications from "expo-notifications";
 import myBase, { db } from "../../config/MyBase";
-import { RFPercentage } from "react-native-responsive-fontsize";
 
 export default Home = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -153,7 +152,7 @@ export default Home = ({ navigation, route }) => {
                     ]}
                     onPress={() => navigation.navigate("Profile")}
                 >
-                    <Text style={{ fontSize: RFPercentage(2.3) }}>내 정보</Text>
+                    <Text style={TextSize.largeSize}>내 정보</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -163,7 +162,7 @@ export default Home = ({ navigation, route }) => {
                     ]}
                     onPress={() => goMyClass()}
                 >
-                    <Text style={{ fontSize: RFPercentage(2.3) }}>수업 정보</Text>
+                    <Text style={TextSize.largeSize}>수업 정보</Text>
                 </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>

@@ -1,8 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Dimensions, SafeAreaView, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
-import { MyStyles } from "../../../css/MyStyles";
+import { MyStyles, TextSize } from "../../../css/MyStyles";
 import myBase, { db } from "../../../config/MyBase";
-import { RFPercentage } from "react-native-responsive-fontsize";
 import { DataContext } from "../../Auth";
 
 export default Class = ({ navigation }) => {
@@ -188,10 +187,10 @@ export default Class = ({ navigation }) => {
                 >
                     <Text
                         style={[
+                            TextSize.largeSize,
                             memberships.indexOf("pt") === -1
                                 ? { color: "red" }
                                 : { color: "black" },
-                            { fontSize: RFPercentage(2.3) },
                         ]}
                     >
                         PT
@@ -207,11 +206,11 @@ export default Class = ({ navigation }) => {
                 >
                     <Text
                         style={[
+                            TextSize.largeSize,
                             memberships.indexOf("pilates2") === -1 &&
                             memberships.indexOf("pilates3") === -1
                                 ? { color: "red" }
                                 : { color: "black" },
-                            { fontSize: RFPercentage(2.3) },
                         ]}
                     >
                         필라테스
@@ -227,10 +226,10 @@ export default Class = ({ navigation }) => {
                 >
                     <Text
                         style={[
+                            TextSize.largeSize,
                             memberships.indexOf("spinning") === -1
                                 ? { color: "red" }
                                 : { color: "black" },
-                            { fontSize: RFPercentage(2.3) },
                         ]}
                     >
                         스피닝
@@ -246,11 +245,11 @@ export default Class = ({ navigation }) => {
                 >
                     <Text
                         style={[
+                            TextSize.largeSize,
                             memberships.indexOf("squashpt") === -1 &&
                             memberships.indexOf("squashgroup") === -1
                                 ? { color: "red" }
                                 : { color: "black" },
-                            { fontSize: RFPercentage(2.3) },
                         ]}
                     >
                         스쿼시
@@ -266,10 +265,10 @@ export default Class = ({ navigation }) => {
                 >
                     <Text
                         style={[
+                            TextSize.largeSize,
                             memberships.indexOf("GX") === -1
                                 ? { color: "red" }
                                 : { color: "black" },
-                            { fontSize: RFPercentage(2.3) },
                         ]}
                     >
                         요가
@@ -285,10 +284,10 @@ export default Class = ({ navigation }) => {
                 >
                     <Text
                         style={[
+                            TextSize.largeSize,
                             memberships.indexOf("GX") === -1
                                 ? { color: "red" }
                                 : { color: "black" },
-                            { fontSize: RFPercentage(2.3) },
                         ]}
                     >
                         줌바

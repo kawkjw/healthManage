@@ -21,8 +21,8 @@ import SegmentedPicker from "react-native-segmented-picker";
 import { MaterialIcons } from "@expo/vector-icons";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import { pushNotificationsToPerson } from "../../../config/MyExpo";
-import { RFPercentage } from "react-native-responsive-fontsize";
 import { getHoliday } from "../../../config/hooks";
+import { TextSize } from "../../../css/MyStyles";
 
 export default PT = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -372,7 +372,7 @@ export default PT = ({ navigation, route }) => {
                     }}
                 >
                     <TouchableOpacity onPress={() => picker.current.show()}>
-                        <Text style={{ fontSize: 20 }}>
+                        <Text style={TextSize.largeSize}>
                             {selectedYear +
                                 "-" +
                                 (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth)}
@@ -428,12 +428,12 @@ export default PT = ({ navigation, route }) => {
                             >
                                 <Text
                                     style={[
+                                        TextSize.normalSize,
                                         item.color === "black"
                                             ? { color: "black" }
                                             : item.color === "blue"
                                             ? { color: "blue" }
                                             : { color: "red" },
-                                        { fontSize: RFPercentage(2) },
                                     ]}
                                 >
                                     {item.id}
@@ -488,19 +488,12 @@ export default PT = ({ navigation, route }) => {
                             setSelectedDate(0);
                         }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2) }}>닫기</Text>
+                        <Text style={TextSize.normalSize}>닫기</Text>
                     </TouchableOpacity>
-                    <View style={{ height: 30 }}></View>
-                    <Text
-                        style={{
-                            position: "absolute",
-                            top: Platform.OS === "ios" ? getStatusBarHeight() + 10 : 0,
-                            left: width / 2.15,
-                            fontSize: RFPercentage(2.5),
-                        }}
-                    >
-                        {selectedDate + "일"}
-                    </Text>
+                    <View style={{ height: 30, alignItems: "center", justifyContent: "center" }}>
+                        <Text style={TextSize.largeSize}>{selectedDate + "일"}</Text>
+                    </View>
+
                     {loading ? (
                         <View
                             style={{
@@ -553,13 +546,7 @@ export default PT = ({ navigation, route }) => {
                                             paddingLeft: 10,
                                         }}
                                     >
-                                        <Text
-                                            style={{
-                                                fontSize: RFPercentage(2),
-                                            }}
-                                        >
-                                            {availTime.timeStr}
-                                        </Text>
+                                        <Text style={TextSize.normalSize}>{availTime.timeStr}</Text>
                                     </View>
                                     <View
                                         style={{
@@ -575,20 +562,22 @@ export default PT = ({ navigation, route }) => {
                                         <View style={{ flex: 1, alignItems: "center" }}>
                                             {availTime.isAvail ? (
                                                 availTime.hasReserve ? (
-                                                    <Text style={{ fontSize: RFPercentage(2) }}>
+                                                    <Text style={TextSize.normalSize}>
                                                         이미 예약됨 {availTime.isMe ? "(나)" : null}
                                                     </Text>
                                                 ) : (
-                                                    <Text style={{ fontSize: RFPercentage(2) }}>
+                                                    <Text style={TextSize.normalSize}>
                                                         예약 안됨
                                                     </Text>
                                                 )
                                             ) : (
                                                 <Text
-                                                    style={{
-                                                        color: "red",
-                                                        fontSize: RFPercentage(2),
-                                                    }}
+                                                    style={[
+                                                        TextSize.normalSize,
+                                                        {
+                                                            color: "red",
+                                                        },
+                                                    ]}
                                                 >
                                                     불가능
                                                 </Text>
@@ -625,9 +614,7 @@ export default PT = ({ navigation, route }) => {
                                                         );
                                                     }}
                                                 >
-                                                    <Text style={{ fontSize: RFPercentage(2) }}>
-                                                        예약
-                                                    </Text>
+                                                    <Text style={TextSize.normalSize}>예약</Text>
                                                 </TouchableOpacity>
                                             )
                                         ) : availTime.isToday ? null : (

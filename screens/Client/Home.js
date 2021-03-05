@@ -10,9 +10,8 @@ import {
     StatusBar,
     Platform,
 } from "react-native";
-import { MyStyles } from "../../css/MyStyles";
+import { MyStyles, TextSize } from "../../css/MyStyles";
 import * as Notifications from "expo-notifications";
-import { RFPercentage } from "react-native-responsive-fontsize";
 
 export default Home = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -92,7 +91,7 @@ export default Home = ({ navigation, route }) => {
                     ]}
                     onPress={() => navigation.navigate("Menu")}
                 >
-                    <Text style={{ fontSize: RFPercentage(2.3) }}>메뉴</Text>
+                    <Text style={TextSize.largeSize}>메뉴</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[MyStyles.phoneButton, MyStyles.buttonShadow, { width: widthButton }]}
@@ -100,7 +99,7 @@ export default Home = ({ navigation, route }) => {
                         Linking.openURL("tel:12345678");
                     }}
                 >
-                    <Text style={{ fontSize: RFPercentage(2.3) }}>전화 연결</Text>
+                    <Text style={TextSize.largeSize}>전화 연결</Text>
                 </TouchableOpacity>
             </View>
         </SafeAreaView>

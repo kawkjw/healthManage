@@ -11,11 +11,14 @@ import {
     ScrollView,
     Image,
     ActivityIndicator,
+    KeyboardAvoidingView,
 } from "react-native";
 import { AuthContext } from "../Auth";
-import { AuthStyles, MyStyles } from "../../css/MyStyles";
-import { heightPercentageToDP as hp } from "react-native-responsive-screen";
-import { RFPercentage } from "react-native-responsive-fontsize";
+import { AuthStyles, MyStyles, TextSize } from "../../css/MyStyles";
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 
@@ -58,25 +61,31 @@ export default SignIn = ({ navigation }) => {
         <SafeAreaView style={AuthStyles.container}>
             <StatusBar barStyle={Platform.OS === "ios" ? "dark-content" : "default"} />
             <KeyboardAwareScrollView
-                style={{ alignSelf: "stretch" }}
-                contentContainerStyle={{ height: hp("90%") }}
+                contentContainerStyle={{
+                    marginTop: 30,
+                    paddingHorizontal: -30,
+                }}
                 keyboardShouldPersistTaps="always"
                 showsVerticalScrollIndicator={false}
                 scrollEnabled={false}
-                extraScrollHeight={110}
+                extraHeight={Platform.select({ android: 100 })}
+                extraScrollHeight={120}
+                enableOnAndroid={true}
+                enableAutomaticScroll
             >
                 {mailShow && (
                     <View
                         style={[
                             {
                                 position: "absolute",
-                                backgroundColor: "white",
                                 width: mailWidth,
                                 zIndex: 1,
                                 top: mailTop,
                                 right: 30,
                             },
-                            mailBoxDisplay ? { display: "flex" } : { display: "none" },
+                            mailBoxDisplay
+                                ? { display: "flex", backgroundColor: "white" }
+                                : { display: "none" },
                         ]}
                     >
                         <ScrollView
@@ -86,7 +95,7 @@ export default SignIn = ({ navigation }) => {
                             {mailList.map((mail, index) => (
                                 <View key={index}>
                                     {mailAddress === mail.slice(0, mailAddress.length) ? (
-                                        <View style={{ borderBottomWidth: "0.5" }}>
+                                        <View style={{ borderBottomWidth: 1 }}>
                                             <TouchableOpacity
                                                 style={{
                                                     paddingTop: 1,
@@ -99,13 +108,7 @@ export default SignIn = ({ navigation }) => {
                                                     Keyboard.dismiss();
                                                 }}
                                             >
-                                                <Text
-                                                    style={{
-                                                        fontSize: RFPercentage(2.5),
-                                                    }}
-                                                >
-                                                    {mail}
-                                                </Text>
+                                                <Text style={TextSize.largeSize}>{mail}</Text>
                                             </TouchableOpacity>
                                         </View>
                                     ) : undefined}
@@ -117,6 +120,7 @@ export default SignIn = ({ navigation }) => {
                 )}
                 <TouchableOpacity
                     style={AuthStyles.touchScreen}
+                    //style={{ justifyContent: "center" }}
                     onPress={() => {
                         Keyboard.dismiss();
                         setMailShow(false);
@@ -162,7 +166,7 @@ export default SignIn = ({ navigation }) => {
                                     justifyContent: "center",
                                 }}
                             >
-                                <Text style={{ fontSize: RFPercentage(3) }}>@</Text>
+                                <Text style={TextSize.largerSize}>@</Text>
                             </View>
                             <View
                                 style={{
@@ -184,18 +188,20 @@ export default SignIn = ({ navigation }) => {
                                         setMailShow(true);
                                     }}
                                 />
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        Keyboard.dismiss();
-                                        setMailShow(!mailShow);
-                                    }}
-                                >
-                                    <MaterialCommunityIcons
-                                        name="chevron-down"
-                                        size={30}
-                                        color="black"
-                                    />
-                                </TouchableOpacity>
+                                <View style={{ justifyContent: "center" }}>
+                                    <TouchableOpacity
+                                        onPress={() => {
+                                            Keyboard.dismiss();
+                                            setMailShow(!mailShow);
+                                        }}
+                                    >
+                                        <MaterialCommunityIcons
+                                            name="chevron-down"
+                                            size={30}
+                                            color="black"
+                                        />
+                                    </TouchableOpacity>
+                                </View>
                             </View>
                         </View>
                     </View>
@@ -219,7 +225,7 @@ export default SignIn = ({ navigation }) => {
                             onPress={() => login()}
                         >
                             {loading ? (
-                                <ActivityIndicator />
+                                <ActivityIndicator color="black" />
                             ) : (
                                 <Text
                                     style={[
@@ -248,6 +254,7 @@ export default SignIn = ({ navigation }) => {
                             <Text style={AuthStyles.authText}>회원가입</Text>
                         </TouchableOpacity>
                     </View>
+                    <View style={{ height: 30 }} />
                 </TouchableOpacity>
             </KeyboardAwareScrollView>
         </SafeAreaView>

@@ -1,7 +1,6 @@
 import React from "react";
 import { Dimensions, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
-import { RFPercentage } from "react-native-responsive-fontsize";
-import { MyStyles } from "../../../css/MyStyles";
+import { MyStyles, TextSize } from "../../../css/MyStyles";
 
 export default SelectSquashKind = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -20,7 +19,7 @@ export default SelectSquashKind = ({ navigation, route }) => {
                     navigation.navigate("PT", { ptName: "squash", limit: route.params.limit })
                 }
             >
-                <Text style={{ fontSize: RFPercentage(2.3) }}>개인 수업</Text>
+                <Text style={TextSize.largeSize}>개인 수업</Text>
             </TouchableOpacity>
             <TouchableOpacity
                 style={[
@@ -34,7 +33,7 @@ export default SelectSquashKind = ({ navigation, route }) => {
                     })
                 }
             >
-                <Text style={{ fontSize: RFPercentage(2.3) }}>그룹 수업</Text>
+                <Text style={TextSize.largeSize}>그룹 수업</Text>
             </TouchableOpacity>
         </SafeAreaView>
     );

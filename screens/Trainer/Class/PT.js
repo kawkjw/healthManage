@@ -25,6 +25,7 @@ import { getStatusBarHeight } from "react-native-status-bar-height";
 import { pushNotificationsToPerson } from "../../../config/MyExpo";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { getHoliday } from "../../../config/hooks";
+import { TextSize } from "../../../css/MyStyles";
 
 export default PT = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -518,7 +519,7 @@ export default PT = ({ navigation, route }) => {
                     }}
                 >
                     <TouchableOpacity onPress={() => picker.current.show()}>
-                        <Text style={{ fontSize: RFPercentage(2.5) }}>
+                        <Text style={TextSize.largeSize}>
                             {selectedYear +
                                 "-" +
                                 (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth)}
@@ -651,7 +652,7 @@ export default PT = ({ navigation, route }) => {
                             }
                         }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2) }}>닫기</Text>
+                        <Text style={TextSize.normalSize}>닫기</Text>
                     </TouchableOpacity>
                     <View
                         style={{
@@ -660,7 +661,7 @@ export default PT = ({ navigation, route }) => {
                             justifyContent: "center",
                         }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2.5) }}>{selectedDate + "일"}</Text>
+                        <Text style={TextSize.largeSize}>{selectedDate + "일"}</Text>
                     </View>
                     {loading ? (
                         <View
@@ -714,13 +715,7 @@ export default PT = ({ navigation, route }) => {
                                             paddingLeft: 10,
                                         }}
                                     >
-                                        <Text
-                                            style={{
-                                                fontSize: RFPercentage(2),
-                                            }}
-                                        >
-                                            {availTime.str}
-                                        </Text>
+                                        <Text style={TextSize.normalSize}>{availTime.str}</Text>
                                     </View>
                                     <View
                                         style={{
@@ -744,9 +739,7 @@ export default PT = ({ navigation, route }) => {
                                                     ]}
                                                     onPress={() => setAvailableTime(availTime.str)}
                                                 >
-                                                    <Text style={{ fontSize: RFPercentage(2.3) }}>
-                                                        가능
-                                                    </Text>
+                                                    <Text style={TextSize.largeSize}>가능</Text>
                                                 </TouchableOpacity>
                                                 <TouchableOpacity
                                                     style={[
@@ -758,9 +751,7 @@ export default PT = ({ navigation, route }) => {
                                                     ]}
                                                     onPress={() => setUnAvailabeTime(availTime.str)}
                                                 >
-                                                    <Text style={{ fontSize: RFPercentage(2.3) }}>
-                                                        불가능
-                                                    </Text>
+                                                    <Text style={TextSize.largeSize}>불가능</Text>
                                                 </TouchableOpacity>
                                             </>
                                         ) : (
@@ -785,11 +776,7 @@ export default PT = ({ navigation, route }) => {
                                                     >
                                                         {availTime.hasReserve ? (
                                                             <>
-                                                                <Text
-                                                                    style={{
-                                                                        fontSize: RFPercentage(2),
-                                                                    }}
-                                                                >
+                                                                <Text style={TextSize.normalSize}>
                                                                     {(availTime.isOT
                                                                         ? "OT: "
                                                                         : availTime.isGroup
@@ -805,23 +792,19 @@ export default PT = ({ navigation, route }) => {
                                                                     }
                                                                 >
                                                                     <Text
-                                                                        style={{
-                                                                            color: "blue",
-                                                                            fontSize: RFPercentage(
-                                                                                2
-                                                                            ),
-                                                                        }}
+                                                                        style={[
+                                                                            TextSize.normalSize,
+                                                                            {
+                                                                                color: "blue",
+                                                                            },
+                                                                        ]}
                                                                     >
                                                                         {availTime.clientPhone}
                                                                     </Text>
                                                                 </TouchableOpacity>
                                                             </>
                                                         ) : (
-                                                            <Text
-                                                                style={{
-                                                                    fontSize: RFPercentage(2),
-                                                                }}
-                                                            >
+                                                            <Text style={TextSize.normalSize}>
                                                                 예약이 없습니다.
                                                             </Text>
                                                         )}
@@ -834,10 +817,12 @@ export default PT = ({ navigation, route }) => {
                                                         }}
                                                     >
                                                         <Text
-                                                            style={{
-                                                                color: "red",
-                                                                fontSize: RFPercentage(2),
-                                                            }}
+                                                            style={[
+                                                                TextSize.normalSize,
+                                                                {
+                                                                    color: "red",
+                                                                },
+                                                            ]}
                                                         >
                                                             불가능
                                                         </Text>

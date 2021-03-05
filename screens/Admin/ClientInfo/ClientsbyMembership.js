@@ -5,8 +5,7 @@ import {
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { db } from "../../../config/MyBase";
-import { MyStyles } from "../../../css/MyStyles";
-import { RFPercentage } from "react-native-responsive-fontsize";
+import { MyStyles, TextSize } from "../../../css/MyStyles";
 
 export default ClientbyMembership = ({ navigation, route }) => {
     const [clientInfos, setClientInfos] = useState([]);
@@ -144,7 +143,7 @@ export default ClientbyMembership = ({ navigation, route }) => {
                         ]}
                         onPress={() => setLetterIndex(index)}
                     >
-                        <Text style={{ fontSize: RFPercentage(2) }}>{letter}</Text>
+                        <Text style={TextSize.normalSize}>{letter}</Text>
                     </TouchableOpacity>
                 ))}
             </View>
@@ -167,7 +166,7 @@ export default ClientbyMembership = ({ navigation, route }) => {
                         ]}
                         onPress={() => setLetterIndex(index + 7)}
                     >
-                        <Text style={{ fontSize: RFPercentage(2) }}>{letter}</Text>
+                        <Text style={TextSize.normalSize}>{letter}</Text>
                     </TouchableOpacity>
                 ))}
             </View>
@@ -212,13 +211,13 @@ export default ClientbyMembership = ({ navigation, route }) => {
                                         index === 0 ? { marginTop: 10 } : undefined,
                                     ]}
                                 >
-                                    <Text style={{ fontSize: RFPercentage(2) }}>
+                                    <Text style={TextSize.normalSize}>
                                         이름 : {client.info.name}
                                     </Text>
-                                    <Text style={{ fontSize: RFPercentage(2) }}>
+                                    <Text style={TextSize.normalSize}>
                                         이메일 : {client.info.email}
                                     </Text>
-                                    <Text style={{ fontSize: RFPercentage(2) }}>
+                                    <Text style={TextSize.normalSize}>
                                         휴대폰번호 : {client.info.phoneNumber}
                                     </Text>
                                 </View>

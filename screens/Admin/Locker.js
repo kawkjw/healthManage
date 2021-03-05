@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
-import { StyleSheet, View, FlatList, Text, TouchableOpacity, Alert } from "react-native";
+import { StyleSheet, View, FlatList, Text, TouchableOpacity, Alert, Platform } from "react-native";
 import myBase, { db } from "../../config/MyBase";
 import Dialog from "react-native-dialog";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
-import { RFPercentage } from "react-native-responsive-fontsize";
 import { AuthContext } from "../Auth";
+import { TextSize } from "../../css/MyStyles";
 
 export default Locker = () => {
     const [data, setData] = useState();
@@ -192,6 +192,7 @@ export default Locker = () => {
                     onChangeText={setPhoneNumber}
                     keyboardType="phone-pad"
                     maxLength={13}
+                    style={Platform.OS === "android" ? { borderWidth: 1 } : undefined}
                 />
                 <Dialog.Button label="취소" onPress={handleCancel} />
                 <Dialog.Button label="확인" onPress={addLocker} />
@@ -243,10 +244,12 @@ export default Locker = () => {
                             }}
                         >
                             <Text
-                                style={{
-                                    color: item.occupied ? "red" : "blue",
-                                    fontSize: RFPercentage(3),
-                                }}
+                                style={[
+                                    TextSize.largeSize,
+                                    {
+                                        color: item.occupied ? "red" : "blue",
+                                    },
+                                ]}
                             >
                                 {item.id}
                             </Text>

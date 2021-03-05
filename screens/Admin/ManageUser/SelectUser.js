@@ -3,7 +3,7 @@ import { FlatList, Image, SafeAreaView, StyleSheet, Text, View } from "react-nat
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { db } from "../../../config/MyBase";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
-import { RFPercentage } from "react-native-responsive-fontsize";
+import { TextSize } from "../../../css/MyStyles";
 
 export default SelectUser = ({ navigation, route }) => {
     const [findUsers, setFindUsers] = useState([]);
@@ -94,7 +94,7 @@ export default SelectUser = ({ navigation, route }) => {
                     keyExtractor={(item, index) => index}
                 />
             ) : (
-                <Text style={{ fontSize: RFPercentage(3) }}>Not Found Client</Text>
+                <Text style={TextSize.largeSize}>Not Found Client</Text>
             )}
         </SafeAreaView>
     );

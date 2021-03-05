@@ -13,10 +13,9 @@ import {
 } from "react-native";
 import { widthPercentageToDP as wp } from "react-native-responsive-screen";
 import { getStatusBarHeight } from "react-native-status-bar-height";
-import { MyStyles } from "../../../css/MyStyles";
+import { MyStyles, TextSize } from "../../../css/MyStyles";
 import myBase, { arrayUnion, db } from "../../../config/MyBase";
 import moment from "moment";
-import { RFPercentage } from "react-native-responsive-fontsize";
 import { getHoliday } from "../../../config/hooks";
 
 export default GX = ({ navigation, route }) => {
@@ -294,12 +293,12 @@ export default GX = ({ navigation, route }) => {
                             >
                                 <Text
                                     style={[
+                                        TextSize.normalSize,
                                         item.color === "black"
                                             ? { color: "black" }
                                             : item.color === "blue"
                                             ? { color: "blue" }
                                             : { color: "red" },
-                                        { fontSize: RFPercentage(2) },
                                     ]}
                                 >
                                     {item.id}
@@ -333,7 +332,7 @@ export default GX = ({ navigation, route }) => {
                             setSelectDate(0);
                         }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2) }}>닫기</Text>
+                        <Text style={TextSize.normalSize}>닫기</Text>
                     </TouchableOpacity>
                     <View style={{ height: 30 }}></View>
                     <ScrollView
@@ -375,17 +374,15 @@ export default GX = ({ navigation, route }) => {
                                 }}
                                 disabled={c.isToday}
                             >
-                                <Text style={{ fontSize: RFPercentage(2.3), marginBottom: 5 }}>
+                                <Text style={[TextSize.largeSize, { marginBottom: 5 }]}>
                                     {selectDate}일 {c.start}~{c.end} ({c.currentClient}/
                                     {c.maxClient})
                                 </Text>
-                                <Text style={{ fontSize: RFPercentage(2.3) }}>
-                                    트레이너 : {c.trainer}
-                                </Text>
+                                <Text style={TextSize.largeSize}>트레이너 : {c.trainer}</Text>
                             </TouchableOpacity>
                         ))}
                         {classList.length === 0 ? (
-                            <Text style={{ fontSize: RFPercentage(2.3) }}>수업이 없습니다.</Text>
+                            <Text style={TextSize.largeSize}>수업이 없습니다.</Text>
                         ) : undefined}
                     </ScrollView>
                 </SafeAreaView>

@@ -1,7 +1,6 @@
 import React from "react";
 import { Dimensions, SafeAreaView, Text, TouchableOpacity, ScrollView } from "react-native";
-import { RFPercentage } from "react-native-responsive-fontsize";
-import { MyStyles } from "../../../css/MyStyles";
+import { MyStyles, TextSize } from "../../../css/MyStyles";
 
 export default Info = ({ navigation }) => {
     const { width } = Dimensions.get("screen");
@@ -25,7 +24,7 @@ export default Info = ({ navigation }) => {
                     ]}
                     onPress={() => navigation.navigate("QRScan")}
                 >
-                    <Text style={{ fontSize: RFPercentage(2.3) }}>QR 코드 스캔</Text>
+                    <Text style={TextSize.largeSize}>QR 코드 스캔</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -35,7 +34,7 @@ export default Info = ({ navigation }) => {
                     ]}
                     onPress={() => navigation.navigate("SelectTrainer")}
                 >
-                    <Text style={{ fontSize: RFPercentage(2.3) }}>OT 예약</Text>
+                    <Text style={TextSize.largeSize}>OT 예약</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -45,7 +44,7 @@ export default Info = ({ navigation }) => {
                     ]}
                     onPress={() => navigation.navigate("Test")}
                 >
-                    <Text style={{ fontSize: RFPercentage(2.3) }}>Test 1</Text>
+                    <Text style={TextSize.largeSize}>Test 1</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -55,7 +54,7 @@ export default Info = ({ navigation }) => {
                     ]}
                     onPress={() => navigation.navigate("Test")}
                 >
-                    <Text style={{ fontSize: RFPercentage(2.3) }}>Test 2</Text>
+                    <Text style={TextSize.largeSize}>Test 2</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -65,7 +64,7 @@ export default Info = ({ navigation }) => {
                     ]}
                     onPress={() => navigation.navigate("Test")}
                 >
-                    <Text style={{ fontSize: RFPercentage(2.3) }}>Test 3</Text>
+                    <Text style={TextSize.largeSize}>Test 3</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -75,7 +74,7 @@ export default Info = ({ navigation }) => {
                     ]}
                     onPress={() => navigation.navigate("Test")}
                 >
-                    <Text style={{ fontSize: RFPercentage(2.3) }}>Test 4</Text>
+                    <Text style={TextSize.largeSize}>Test 4</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -85,7 +84,7 @@ export default Info = ({ navigation }) => {
                     ]}
                     onPress={() => navigation.navigate("Test")}
                 >
-                    <Text style={{ fontSize: RFPercentage(2.3) }}>Test 5</Text>
+                    <Text style={TextSize.largeSize}>Test 5</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -95,7 +94,7 @@ export default Info = ({ navigation }) => {
                     ]}
                     onPress={() => navigation.navigate("Test")}
                 >
-                    <Text style={{ fontSize: RFPercentage(2.3) }}>Test 6</Text>
+                    <Text style={TextSize.largeSize}>Test 6</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -105,7 +104,7 @@ export default Info = ({ navigation }) => {
                     ]}
                     onPress={() => navigation.navigate("Test")}
                 >
-                    <Text style={{ fontSize: RFPercentage(2.3) }}>Test 7</Text>
+                    <Text style={TextSize.largeSize}>Test 7</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -115,7 +114,7 @@ export default Info = ({ navigation }) => {
                     ]}
                     onPress={() => navigation.navigate("Test")}
                 >
-                    <Text style={{ fontSize: RFPercentage(2.3) }}>Test 8</Text>
+                    <Text style={TextSize.largeSize}>Test 8</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -125,7 +124,7 @@ export default Info = ({ navigation }) => {
                     ]}
                     onPress={() => navigation.navigate("Test")}
                 >
-                    <Text style={{ fontSize: RFPercentage(2.3) }}>Test 9</Text>
+                    <Text style={TextSize.largeSize}>Test 9</Text>
                 </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>

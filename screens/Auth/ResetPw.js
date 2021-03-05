@@ -11,6 +11,7 @@ import {
 } from "react-native";
 import myBase from "../../config/MyBase";
 import { AuthStyles } from "../../css/MyStyles";
+import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 export default ResetPw = () => {
     const [email, setEmail] = useState("");
@@ -49,7 +50,6 @@ export default ResetPw = () => {
 
     return (
         <SafeAreaView style={AuthStyles.container}>
-            <StatusBar barStyle="dark-content" />
             <KeyboardAvoidingView
                 behavior={Platform.OS === "ios" ? "padding" : "height"}
                 style={{ flex: 1, alignSelf: "stretch" }}
@@ -60,7 +60,16 @@ export default ResetPw = () => {
                     accessible={false}
                     activeOpacity={1}
                 >
-                    <View style={AuthStyles.textView}>
+                    <KeyboardAvoidingView
+                        style={{
+                            paddingHorizontal: 20,
+                            height: hp("90%"),
+                            alignSelf: "stretch",
+                            justifyContent: "center",
+                        }}
+                        behavior="position"
+                        keyboardVerticalOffset={-100}
+                    >
                         <Text style={AuthStyles.text}>이메일</Text>
                         <TextInput
                             style={[
@@ -78,12 +87,12 @@ export default ResetPw = () => {
                             value={email}
                             onChangeText={setEmail}
                         />
-                    </View>
-                    <View style={{ height: 35 }}>
-                        <TouchableOpacity style={AuthStyles.authButton} onPress={sendResetMail}>
-                            <Text style={AuthStyles.authText}>비밀번호 초기화</Text>
-                        </TouchableOpacity>
-                    </View>
+                        <View style={{ height: 35, marginTop: 10 }}>
+                            <TouchableOpacity style={AuthStyles.authButton} onPress={sendResetMail}>
+                                <Text style={AuthStyles.authText}>비밀번호 초기화</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </KeyboardAvoidingView>
                 </TouchableOpacity>
             </KeyboardAvoidingView>
         </SafeAreaView>

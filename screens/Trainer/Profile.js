@@ -12,7 +12,7 @@ import {
 } from "react-native";
 import myBase, { arrayUnion, db } from "../../config/MyBase";
 import { AuthContext, DataContext } from "../Auth";
-import { AuthStyles, MyStyles } from "../../css/MyStyles";
+import { AuthStyles, MyStyles, TextSize } from "../../css/MyStyles";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import Modal from "react-native-modal";
 import RadioForm, {
@@ -268,11 +268,13 @@ export default Profile = ({ navigation, route }) => {
     const renderClass = (obj) => {
         const renderNoClass = (
             <Text
-                style={{
-                    marginBottom: 5,
-                    marginLeft: 7,
-                    fontSize: RFPercentage(2),
-                }}
+                style={[
+                    TextSize.normalSize,
+                    {
+                        marginBottom: 5,
+                        marginLeft: 7,
+                    },
+                ]}
             >
                 수업이 없습니다.
             </Text>
@@ -300,10 +302,12 @@ export default Profile = ({ navigation, route }) => {
                             style={{ alignSelf: "center" }}
                         />
                         <Text
-                            style={{
-                                fontSize: RFPercentage(2),
-                                marginLeft: 5,
-                            }}
+                            style={[
+                                TextSize.normalSize,
+                                {
+                                    marginLeft: 5,
+                                },
+                            ]}
                         >
                             {value.time + " " + value.clientName + " "}
                         </Text>
@@ -311,10 +315,12 @@ export default Profile = ({ navigation, route }) => {
                             onPress={() => Linking.openURL(`tel:${value.clientPhone}`)}
                         >
                             <Text
-                                style={{
-                                    fontSize: RFPercentage(2),
-                                    color: "blue",
-                                }}
+                                style={[
+                                    TextSize.normalSize,
+                                    {
+                                        color: "blue",
+                                    },
+                                ]}
                             >
                                 {value.clientPhone}
                             </Text>
@@ -352,10 +358,12 @@ export default Profile = ({ navigation, route }) => {
                             style={{ alignSelf: "center" }}
                         />
                         <Text
-                            style={{
-                                fontSize: RFPercentage(2),
-                                marginLeft: 5,
-                            }}
+                            style={[
+                                TextSize.normalSize,
+                                {
+                                    marginLeft: 5,
+                                },
+                            ]}
                         >
                             {(classNames[value.name] !== undefined
                                 ? classNames[value.name].ko
@@ -466,7 +474,7 @@ export default Profile = ({ navigation, route }) => {
                                         }}
                                         onPress={() => setModalSetClass(false)}
                                     >
-                                        <Text style={{ margin: 7, fontSize: RFPercentage(2) }}>
+                                        <Text style={[TextSize.normalSize, { margin: 7 }]}>
                                             닫기
                                         </Text>
                                     </TouchableOpacity>
@@ -526,7 +534,7 @@ export default Profile = ({ navigation, route }) => {
                                             );
                                         }}
                                     >
-                                        <Text style={{ margin: 7, fontSize: RFPercentage(2) }}>
+                                        <Text style={[TextSize.normalSize, { margin: 7 }]}>
                                             확인
                                         </Text>
                                     </TouchableOpacity>
@@ -565,7 +573,7 @@ export default Profile = ({ navigation, route }) => {
                                                             setPtEndTime("");
                                                         }}
                                                         labelStyle={{
-                                                            fontSize: RFPercentage(2.5),
+                                                            fontSize: RFPercentage(2.2),
                                                             marginLeft: 5,
                                                         }}
                                                     />
@@ -591,11 +599,13 @@ export default Profile = ({ navigation, route }) => {
                                                 maxLength={2}
                                             />
                                             <Text
-                                                style={{
-                                                    flex: 1,
-                                                    fontSize: RFPercentage(2.5),
-                                                    marginLeft: 5,
-                                                }}
+                                                style={[
+                                                    TextSize.largeSize,
+                                                    {
+                                                        flex: 1,
+                                                        marginLeft: 5,
+                                                    },
+                                                ]}
                                             >
                                                 시부터
                                             </Text>
@@ -608,11 +618,13 @@ export default Profile = ({ navigation, route }) => {
                                                 maxLength={2}
                                             />
                                             <Text
-                                                style={{
-                                                    flex: 1,
-                                                    fontSize: RFPercentage(2.5),
-                                                    marginLeft: 5,
-                                                }}
+                                                style={[
+                                                    TextSize.largeSize,
+                                                    {
+                                                        flex: 1,
+                                                        marginLeft: 5,
+                                                    },
+                                                ]}
                                             >
                                                 시까지
                                             </Text>
@@ -655,7 +667,7 @@ export default Profile = ({ navigation, route }) => {
                                                                     setRadioGxSelected(index)
                                                                 }
                                                                 labelStyle={{
-                                                                    fontSize: RFPercentage(2.5),
+                                                                    fontSize: RFPercentage(2.2),
                                                                     marginLeft: 5,
                                                                 }}
                                                             />
@@ -693,7 +705,7 @@ export default Profile = ({ navigation, route }) => {
                                                                     setRadioGxSelected(index + 2)
                                                                 }
                                                                 labelStyle={{
-                                                                    fontSize: RFPercentage(2.5),
+                                                                    fontSize: RFPercentage(2.2),
                                                                     marginLeft: 5,
                                                                 }}
                                                             />
@@ -704,10 +716,12 @@ export default Profile = ({ navigation, route }) => {
                                             {radioGxSelected === 1 && (
                                                 <View style={{ paddingLeft: 20, marginTop: 5 }}>
                                                     <Text
-                                                        style={{
-                                                            fontSize: RFPercentage(2),
-                                                            marginBottom: 5,
-                                                        }}
+                                                        style={[
+                                                            TextSize.normalSize,
+                                                            {
+                                                                marginBottom: 5,
+                                                            },
+                                                        ]}
                                                     >
                                                         스쿼시 개인 수업 가능한 시간대
                                                     </Text>
@@ -729,11 +743,13 @@ export default Profile = ({ navigation, route }) => {
                                                             maxLength={2}
                                                         />
                                                         <Text
-                                                            style={{
-                                                                flex: 1,
-                                                                fontSize: RFPercentage(2.5),
-                                                                marginLeft: 5,
-                                                            }}
+                                                            style={[
+                                                                TextSize.largeSize,
+                                                                {
+                                                                    flex: 1,
+                                                                    marginLeft: 5,
+                                                                },
+                                                            ]}
                                                         >
                                                             시부터
                                                         </Text>
@@ -749,11 +765,13 @@ export default Profile = ({ navigation, route }) => {
                                                             maxLength={2}
                                                         />
                                                         <Text
-                                                            style={{
-                                                                flex: 1,
-                                                                fontSize: RFPercentage(2.5),
-                                                                marginLeft: 5,
-                                                            }}
+                                                            style={[
+                                                                TextSize.largeSize,
+                                                                {
+                                                                    flex: 1,
+                                                                    marginLeft: 5,
+                                                                },
+                                                            ]}
                                                         >
                                                             시까지
                                                         </Text>
@@ -769,28 +787,32 @@ export default Profile = ({ navigation, route }) => {
                 </View>
                 {className[0] === "Need to Set Up" ? undefined : (
                     <View>
-                        <Text style={{ fontSize: RFPercentage(2.3) }}>오늘 수업</Text>
+                        <Text style={TextSize.largeSize}>오늘 수업</Text>
                         {loading ? (
                             <Text
-                                style={{
-                                    marginBottom: 5,
-                                    marginLeft: 7,
-                                    fontSize: RFPercentage(2),
-                                }}
+                                style={[
+                                    TextSize.normalSize,
+                                    {
+                                        marginBottom: 5,
+                                        marginLeft: 7,
+                                    },
+                                ]}
                             >
                                 로딩 중
                             </Text>
                         ) : (
                             renderClass(todayClassInfo)
                         )}
-                        <Text style={{ fontSize: RFPercentage(2.3) }}>내일 수업</Text>
+                        <Text style={TextSize.largeSize}>내일 수업</Text>
                         {loading ? (
                             <Text
-                                style={{
-                                    marginBottom: 5,
-                                    marginLeft: 7,
-                                    fontSize: RFPercentage(2),
-                                }}
+                                style={[
+                                    TextSize.normalSize,
+                                    {
+                                        marginBottom: 5,
+                                        marginLeft: 7,
+                                    },
+                                ]}
                             >
                                 로딩 중
                             </Text>

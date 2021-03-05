@@ -21,6 +21,7 @@ import moment from "moment";
 import { BarChart, XAxis, YAxis, Grid } from "react-native-svg-charts";
 import { Text as SvgText } from "react-native-svg";
 import { db } from "../../config/MyBase";
+import { TextSize } from "../../css/MyStyles";
 
 export default Sales = ({ navigation, route }) => {
     const today = new Date();
@@ -390,7 +391,7 @@ export default Sales = ({ navigation, route }) => {
                 key={index}
                 x={x(index) + bandwidth / 2}
                 y={value < 20 ? y(value) - 10 : y(value) + 15}
-                fontSize={RFPercentage(2)}
+                fontSize={RFPercentage(1.9)}
                 fill={value >= 20 ? "white" : "black"}
                 alignmentBaseline={"middle"}
                 textAnchor={"middle"}
@@ -398,6 +399,10 @@ export default Sales = ({ navigation, route }) => {
                 {value}
             </SvgText>
         ));
+
+    const priceToString = (price) => {
+        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    };
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -469,11 +474,7 @@ export default Sales = ({ navigation, route }) => {
                                     }}
                                 >
                                     <TouchableOpacity onPress={() => picker.current.show()}>
-                                        <Text
-                                            style={{
-                                                fontSize: RFPercentage(2.8),
-                                            }}
-                                        >
+                                        <Text style={TextSize.largerSize}>
                                             {selectedYear +
                                                 "-" +
                                                 (selectedMonth < 10
@@ -539,7 +540,7 @@ export default Sales = ({ navigation, route }) => {
                                             >
                                                 <Text
                                                     style={[
-                                                        { fontSize: RFPercentage(2.3) },
+                                                        TextSize.largeSize,
                                                         item.color === "black"
                                                             ? { color: "black" }
                                                             : item.color === "blue"
@@ -564,7 +565,7 @@ export default Sales = ({ navigation, route }) => {
                             }}
                         >
                             <View style={{ backgroundColor: "white", padding: 10 }}>
-                                <Text style={{ fontSize: RFPercentage(2.5) }}>
+                                <Text style={TextSize.largeSize}>
                                     {moment(
                                         `${selectedYear} ${selectedMonth} ${selectedDate}`,
                                         "YYYY M D"
@@ -587,11 +588,9 @@ export default Sales = ({ navigation, route }) => {
                                     </View>
                                 ) : (
                                     <View>
-                                        <Text>
-                                            총액: {(dayCash + dayCard).toLocaleString("ko-KR")}원
-                                        </Text>
-                                        <Text>현금 총액: {dayCash.toLocaleString("ko-KR")}원</Text>
-                                        <Text>카드 총액: {dayCard.toLocaleString("ko-KR")}원</Text>
+                                        <Text>총액: {priceToString(dayCash + dayCard)}원</Text>
+                                        <Text>현금 총액: {priceToString(dayCash)}원</Text>
+                                        <Text>카드 총액: {priceToString(dayCard)}원</Text>
                                     </View>
                                 )}
                             </View>
@@ -653,13 +652,9 @@ export default Sales = ({ navigation, route }) => {
                                         justifyContent: "center",
                                     }}
                                 >
-                                    <Text
-                                        style={{
-                                            fontSize: RFPercentage(2.8),
-                                        }}
-                                    >
-                                        {monthYear}
-                                    </Text>
+                                    <View>
+                                        <Text style={TextSize.largerSize}>{monthYear}</Text>
+                                    </View>
                                 </View>
                                 <View
                                     style={{
@@ -713,7 +708,7 @@ export default Sales = ({ navigation, route }) => {
                                                         : undefined
                                                 }
                                             >
-                                                <Text style={{ fontSize: RFPercentage(2.3) }}>
+                                                <Text style={TextSize.largeSize}>
                                                     {item.id + "월"}
                                                 </Text>
                                             </View>
@@ -736,7 +731,7 @@ export default Sales = ({ navigation, route }) => {
                                     backgroundColor: "white",
                                 }}
                             >
-                                <Text style={{ fontSize: RFPercentage(2.5) }}>
+                                <Text style={TextSize.largeSize}>
                                     {moment(`${monthYear} ${monthMonth}`, "YYYY M").format(
                                         "YYYY년 MM월 결산"
                                     )}
@@ -798,13 +793,9 @@ export default Sales = ({ navigation, route }) => {
                                         justifyContent: "center",
                                     }}
                                 >
-                                    <Text
-                                        style={{
-                                            fontSize: RFPercentage(2.8),
-                                        }}
-                                    >
-                                        {statsYear}
-                                    </Text>
+                                    <View>
+                                        <Text style={TextSize.largerSize}>{statsYear}</Text>
+                                    </View>
                                 </View>
                                 <View
                                     style={{
@@ -858,7 +849,7 @@ export default Sales = ({ navigation, route }) => {
                                                         : undefined
                                                 }
                                             >
-                                                <Text style={{ fontSize: RFPercentage(2.3) }}>
+                                                <Text style={TextSize.largeSize}>
                                                     {item.id + "월"}
                                                 </Text>
                                             </View>
@@ -881,7 +872,7 @@ export default Sales = ({ navigation, route }) => {
                                     backgroundColor: "white",
                                 }}
                             >
-                                <Text style={{ fontSize: RFPercentage(2.5) }}>
+                                <Text style={TextSize.largeSize}>
                                     {moment(`${statsYear} ${statsMonth}`, "YYYY M").format(
                                         "YYYY년 MM월 통계"
                                     )}
@@ -892,7 +883,7 @@ export default Sales = ({ navigation, route }) => {
                                         contentInset={{ top: 13, bottom: 13 }}
                                         svg={{
                                             fill: "black",
-                                            fontSize: RFPercentage(2),
+                                            fontSize: RFPercentage(1.9),
                                         }}
                                         numberOfTicks={10}
                                         formatLabel={(value) => value}
@@ -913,7 +904,7 @@ export default Sales = ({ navigation, route }) => {
                                         <XAxis
                                             data={chart}
                                             formatLabel={(value, index) => label[index]}
-                                            svg={{ fontSize: RFPercentage(2), fill: "black" }}
+                                            svg={{ fontSize: RFPercentage(1.9), fill: "black" }}
                                             contentInset={{ left: 35, right: 25 }}
                                             style={{
                                                 height: 20,
@@ -954,7 +945,7 @@ export default Sales = ({ navigation, route }) => {
 
 const styles = StyleSheet.create({
     menuText: {
-        fontSize: RFPercentage(2.3),
+        fontSize: RFPercentage(2.2),
     },
     menuButton: {
         flex: 1,

@@ -12,7 +12,6 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import { RFPercentage } from "react-native-responsive-fontsize";
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
@@ -24,6 +23,7 @@ import myBase, { db } from "../../../config/MyBase";
 import moment from "moment";
 import { DataContext } from "../../Auth";
 import { getHoliday } from "../../../config/hooks";
+import { TextSize } from "../../../css/MyStyles";
 
 export default ClassInfo = ({ navigation }) => {
     const { width } = Dimensions.get("screen");
@@ -287,7 +287,7 @@ export default ClassInfo = ({ navigation }) => {
                     }}
                 >
                     <TouchableOpacity onPress={() => picker.current.show()}>
-                        <Text style={{ fontSize: RFPercentage(2.5) }}>
+                        <Text style={TextSize.largeSize}>
                             {selectedYear +
                                 "-" +
                                 (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth)}
@@ -422,19 +422,11 @@ export default ClassInfo = ({ navigation }) => {
                             setSelectedDate(0);
                         }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2) }}>닫기</Text>
+                        <Text style={TextSize.normalSize}>닫기</Text>
                     </TouchableOpacity>
-                    <View style={{ height: 30 }}></View>
-                    <Text
-                        style={{
-                            position: "absolute",
-                            top: Platform.OS === "ios" ? getStatusBarHeight() + 10 : 10,
-                            left: width / 2.15,
-                            fontSize: RFPercentage(2.5),
-                        }}
-                    >
-                        {selectedDate + "일"}
-                    </Text>
+                    <View style={{ height: 30, alignItems: "center", justifyContent: "center" }}>
+                        <Text style={TextSize.largeSize}>{selectedDate + "일"}</Text>
+                    </View>
                     <View style={{ height: hp("2%") }} />
                     {loadingInModal ? (
                         <View
@@ -455,10 +447,12 @@ export default ClassInfo = ({ navigation }) => {
                                 <View key={index} style={{ marginBottom: 5 }}>
                                     {classData[gxName].length === 0 ? null : (
                                         <Text
-                                            style={{
-                                                fontSize: RFPercentage(2.5),
-                                                marginLeft: 20,
-                                            }}
+                                            style={[
+                                                TextSize.largeSize,
+                                                {
+                                                    marginLeft: 20,
+                                                },
+                                            ]}
                                         >
                                             {classNames[gxName] !== undefined
                                                 ? classNames[gxName].ko
@@ -503,11 +497,7 @@ export default ClassInfo = ({ navigation }) => {
                                                                   flexDirection: "row",
                                                               }}
                                                           >
-                                                              <Text
-                                                                  style={{
-                                                                      fontSize: RFPercentage(2.2),
-                                                                  }}
-                                                              >
+                                                              <Text style={TextSize.largeSize}>
                                                                   {moment(
                                                                       value.start.toDate()
                                                                   ).format("HH:mm") +
@@ -516,11 +506,7 @@ export default ClassInfo = ({ navigation }) => {
                                                                           value.end.toDate()
                                                                       ).format("HH:mm")}
                                                               </Text>
-                                                              <Text
-                                                                  style={{
-                                                                      fontSize: RFPercentage(2.2),
-                                                                  }}
-                                                              >
+                                                              <Text style={TextSize.largeSize}>
                                                                   {" 강사 " +
                                                                       value.trainer +
                                                                       " (" +
@@ -561,7 +547,7 @@ export default ClassInfo = ({ navigation }) => {
                             setModalClassInfo(true);
                         }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2) }}>닫기</Text>
+                        <Text style={TextSize.normalSize}>닫기</Text>
                     </TouchableOpacity>
                     <View
                         style={{
@@ -570,21 +556,23 @@ export default ClassInfo = ({ navigation }) => {
                             justifyContent: "center",
                         }}
                     >
-                        <Text style={{ fontSize: RFPercentage(2.5) }}>고객 정보</Text>
+                        <Text style={TextSize.largeSize}>고객 정보</Text>
                     </View>
                     <View style={{ padding: 10 }}>
-                        <Text style={{ fontSize: RFPercentage(2.5) }}>
+                        <Text style={TextSize.largeSize}>
                             {selectedDate}일 {selectedClass.start} ~ {selectedClass.end} (강사{" "}
                             {selectedClass.trainer})
                         </Text>
                         <View style={{ marginTop: 10 }} />
                         {selectedClass.clients.length === 0 ? (
                             <Text
-                                style={{
-                                    paddingLeft: 10,
-                                    color: "red",
-                                    fontSize: RFPercentage(2.3),
-                                }}
+                                style={[
+                                    TextSize.largeSize,
+                                    {
+                                        paddingLeft: 10,
+                                        color: "red",
+                                    },
+                                ]}
                             >
                                 예약한 고객이 없습니다.
                             </Text>
@@ -604,11 +592,7 @@ export default ClassInfo = ({ navigation }) => {
                                             alignItems: "flex-end",
                                         }}
                                     >
-                                        <Text
-                                            style={{
-                                                fontSize: RFPercentage(2),
-                                            }}
-                                        >
+                                        <Text style={TextSize.normalSize}>
                                             {(index + 1).toString() + ". "}
                                         </Text>
                                     </View>
@@ -619,22 +603,18 @@ export default ClassInfo = ({ navigation }) => {
                                             alignItems: "center",
                                         }}
                                     >
-                                        <Text
-                                            style={{
-                                                fontSize: RFPercentage(2),
-                                            }}
-                                        >
-                                            {client.name}
-                                        </Text>
+                                        <Text style={TextSize.normalSize}>{client.name}</Text>
                                     </View>
                                     <TouchableOpacity
                                         onPress={() => Linking.openURL(`tel:${client.phoneNumber}`)}
                                     >
                                         <Text
-                                            style={{
-                                                color: "#3399ff",
-                                                fontSize: RFPercentage(2),
-                                            }}
+                                            style={[
+                                                TextSize.normalSize,
+                                                {
+                                                    color: "#3399ff",
+                                                },
+                                            ]}
                                         >
                                             {client.phoneNumber}
                                         </Text>
@@ -665,7 +645,7 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         backgroundColor: "white",
         borderWidth: 1,
-        borderRadius: RFPercentage(2.5),
+        borderRadius: 15,
         borderColor: "grey",
         ...Platform.select({
             ios: {

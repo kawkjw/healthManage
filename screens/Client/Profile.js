@@ -17,7 +17,7 @@ import {
 import QRCode from "react-native-qrcode-svg";
 import myBase, { db } from "../../config/MyBase";
 import { useInterval } from "../../config/hooks";
-import { MyStyles, AuthStyles } from "../../css/MyStyles";
+import { MyStyles, AuthStyles, TextSize } from "../../css/MyStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext, DataContext } from "../Auth";
 import { getStatusBarHeight } from "react-native-status-bar-height";
@@ -558,14 +558,14 @@ export default Profile = ({ navigation }) => {
                                     />
                                 ) : undefined}
 
-                                <Text style={{ marginTop: 10, fontSize: RFPercentage(2.3) }}>
+                                <Text style={[TextSize.largeSize, { marginTop: 10 }]}>
                                     유효시간 {isRun ? count : 0}초
                                 </Text>
                             </View>
                         </>
                     ) : (
                         <>
-                            <Text style={{ fontSize: RFPercentage(2.5) }}>입장 코드 생성</Text>
+                            <Text style={TextSize.largeSize}>입장 코드 생성</Text>
                             <Image
                                 style={[MyStyles.image, { width: widthImage }]}
                                 source={require("../../assets/qrcode-test.png")}
@@ -616,7 +616,6 @@ export default Profile = ({ navigation }) => {
                                         <FirebaseRecaptchaVerifierModal
                                             ref={appVerifier}
                                             firebaseConfig={myBase.options}
-                                            attemptInvisibleVerification={true}
                                         />
                                         <TouchableOpacity
                                             style={{
@@ -635,7 +634,7 @@ export default Profile = ({ navigation }) => {
                                                 setModalPhoneVisible(!modalPhoneVisible);
                                             }}
                                         >
-                                            <Text style={{ fontSize: RFPercentage(2) }}>닫기</Text>
+                                            <Text style={TextSize.normalSize}>닫기</Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity
                                             style={{ flex: 1 }}
@@ -684,7 +683,7 @@ export default Profile = ({ navigation }) => {
                                                         onPress={() => sendCode()}
                                                         disabled={!changePhone}
                                                     >
-                                                        <Text style={{ fontSize: RFPercentage(2) }}>
+                                                        <Text style={TextSize.normalSize}>
                                                             전송
                                                         </Text>
                                                     </TouchableOpacity>
@@ -741,15 +740,13 @@ export default Profile = ({ navigation }) => {
                                                         !verifyCode
                                                     }
                                                 >
-                                                    <Text style={{ fontSize: RFPercentage(2) }}>
-                                                        확인
-                                                    </Text>
+                                                    <Text style={TextSize.normalSize}>확인</Text>
                                                 </TouchableOpacity>
                                             </View>
                                         </TouchableOpacity>
                                         <View
                                             style={{
-                                                width: "90%",
+                                                width: "100%",
                                                 alignItems: "center",
                                             }}
                                         >
@@ -787,7 +784,7 @@ export default Profile = ({ navigation }) => {
                                                 setModalEmailVisible(!modalEmailVisible);
                                             }}
                                         >
-                                            <Text style={{ fontSize: RFPercentage(2) }}>닫기</Text>
+                                            <Text style={TextSize.normalSize}>닫기</Text>
                                         </TouchableOpacity>
                                         <TouchableOpacity
                                             style={{ flex: 1 }}
@@ -842,11 +839,7 @@ export default Profile = ({ navigation }) => {
                                                             onPress={() => checkUsedEmail()}
                                                             disabled={!changePhone}
                                                         >
-                                                            <Text
-                                                                style={{
-                                                                    fontSize: RFPercentage(2),
-                                                                }}
-                                                            >
+                                                            <Text style={TextSize.normalSize}>
                                                                 중복확인
                                                             </Text>
                                                         </TouchableOpacity>
@@ -877,9 +870,7 @@ export default Profile = ({ navigation }) => {
                                                         !changeEmail || !password || !chkUsedEmail
                                                     }
                                                 >
-                                                    <Text style={{ fontSize: RFPercentage(2) }}>
-                                                        확인
-                                                    </Text>
+                                                    <Text style={TextSize.normalSize}>확인</Text>
                                                 </TouchableOpacity>
                                             </View>
                                         </TouchableOpacity>
@@ -938,9 +929,9 @@ export default Profile = ({ navigation }) => {
                                 <Text
                                     style={[
                                         MyStyles.profileText,
+                                        TextSize.largeSize,
                                         {
                                             fontWeight: "bold",
-                                            fontSize: RFPercentage(2.5),
                                         },
                                     ]}
                                 >
@@ -968,10 +959,12 @@ export default Profile = ({ navigation }) => {
                                                     color="black"
                                                 />
                                                 <Text
-                                                    style={{
-                                                        fontSize: RFPercentage(2),
-                                                        marginLeft: 3,
-                                                    }}
+                                                    style={[
+                                                        TextSize.normalSize,
+                                                        {
+                                                            marginLeft: 3,
+                                                        },
+                                                    ]}
                                                 >
                                                     {info}
                                                 </Text>
@@ -1008,11 +1001,7 @@ export default Profile = ({ navigation }) => {
                                                             }
                                                         }}
                                                     >
-                                                        <Text
-                                                            style={{
-                                                                fontSize: RFPercentage(2),
-                                                            }}
-                                                        >
+                                                        <Text style={TextSize.normalSize}>
                                                             {(i === 1 ? ": " : "") + s}
                                                         </Text>
                                                     </View>
@@ -1025,9 +1014,9 @@ export default Profile = ({ navigation }) => {
                                     <Text
                                         style={[
                                             MyStyles.profileText,
+                                            TextSize.largeSize,
                                             {
                                                 fontWeight: "bold",
-                                                fontSize: RFPercentage(2.5),
                                             },
                                         ]}
                                     >
@@ -1043,7 +1032,7 @@ export default Profile = ({ navigation }) => {
                                                 color="black"
                                                 style={{ marginRight: 4 }}
                                             />
-                                            <Text style={{ fontSize: RFPercentage(2) }}>
+                                            <Text style={TextSize.normalSize}>
                                                 예약된 수업이 없습니다.
                                             </Text>
                                         </View>
@@ -1062,11 +1051,7 @@ export default Profile = ({ navigation }) => {
                                                     color="black"
                                                     style={{ marginRight: 4 }}
                                                 />
-                                                <Text
-                                                    style={{
-                                                        fontSize: RFPercentage(2),
-                                                    }}
-                                                >
+                                                <Text style={TextSize.normalSize}>
                                                     {(classNames[reservedClass.className] !==
                                                     undefined
                                                         ? classNames[reservedClass.className].miniKo
@@ -1084,10 +1069,12 @@ export default Profile = ({ navigation }) => {
                                                     style={{ marginRight: 4 }}
                                                 />
                                                 <Text
-                                                    style={{
-                                                        fontSize: RFPercentage(2),
-                                                        marginBottom: 3,
-                                                    }}
+                                                    style={[
+                                                        TextSize.normalSize,
+                                                        {
+                                                            marginBottom: 3,
+                                                        },
+                                                    ]}
                                                 >
                                                     {reservedClass.classDate}{" "}
                                                     {reservedClass.startTime +
@@ -1108,9 +1095,9 @@ export default Profile = ({ navigation }) => {
                                     <Text
                                         style={[
                                             MyStyles.profileText,
+                                            TextSize.largeSize,
                                             {
                                                 fontWeight: "bold",
-                                                fontSize: RFPercentage(2.5),
                                             },
                                         ]}
                                     >
@@ -1126,7 +1113,7 @@ export default Profile = ({ navigation }) => {
                                                 color="black"
                                                 style={{ marginRight: 4 }}
                                             />
-                                            <Text style={{ fontSize: RFPercentage(2) }}>
+                                            <Text style={TextSize.normalSize}>
                                                 예약된 수업이 없습니다.
                                             </Text>
                                         </View>
@@ -1145,11 +1132,7 @@ export default Profile = ({ navigation }) => {
                                                     color="black"
                                                     style={{ marginRight: 4 }}
                                                 />
-                                                <Text
-                                                    style={{
-                                                        fontSize: RFPercentage(2),
-                                                    }}
-                                                >
+                                                <Text style={TextSize.normalSize}>
                                                     {(classNames[reservedClass.className] !==
                                                     undefined
                                                         ? classNames[reservedClass.className].miniKo
@@ -1167,10 +1150,12 @@ export default Profile = ({ navigation }) => {
                                                     style={{ marginRight: 4 }}
                                                 />
                                                 <Text
-                                                    style={{
-                                                        fontSize: RFPercentage(2),
-                                                        marginBottom: 3,
-                                                    }}
+                                                    style={[
+                                                        TextSize.normalSize,
+                                                        {
+                                                            marginBottom: 3,
+                                                        },
+                                                    ]}
                                                 >
                                                     {reservedClass.classDate}{" "}
                                                     {reservedClass.startTime +

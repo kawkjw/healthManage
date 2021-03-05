@@ -8,10 +8,9 @@ import {
     Platform,
     ScrollView,
 } from "react-native";
-import { MyStyles } from "../../css/MyStyles";
+import { MyStyles, TextSize } from "../../css/MyStyles";
 import * as Notifications from "expo-notifications";
 import myBase, { db } from "../../config/MyBase";
-import { RFPercentage } from "react-native-responsive-fontsize";
 
 export default Home = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -93,7 +92,7 @@ export default Home = ({ navigation, route }) => {
                     ]}
                     onPress={() => navigation.navigate("ClassInfoMenu")}
                 >
-                    <Text style={{ fontSize: RFPercentage(2.3) }}>수업 정보</Text>
+                    <Text style={TextSize.largeSize}>수업 정보</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -103,7 +102,7 @@ export default Home = ({ navigation, route }) => {
                     ]}
                     onPress={() => navigation.navigate("Locker")}
                 >
-                    <Text style={{ fontSize: RFPercentage(2.3) }}>락커</Text>
+                    <Text style={TextSize.largeSize}>락커</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -113,7 +112,7 @@ export default Home = ({ navigation, route }) => {
                     ]}
                     onPress={() => navigation.navigate("ClientInfoMenu")}
                 >
-                    <Text style={{ fontSize: RFPercentage(2.3) }}>고객 정보</Text>
+                    <Text style={TextSize.largeSize}>고객 정보</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
@@ -123,7 +122,7 @@ export default Home = ({ navigation, route }) => {
                     ]}
                     onPress={() => navigation.navigate("InputPassword")}
                 >
-                    <Text style={{ fontSize: RFPercentage(2.3) }}>결산</Text>
+                    <Text style={TextSize.largeSize}>결산</Text>
                 </TouchableOpacity>
             </ScrollView>
         </SafeAreaView>

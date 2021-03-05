@@ -7,10 +7,9 @@ import CNavigator from "./Client/CNavigator";
 import LoadingScreen from "./LoadingScreen";
 import { Alert, StatusBar, Text, View, TouchableOpacity } from "react-native";
 import { AuthContext } from "./Auth";
-import { AuthStyles } from "../css/MyStyles";
+import { AuthStyles, TextSize } from "../css/MyStyles";
 import { registerForPushNotificationAsync } from "../config/MyExpo";
 import ANavigator from "./Admin/ANavigator";
-import { RFPercentage } from "react-native-responsive-fontsize";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
@@ -115,10 +114,8 @@ const MyStack = () => {
                     }}
                 >
                     <View style={{ alignItems: "center", marginBottom: 10 }}>
-                        <Text style={{ fontSize: RFPercentage(2) }}>
-                            이메일 인증 완료되지 않았습니다.
-                        </Text>
-                        <Text style={{ fontSize: RFPercentage(2) }}>
+                        <Text style={TextSize.normalSize}>이메일 인증 완료되지 않았습니다.</Text>
+                        <Text style={TextSize.normalSize}>
                             인증 메일이 도착하지 않았다면 재전송을 눌러주세요.
                         </Text>
                     </View>
