@@ -3,7 +3,6 @@ import {
     Dimensions,
     FlatList,
     Image,
-    Modal,
     SafeAreaView,
     StyleSheet,
     Text,
@@ -22,6 +21,7 @@ import TimeTable from "../../../config/TimeTable";
 import { DataContext } from "../../Auth";
 import { getHoliday } from "../../../config/hooks";
 import { TextSize } from "../../../css/MyStyles";
+import Modal from "react-native-modal";
 
 export default ClassInfo = ({ navigation }) => {
     const { width } = Dimensions.get("screen");
@@ -282,7 +282,7 @@ export default ClassInfo = ({ navigation }) => {
                     }}
                 >
                     <TouchableOpacity onPress={() => picker.current.show()}>
-                        <Text style={TextSize.largeSize}>
+                        <Text style={TextSize.largerSize}>
                             {selectedYear +
                                 "-" +
                                 (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth)}
@@ -396,37 +396,32 @@ export default ClassInfo = ({ navigation }) => {
                     },
                 ]}
             />
-            <Modal animationType="slide" visible={modalClassInfo} transparent={true}>
-                <SafeAreaView
+            <Modal
+                isVisible={modalClassInfo}
+                style={{ justifyContent: "flex-end", margin: 0 }}
+                onBackdropPress={() => setModalClassInfo(false)}
+                onBackButtonPress={() => setModalClassInfo(false)}
+            >
+                <View
                     style={{
-                        flex: 1,
+                        height: hp("90%"),
                         backgroundColor: "white",
                     }}
                 >
-                    <TouchableOpacity
-                        style={{
-                            position: "absolute",
-                            top: Platform.OS === "ios" ? getStatusBarHeight() : 0,
-                            left: 0,
-                            margin: 10,
-                            padding: 5,
-                            zIndex: 1,
-                        }}
-                        onPress={() => {
-                            setModalClassInfo(false);
-                            setSelectedDate(0);
-                        }}
-                    >
-                        <Text style={TextSize.normalSize}>닫기</Text>
-                    </TouchableOpacity>
-                    <View
-                        style={{
-                            height: 30,
-                            alignItems: "center",
-                            justifyContent: "center",
-                        }}
-                    >
-                        <Text style={TextSize.largeSize}>{selectedDate + "일"}</Text>
+                    <View style={{ flexDirection: "row", height: hp("5%") }}>
+                        <TouchableOpacity
+                            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+                            onPress={() => {
+                                setModalClassInfo(false);
+                                setSelectedDate(0);
+                            }}
+                        >
+                            <Text style={TextSize.largeSize}>닫기</Text>
+                        </TouchableOpacity>
+                        <View style={{ flex: 6, alignItems: "center", justifyContent: "center" }}>
+                            <Text style={TextSize.largeSize}>{selectedDate + "일"}</Text>
+                        </View>
+                        <View style={{ flex: 1 }} />
                     </View>
                     {loadingInModal ? (
                         <View
@@ -442,14 +437,9 @@ export default ClassInfo = ({ navigation }) => {
                             />
                         </View>
                     ) : (
-                        <TimeTable
-                            kind="pt"
-                            classData={classData}
-                            style={{ marginTop: 10 }}
-                            nameList={classNames}
-                        />
+                        <TimeTable kind="pt" classData={classData} nameList={classNames} />
                     )}
-                </SafeAreaView>
+                </View>
             </Modal>
         </SafeAreaView>
     );

@@ -81,7 +81,7 @@ export default TimeTable = ({ classData, kind = "pt", nameList = {}, style, ...p
                             alignItems: "center",
                         }}
                     >
-                        <Text style={TextSize.largeSize}>Time</Text>
+                        <Text style={TextSize.largeSize}>시간</Text>
                     </View>
                     {timeLabel.map((label, index) => (
                         <View

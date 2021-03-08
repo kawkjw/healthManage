@@ -409,7 +409,7 @@ export default Auth = () => {
                                 component={AuthSuccess}
                                 options={{
                                     headerShown: false,
-                                    animationEnabled: false,
+                                    //animationEnabled: false,
                                 }}
                             />
                         )}

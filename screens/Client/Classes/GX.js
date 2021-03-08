@@ -3,7 +3,6 @@ import {
     Alert,
     Dimensions,
     FlatList,
-    Modal,
     SafeAreaView,
     ScrollView,
     StyleSheet,
@@ -11,12 +10,16 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import { widthPercentageToDP as wp } from "react-native-responsive-screen";
+import {
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
+} from "react-native-responsive-screen";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import { MyStyles, TextSize } from "../../../css/MyStyles";
 import myBase, { arrayUnion, db } from "../../../config/MyBase";
 import moment from "moment";
 import { getHoliday } from "../../../config/hooks";
+import Modal from "react-native-modal";
 
 export default GX = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
@@ -310,31 +313,30 @@ export default GX = ({ navigation, route }) => {
                 numColumns={7}
                 keyExtractor={(item, index) => index}
             />
-            <Modal animationType="slide" visible={modalClass}>
-                <SafeAreaView
+            <Modal
+                isVisible={modalClass}
+                style={{ justifyContent: "flex-end", margin: 0 }}
+                onBackdropPress={() => setModalClass(false)}
+                onBackButtonPress={() => setModalClass(false)}
+            >
+                <View
                     style={{
-                        flex: 1,
+                        height: hp("90%"),
                         backgroundColor: "white",
-                        justifyContent: "center",
                     }}
                 >
-                    <TouchableOpacity
-                        style={{
-                            position: "absolute",
-                            top: Platform.OS === "ios" ? getStatusBarHeight() : 0,
-                            left: 0,
-                            margin: 10,
-                            padding: 5,
-                            zIndex: 1,
-                        }}
-                        onPress={() => {
-                            setModalClass(false);
-                            setSelectDate(0);
-                        }}
-                    >
-                        <Text style={TextSize.normalSize}>닫기</Text>
-                    </TouchableOpacity>
-                    <View style={{ height: 30 }}></View>
+                    <View style={{ flexDirection: "row", height: hp("5%") }}>
+                        <TouchableOpacity
+                            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+                            onPress={() => {
+                                setModalClass(false);
+                                setSelectDate(0);
+                            }}
+                        >
+                            <Text style={TextSize.largeSize}>닫기</Text>
+                        </TouchableOpacity>
+                        <View style={{ flex: 7 }} />
+                    </View>
                     <ScrollView
                         style={{
                             flex: 10,
@@ -385,7 +387,7 @@ export default GX = ({ navigation, route }) => {
                             <Text style={TextSize.largeSize}>수업이 없습니다.</Text>
                         ) : undefined}
                     </ScrollView>
-                </SafeAreaView>
+                </View>
             </Modal>
         </SafeAreaView>
     );

@@ -4,7 +4,6 @@ import {
     Dimensions,
     FlatList,
     Image,
-    Modal,
     SafeAreaView,
     ScrollView,
     StyleSheet,
@@ -23,6 +22,7 @@ import { getStatusBarHeight } from "react-native-status-bar-height";
 import { pushNotificationsToPerson } from "../../../config/MyExpo";
 import { getHoliday } from "../../../config/hooks";
 import { TextSize } from "../../../css/MyStyles";
+import Modal from "react-native-modal";
 
 export default PT = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -372,7 +372,7 @@ export default PT = ({ navigation, route }) => {
                     }}
                 >
                     <TouchableOpacity onPress={() => picker.current.show()}>
-                        <Text style={TextSize.largeSize}>
+                        <Text style={TextSize.largerSize}>
                             {selectedYear +
                                 "-" +
                                 (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth)}
@@ -467,33 +467,33 @@ export default PT = ({ navigation, route }) => {
                     },
                 ]}
             />
-            <Modal animationType="slide" visible={modalTimeTable} transparent={true}>
-                <SafeAreaView
+            <Modal
+                isVisible={modalTimeTable}
+                style={{ justifyContent: "flex-end", margin: 0 }}
+                onBackdropPress={() => setModalTimeTable(false)}
+                onBackButtonPress={() => setModalTimeTable(false)}
+            >
+                <View
                     style={{
-                        flex: 1,
+                        height: hp("90%"),
                         backgroundColor: "white",
                     }}
                 >
-                    <TouchableOpacity
-                        style={{
-                            position: "absolute",
-                            top: Platform.OS === "ios" ? getStatusBarHeight() : 0,
-                            left: 0,
-                            margin: 10,
-                            padding: 5,
-                            zIndex: 1,
-                        }}
-                        onPress={() => {
-                            setModalTimeTable(false);
-                            setSelectedDate(0);
-                        }}
-                    >
-                        <Text style={TextSize.normalSize}>닫기</Text>
-                    </TouchableOpacity>
-                    <View style={{ height: 30, alignItems: "center", justifyContent: "center" }}>
-                        <Text style={TextSize.largeSize}>{selectedDate + "일"}</Text>
+                    <View style={{ flexDirection: "row", height: hp("5%") }}>
+                        <TouchableOpacity
+                            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+                            onPress={() => {
+                                setModalTimeTable(false);
+                                setSelectedDate(0);
+                            }}
+                        >
+                            <Text style={TextSize.largeSize}>닫기</Text>
+                        </TouchableOpacity>
+                        <View style={{ flex: 6, alignItems: "center", justifyContent: "center" }}>
+                            <Text style={TextSize.largeSize}>{selectedDate + "일"}</Text>
+                        </View>
+                        <View style={{ flex: 1 }} />
                     </View>
-
                     {loading ? (
                         <View
                             style={{
@@ -625,7 +625,7 @@ export default PT = ({ navigation, route }) => {
                             ))}
                         </ScrollView>
                     )}
-                </SafeAreaView>
+                </View>
             </Modal>
         </SafeAreaView>
     );

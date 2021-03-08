@@ -48,7 +48,7 @@ export default Sales = ({ navigation, route }) => {
     const [dayCard, setDayCard] = useState(0);
 
     const [monthYear, setMonthYear] = useState(today.getFullYear());
-    const [monthMonth, setMonthMonth] = useState(today.getMonth() + 1);
+    const [monthMonth, setMonthMonth] = useState(0);
     const [monthData, setMonthData] = useState([]);
     const [monthAnimation] = useState(new Animated.Value(hp("32%")));
     const [monthInfoAnimation] = useState(new Animated.Value(0));
@@ -56,7 +56,7 @@ export default Sales = ({ navigation, route }) => {
     const [monthMoveAnimation] = useState(new Animated.Value(100));
 
     const [statsYear, setStatsYear] = useState(today.getFullYear());
-    const [statsMonth, setStatsMonth] = useState(today.getMonth() + 1);
+    const [statsMonth, setStatsMonth] = useState(0);
     const [statsAnimation] = useState(new Animated.Value(hp("32%")));
     const [statsInfoAnimation] = useState(new Animated.Value(0));
     const [statsBackAnimation] = useState(new Animated.Value(0));
@@ -751,6 +751,7 @@ export default Sales = ({ navigation, route }) => {
                         <TouchableOpacity
                             onPress={() => {
                                 onSelectMonthMenu();
+                                setMonthMonth(0);
                             }}
                         >
                             <Ionicons
@@ -928,6 +929,7 @@ export default Sales = ({ navigation, route }) => {
                         <TouchableOpacity
                             onPress={() => {
                                 onSelectStatsMenu();
+                                setStatsMonth(0);
                             }}
                         >
                             <Ionicons

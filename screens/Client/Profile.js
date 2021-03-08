@@ -6,7 +6,6 @@ import {
     Dimensions,
     View,
     Image,
-    Modal,
     TextInput,
     Alert,
     Keyboard,
@@ -26,7 +25,11 @@ import moment from "moment";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { FirebaseRecaptchaVerifierModal, FirebaseRecaptchaBanner } from "expo-firebase-recaptcha";
-import { heightPercentageToDP as hp } from "react-native-responsive-screen";
+import {
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
+} from "react-native-responsive-screen";
+import Modal from "react-native-modal";
 
 export default Profile = ({ navigation }) => {
     const [data, setData] = useState("");
@@ -602,280 +605,6 @@ export default Profile = ({ navigation }) => {
                                 style={{ padding: 15 }}
                                 showsVerticalScrollIndicator={false}
                             >
-                                <Modal
-                                    animationType="slide"
-                                    transparent={true}
-                                    visible={modalPhoneVisible}
-                                >
-                                    <SafeAreaView
-                                        style={{
-                                            flex: 1,
-                                            backgroundColor: "white",
-                                        }}
-                                    >
-                                        <FirebaseRecaptchaVerifierModal
-                                            ref={appVerifier}
-                                            firebaseConfig={myBase.options}
-                                        />
-                                        <TouchableOpacity
-                                            style={{
-                                                position: "absolute",
-                                                top:
-                                                    Platform.OS === "ios"
-                                                        ? getStatusBarHeight()
-                                                        : 0,
-                                                left: 0,
-                                                margin: 10,
-                                                padding: 5,
-                                                zIndex: 1,
-                                            }}
-                                            onPress={() => {
-                                                setChangePhone("");
-                                                setModalPhoneVisible(!modalPhoneVisible);
-                                            }}
-                                        >
-                                            <Text style={TextSize.normalSize}>닫기</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity
-                                            style={{ flex: 1 }}
-                                            onPress={Keyboard.dismiss}
-                                            accessible={false}
-                                            activeOpacity={1}
-                                        >
-                                            <View
-                                                style={{
-                                                    flex: 1,
-                                                }}
-                                            />
-                                            <View
-                                                style={{
-                                                    flex: 8,
-                                                    paddingHorizontal: 30,
-                                                }}
-                                            >
-                                                <Text style={AuthStyles.text}>
-                                                    변경할 휴대폰 번호
-                                                </Text>
-                                                <View
-                                                    style={{
-                                                        flexDirection: "row",
-                                                        marginBottom: 10,
-                                                    }}
-                                                >
-                                                    <TextInput
-                                                        style={[
-                                                            AuthStyles.textInput,
-                                                            {
-                                                                flex: 3,
-                                                                marginRight: 7,
-                                                            },
-                                                        ]}
-                                                        placeholder="010-0000-0000"
-                                                        keyboardType="phone-pad"
-                                                        autoCompleteType="tel"
-                                                        textContentType="telephoneNumber"
-                                                        value={changePhone}
-                                                        onChangeText={setChangePhone}
-                                                        maxLength={13}
-                                                    />
-                                                    <TouchableOpacity
-                                                        style={AuthStyles.authButton}
-                                                        onPress={() => sendCode()}
-                                                        disabled={!changePhone}
-                                                    >
-                                                        <Text style={TextSize.normalSize}>
-                                                            전송
-                                                        </Text>
-                                                    </TouchableOpacity>
-                                                </View>
-                                                <View style={{ marginBottom: 10 }}>
-                                                    {verificationId !== "" && (
-                                                        <Text
-                                                            style={{
-                                                                marginBottom: 5,
-                                                            }}
-                                                        >
-                                                            인증 코드 발송되었습니다.
-                                                        </Text>
-                                                    )}
-                                                    <TextInput
-                                                        style={AuthStyles.textInput}
-                                                        placeholder="123456"
-                                                        keyboardType="phone-pad"
-                                                        maxLength={6}
-                                                        editable={verificationId !== ""}
-                                                        value={verifyCode}
-                                                        onChangeText={setVerifyCode}
-                                                        onChange={(e) => {
-                                                            if (e.nativeEvent.text.length === 6) {
-                                                                Keyboard.dismiss();
-                                                            }
-                                                        }}
-                                                    />
-                                                </View>
-                                                <TouchableOpacity
-                                                    style={[
-                                                        MyStyles.buttonShadow,
-                                                        {
-                                                            height: hp("5%"),
-                                                            alignItems: "center",
-                                                            justifyContent: "center",
-                                                            borderRadius: 10,
-                                                        },
-                                                    ]}
-                                                    onPress={() => {
-                                                        if (verificationId !== "") {
-                                                            dbChangePhone();
-                                                        } else {
-                                                            Alert.alert(
-                                                                "경고",
-                                                                "인증을 위한 문자 전송 버튼을 눌러주세요.",
-                                                                [{ text: "확인" }]
-                                                            );
-                                                        }
-                                                    }}
-                                                    disabled={
-                                                        !verificationId ||
-                                                        !changePhone ||
-                                                        !verifyCode
-                                                    }
-                                                >
-                                                    <Text style={TextSize.normalSize}>확인</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                        </TouchableOpacity>
-                                        <View
-                                            style={{
-                                                width: "100%",
-                                                alignItems: "center",
-                                            }}
-                                        >
-                                            <FirebaseRecaptchaBanner />
-                                        </View>
-                                    </SafeAreaView>
-                                </Modal>
-                                <Modal
-                                    animationType="slide"
-                                    transparent={true}
-                                    visible={modalEmailVisible}
-                                >
-                                    <SafeAreaView
-                                        style={{
-                                            flex: 1,
-                                            backgroundColor: "white",
-                                            justifyContent: "center",
-                                        }}
-                                    >
-                                        <TouchableOpacity
-                                            style={{
-                                                position: "absolute",
-                                                top:
-                                                    Platform.OS === "ios"
-                                                        ? getStatusBarHeight()
-                                                        : 0,
-                                                left: 0,
-                                                margin: 10,
-                                                padding: 5,
-                                                zIndex: 1,
-                                            }}
-                                            onPress={() => {
-                                                setChangeEmail("");
-                                                setChkUsedEmail(false);
-                                                setModalEmailVisible(!modalEmailVisible);
-                                            }}
-                                        >
-                                            <Text style={TextSize.normalSize}>닫기</Text>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity
-                                            style={{ flex: 1 }}
-                                            onPress={Keyboard.dismiss}
-                                            accessible={false}
-                                            activeOpacity={1}
-                                        >
-                                            <View style={{ flex: 1 }} />
-                                            <View
-                                                style={{
-                                                    flex: 8,
-                                                    paddingHorizontal: 30,
-                                                }}
-                                            >
-                                                <View style={AuthStyles.textView}>
-                                                    <Text style={AuthStyles.text}>
-                                                        변경할 이메일 주소
-                                                    </Text>
-                                                    <View
-                                                        style={{
-                                                            flexDirection: "row",
-                                                        }}
-                                                    >
-                                                        <TextInput
-                                                            style={[
-                                                                AuthStyles.textInput,
-                                                                changeEmail
-                                                                    ? checkEmail
-                                                                        ? {
-                                                                              backgroundColor:
-                                                                                  "green",
-                                                                          }
-                                                                        : {
-                                                                              backgroundColor:
-                                                                                  "red",
-                                                                          }
-                                                                    : undefined,
-                                                                {
-                                                                    flex: 3,
-                                                                    marginRight: 7,
-                                                                },
-                                                            ]}
-                                                            placeholder="examples@example.com"
-                                                            keyboardType="email-address"
-                                                            autoCompleteType="email"
-                                                            textContentType="emailAddress"
-                                                            value={changeEmail}
-                                                            onChangeText={setChangeEmail}
-                                                        />
-                                                        <TouchableOpacity
-                                                            style={AuthStyles.authButton}
-                                                            onPress={() => checkUsedEmail()}
-                                                            disabled={!changePhone}
-                                                        >
-                                                            <Text style={TextSize.normalSize}>
-                                                                중복확인
-                                                            </Text>
-                                                        </TouchableOpacity>
-                                                    </View>
-                                                </View>
-                                                <View style={AuthStyles.textView}>
-                                                    <Text style={AuthStyles.text}>비밀번호</Text>
-                                                    <TextInput
-                                                        style={AuthStyles.textInput}
-                                                        placeholder="Input password"
-                                                        secureTextEntry={true}
-                                                        value={password}
-                                                        onChangeText={setPassword}
-                                                    />
-                                                </View>
-                                                <TouchableOpacity
-                                                    style={[
-                                                        MyStyles.buttonShadow,
-                                                        {
-                                                            height: hp("5%"),
-                                                            alignItems: "center",
-                                                            justifyContent: "center",
-                                                            borderRadius: 10,
-                                                        },
-                                                    ]}
-                                                    onPress={() => dbChangeEmail()}
-                                                    disabled={
-                                                        !changeEmail || !password || !chkUsedEmail
-                                                    }
-                                                >
-                                                    <Text style={TextSize.normalSize}>확인</Text>
-                                                </TouchableOpacity>
-                                            </View>
-                                        </TouchableOpacity>
-                                    </SafeAreaView>
-                                </Modal>
                                 <Text style={MyStyles.profileText}>이름 : {name}</Text>
                                 <View style={{ flexDirection: "row" }}>
                                     <Text style={[MyStyles.profileText, { flex: 9 }]}>
@@ -1178,6 +907,253 @@ export default Profile = ({ navigation }) => {
                     )}
                 </View>
             </View>
+            <Modal
+                isVisible={modalPhoneVisible}
+                style={{ justifyContent: "flex-end", margin: 0 }}
+                onBackdropPress={() => setModalPhoneVisible(false)}
+                onBackButtonPress={() => setModalPhoneVisible(false)}
+                avoidKeyboard={true}
+            >
+                <View
+                    style={{
+                        height: hp("45%"),
+                        backgroundColor: "white",
+                    }}
+                >
+                    <View style={{ flexDirection: "row", height: hp("5%") }}>
+                        <TouchableOpacity
+                            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+                            onPress={() => {
+                                setChangePhone("");
+                                setVerifyCode("");
+                                setModalPhoneVisible(!modalPhoneVisible);
+                            }}
+                        >
+                            <Text style={TextSize.largeSize}>닫기</Text>
+                        </TouchableOpacity>
+                        <View style={{ flex: 7 }} />
+                    </View>
+                    <FirebaseRecaptchaVerifierModal
+                        ref={appVerifier}
+                        firebaseConfig={myBase.options}
+                    />
+                    <TouchableOpacity
+                        style={{
+                            alignSelf: "stretch",
+                            height: hp("40%"),
+                            paddingTop: 10,
+                        }}
+                        onPress={Keyboard.dismiss}
+                        accessible={false}
+                        activeOpacity={1}
+                    >
+                        <View
+                            style={{
+                                paddingHorizontal: 30,
+                            }}
+                        >
+                            <Text style={AuthStyles.text}>변경할 휴대폰 번호</Text>
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                    marginBottom: 10,
+                                }}
+                            >
+                                <TextInput
+                                    style={[
+                                        AuthStyles.textInput,
+                                        {
+                                            flex: 3,
+                                            marginRight: 7,
+                                        },
+                                    ]}
+                                    placeholder="010-0000-0000"
+                                    keyboardType="phone-pad"
+                                    autoCompleteType="tel"
+                                    textContentType="telephoneNumber"
+                                    value={changePhone}
+                                    onChangeText={setChangePhone}
+                                    maxLength={13}
+                                />
+                                <TouchableOpacity
+                                    style={AuthStyles.authButton}
+                                    onPress={() => sendCode()}
+                                    disabled={!changePhone}
+                                >
+                                    <Text style={TextSize.normalSize}>전송</Text>
+                                </TouchableOpacity>
+                            </View>
+                            <View style={{ marginBottom: 10 }}>
+                                {verificationId !== "" && (
+                                    <Text
+                                        style={{
+                                            marginBottom: 5,
+                                        }}
+                                    >
+                                        인증 코드 발송되었습니다.
+                                    </Text>
+                                )}
+                                <TextInput
+                                    style={AuthStyles.textInput}
+                                    placeholder="123456"
+                                    keyboardType="phone-pad"
+                                    maxLength={6}
+                                    editable={verificationId !== ""}
+                                    value={verifyCode}
+                                    onChangeText={setVerifyCode}
+                                    onChange={(e) => {
+                                        if (e.nativeEvent.text.length === 6) {
+                                            Keyboard.dismiss();
+                                        }
+                                    }}
+                                />
+                            </View>
+                            <TouchableOpacity
+                                style={[
+                                    MyStyles.buttonShadow,
+                                    {
+                                        height: hp("5%"),
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        borderRadius: 10,
+                                    },
+                                ]}
+                                onPress={() => {
+                                    if (verificationId !== "") {
+                                        dbChangePhone();
+                                    } else {
+                                        Alert.alert(
+                                            "경고",
+                                            "인증을 위한 문자 전송 버튼을 눌러주세요.",
+                                            [{ text: "확인" }]
+                                        );
+                                    }
+                                }}
+                                disabled={!verificationId || !changePhone || !verifyCode}
+                            >
+                                <Text style={TextSize.normalSize}>확인</Text>
+                            </TouchableOpacity>
+                        </View>
+                        <View
+                            style={{
+                                width: "100%",
+                                alignItems: "center",
+                                marginTop: 20,
+                            }}
+                        >
+                            <FirebaseRecaptchaBanner style={{ width: wp("85%") }} />
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            </Modal>
+            <Modal
+                isVisible={modalEmailVisible}
+                style={{ justifyContent: "flex-end", margin: 0 }}
+                onBackdropPress={() => setModalEmailVisible(false)}
+                onBackButtonPress={() => setModalEmailVisible(false)}
+                avoidKeyboard={true}
+            >
+                <View
+                    style={{
+                        height: hp("45%"),
+                        backgroundColor: "white",
+                    }}
+                >
+                    <View style={{ flexDirection: "row", height: hp("5%") }}>
+                        <TouchableOpacity
+                            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+                            onPress={() => {
+                                setChangeEmail("");
+                                setChkUsedEmail(false);
+                                setPassword("");
+                                setModalEmailVisible(!modalEmailVisible);
+                            }}
+                        >
+                            <Text style={TextSize.largeSize}>닫기</Text>
+                        </TouchableOpacity>
+                        <View style={{ flex: 7 }} />
+                    </View>
+                    <TouchableOpacity
+                        style={{ height: hp("40%"), marginTop: 10 }}
+                        onPress={Keyboard.dismiss}
+                        accessible={false}
+                        activeOpacity={1}
+                    >
+                        <View
+                            style={{
+                                flex: 8,
+                                paddingHorizontal: 30,
+                            }}
+                        >
+                            <View style={AuthStyles.textView}>
+                                <Text style={AuthStyles.text}>변경할 이메일 주소</Text>
+                                <View
+                                    style={{
+                                        flexDirection: "row",
+                                    }}
+                                >
+                                    <TextInput
+                                        style={[
+                                            AuthStyles.textInput,
+                                            changeEmail
+                                                ? checkEmail
+                                                    ? {
+                                                          backgroundColor: "green",
+                                                      }
+                                                    : {
+                                                          backgroundColor: "red",
+                                                      }
+                                                : undefined,
+                                            {
+                                                flex: 3,
+                                                marginRight: 7,
+                                            },
+                                        ]}
+                                        placeholder="examples@example.com"
+                                        keyboardType="email-address"
+                                        autoCompleteType="email"
+                                        textContentType="emailAddress"
+                                        value={changeEmail}
+                                        onChangeText={setChangeEmail}
+                                    />
+                                    <TouchableOpacity
+                                        style={AuthStyles.authButton}
+                                        onPress={() => checkUsedEmail()}
+                                        disabled={!changePhone}
+                                    >
+                                        <Text style={TextSize.normalSize}>중복확인</Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                            <View style={AuthStyles.textView}>
+                                <Text style={AuthStyles.text}>비밀번호</Text>
+                                <TextInput
+                                    style={AuthStyles.textInput}
+                                    placeholder="비밀번호 입력"
+                                    secureTextEntry={true}
+                                    value={password}
+                                    onChangeText={setPassword}
+                                />
+                            </View>
+                            <TouchableOpacity
+                                style={[
+                                    MyStyles.buttonShadow,
+                                    {
+                                        height: hp("5%"),
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        borderRadius: 10,
+                                    },
+                                ]}
+                                onPress={() => dbChangeEmail()}
+                                disabled={!changeEmail || !password || !chkUsedEmail}
+                            >
+                                <Text style={TextSize.normalSize}>확인</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </TouchableOpacity>
+                </View>
+            </Modal>
         </SafeAreaView>
     );
 };

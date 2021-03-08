@@ -6,7 +6,6 @@ import {
     TouchableOpacity,
     FlatList,
     StyleSheet,
-    Modal,
     Dimensions,
     ScrollView,
     Platform,
@@ -26,6 +25,7 @@ import { pushNotificationsToPerson } from "../../../config/MyExpo";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { getHoliday } from "../../../config/hooks";
 import { TextSize } from "../../../css/MyStyles";
+import Modal from "react-native-modal";
 
 export default PT = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -519,7 +519,7 @@ export default PT = ({ navigation, route }) => {
                     }}
                 >
                     <TouchableOpacity onPress={() => picker.current.show()}>
-                        <Text style={TextSize.largeSize}>
+                        <Text style={TextSize.largerSize}>
                             {selectedYear +
                                 "-" +
                                 (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth)}
@@ -613,55 +613,50 @@ export default PT = ({ navigation, route }) => {
                     },
                 ]}
             />
-            <Modal animationType="slide" visible={modalTimeTable} transparent={true}>
-                <SafeAreaView
+            <Modal
+                isVisible={modalTimeTable}
+                style={{ justifyContent: "flex-end", margin: 0 }}
+                onBackdropPress={() => setModalTimeTable(false)}
+                onBackButtonPress={() => setModalTimeTable(false)}
+            >
+                <View
                     style={{
-                        flex: 1,
+                        height: hp("95%"),
                         backgroundColor: "white",
                     }}
                 >
-                    <TouchableOpacity
-                        style={{
-                            position: "absolute",
-                            top: Platform.OS === "ios" ? getStatusBarHeight() : 0,
-                            left: 0,
-                            margin: 10,
-                            padding: 5,
-                            zIndex: 1,
-                        }}
-                        onPress={() => {
-                            if (alreadySetUp) {
-                                setModalTimeTable(false);
-                                setSelectedDate(0);
-                                setChange(!change);
-                            } else {
-                                Alert.alert(
-                                    "경고",
-                                    "시간 설정이 완료되지 않았습니다.\n전 화면으로 돌아가길 원하십니까?",
-                                    [
-                                        { text: "취소" },
-                                        {
-                                            text: "확인",
-                                            onPress: () => {
-                                                setModalTimeTable(false);
-                                                setSelectedDate(0);
+                    <View style={{ flexDirection: "row", height: hp("5%") }}>
+                        <TouchableOpacity
+                            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+                            onPress={() => {
+                                if (alreadySetUp) {
+                                    setModalTimeTable(false);
+                                    setSelectedDate(0);
+                                    setChange(!change);
+                                } else {
+                                    Alert.alert(
+                                        "경고",
+                                        "시간 설정이 완료되지 않았습니다.\n전 화면으로 돌아가길 원하십니까?",
+                                        [
+                                            { text: "취소" },
+                                            {
+                                                text: "확인",
+                                                onPress: () => {
+                                                    setModalTimeTable(false);
+                                                    setSelectedDate(0);
+                                                },
                                             },
-                                        },
-                                    ]
-                                );
-                            }
-                        }}
-                    >
-                        <Text style={TextSize.normalSize}>닫기</Text>
-                    </TouchableOpacity>
-                    <View
-                        style={{
-                            height: 40,
-                            alignItems: "center",
-                            justifyContent: "center",
-                        }}
-                    >
-                        <Text style={TextSize.largeSize}>{selectedDate + "일"}</Text>
+                                        ]
+                                    );
+                                }
+                            }}
+                        >
+                            <Text style={TextSize.largeSize}>닫기</Text>
+                        </TouchableOpacity>
+                        <View style={{ flex: 6, alignItems: "center", justifyContent: "center" }}>
+                            <Text style={TextSize.largeSize}>{selectedDate + "일"}</Text>
+                        </View>
+                        <View style={{ flex: 1 }} />
                     </View>
                     {loading ? (
                         <View
@@ -680,7 +675,7 @@ export default PT = ({ navigation, route }) => {
                         <ScrollView
                             style={{
                                 flex: 10,
-                                paddingTop: 20,
+                                marginTop: 5,
                                 alignSelf: "stretch",
                                 marginHorizontal: 10,
                             }}
@@ -951,7 +946,7 @@ export default PT = ({ navigation, route }) => {
                             ))}
                         </ScrollView>
                     )}
-                </SafeAreaView>
+                </View>
             </Modal>
         </SafeAreaView>
     );

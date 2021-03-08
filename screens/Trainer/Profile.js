@@ -446,9 +446,8 @@ export default Profile = ({ navigation, route }) => {
                     <Modal
                         isVisible={modalSetClass}
                         style={{ justifyContent: "flex-end", margin: 0 }}
-                        swipeDirection={["down"]}
-                        onSwipeComplete={() => setModalSetClass(false)}
                         onBackdropPress={() => setModalSetClass(false)}
+                        onBackButtonPress={() => setModalSetClass(false)}
                         avoidKeyboard={true}
                     >
                         <TouchableOpacity

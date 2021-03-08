@@ -6,13 +6,15 @@ import {
     View,
     TouchableOpacity,
     StyleSheet,
-    Modal,
     Platform,
     Image,
     Linking,
 } from "react-native";
 import myBase, { db } from "../../../config/MyBase";
-import { widthPercentageToDP as wp } from "react-native-responsive-screen";
+import {
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
+} from "react-native-responsive-screen";
 import SegmentedPicker from "react-native-segmented-picker";
 import { getStatusBarHeight } from "react-native-status-bar-height";
 import { MaterialIcons } from "@expo/vector-icons";
@@ -20,6 +22,7 @@ import moment from "moment";
 import { DataContext } from "../../Auth";
 import { getHoliday } from "../../../config/hooks";
 import { TextSize } from "../../../css/MyStyles";
+import Modal from "react-native-modal";
 
 export default GX = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
@@ -200,6 +203,7 @@ export default GX = ({ navigation, route }) => {
     };
 
     const setList = async () => {
+        setLoading(true);
         await getMyClass().then((list) => {
             setClassList(list);
             setLoading(false);
@@ -261,7 +265,7 @@ export default GX = ({ navigation, route }) => {
                     }}
                 >
                     <TouchableOpacity onPress={() => picker.current.show()}>
-                        <Text style={TextSize.largeSize}>
+                        <Text style={TextSize.largerSize}>
                             {selectedYear +
                                 "-" +
                                 (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth)}
@@ -340,38 +344,32 @@ export default GX = ({ navigation, route }) => {
                     },
                 ]}
             />
-            <Modal animationType="fade" visible={modalClassInfo} transparent={true}>
-                <SafeAreaView
+            <Modal
+                isVisible={modalClassInfo}
+                style={{ justifyContent: "flex-end", margin: 0 }}
+                onBackdropPress={() => setModalClassInfo(false)}
+                onBackButtonPress={() => setModalClassInfo(false)}
+            >
+                <View
                     style={{
                         flex: 1,
                         backgroundColor: "white",
                     }}
                 >
-                    <TouchableOpacity
-                        style={{
-                            position: "absolute",
-                            top: Platform.OS === "ios" ? getStatusBarHeight() : 0,
-                            left: 0,
-                            margin: 10,
-                            padding: 5,
-                            zIndex: 1,
-                        }}
-                        onPress={() => {
-                            setModalClassInfo(false);
-                            setSelectedDate(0);
-                            setLoading(true);
-                        }}
-                    >
-                        <Text style={TextSize.normalSize}>닫기</Text>
-                    </TouchableOpacity>
-                    <View
-                        style={{
-                            height: 40,
-                            alignItems: "center",
-                            justifyContent: "center",
-                        }}
-                    >
-                        <Text style={TextSize.largeSize}>{selectedDate + "일"}</Text>
+                    <View style={{ flexDirection: "row", height: hp("5%"), borderBottomWidth: 1 }}>
+                        <TouchableOpacity
+                            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+                            onPress={() => {
+                                setModalClassInfo(false);
+                                setSelectedDate(0);
+                            }}
+                        >
+                            <Text style={TextSize.largeSize}>닫기</Text>
+                        </TouchableOpacity>
+                        <View style={{ flex: 6, alignItems: "center", justifyContent: "center" }}>
+                            <Text style={TextSize.largeSize}>{selectedDate + "일"}</Text>
+                        </View>
+                        <View style={{ flex: 1 }} />
                     </View>
                     {loading ? (
                         <View
@@ -389,7 +387,7 @@ export default GX = ({ navigation, route }) => {
                     ) : (
                         classNameList.map((className, index) => (
                             <View key={index} style={{ paddingLeft: 7, paddingTop: 10 }}>
-                                <Text style={{ paddingLeft: 12 }}>
+                                <Text style={[TextSize.largeSize, { paddingLeft: 12 }]}>
                                     {classNames[className] !== undefined
                                         ? classNames[className].ko
                                         : "Error"}
@@ -407,7 +405,6 @@ export default GX = ({ navigation, route }) => {
                                                 style={styles.item}
                                                 onPress={() => {
                                                     setClientList(item.clients);
-                                                    setModalClassInfo(false);
                                                     setModalClientInfo(true);
                                                 }}
                                             >
@@ -432,44 +429,35 @@ export default GX = ({ navigation, route }) => {
                             </View>
                         ))
                     )}
-                </SafeAreaView>
+                </View>
             </Modal>
-            <Modal animationType="fade" visible={modalClientInfo} transparent={true}>
-                <SafeAreaView
+            <Modal
+                isVisible={modalClientInfo}
+                style={{ justifyContent: "flex-end", margin: 0 }}
+                onBackdropPress={() => setModalClientInfo(false)}
+                onBackButtonPress={() => setModalClientInfo(false)}
+            >
+                <View
                     style={{
-                        flex: 1,
+                        height: hp("90%"),
                         backgroundColor: "white",
                     }}
                 >
-                    <TouchableOpacity
-                        style={{
-                            position: "absolute",
-                            top: Platform.OS === "ios" ? getStatusBarHeight() : 0,
-                            left: 0,
-                            margin: 10,
-                            padding: 5,
-                            zIndex: 1,
-                        }}
-                        onPress={() => {
-                            setModalClientInfo(false);
-                            setSelectedDate(0);
-                            setLoading(true);
-                        }}
-                    >
-                        <Text style={TextSize.normalSize}>닫기</Text>
-                    </TouchableOpacity>
-                    <View style={{ height: 50 }}></View>
-                    <View style={{ paddingHorizontal: 10 }}>
-                        <Text
-                            style={[
-                                TextSize.largerSize,
-                                {
-                                    marginBottom: 5,
-                                },
-                            ]}
+                    <View style={{ flexDirection: "row", height: hp("5%") }}>
+                        <TouchableOpacity
+                            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+                            onPress={() => {
+                                setModalClientInfo(false);
+                            }}
                         >
-                            고객 명단
-                        </Text>
+                            <Text style={TextSize.largeSize}>닫기</Text>
+                        </TouchableOpacity>
+                        <View style={{ flex: 6, alignItems: "center", justifyContent: "center" }}>
+                            <Text style={TextSize.largeSize}>고객 명단</Text>
+                        </View>
+                        <View style={{ flex: 1 }} />
+                    </View>
+                    <View style={{ paddingHorizontal: 10 }}>
                         {clientList.length === 0 ? (
                             <Text
                                 style={[
@@ -527,7 +515,7 @@ export default GX = ({ navigation, route }) => {
                             ))
                         )}
                     </View>
-                </SafeAreaView>
+                </View>
             </Modal>
         </SafeAreaView>
     );

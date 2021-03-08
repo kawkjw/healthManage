@@ -4,7 +4,6 @@ import {
     FlatList,
     Image,
     Linking,
-    Modal,
     SafeAreaView,
     ScrollView,
     StyleSheet,
@@ -24,6 +23,7 @@ import moment from "moment";
 import { DataContext } from "../../Auth";
 import { getHoliday } from "../../../config/hooks";
 import { TextSize } from "../../../css/MyStyles";
+import Modal from "react-native-modal";
 
 export default ClassInfo = ({ navigation }) => {
     const { width } = Dimensions.get("screen");
@@ -287,7 +287,7 @@ export default ClassInfo = ({ navigation }) => {
                     }}
                 >
                     <TouchableOpacity onPress={() => picker.current.show()}>
-                        <Text style={TextSize.largeSize}>
+                        <Text style={TextSize.largerSize}>
                             {selectedYear +
                                 "-" +
                                 (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth)}
@@ -401,33 +401,28 @@ export default ClassInfo = ({ navigation }) => {
                     },
                 ]}
             />
-            <Modal animationType="fade" visible={modalClassInfo} transparent={true}>
-                <SafeAreaView
-                    style={{
-                        flex: 1,
-                        backgroundColor: "white",
-                    }}
-                >
-                    <TouchableOpacity
-                        style={{
-                            position: "absolute",
-                            top: Platform.OS === "ios" ? getStatusBarHeight() : 0,
-                            left: 0,
-                            margin: 10,
-                            padding: 5,
-                            zIndex: 1,
-                        }}
-                        onPress={() => {
-                            setModalClassInfo(false);
-                            setSelectedDate(0);
-                        }}
-                    >
-                        <Text style={TextSize.normalSize}>닫기</Text>
-                    </TouchableOpacity>
-                    <View style={{ height: 30, alignItems: "center", justifyContent: "center" }}>
-                        <Text style={TextSize.largeSize}>{selectedDate + "일"}</Text>
+            <Modal
+                isVisible={modalClassInfo}
+                style={{ justifyContent: "flex-end", margin: 0 }}
+                onBackdropPress={() => setModalClassInfo(false)}
+                onBackButtonPress={() => setModalClassInfo(false)}
+            >
+                <View style={{ flex: 1, backgroundColor: "white" }}>
+                    <View style={{ flexDirection: "row", height: hp("5%"), borderBottomWidth: 1 }}>
+                        <TouchableOpacity
+                            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+                            onPress={() => {
+                                setModalClassInfo(false);
+                                setSelectedDate(0);
+                            }}
+                        >
+                            <Text style={TextSize.largeSize}>닫기</Text>
+                        </TouchableOpacity>
+                        <View style={{ flex: 6, alignItems: "center", justifyContent: "center" }}>
+                            <Text style={TextSize.largeSize}>{selectedDate + "일"}</Text>
+                        </View>
+                        <View style={{ flex: 1 }} />
                     </View>
-                    <View style={{ height: hp("2%") }} />
                     {loadingInModal ? (
                         <View
                             style={{
@@ -442,7 +437,7 @@ export default ClassInfo = ({ navigation }) => {
                             />
                         </View>
                     ) : (
-                        <ScrollView>
+                        <ScrollView style={{ marginTop: 10 }}>
                             {gxList.map((gxName, index) => (
                                 <View key={index} style={{ marginBottom: 5 }}>
                                     {classData[gxName].length === 0 ? null : (
@@ -488,7 +483,6 @@ export default ClassInfo = ({ navigation }) => {
                                                                       value.end.toDate()
                                                                   ).format("HH:mm"),
                                                               });
-                                                              setModalClassInfo(false);
                                                               setModalClientsInfo(true);
                                                           }}
                                                       >
@@ -524,39 +518,35 @@ export default ClassInfo = ({ navigation }) => {
                             ))}
                         </ScrollView>
                     )}
-                </SafeAreaView>
+                </View>
             </Modal>
-            <Modal animationType="fade" visible={modalClientsInfo} transparent={true}>
-                <SafeAreaView
+            <Modal
+                isVisible={modalClientsInfo}
+                style={{ justifyContent: "flex-end", margin: 0 }}
+                swipeDirection={["down"]}
+                onSwipeComplete={() => setModalClientsInfo(false)}
+                onBackdropPress={() => setModalClientsInfo(false)}
+                onBackButtonPress={() => setModalClientsInfo(false)}
+            >
+                <View
                     style={{
-                        flex: 1,
+                        height: hp("90%"),
                         backgroundColor: "white",
                     }}
                 >
-                    <TouchableOpacity
-                        style={{
-                            position: "absolute",
-                            top: Platform.OS === "ios" ? getStatusBarHeight() : 0,
-                            left: 0,
-                            margin: 10,
-                            padding: 5,
-                            zIndex: 1,
-                        }}
-                        onPress={() => {
-                            setModalClientsInfo(false);
-                            setModalClassInfo(true);
-                        }}
-                    >
-                        <Text style={TextSize.normalSize}>닫기</Text>
-                    </TouchableOpacity>
-                    <View
-                        style={{
-                            height: 40,
-                            alignItems: "center",
-                            justifyContent: "center",
-                        }}
-                    >
-                        <Text style={TextSize.largeSize}>고객 정보</Text>
+                    <View style={{ flexDirection: "row", height: hp("5%"), borderBottomWidth: 1 }}>
+                        <TouchableOpacity
+                            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+                            onPress={() => {
+                                setModalClientsInfo(false);
+                            }}
+                        >
+                            <Text style={TextSize.largeSize}>닫기</Text>
+                        </TouchableOpacity>
+                        <View style={{ flex: 6, alignItems: "center", justifyContent: "center" }}>
+                            <Text style={TextSize.largeSize}>고객 정보</Text>
+                        </View>
+                        <View style={{ flex: 1 }} />
                     </View>
                     <View style={{ padding: 10 }}>
                         <Text style={TextSize.largeSize}>
@@ -623,7 +613,7 @@ export default ClassInfo = ({ navigation }) => {
                             ))
                         )}
                     </View>
-                </SafeAreaView>
+                </View>
             </Modal>
         </SafeAreaView>
     );
