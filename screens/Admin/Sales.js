@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useRef, useState } from "react";
+import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
 import {
     Animated,
     FlatList,
@@ -22,9 +22,11 @@ import { BarChart, XAxis, YAxis, Grid } from "react-native-svg-charts";
 import { Text as SvgText } from "react-native-svg";
 import { db } from "../../config/MyBase";
 import { TextSize } from "../../css/MyStyles";
+import { DataContext } from "../Auth";
 
 export default Sales = ({ navigation, route }) => {
     const today = new Date();
+    const { classNames } = useContext(DataContext);
     const [menu, setMenu] = useState(0);
     const [loading, setLoading] = useState(false);
     const [dateChange, setDateChange] = useState(true);
@@ -54,6 +56,8 @@ export default Sales = ({ navigation, route }) => {
     const [monthInfoAnimation] = useState(new Animated.Value(0));
     const [monthBackAnimation] = useState(new Animated.Value(0));
     const [monthMoveAnimation] = useState(new Animated.Value(100));
+    const [monthCash, setMonthCash] = useState(0);
+    const [monthCard, setMonthCard] = useState(0);
 
     const [statsYear, setStatsYear] = useState(today.getFullYear());
     const [statsMonth, setStatsMonth] = useState(0);
@@ -61,9 +65,17 @@ export default Sales = ({ navigation, route }) => {
     const [statsInfoAnimation] = useState(new Animated.Value(0));
     const [statsBackAnimation] = useState(new Animated.Value(0));
     const [statsMoveAnimation] = useState(new Animated.Value(100));
+    const [statsData, setStatsData] = useState({});
 
     const [chart, setChart] = useState([]);
-    const label = ["Test 1", "Test 2", "Test 3", "Test 4", "Test 5", "Test 6", "Test 7"];
+    const [label, setLabel] = useState([
+        "Test 1",
+        "Test 2",
+        "Test 3",
+        "Test 4",
+        "Test 5",
+        "Test 6",
+    ]);
 
     useEffect(() => {
         const showCalendar = async () => {
@@ -147,15 +159,16 @@ export default Sales = ({ navigation, route }) => {
         setListForMonth();
     }, []);
 
-    useEffect(() => {
-        let list = [];
-        for (let i = 0; i < 7; i++) {
-            list.push(Math.floor(Math.random() * 100));
+    const getSales = async (kind, year, month, date = 0) => {
+        let min = { month: 0, date: 0 };
+        let max = { month: 0, date: 0 };
+        if (kind === "day") {
+            min = { month: month - 1, date: date };
+            max = { month: month - 1, date: date + 1 };
+        } else if (kind === "month") {
+            min = { month: month - 1, date: 1 };
+            max = { month: month, date: 1 };
         }
-        setChart(list);
-    }, [statsMonth]);
-
-    const getDaySales = useCallback(async () => {
         setLoading(true);
         await db
             .collectionGroup("memberships")
@@ -177,8 +190,8 @@ export default Sales = ({ navigation, route }) => {
                 let card = 0;
                 const rootPromises = list.map(async (obj) => {
                     const promises = obj.classes.map(async (name) => {
-                        const minDate = new Date(selectedYear, selectedMonth - 1, selectedDate);
-                        const maxDate = new Date(selectedYear, selectedMonth - 1, selectedDate + 1);
+                        const minDate = new Date(year, min.month, min.date);
+                        const maxDate = new Date(year, max.month, max.date);
                         await db
                             .doc(obj.path)
                             .collection(name)
@@ -187,12 +200,15 @@ export default Sales = ({ navigation, route }) => {
                             .get()
                             .then((docs) => {
                                 docs.forEach((doc) => {
-                                    if (doc.data().payKind !== undefined) {
+                                    if (
+                                        doc.data().payKind !== undefined &&
+                                        doc.data().price !== undefined
+                                    ) {
                                         const { payKind, price } = doc.data();
                                         if (payKind === "cash") {
-                                            cash = cash + price;
+                                            cash = cash + Number(price);
                                         } else if (payKind === "card") {
-                                            card = card + price;
+                                            card = card + Number(price);
                                         }
                                     }
                                 });
@@ -201,15 +217,107 @@ export default Sales = ({ navigation, route }) => {
                     await Promise.all(promises);
                 });
                 await Promise.all(rootPromises);
-                setDayCash(cash);
-                setDayCard(card);
+                if (kind === "day") {
+                    setDayCash(cash);
+                    setDayCard(card);
+                } else if (kind === "month") {
+                    setMonthCash(cash);
+                    setMonthCard(card);
+                }
             });
         setLoading(false);
+    };
+
+    const getStats = async () => {
+        let keys = [];
+        for (const [key, value] of Object.entries(classNames)) {
+            if (value.month !== undefined || value.count !== undefined) {
+                if (value.minien !== undefined) {
+                    if (keys.indexOf(value.minien) === -1) keys.push(value.minien);
+                } else {
+                    if (keys.indexOf(key) === -1) keys.push(key);
+                }
+            }
+        }
+        const koLabel = keys.map((key) => classNames[key].ko);
+        setLabel(koLabel);
+        setLoading(true);
+        await db
+            .collectionGroup("memberships")
+            .get()
+            .then((docs) => {
+                let list = [];
+                docs.forEach((doc) => {
+                    if (doc.data().classes !== undefined) {
+                        let obj = {};
+                        obj["path"] = doc.ref.path;
+                        obj["classes"] = doc.data().classes;
+                        list.push(obj);
+                    }
+                });
+                return list;
+            })
+            .then(async (list) => {
+                let temp = {};
+                const rootPromises = list.map(async (obj) => {
+                    const promises = obj.classes.map(async (name) => {
+                        const minDate = new Date(statsYear, statsMonth - 1, 1);
+                        const maxDate = new Date(statsYear, statsMonth, 1);
+                        await db
+                            .doc(obj.path)
+                            .collection(name)
+                            .where("payDay", ">", minDate)
+                            .where("payDay", "<", maxDate)
+                            .get()
+                            .then((docs) => {
+                                docs.forEach((doc) => {
+                                    if (
+                                        doc.data().payKind !== undefined &&
+                                        doc.data().price !== undefined
+                                    ) {
+                                        const { price } = doc.data();
+                                        const name = classNames[doc.ref.parent.id].minien;
+                                        if (temp[name] === undefined) {
+                                            temp[name] = { price: price, num: 1 };
+                                        } else {
+                                            temp[name].price += price;
+                                            temp[name].num += 1;
+                                        }
+                                    }
+                                });
+                            });
+                    });
+                    await Promise.all(promises);
+                });
+                await Promise.all(rootPromises);
+                let obj = {};
+                let chart = [];
+                keys.forEach((key) => {
+                    if (temp[key] === undefined) {
+                        obj[key] = { price: 0, num: 0 };
+                        chart.push(0);
+                    } else {
+                        obj[key] = temp[key];
+                        chart.push(temp[key].price);
+                    }
+                });
+                setStatsData(obj);
+                setChart(chart);
+            });
+        setLoading(false);
+    };
+
+    useEffect(() => {
+        if (selectedDate !== 0) getSales("day", selectedYear, selectedMonth, selectedDate);
     }, [selectedDate]);
 
     useEffect(() => {
-        if (selectedDate !== 0) getDaySales();
-    }, [selectedDate]);
+        if (monthMonth !== 0) getSales("month", monthYear, monthMonth);
+    }, [monthMonth]);
+
+    useEffect(() => {
+        if (statsMonth !== 0) getStats();
+    }, [statsMonth]);
 
     const goPreMonth = () => {
         if (selectedMonth === 1) {
@@ -396,12 +504,48 @@ export default Sales = ({ navigation, route }) => {
                 alignmentBaseline={"middle"}
                 textAnchor={"middle"}
             >
-                {value}
+                {Number(value) !== 0
+                    ? Number(value)
+                          .toString()
+                          .substr(0, Number(value).toString().length - 4) + "만"
+                    : 0}
             </SvgText>
         ));
 
     const priceToString = (price) => {
         return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    };
+
+    const renderStats = () => {
+        let render = [];
+        let index = 0;
+        let sum = 0;
+        for (const [key, value] of Object.entries(statsData)) {
+            const temp = (
+                <View key={index} style={{ flexDirection: "row" }}>
+                    <Text style={[TextSize.normalSize, { flex: 1, textAlign: "right" }]}>
+                        {classNames[key].ko + ":"}
+                    </Text>
+                    <Text style={[TextSize.normalSize, { flex: 5, paddingLeft: 3 }]}>
+                        {priceToString(value.price)}원
+                    </Text>
+                </View>
+            );
+            index += 1;
+            sum += value.price;
+            render.push(temp);
+        }
+        render.push(
+            <View key={index} style={{ flexDirection: "row" }}>
+                <Text style={[TextSize.normalSize, { flex: 1, textAlign: "right" }]}>
+                    {"합계:"}
+                </Text>
+                <Text style={[TextSize.normalSize, { flex: 5, paddingLeft: 3 }]}>
+                    {priceToString(sum)}원
+                </Text>
+            </View>
+        );
+        return render;
     };
 
     return (
@@ -588,9 +732,45 @@ export default Sales = ({ navigation, route }) => {
                                     </View>
                                 ) : (
                                     <View>
-                                        <Text>총액: {priceToString(dayCash + dayCard)}원</Text>
-                                        <Text>현금 총액: {priceToString(dayCash)}원</Text>
-                                        <Text>카드 총액: {priceToString(dayCard)}원</Text>
+                                        <View style={{ flexDirection: "row" }}>
+                                            <Text
+                                                style={[
+                                                    TextSize.normalSize,
+                                                    { flex: 1, textAlign: "right" },
+                                                ]}
+                                            >
+                                                현금 총액:
+                                            </Text>
+                                            <Text style={[TextSize.normalSize, { flex: 5 }]}>
+                                                {" " + priceToString(dayCash)}원
+                                            </Text>
+                                        </View>
+                                        <View style={{ flexDirection: "row" }}>
+                                            <Text
+                                                style={[
+                                                    TextSize.normalSize,
+                                                    { flex: 1, textAlign: "right" },
+                                                ]}
+                                            >
+                                                카드 총액:
+                                            </Text>
+                                            <Text style={[TextSize.normalSize, { flex: 5 }]}>
+                                                {" " + priceToString(dayCard)}원
+                                            </Text>
+                                        </View>
+                                        <View style={{ flexDirection: "row" }}>
+                                            <Text
+                                                style={[
+                                                    TextSize.normalSize,
+                                                    { flex: 1, textAlign: "right" },
+                                                ]}
+                                            >
+                                                합계:
+                                            </Text>
+                                            <Text style={[TextSize.normalSize, { flex: 5 }]}>
+                                                {" " + priceToString(dayCash + dayCard)}원
+                                            </Text>
+                                        </View>
                                     </View>
                                 )}
                             </View>
@@ -607,7 +787,6 @@ export default Sales = ({ navigation, route }) => {
                     >
                         <TouchableOpacity
                             onPress={() => {
-                                setSelectedDate(0);
                                 onSelectDayMenu();
                             }}
                             disabled={selectedDate === 0}
@@ -735,7 +914,68 @@ export default Sales = ({ navigation, route }) => {
                                     {moment(`${monthYear} ${monthMonth}`, "YYYY M").format(
                                         "YYYY년 MM월 결산"
                                     )}
+                                    {today.getMonth() + 1 === monthMonth
+                                        ? "(현재까지의 결산)"
+                                        : undefined}
                                 </Text>
+                                {loading ? (
+                                    <View
+                                        style={{
+                                            width: wp("100%"),
+                                            height: hp("50%"),
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            backgroundColor: "white",
+                                        }}
+                                    >
+                                        <Image
+                                            style={{ width: 50, height: 50 }}
+                                            source={require("../../assets/loading.gif")}
+                                        />
+                                    </View>
+                                ) : (
+                                    <View>
+                                        <View style={{ flexDirection: "row" }}>
+                                            <Text
+                                                style={[
+                                                    TextSize.normalSize,
+                                                    { flex: 1, textAlign: "right" },
+                                                ]}
+                                            >
+                                                현금 총액:
+                                            </Text>
+                                            <Text style={[TextSize.normalSize, { flex: 5 }]}>
+                                                {" " + priceToString(monthCash)}원
+                                            </Text>
+                                        </View>
+                                        <View style={{ flexDirection: "row" }}>
+                                            <Text
+                                                style={[
+                                                    TextSize.normalSize,
+                                                    { flex: 1, textAlign: "right" },
+                                                ]}
+                                            >
+                                                카드 총액:
+                                            </Text>
+                                            <Text style={[TextSize.normalSize, { flex: 5 }]}>
+                                                {" " + priceToString(monthCard)}원
+                                            </Text>
+                                        </View>
+                                        <View style={{ flexDirection: "row" }}>
+                                            <Text
+                                                style={[
+                                                    TextSize.normalSize,
+                                                    { flex: 1, textAlign: "right" },
+                                                ]}
+                                            >
+                                                합계:
+                                            </Text>
+                                            <Text style={[TextSize.normalSize, { flex: 5 }]}>
+                                                {" " + priceToString(monthCash + monthCard)}원
+                                            </Text>
+                                        </View>
+                                    </View>
+                                )}
                             </View>
                         </Animated.View>
                     </View>
@@ -751,7 +991,6 @@ export default Sales = ({ navigation, route }) => {
                         <TouchableOpacity
                             onPress={() => {
                                 onSelectMonthMenu();
-                                setMonthMonth(0);
                             }}
                         >
                             <Ionicons
@@ -877,43 +1116,79 @@ export default Sales = ({ navigation, route }) => {
                                     {moment(`${statsYear} ${statsMonth}`, "YYYY M").format(
                                         "YYYY년 MM월 통계"
                                     )}
+                                    {today.getMonth() + 1 === statsMonth
+                                        ? "(현재까지의 결산)"
+                                        : undefined}
                                 </Text>
-                                <View style={{ flexDirection: "row", height: 230 }}>
-                                    <YAxis
-                                        data={chart}
-                                        contentInset={{ top: 13, bottom: 13 }}
-                                        svg={{
-                                            fill: "black",
-                                            fontSize: RFPercentage(1.9),
+                                {loading ? (
+                                    <View
+                                        style={{
+                                            width: wp("100%"),
+                                            height: hp("50%"),
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                            backgroundColor: "white",
                                         }}
-                                        numberOfTicks={10}
-                                        formatLabel={(value) => value}
-                                        min={0}
-                                        style={{ marginBottom: 20, width: wp("7%") }}
-                                    />
-                                    <View style={{ flex: 1 }}>
-                                        <BarChart
-                                            data={chart}
-                                            style={{ flex: 1, marginLeft: 10 }}
-                                            svg={{ fill: "#1e99ff" }}
-                                            contentInset={{ top: 13, bottom: 13 }}
-                                            gridMin={0}
-                                        >
-                                            <Grid />
-                                            <Labels />
-                                        </BarChart>
-                                        <XAxis
-                                            data={chart}
-                                            formatLabel={(value, index) => label[index]}
-                                            svg={{ fontSize: RFPercentage(1.9), fill: "black" }}
-                                            contentInset={{ left: 35, right: 25 }}
-                                            style={{
-                                                height: 20,
-                                                width: "100%",
-                                            }}
+                                    >
+                                        <Image
+                                            style={{ width: 50, height: 50 }}
+                                            source={require("../../assets/loading.gif")}
                                         />
                                     </View>
-                                </View>
+                                ) : (
+                                    <View>
+                                        {renderStats()}
+                                        <View style={{ flexDirection: "row", height: 230 }}>
+                                            <YAxis
+                                                data={chart}
+                                                contentInset={{ top: 13, bottom: 13 }}
+                                                svg={{
+                                                    fill: "black",
+                                                    fontSize: RFPercentage(1.9),
+                                                }}
+                                                numberOfTicks={10}
+                                                formatLabel={(value) =>
+                                                    Number(value) !== 0
+                                                        ? Number(value)
+                                                              .toString()
+                                                              .substr(
+                                                                  0,
+                                                                  Number(value).toString().length -
+                                                                      4
+                                                              ) + "만"
+                                                        : 0
+                                                }
+                                                min={0}
+                                                style={{ marginBottom: 20, width: wp("9%") }}
+                                            />
+                                            <View style={{ flex: 1 }}>
+                                                <BarChart
+                                                    data={chart}
+                                                    style={{ flex: 1, marginLeft: 10 }}
+                                                    svg={{ fill: "#1e99ff" }}
+                                                    contentInset={{ top: 13, bottom: 13 }}
+                                                    gridMin={0}
+                                                >
+                                                    <Grid />
+                                                    <Labels />
+                                                </BarChart>
+                                                <XAxis
+                                                    data={chart}
+                                                    formatLabel={(value, index) => label[index]}
+                                                    svg={{
+                                                        fontSize: RFPercentage(1.9),
+                                                        fill: "black",
+                                                    }}
+                                                    contentInset={{ left: 40, right: 30 }}
+                                                    style={{
+                                                        height: 20,
+                                                        width: "100%",
+                                                    }}
+                                                />
+                                            </View>
+                                        </View>
+                                    </View>
+                                )}
                             </View>
                         </Animated.View>
                     </View>
@@ -929,7 +1204,6 @@ export default Sales = ({ navigation, route }) => {
                         <TouchableOpacity
                             onPress={() => {
                                 onSelectStatsMenu();
-                                setStatsMonth(0);
                             }}
                         >
                             <Ionicons
