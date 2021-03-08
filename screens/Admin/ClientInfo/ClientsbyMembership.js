@@ -43,29 +43,45 @@ export default ClientbyMembership = ({ navigation, route }) => {
     useEffect(() => {
         const getClientInfos = async () => {
             const today = new Date();
+            let check = [];
+            if (route.params.membershipName === "pilates") {
+                check = ["pilates2", "pilates3"];
+            } else if (route.params.membershipName === "squash") {
+                check = ["squash", "squashpt", "squashgroup"];
+            } else {
+                check = [route.params.membershipName];
+            }
             setLoading(true);
             const membershipsGroup = db.collectionGroup("memberships");
             await membershipsGroup
-                .where("classes", "array-contains", route.params.membershipName)
+                .where("classes", "array-contains-any", check)
                 .get()
                 .then(async (snapshots) => {
                     let refList = [];
                     snapshots.forEach((snapshot) => {
                         refList.push(snapshot.ref);
                     });
-                    let list = [];
+                    let pathList = [];
                     const promises = refList.map(async (ref) => {
-                        await ref
-                            .collection(route.params.membershipName)
-                            .where("end", ">", today)
-                            .get()
-                            .then((docs) => {
-                                if (docs.size > 0) {
-                                    list.push({ path: ref.parent.parent.path });
-                                }
-                            });
+                        const childPromises = check.map(async (name) => {
+                            await ref
+                                .collection(name)
+                                .where("end", ">", today)
+                                .get()
+                                .then((docs) => {
+                                    if (docs.size > 0) {
+                                        pathList.push(ref.parent.parent.path);
+                                    }
+                                });
+                        });
+                        await Promise.all(childPromises);
                     });
                     await Promise.all(promises);
+                    let list = [];
+                    const set = new Set(pathList);
+                    [...set].forEach((path) => {
+                        list.push({ path: path });
+                    });
                     return list;
                 })
                 .then(async (list) => {
