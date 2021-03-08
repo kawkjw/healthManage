@@ -4,7 +4,6 @@ import {
     FlatList,
     Image,
     SafeAreaView,
-    ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -1137,7 +1136,7 @@ export default Sales = ({ navigation, route }) => {
                                         />
                                     </View>
                                 ) : (
-                                    <ScrollView>
+                                    <View>
                                         {renderStats()}
                                         <View style={{ flexDirection: "row", height: hp("50%") }}>
                                             <YAxis
@@ -1188,7 +1187,7 @@ export default Sales = ({ navigation, route }) => {
                                                 />
                                             </View>
                                         </View>
-                                    </ScrollView>
+                                    </View>
                                 )}
                             </View>
                         </Animated.View>
