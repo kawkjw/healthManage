@@ -4,6 +4,7 @@ import {
     FlatList,
     Image,
     SafeAreaView,
+    ScrollView,
     StyleSheet,
     Text,
     TouchableOpacity,
@@ -498,7 +499,7 @@ export default Sales = ({ navigation, route }) => {
             <SvgText
                 key={index}
                 x={x(index) + bandwidth / 2}
-                y={value < 20 ? y(value) - 10 : y(value) + 15}
+                y={value < 100000 ? y(value) - 10 : y(value) + 15}
                 fontSize={RFPercentage(1.9)}
                 fill={value >= 20 ? "white" : "black"}
                 alignmentBaseline={"middle"}
@@ -1136,9 +1137,9 @@ export default Sales = ({ navigation, route }) => {
                                         />
                                     </View>
                                 ) : (
-                                    <View>
+                                    <ScrollView>
                                         {renderStats()}
-                                        <View style={{ flexDirection: "row", height: 230 }}>
+                                        <View style={{ flexDirection: "row", height: hp("50%") }}>
                                             <YAxis
                                                 data={chart}
                                                 contentInset={{ top: 13, bottom: 13 }}
@@ -1187,7 +1188,7 @@ export default Sales = ({ navigation, route }) => {
                                                 />
                                             </View>
                                         </View>
-                                    </View>
+                                    </ScrollView>
                                 )}
                             </View>
                         </Animated.View>
