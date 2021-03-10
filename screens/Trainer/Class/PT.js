@@ -185,7 +185,7 @@ export default PT = ({ navigation, route }) => {
                 const d = new Date(yearMonthStr + "-" + (i < 10 ? "0" + i : i) + "T00:00");
                 let item = {
                     id: i.toString(),
-                    pressable: d > new Date(today.getFullYear(), today.getMonth(), today.getDate()),
+                    pressable: d > today,
                     isToday:
                         i === today.getDate() &&
                         selectedMonth === today.getMonth() + 1 &&

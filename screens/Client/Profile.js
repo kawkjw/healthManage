@@ -167,7 +167,9 @@ export default Profile = ({ navigation }) => {
                         if (kind === "pt" || kind === "squashpt") {
                             stringTemp =
                                 stringTemp +
-                                `${temp[kind].count}번 남음 (트레이너 ${temp[kind].trainer})`;
+                                `${temp[kind].count < 0 ? 0 : temp[kind].count}번 남음 (트레이너 ${
+                                    temp[kind].trainer
+                                })`;
                             if (temp[kind].count <= 0) {
                                 expiredNum = expiredNum + 1;
                             }
@@ -665,7 +667,7 @@ export default Profile = ({ navigation }) => {
                                     회원권 정보
                                     {hasExtend
                                         ? confirmExtend
-                                            ? "(연장 승인 완료)"
+                                            ? undefined
                                             : "(연장 승인 대기중)"
                                         : undefined}
                                 </Text>

@@ -7,7 +7,7 @@
 import { Platform, InteractionManager } from "react-native";
 const _setTimeout = global.setTimeout;
 const _clearTimeout = global.clearTimeout;
-const MAX_TIMER_DURATION_MS = 60 * 1000;
+const MAX_TIMER_DURATION_MS = 10000 * 1000;
 if (Platform.OS === "android") {
     const timerFix = {};
     const runTask = (id, fn, ttl, args) => {

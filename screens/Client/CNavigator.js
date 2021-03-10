@@ -66,8 +66,6 @@ const MyStack = () => {
                 const i2 = kindsWithoutPt.indexOf("squashpt");
                 if (i2 > -1) kindsWithoutPt.splice(i2, 1);
 
-                const i3 = kindsWithoutPt.indexOf("squashgroup");
-                if (i3 > -1) kindsWithoutPt.splice(i3, 1);
                 const promises = kindsWithoutPt.map(async (name) => {
                     await db
                         .collection("users")
@@ -144,6 +142,37 @@ const MyStack = () => {
                 }
             });
 
+        if (kinds.indexOf("squashpt") !== -1) {
+            const func = db
+                .collection("users")
+                .doc(uid)
+                .collection("memberships")
+                .doc("list")
+                .collection("squashpt")
+                .orderBy("payDay", "desc")
+                .limit(1)
+                .onSnapshot(
+                    (docs) => {
+                        docs.forEach((doc) => {
+                            const { count } = doc.data();
+                            if (count === 0) {
+                                Alert.alert("경고", "남은 스쿼시 PT 횟수가 없습니다.", [
+                                    {
+                                        text: "확인",
+                                        onPress: async () => {
+                                            await doc.ref.update({ count: -1 });
+                                        },
+                                    },
+                                ]);
+                            }
+                        });
+                    },
+                    (error) => {
+                        func();
+                    }
+                );
+        }
+
         if (kinds.indexOf("pt") !== -1) {
             const func = db
                 .collection("users")
@@ -187,7 +216,7 @@ const MyStack = () => {
             .where(
                 "sendDate",
                 ">=",
-                new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7)
+                new Date(today.getFullYear(), today.getMonth(), today.getDate() - 15)
             )
             .orderBy("sendDate", "desc")
             .onSnapshot(
@@ -434,6 +463,11 @@ const MyStack = () => {
                         </View>
                         <View style={{ borderWidth: 1 }} />
                         <View>
+                            <View style={{ paddingLeft: 10, marginVertical: 3 }}>
+                                <Text style={{ color: "#595959" }}>
+                                    15일 전까지의 메시지만 보여집니다.
+                                </Text>
+                            </View>
                             {messages.length === 0 ? (
                                 <View style={{ padding: 10 }}>
                                     <Text style={TextSize.largeSize}>알림 없음</Text>
@@ -446,7 +480,8 @@ const MyStack = () => {
                                             style={{
                                                 padding: 10,
                                                 borderWidth: 1,
-                                                margin: 10,
+                                                marginHorizontal: 10,
+                                                marginBottom: 10,
                                             }}
                                         >
                                             <TouchableOpacity
@@ -518,7 +553,6 @@ const MyStack = () => {
                                                               },
                                                         {
                                                             fontWeight: "bold",
-                                                            marginBottom: 5,
                                                         },
                                                     ]}
                                                 >

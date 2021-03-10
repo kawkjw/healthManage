@@ -53,7 +53,7 @@ const MyStack = () => {
             .where(
                 "sendDate",
                 ">=",
-                new Date(today.getFullYear(), today.getMonth(), today.getDate() - 7)
+                new Date(today.getFullYear(), today.getMonth(), today.getDate() - 15)
             )
             .orderBy("sendDate", "desc")
             .onSnapshot(
@@ -279,6 +279,11 @@ const MyStack = () => {
                         </View>
                         <View style={{ borderWidth: 1 }} />
                         <View>
+                            <View style={{ paddingLeft: 10, marginVertical: 3 }}>
+                                <Text style={{ color: "#595959" }}>
+                                    15일 전까지의 메시지만 보여집니다.
+                                </Text>
+                            </View>
                             {messages.length === 0 ? (
                                 <View style={{ padding: 10 }}>
                                     <Text style={TextSize.largeSize}>알림 없음</Text>
@@ -291,7 +296,8 @@ const MyStack = () => {
                                             style={{
                                                 padding: 10,
                                                 borderWidth: 1,
-                                                margin: 10,
+                                                marginHorizontal: 10,
+                                                marginBottom: 10,
                                             }}
                                         >
                                             <TouchableOpacity

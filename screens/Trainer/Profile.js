@@ -185,6 +185,14 @@ export default Profile = ({ navigation, route }) => {
                                         pt: await getPTClass((today.getDate() + 1).toString()),
                                     });
                                 } else if (classNameList[0] === "gx") {
+                                    if (classNameList[1] === "squash") {
+                                        setTomorrowClassInfo({
+                                            ...tomorrowClassInfo,
+                                            squashpt: await getPTClass(
+                                                (today.getDate() + 1).toString()
+                                            ),
+                                        });
+                                    }
                                     setTomorrowClassInfo(
                                         await getGXClass(
                                             (today.getDate() + 1).toString(),
@@ -279,6 +287,83 @@ export default Profile = ({ navigation, route }) => {
                 수업이 없습니다.
             </Text>
         );
+
+        const renderPTClass = (value, index) => (
+            <View
+                key={index}
+                style={{
+                    flexDirection: "row",
+                    marginBottom: 5,
+                    marginLeft: 7,
+                }}
+            >
+                <MaterialIcons
+                    name="circle"
+                    size={RFPercentage(1.5)}
+                    color="black"
+                    style={{ alignSelf: "center" }}
+                />
+                <Text
+                    style={[
+                        TextSize.normalSize,
+                        {
+                            marginLeft: 5,
+                        },
+                    ]}
+                >
+                    {value.time + " " + value.clientName + " "}
+                </Text>
+                <TouchableOpacity onPress={() => Linking.openURL(`tel:${value.clientPhone}`)}>
+                    <Text
+                        style={[
+                            TextSize.normalSize,
+                            {
+                                color: "blue",
+                            },
+                        ]}
+                    >
+                        {value.clientPhone}
+                    </Text>
+                </TouchableOpacity>
+            </View>
+        );
+
+        const renderGXClass = (value, index) => (
+            <View
+                key={index}
+                style={{
+                    flexDirection: "row",
+                    marginBottom: 5,
+                    marginLeft: 7,
+                }}
+            >
+                <MaterialIcons
+                    name="circle"
+                    size={RFPercentage(1.5)}
+                    color="black"
+                    style={{ alignSelf: "center" }}
+                />
+                <Text
+                    style={[
+                        TextSize.normalSize,
+                        {
+                            marginLeft: 5,
+                        },
+                    ]}
+                >
+                    {(classNames[value.name] !== undefined ? classNames[value.name].ko : "Error") +
+                        " "}
+                    {moment(value.info.start.toDate()).format("HH:mm") +
+                        " ~ " +
+                        moment(value.info.end.toDate()).format("HH:mm") +
+                        " " +
+                        value.info.currentClient +
+                        "/" +
+                        value.info.maxClient}
+                </Text>
+            </View>
+        );
+
         if (className[0] === "pt") {
             if (obj.pt === undefined) {
                 return renderNoClass;
@@ -286,49 +371,23 @@ export default Profile = ({ navigation, route }) => {
                 if (obj.pt.length === 0) {
                     return renderNoClass;
                 }
-                return obj.pt.map((value, index) => (
-                    <View
-                        key={index}
-                        style={{
-                            flexDirection: "row",
-                            marginBottom: 5,
-                            marginLeft: 7,
-                        }}
-                    >
-                        <MaterialIcons
-                            name="circle"
-                            size={RFPercentage(1.5)}
-                            color="black"
-                            style={{ alignSelf: "center" }}
-                        />
-                        <Text
-                            style={[
-                                TextSize.normalSize,
-                                {
-                                    marginLeft: 5,
-                                },
-                            ]}
-                        >
-                            {value.time + " " + value.clientName + " "}
-                        </Text>
-                        <TouchableOpacity
-                            onPress={() => Linking.openURL(`tel:${value.clientPhone}`)}
-                        >
-                            <Text
-                                style={[
-                                    TextSize.normalSize,
-                                    {
-                                        color: "blue",
-                                    },
-                                ]}
-                            >
-                                {value.clientPhone}
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-                ));
+                return obj.pt.map((value, index) => renderPTClass(value, index));
             }
         } else {
+            if (className[1] === "squash") {
+                return (
+                    <View style={{ paddingLeft: 5 }}>
+                        <Text>스쿼시 그룹</Text>
+                        {obj.squash === undefined
+                            ? renderNoClass
+                            : obj.squash.map((value, index) => renderGXClass(value, index))}
+                        <Text>스쿼시 PT</Text>
+                        {obj.squashpt === undefined
+                            ? renderNoClass
+                            : obj.squashpt.map((value, index) => renderPTClass(value, index))}
+                    </View>
+                );
+            }
             if (obj[className[1]] === undefined) {
                 return renderNoClass;
             } else {
@@ -342,42 +401,7 @@ export default Profile = ({ navigation, route }) => {
                         return a.info.start.seconds - b.info.start.seconds;
                     });
                 }
-                return list.map((value, index) => (
-                    <View
-                        key={index}
-                        style={{
-                            flexDirection: "row",
-                            marginBottom: 5,
-                            marginLeft: 7,
-                        }}
-                    >
-                        <MaterialIcons
-                            name="circle"
-                            size={RFPercentage(1.5)}
-                            color="black"
-                            style={{ alignSelf: "center" }}
-                        />
-                        <Text
-                            style={[
-                                TextSize.normalSize,
-                                {
-                                    marginLeft: 5,
-                                },
-                            ]}
-                        >
-                            {(classNames[value.name] !== undefined
-                                ? classNames[value.name].ko
-                                : "Error") + " "}
-                            {moment(value.info.start.toDate()).format("HH:mm") +
-                                " ~ " +
-                                moment(value.info.end.toDate()).format("HH:mm") +
-                                " " +
-                                value.info.currentClient +
-                                "/" +
-                                value.info.maxClient}
-                        </Text>
-                    </View>
-                ));
+                return list.map((value, index) => renderGXClass(value, index));
             }
         }
     };

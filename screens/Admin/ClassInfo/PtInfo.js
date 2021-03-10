@@ -22,10 +22,11 @@ import { getHoliday } from "../../../config/hooks";
 import { TextSize } from "../../../css/MyStyles";
 import Modal from "react-native-modal";
 
-export default ClassInfo = ({ navigation }) => {
+export default ClassInfo = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
     const uid = myBase.auth().currentUser.uid;
     const { classNames } = useContext(DataContext);
+    const { ptName } = route.params;
     const today = new Date();
     const [loading, setLoading] = useState(true);
     const [data, setData] = useState([]);
@@ -67,21 +68,17 @@ export default ClassInfo = ({ navigation }) => {
             let classDate = [];
             let ptUidList = [];
             await db
-                .collection("users")
-                .where("permission", "==", 1)
+                .collection("classes")
+                .doc(ptName)
                 .get()
-                .then((trainers) => {
-                    trainers.forEach((trainer) => {
-                        if (trainer.data().className.split(".")[0] === "pt") {
-                            ptUidList.push(trainer.data().uid);
-                        }
-                    });
+                .then((doc) => {
+                    ptUidList = doc.data().trainerList;
                 });
             setPtUid(ptUidList);
             const ptPromises = ptUidList.map(async (tUid) => {
                 await db
                     .collection("classes")
-                    .doc("pt")
+                    .doc(ptName)
                     .collection(tUid)
                     .doc(yearMonthStr)
                     .get()
@@ -150,7 +147,7 @@ export default ClassInfo = ({ navigation }) => {
                 temp["name"] = name;
                 await db
                     .collection("classes")
-                    .doc("pt")
+                    .doc(ptName)
                     .collection(uid)
                     .doc(yearMonthStr)
                     .collection(selectedDate.toString())
@@ -180,7 +177,7 @@ export default ClassInfo = ({ navigation }) => {
                                     .doc(v.clientUid)
                                     .collection("memberships")
                                     .doc("list")
-                                    .collection("pt")
+                                    .collection(ptName === "pt" ? ptName : ptName + "pt")
                                     .where("count", ">", 0)
                                     .get()
                                     .then((ptDocs) => {

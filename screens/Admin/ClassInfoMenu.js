@@ -41,9 +41,19 @@ export default ClientInfoMenu = ({ navigation, route }) => {
                         MyStyles.buttonShadow,
                         { width: widthButton, marginBottom: 20 },
                     ]}
-                    onPress={() => navigation.navigate("PtInfo")}
+                    onPress={() => navigation.navigate("PtInfo", { ptName: "pt" })}
                 >
                     <Text style={TextSize.largeSize}>PT</Text>
+                </TouchableOpacity>
+                <TouchableOpacity
+                    style={[
+                        MyStyles.phoneButton,
+                        MyStyles.buttonShadow,
+                        { width: widthButton, marginBottom: 20 },
+                    ]}
+                    onPress={() => navigation.navigate("PtInfo", { ptName: "squash" })}
+                >
+                    <Text style={TextSize.largeSize}>스쿼시 PT</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
