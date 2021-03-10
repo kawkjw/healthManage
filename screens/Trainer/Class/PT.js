@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
     Text,
     SafeAreaView,
@@ -12,6 +12,7 @@ import {
     Alert,
     Image,
     Linking,
+    ActivityIndicator,
 } from "react-native";
 import myBase, { arrayDelete, arrayUnion, db, fieldDelete } from "../../../config/MyBase";
 import {
@@ -20,12 +21,16 @@ import {
 } from "react-native-responsive-screen";
 import SegmentedPicker from "react-native-segmented-picker";
 import { MaterialIcons } from "@expo/vector-icons";
-import { getStatusBarHeight } from "react-native-status-bar-height";
 import { pushNotificationsToPerson } from "../../../config/MyExpo";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { getHoliday } from "../../../config/hooks";
 import { TextSize } from "../../../css/MyStyles";
 import Modal from "react-native-modal";
+import RadioForm, {
+    RadioButton,
+    RadioButtonInput,
+    RadioButtonLabel,
+} from "react-native-simple-radio-button";
 
 export default PT = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -51,6 +56,50 @@ export default PT = ({ navigation, route }) => {
     const [alreadySetUp, setAlreadySetUp] = useState(false);
     const [loading, setLoading] = useState(true);
 
+    const [modalAllDays, setModalAllDays] = useState(false);
+    const [noHasClass, setNoHasClass] = useState([]);
+    const radioOptions = [
+        {
+            label: "모든 날짜",
+            value: "allDay",
+            func: () => {
+                setNoHasClass(
+                    data.filter((value) => {
+                        return (
+                            value.isHeader === undefined &&
+                            new Date(selectedYear, selectedMonth - 1, Number(value.id)) > today &&
+                            value.hasClass === false
+                        );
+                    })
+                );
+            },
+        },
+        {
+            label: "주말, 공휴일 제외",
+            value: "except",
+            func: () => {
+                const list = data.filter((value) => {
+                    return (
+                        value.isHeader === undefined &&
+                        value.color === "black" &&
+                        new Date(selectedYear, selectedMonth - 1, Number(value.id)) > today &&
+                        value.hasClass === false
+                    );
+                });
+                if (list.length === 0) {
+                    Alert.alert("경고", "설정 가능한 날이 없습니다.", [{ text: "확인" }]);
+                    setRadioSelect("allDay");
+                } else {
+                    setNoHasClass(list);
+                }
+            },
+        },
+    ];
+    const [radioSelect, setRadioSelect] = useState("allDay");
+    const [timeList, setTimeList] = useState([]);
+    const [availList, setAvailList] = useState([]);
+    const [settingLoading, setSettingLoading] = useState(false);
+
     useEffect(() => {
         if (route.params.year && route.params.month && route.params.date) {
             setSelectedYear(route.params.year);
@@ -60,6 +109,40 @@ export default PT = ({ navigation, route }) => {
             setTimeout(() => setModalTimeTable(true), 1000);
         }
     }, []);
+
+    const makeSetButton = useCallback(() => {
+        navigation.setOptions({
+            headerRight: () => (
+                <TouchableOpacity
+                    style={{ margin: 7, padding: 3 }}
+                    onPress={() => {
+                        const list = data.filter((value) => {
+                            return (
+                                value.isHeader === undefined &&
+                                new Date(selectedYear, selectedMonth - 1, Number(value.id)) >
+                                    today &&
+                                value.hasClass === false
+                            );
+                        });
+                        if (list.length === 0) {
+                            Alert.alert("경고", "설정 가능한 날이 없습니다.", [{ text: "확인" }]);
+                        } else {
+                            setRadioSelect("allDay");
+                            setModalAllDays(true);
+                            setSettingLoading(false);
+                            setNoHasClass(list);
+                        }
+                    }}
+                >
+                    <Text style={TextSize.largeSize}>{selectedMonth}월 설정</Text>
+                </TouchableOpacity>
+            ),
+        });
+    }, [data]);
+
+    useEffect(() => {
+        if (data.length !== 0) makeSetButton();
+    }, [data]);
 
     useEffect(() => {
         const showCalendar = async () => {
@@ -158,6 +241,16 @@ export default PT = ({ navigation, route }) => {
             setMonthList(list);
         };
         setListForPicker();
+        let tlist = [];
+        let alist = [];
+        for (let i = Number(startLimit); i < Number(endLimit); i++) {
+            let s =
+                (i < 10 ? "0" + i : i) + ":00 ~ " + (i + 1 < 10 ? "0" + (i + 1) : i + 1) + ":00";
+            tlist.push(s);
+            alist.push(null);
+        }
+        setTimeList(tlist);
+        setAvailList(alist);
     }, []);
 
     const showTimeTable = async () => {
@@ -496,6 +589,93 @@ export default PT = ({ navigation, route }) => {
         }
     };
 
+    const alertWhenClose = () =>
+        Alert.alert("경고", "저장되지 않은 설정은 사라집니다.\n그래도 닫으시겠습니까?", [
+            { text: "취소", style: "cancel" },
+            {
+                text: "확인",
+                onPress: () => {
+                    setModalAllDays(false);
+                    setAvailList(availList.map((_) => null));
+                },
+            },
+        ]);
+
+    const alertWhenTableClose = () => {
+        if (alreadySetUp) {
+            setModalTimeTable(false);
+            setSelectedDate(0);
+        } else {
+            Alert.alert(
+                "경고",
+                "시간 설정이 완료되지 않았습니다.\n전 화면으로 돌아가길 원하십니까?",
+                [
+                    { text: "취소" },
+                    {
+                        text: "확인",
+                        onPress: () => {
+                            setModalTimeTable(false);
+                            setSelectedDate(0);
+                        },
+                    },
+                ]
+            );
+        }
+        setChange(!change);
+    };
+
+    const setAllDays = async () => {
+        setSettingLoading(true);
+        const yearMonthStr =
+            selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
+        await db
+            .collection("classes")
+            .doc(ptName)
+            .collection(uid)
+            .doc(yearMonthStr)
+            .get()
+            .then((doc) => {
+                if (doc.exists === false) {
+                    doc.ref.set({ class: [], hasClass: [] });
+                }
+            });
+        const rootPromises = noHasClass.map(async (date) => {
+            const setPromises = timeList.map(async (time, index) => {
+                const data =
+                    availList[index] === true
+                        ? { isAvail: availList[index], hasReservation: false }
+                        : { isAvail: availList[index] };
+                await db
+                    .collection("classes")
+                    .doc(ptName)
+                    .collection(uid)
+                    .doc(yearMonthStr)
+                    .collection(date.id)
+                    .doc(time)
+                    .set(data);
+            });
+            await Promise.all(setPromises);
+            await db
+                .collection("classes")
+                .doc(ptName)
+                .collection(uid)
+                .doc(yearMonthStr)
+                .update({ class: arrayUnion(date.id) });
+        });
+        await Promise.all(rootPromises);
+        setSettingLoading(false);
+        Alert.alert("성공", "설정 완료했습니다.", [
+            {
+                text: "확인",
+                onPress: () => {
+                    setModalAllDays(false);
+                    setAvailList(availList.map((_) => null));
+                    setChange(!change);
+                },
+            },
+        ]);
+    };
+
     return (
         <SafeAreaView>
             <View style={{ flexDirection: "row", height: 30 }}>
@@ -616,8 +796,8 @@ export default PT = ({ navigation, route }) => {
             <Modal
                 isVisible={modalTimeTable}
                 style={{ justifyContent: "flex-end", margin: 0 }}
-                onBackdropPress={() => setModalTimeTable(false)}
-                onBackButtonPress={() => setModalTimeTable(false)}
+                onBackdropPress={() => alertWhenTableClose()}
+                onBackButtonPress={() => alertWhenTableClose()}
             >
                 <View
                     style={{
@@ -628,28 +808,7 @@ export default PT = ({ navigation, route }) => {
                     <View style={{ flexDirection: "row", height: hp("5%") }}>
                         <TouchableOpacity
                             style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-                            onPress={() => {
-                                if (alreadySetUp) {
-                                    setModalTimeTable(false);
-                                    setSelectedDate(0);
-                                    setChange(!change);
-                                } else {
-                                    Alert.alert(
-                                        "경고",
-                                        "시간 설정이 완료되지 않았습니다.\n전 화면으로 돌아가길 원하십니까?",
-                                        [
-                                            { text: "취소" },
-                                            {
-                                                text: "확인",
-                                                onPress: () => {
-                                                    setModalTimeTable(false);
-                                                    setSelectedDate(0);
-                                                },
-                                            },
-                                        ]
-                                    );
-                                }
-                            }}
+                            onPress={() => alertWhenTableClose()}
                         >
                             <Text style={TextSize.largeSize}>닫기</Text>
                         </TouchableOpacity>
@@ -946,6 +1105,237 @@ export default PT = ({ navigation, route }) => {
                             ))}
                         </ScrollView>
                     )}
+                </View>
+            </Modal>
+            <Modal
+                isVisible={modalAllDays}
+                style={{ justifyContent: "flex-end", margin: 0 }}
+                onBackdropPress={() => alertWhenClose()}
+                onBackButtonPress={() => alertWhenClose()}
+            >
+                <View
+                    style={[
+                        {
+                            height: hp("95%"),
+                        },
+                        settingLoading ? { backgroundColor: "grey" } : { backgroundColor: "white" },
+                    ]}
+                >
+                    {settingLoading && (
+                        <View
+                            style={{
+                                alignItems: "center",
+                                justifyContent: "center",
+                                position: "absolute",
+                                top: hp("40%"),
+                                left: wp("45%"),
+                                zIndex: 1,
+                            }}
+                        >
+                            <ActivityIndicator color="black" size={60} />
+                        </View>
+                    )}
+                    <View style={{ flexDirection: "row", height: hp("5%") }}>
+                        <TouchableOpacity
+                            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+                            onPress={() => alertWhenClose()}
+                        >
+                            <Text style={TextSize.largeSize}>닫기</Text>
+                        </TouchableOpacity>
+                        <View style={{ flex: 6, alignItems: "center", justifyContent: "center" }}>
+                            <Text style={TextSize.largeSize}>{selectedMonth + "월달 설정"}</Text>
+                        </View>
+                        <TouchableOpacity
+                            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+                            onPress={() => {
+                                if (availList.includes(null)) {
+                                    Alert.alert("경고", "모든 시간 설정 해주시기 바랍니다.", [
+                                        { text: "확인" },
+                                    ]);
+                                } else {
+                                    Alert.alert(
+                                        "경고",
+                                        "설정 완료하는 시간이 오래 걸릴 수 있습니다.",
+                                        [{ text: "확인", onPress: () => setAllDays() }]
+                                    );
+                                }
+                            }}
+                        >
+                            <Text style={TextSize.largeSize}>설정</Text>
+                        </TouchableOpacity>
+                    </View>
+                    <View style={{ marginTop: 10 }}>
+                        <RadioForm formHorizontal={true} animation={true}>
+                            {radioOptions.map((option, index) => (
+                                <View key={index}>
+                                    <RadioButton
+                                        labelHorizontal={true}
+                                        wrapStyle={{ marginLeft: 10 }}
+                                    >
+                                        <RadioButtonInput
+                                            obj={option}
+                                            index={index}
+                                            isSelected={option.value === radioSelect}
+                                            onPress={() => {
+                                                setRadioSelect(option.value);
+                                                option.func();
+                                            }}
+                                            buttonSize={15}
+                                            buttonInnerColor="black"
+                                            buttonOuterColor="black"
+                                        />
+                                        <RadioButtonLabel
+                                            obj={option}
+                                            index={index}
+                                            onPress={() => {
+                                                setRadioSelect(option.value);
+                                                option.func();
+                                            }}
+                                            labelStyle={{
+                                                fontSize: RFPercentage(2.2),
+                                                marginLeft: 5,
+                                            }}
+                                        />
+                                    </RadioButton>
+                                </View>
+                            ))}
+                        </RadioForm>
+                    </View>
+                    <View style={{ paddingLeft: 20, marginBottom: 5 }}>
+                        <Text style={[TextSize.normalSize, { color: "#595959" }]}>
+                            이미 설정된 날은 제외됩니다.
+                        </Text>
+                    </View>
+                    <ScrollView
+                        style={{
+                            marginTop: 5,
+                            alignSelf: "stretch",
+                            marginHorizontal: 10,
+                        }}
+                        contentContainerStyle={{ alignItems: "center" }}
+                    >
+                        {timeList.map((time, index) => (
+                            <View
+                                key={index}
+                                style={[
+                                    {
+                                        width: width,
+                                        height: hp("10%"),
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: "grey",
+                                        flexDirection: "row",
+                                        paddingHorizontal: 10,
+                                    },
+                                    index === 0
+                                        ? {
+                                              borderTopWidth: 1,
+                                              borderTopColor: "grey",
+                                          }
+                                        : undefined,
+                                ]}
+                            >
+                                <View
+                                    style={{
+                                        flex: 1,
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        paddingLeft: 10,
+                                    }}
+                                >
+                                    <Text style={TextSize.normalSize}>{time}</Text>
+                                </View>
+                                <View
+                                    style={{
+                                        flex: 3,
+                                        flexDirection: "row",
+                                        marginLeft: 10,
+                                        paddingHorizontal: 10,
+                                        marginBottom: 15,
+                                        marginTop: 10,
+                                    }}
+                                >
+                                    <TouchableOpacity
+                                        style={[
+                                            styles.availButton,
+                                            availList[index] === null || availList[index] === false
+                                                ? settingLoading
+                                                    ? {
+                                                          backgroundColor:
+                                                              "rgba(255, 255, 255, 0.3)",
+                                                      }
+                                                    : { backgroundColor: "white" }
+                                                : settingLoading
+                                                ? { backgroundColor: "rgba(102, 204, 255, 0.3)" }
+                                                : {
+                                                      backgroundColor: "#66ccff",
+                                                  },
+                                            {
+                                                marginRight: 7,
+                                            },
+                                        ]}
+                                        onPress={() => {
+                                            let change = availList.slice();
+                                            change[index] = true;
+                                            setAvailList(change);
+                                        }}
+                                    >
+                                        <Text
+                                            style={[
+                                                TextSize.largeSize,
+                                                availList[index] === null ||
+                                                availList[index] === false
+                                                    ? settingLoading
+                                                        ? { color: "rgba(0, 0, 255, 0.3)" }
+                                                        : { color: "blue" }
+                                                    : { color: "black" },
+                                            ]}
+                                        >
+                                            가능
+                                        </Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity
+                                        style={[
+                                            styles.availButton,
+                                            availList[index] === null || availList[index] === true
+                                                ? settingLoading
+                                                    ? {
+                                                          backgroundColor:
+                                                              "rgba(255, 255, 255, 0.3)",
+                                                      }
+                                                    : { backgroundColor: "white" }
+                                                : settingLoading
+                                                ? { backgroundColor: "rgba(255, 153, 153, 0.3)" }
+                                                : {
+                                                      backgroundColor: "#ff9999",
+                                                  },
+                                            {
+                                                marginLeft: 7,
+                                            },
+                                        ]}
+                                        onPress={() => {
+                                            let change = availList.slice();
+                                            change[index] = false;
+                                            setAvailList(change);
+                                        }}
+                                    >
+                                        <Text
+                                            style={[
+                                                TextSize.largeSize,
+                                                availList[index] === null ||
+                                                availList[index] === true
+                                                    ? settingLoading
+                                                        ? { color: "rgba(255, 0, 0, 0.3)" }
+                                                        : { color: "red" }
+                                                    : { color: "black" },
+                                            ]}
+                                        >
+                                            불가능
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        ))}
+                    </ScrollView>
                 </View>
             </Modal>
         </SafeAreaView>

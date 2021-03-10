@@ -4,6 +4,7 @@ import {
     Dimensions,
     FlatList,
     Image,
+    Platform,
     SafeAreaView,
     ScrollView,
     StyleSheet,
@@ -18,7 +19,6 @@ import {
 import myBase, { arrayUnion, db } from "../../../config/MyBase";
 import SegmentedPicker from "react-native-segmented-picker";
 import { MaterialIcons } from "@expo/vector-icons";
-import { getStatusBarHeight } from "react-native-status-bar-height";
 import { pushNotificationsToPerson } from "../../../config/MyExpo";
 import { getHoliday } from "../../../config/hooks";
 import { TextSize } from "../../../css/MyStyles";

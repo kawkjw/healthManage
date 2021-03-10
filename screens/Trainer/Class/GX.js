@@ -6,7 +6,6 @@ import {
     View,
     TouchableOpacity,
     StyleSheet,
-    Platform,
     Image,
     Linking,
 } from "react-native";
@@ -16,7 +15,6 @@ import {
     widthPercentageToDP as wp,
 } from "react-native-responsive-screen";
 import SegmentedPicker from "react-native-segmented-picker";
-import { getStatusBarHeight } from "react-native-status-bar-height";
 import { MaterialIcons } from "@expo/vector-icons";
 import moment from "moment";
 import { DataContext } from "../../Auth";

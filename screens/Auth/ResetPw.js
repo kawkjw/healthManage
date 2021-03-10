@@ -8,6 +8,7 @@ import {
     StatusBar,
     Keyboard,
     KeyboardAvoidingView,
+    Platform,
 } from "react-native";
 import myBase from "../../config/MyBase";
 import { AuthStyles } from "../../css/MyStyles";

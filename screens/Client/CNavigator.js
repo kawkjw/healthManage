@@ -60,8 +60,14 @@ const MyStack = () => {
             })
             .then(async () => {
                 let kindsWithoutPt = kinds.slice();
-                const index = kindsWithoutPt.indexOf("pt");
-                if (index > -1) kindsWithoutPt.splice(index, 1);
+                const i1 = kindsWithoutPt.indexOf("pt");
+                if (i1 > -1) kindsWithoutPt.splice(i1, 1);
+
+                const i2 = kindsWithoutPt.indexOf("squashpt");
+                if (i2 > -1) kindsWithoutPt.splice(i2, 1);
+
+                const i3 = kindsWithoutPt.indexOf("squashgroup");
+                if (i3 > -1) kindsWithoutPt.splice(i3, 1);
                 const promises = kindsWithoutPt.map(async (name) => {
                     await db
                         .collection("users")

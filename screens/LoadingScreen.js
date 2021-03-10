@@ -1,5 +1,5 @@
 import React from "react";
-import { View, StyleSheet, StatusBar, Image } from "react-native";
+import { View, StyleSheet, StatusBar, Image, Platform } from "react-native";
 
 export default LoadingScreen = () => {
     return (

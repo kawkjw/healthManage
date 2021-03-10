@@ -200,14 +200,14 @@ export default ClientbyMembership = ({ navigation, route }) => {
                     />
                 </View>
             ) : clientInfos.length === 0 ? (
-                <Text>No Client</Text>
+                <Text style={TextSize.largeSize}>비어있습니다.</Text>
             ) : (
                 <ScrollView
                     style={{ alignSelf: "stretch" }}
                     contentContainerStyle={{ alignItems: "center" }}
                 >
                     {classifyInfos.length === 0 ? (
-                        <Text>No Client</Text>
+                        <Text style={TextSize.largeSize}>비어있습니다.</Text>
                     ) : (
                         classifyInfos.map((client, index) => (
                             <TouchableOpacity

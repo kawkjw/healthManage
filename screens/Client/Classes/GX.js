@@ -14,7 +14,6 @@ import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
 } from "react-native-responsive-screen";
-import { getStatusBarHeight } from "react-native-status-bar-height";
 import { MyStyles, TextSize } from "../../../css/MyStyles";
 import myBase, { arrayUnion, db } from "../../../config/MyBase";
 import moment from "moment";

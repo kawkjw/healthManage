@@ -5,7 +5,7 @@ import myBase, { arrayUnion, db } from "../config/MyBase";
 import TNavigator from "./Trainer/TNavigator";
 import CNavigator from "./Client/CNavigator";
 import LoadingScreen from "./LoadingScreen";
-import { Alert, StatusBar, Text, View, TouchableOpacity } from "react-native";
+import { Alert, StatusBar, Text, View, TouchableOpacity, Platform } from "react-native";
 import { AuthContext } from "./Auth";
 import { AuthStyles, TextSize } from "../css/MyStyles";
 import { registerForPushNotificationAsync } from "../config/MyExpo";

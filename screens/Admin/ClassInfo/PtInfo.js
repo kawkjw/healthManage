@@ -15,7 +15,6 @@ import {
 } from "react-native-responsive-screen";
 import SegmentedPicker from "react-native-segmented-picker";
 import { MaterialIcons } from "@expo/vector-icons";
-import { getStatusBarHeight } from "react-native-status-bar-height";
 import myBase, { db } from "../../../config/MyBase";
 import TimeTable from "../../../config/TimeTable";
 import { DataContext } from "../../Auth";

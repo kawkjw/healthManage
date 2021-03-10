@@ -206,7 +206,7 @@ const MyStack = () => {
                             notificationAvail
                                 ? unread
                                     ? { backgroundColor: "red" }
-                                    : { backgroundColor: "white" }
+                                    : { display: "none" }
                                 : undefined,
                         ]}
                     />
@@ -399,7 +399,10 @@ const MyStack = () => {
         );
 
     return (
-        <Stack.Navigator initialRouteName="HomeScreen">
+        <Stack.Navigator
+            initialRouteName="HomeScreen"
+            //screenOptions={{ headerStyle: { backgroundColor: "black" }, headerTintColor: "white" }}
+        >
             <Stack.Screen
                 name="HomeScreen"
                 component={Home}

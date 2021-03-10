@@ -9,7 +9,6 @@ import {
     TextInput,
     Alert,
     Keyboard,
-    Platform,
     ScrollView,
     AppState,
 } from "react-native";
@@ -19,7 +18,6 @@ import { useInterval } from "../../config/hooks";
 import { MyStyles, AuthStyles, TextSize } from "../../css/MyStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext, DataContext } from "../Auth";
-import { getStatusBarHeight } from "react-native-status-bar-height";
 import firebase from "firebase";
 import moment from "moment";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
