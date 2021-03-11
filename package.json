@@ -38,7 +38,6 @@
     "react-native-screens": "~2.15.0",
     "react-native-segmented-picker": "^2.0.2",
     "react-native-simple-radio-button": "^2.7.4",
-    "react-native-status-bar-height": "^2.6.0",
     "react-native-svg": "12.1.0",
     "react-native-svg-charts": "^5.4.0",
     "react-native-web": "~0.13.12",
