@@ -68,7 +68,7 @@ export default SignIn = ({ navigation }) => {
                 keyboardShouldPersistTaps="always"
                 showsVerticalScrollIndicator={false}
                 scrollEnabled={false}
-                extraHeight={Platform.select({ android: 100 })}
+                extraHeight={Platform.select({ android: 100, ios: 130 })}
                 extraScrollHeight={120}
                 enableOnAndroid={true}
                 enableAutomaticScroll
@@ -196,7 +196,7 @@ export default SignIn = ({ navigation }) => {
                                         }}
                                     >
                                         <MaterialCommunityIcons
-                                            name="chevron-down"
+                                            name={mailShow ? "chevron-up" : "chevron-down"}
                                             size={30}
                                             color="black"
                                         />
