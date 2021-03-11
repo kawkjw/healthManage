@@ -681,7 +681,7 @@ export default PT = ({ navigation, route }) => {
             .get()
             .then((doc) => {
                 if (doc.exists === false) {
-                    doc.ref.set({ class: [], hasClass: [] });
+                    doc.ref.set({ class: [], hasClass: [], waitConfirm: [] });
                 }
             });
         const rootPromises = noHasClass.map(async (date) => {
