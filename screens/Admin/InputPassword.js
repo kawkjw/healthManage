@@ -14,11 +14,13 @@ import { ADMIN_PW } from "@env";
 import { AuthStyles, MyStyles, TextSize } from "../../css/MyStyles";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { AuthContext } from "../Auth";
+import { WrongNumContext } from "./ANavigator";
 
 export default InputPassword = ({ navigation, route }) => {
     const [password, setPassword] = useState("");
-    const [num, setNum] = useState(0);
+    //const [num, setNum] = useState(0);
     const { signOut } = useContext(AuthContext);
+    const { num, setNum } = useContext(WrongNumContext);
 
     const checkPassword = async () => {
         const digest = await Crypto.digestStringAsync(
@@ -26,6 +28,7 @@ export default InputPassword = ({ navigation, route }) => {
             password
         );
         if (ADMIN_PW === digest) {
+            setNum(0);
             navigation.replace("Sales");
         } else {
             setNum(num + 1);

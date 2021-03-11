@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { createContext, useContext, useEffect, useState } from "react";
 import { Text, TouchableOpacity, View, ScrollView, AppState, Linking } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./Home";
@@ -31,6 +31,7 @@ import { TextSize } from "../../css/MyStyles";
 import { displayedAt } from "../../config/hooks";
 
 const Stack = createStackNavigator();
+export const WrongNumContext = createContext();
 const MyStack = () => {
     const { signOut } = useContext(AuthContext);
     const { classNames } = useContext(DataContext);
@@ -43,6 +44,8 @@ const MyStack = () => {
     const [unread, setUnread] = useState(false);
     const [notificationNum, setNotificationNum] = useState(0);
     const [unsubscribe, setUnsubscribe] = useState(() => {});
+
+    const [num, setNum] = useState(0);
 
     const getNotifications = async () => {
         const today = new Date();
@@ -405,143 +408,145 @@ const MyStack = () => {
         );
 
     return (
-        <Stack.Navigator
-            initialRouteName="HomeScreen"
-            //screenOptions={{ headerStyle: { backgroundColor: "black" }, headerTintColor: "white" }}
-        >
-            <Stack.Screen
-                name="HomeScreen"
-                component={Home}
-                options={({ navigation }) => ({
-                    title: "관리자",
-                    headerLeft: () => renderNotificationButton(navigation),
-                    headerRight: () => (
-                        <TouchableOpacity
-                            style={{
-                                marginRight: 10,
-                                width: "100%",
-                                height: "60%",
-                                alignItems: "center",
-                                justifyContent: "center",
-                            }}
-                            onPress={() => {
-                                unsubscribe();
-                                signOut();
-                            }}
-                        >
-                            <Text style={TextSize.normalSize}>로그아웃</Text>
-                        </TouchableOpacity>
-                    ),
-                })}
-            />
-            <Stack.Screen
-                name="Locker"
-                component={Locker}
-                options={({ navigation }) => ({
-                    title: "락커",
-                    headerLeft: () => renderGoBackButton(navigation),
-                })}
-            />
-            <Stack.Screen
-                name="FindUser"
-                component={FindUser}
-                options={({ navigation }) => ({
-                    headerTitle: "고객 검색",
-                    headerLeft: () => renderGoBackButton(navigation),
-                })}
-            />
-            <Stack.Screen
-                name="SelectUser"
-                component={SelectUser}
-                options={({ navigation }) => ({
-                    headerTitle: "검색 결과",
-                    headerLeft: () => renderGoBackButton(navigation),
-                })}
-            />
-            <Stack.Screen
-                name="ShowUser"
-                component={ShowUser}
-                options={({ navigation }) => ({
-                    headerTitle: "고객 정보",
-                    headerLeft: () => renderGoBackButton(navigation),
-                })}
-            />
-            <Stack.Screen
-                name="ClientInfoMenu"
-                component={ClientInfoMenu}
-                options={({ navigation }) => ({
-                    headerTitle: "메뉴",
-                    headerLeft: () => renderGoBackButton(navigation),
-                })}
-            />
-            <Stack.Screen
-                name="SelectMembership"
-                component={SelectMembership}
-                options={({ navigation }) => ({
-                    headerTitle: "이용권 선택",
-                    headerLeft: () => renderGoBackButton(navigation),
-                })}
-            />
-            <Stack.Screen
-                name="ClientInfo"
-                component={ClientInfo}
-                options={({ navigation }) => ({
-                    headerTitle: "모든 고객 정보",
-                    headerLeft: () => renderGoBackButton(navigation),
-                })}
-            />
-            <Stack.Screen
-                name="ClientsbyMembership"
-                component={ClientsbyMembership}
-                options={({ navigation, route }) => ({
-                    headerTitle:
-                        classNames[route.params.membershipName] !== undefined
-                            ? classNames[route.params.membershipName].ko
-                            : "Error",
-                    headerLeft: () => renderGoBackButton(navigation),
-                })}
-            />
-            <Stack.Screen
-                name="ClassInfoMenu"
-                component={ClassInfoMenu}
-                options={({ navigation }) => ({
-                    headerTitle: "메뉴",
-                    headerLeft: () => renderGoBackButton(navigation),
-                })}
-            />
-            <Stack.Screen
-                name="GxInfo"
-                component={GxInfo}
-                options={({ navigation }) => ({
-                    headerTitle: "GX",
-                    headerLeft: () => renderGoBackButton(navigation),
-                })}
-            />
-            <Stack.Screen
-                name="PtInfo"
-                component={PtInfo}
-                options={({ navigation }) => ({
-                    headerTitle: "PT",
-                    headerLeft: () => renderGoBackButton(navigation),
-                })}
-            />
-            <Stack.Screen
-                name="InputPassword"
-                component={InputPassword}
-                options={({ navigation }) => ({
-                    headerTitle: "비밀번호 입력",
-                    headerLeft: () => renderGoBackButton(navigation),
-                })}
-            />
-            <Stack.Screen
-                name="Sales"
-                component={Sales}
-                options={({ navigation }) => ({
-                    headerTitle: "결산",
-                    headerLeft: () => renderGoBackButton(navigation),
-                })}
-            />
-        </Stack.Navigator>
+        <WrongNumContext.Provider value={{ num: num, setNum: setNum }}>
+            <Stack.Navigator
+                initialRouteName="HomeScreen"
+                //screenOptions={{ headerStyle: { backgroundColor: "black" }, headerTintColor: "white" }}
+            >
+                <Stack.Screen
+                    name="HomeScreen"
+                    component={Home}
+                    options={({ navigation }) => ({
+                        title: "관리자",
+                        headerLeft: () => renderNotificationButton(navigation),
+                        headerRight: () => (
+                            <TouchableOpacity
+                                style={{
+                                    marginRight: 10,
+                                    width: "100%",
+                                    height: "60%",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                }}
+                                onPress={() => {
+                                    unsubscribe();
+                                    signOut();
+                                }}
+                            >
+                                <Text style={TextSize.normalSize}>로그아웃</Text>
+                            </TouchableOpacity>
+                        ),
+                    })}
+                />
+                <Stack.Screen
+                    name="Locker"
+                    component={Locker}
+                    options={({ navigation }) => ({
+                        title: "락커",
+                        headerLeft: () => renderGoBackButton(navigation),
+                    })}
+                />
+                <Stack.Screen
+                    name="FindUser"
+                    component={FindUser}
+                    options={({ navigation }) => ({
+                        headerTitle: "고객 검색",
+                        headerLeft: () => renderGoBackButton(navigation),
+                    })}
+                />
+                <Stack.Screen
+                    name="SelectUser"
+                    component={SelectUser}
+                    options={({ navigation }) => ({
+                        headerTitle: "검색 결과",
+                        headerLeft: () => renderGoBackButton(navigation),
+                    })}
+                />
+                <Stack.Screen
+                    name="ShowUser"
+                    component={ShowUser}
+                    options={({ navigation }) => ({
+                        headerTitle: "고객 정보",
+                        headerLeft: () => renderGoBackButton(navigation),
+                    })}
+                />
+                <Stack.Screen
+                    name="ClientInfoMenu"
+                    component={ClientInfoMenu}
+                    options={({ navigation }) => ({
+                        headerTitle: "메뉴",
+                        headerLeft: () => renderGoBackButton(navigation),
+                    })}
+                />
+                <Stack.Screen
+                    name="SelectMembership"
+                    component={SelectMembership}
+                    options={({ navigation }) => ({
+                        headerTitle: "이용권 선택",
+                        headerLeft: () => renderGoBackButton(navigation),
+                    })}
+                />
+                <Stack.Screen
+                    name="ClientInfo"
+                    component={ClientInfo}
+                    options={({ navigation }) => ({
+                        headerTitle: "모든 고객 정보",
+                        headerLeft: () => renderGoBackButton(navigation),
+                    })}
+                />
+                <Stack.Screen
+                    name="ClientsbyMembership"
+                    component={ClientsbyMembership}
+                    options={({ navigation, route }) => ({
+                        headerTitle:
+                            classNames[route.params.membershipName] !== undefined
+                                ? classNames[route.params.membershipName].ko
+                                : "Error",
+                        headerLeft: () => renderGoBackButton(navigation),
+                    })}
+                />
+                <Stack.Screen
+                    name="ClassInfoMenu"
+                    component={ClassInfoMenu}
+                    options={({ navigation }) => ({
+                        headerTitle: "메뉴",
+                        headerLeft: () => renderGoBackButton(navigation),
+                    })}
+                />
+                <Stack.Screen
+                    name="GxInfo"
+                    component={GxInfo}
+                    options={({ navigation }) => ({
+                        headerTitle: "GX",
+                        headerLeft: () => renderGoBackButton(navigation),
+                    })}
+                />
+                <Stack.Screen
+                    name="PtInfo"
+                    component={PtInfo}
+                    options={({ navigation }) => ({
+                        headerTitle: "PT",
+                        headerLeft: () => renderGoBackButton(navigation),
+                    })}
+                />
+                <Stack.Screen
+                    name="InputPassword"
+                    component={InputPassword}
+                    options={({ navigation }) => ({
+                        headerTitle: "비밀번호 입력",
+                        headerLeft: () => renderGoBackButton(navigation),
+                    })}
+                />
+                <Stack.Screen
+                    name="Sales"
+                    component={Sales}
+                    options={({ navigation }) => ({
+                        headerTitle: "결산",
+                        headerLeft: () => renderGoBackButton(navigation),
+                    })}
+                />
+            </Stack.Navigator>
+        </WrongNumContext.Provider>
     );
 };
 
