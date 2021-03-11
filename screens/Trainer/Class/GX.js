@@ -72,7 +72,9 @@ export default GX = ({ navigation, route }) => {
                 .get()
                 .then((snapshot) => {
                     if (snapshot.exists) {
-                        classDate = snapshot.data().date;
+                        if (snapshot.data().date !== undefined) {
+                            classDate = snapshot.data().date;
+                        }
                     }
                 });
             classDate.sort();
@@ -148,7 +150,10 @@ export default GX = ({ navigation, route }) => {
                     .doc(selectedDate.toString())
                     .get()
                     .then(async (doc) => {
-                        let classId = doc.data().list;
+                        let classId = [];
+                        if (doc.exists) {
+                            classId = doc.data().list;
+                        }
                         return classId;
                     })
                     .then(async (classId) => {

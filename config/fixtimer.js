@@ -4,10 +4,10 @@
 ////// See: https://github.com/facebook/react-native/issues/12981 ///////////
 ////// See: https://github.com/firebase/firebase-js-sdk/issues/97 ///////////
 /////////////////////////////////////////////////////////////////////////////
-import { Platform, InteractionManager } from "react-native";
+/*import { Platform, InteractionManager } from "react-native";
 const _setTimeout = global.setTimeout;
 const _clearTimeout = global.clearTimeout;
-const MAX_TIMER_DURATION_MS = 10000 * 1000;
+const MAX_TIMER_DURATION_MS = 60 * 1000;
 if (Platform.OS === "android") {
     const timerFix = {};
     const runTask = (id, fn, ttl, args) => {
@@ -42,5 +42,9 @@ if (Platform.OS === "android") {
         }
         _clearTimeout(id);
     };
-}
+}*/
 /////////////////////////////////////////////////////////////////////////////
+
+import { LogBox } from "react-native";
+
+LogBox.ignoreLogs(["Setting a timer"]);

@@ -68,7 +68,7 @@ export default PT = ({ navigation, route }) => {
                         return (
                             value.isHeader === undefined &&
                             new Date(selectedYear, selectedMonth - 1, Number(value.id)) > today &&
-                            value.hasClass === false
+                            value.setFinish === false
                         );
                     })
                 );
@@ -83,7 +83,7 @@ export default PT = ({ navigation, route }) => {
                         value.isHeader === undefined &&
                         value.color === "black" &&
                         new Date(selectedYear, selectedMonth - 1, Number(value.id)) > today &&
-                        value.hasClass === false
+                        value.setFinish === false
                     );
                 });
                 if (list.length === 0) {
@@ -121,7 +121,7 @@ export default PT = ({ navigation, route }) => {
                                 value.isHeader === undefined &&
                                 new Date(selectedYear, selectedMonth - 1, Number(value.id)) >
                                     today &&
-                                value.hasClass === false
+                                value.setFinish === false
                             );
                         });
                         if (list.length === 0) {
@@ -162,7 +162,9 @@ export default PT = ({ navigation, route }) => {
             for (let i = 0; i < firstDate.getDay(); i++) {
                 items.push({ id: " ", pressable: false, isHeader: true });
             }
-            let classDate = [];
+            let setClass = [];
+            let hasClass = [];
+            let waitConfirm = [];
             await db
                 .collection("classes")
                 .doc(ptName)
@@ -171,14 +173,26 @@ export default PT = ({ navigation, route }) => {
                 .get()
                 .then((snapshot) => {
                     if (snapshot.exists) {
-                        classDate = snapshot.data().class;
+                        setClass = snapshot.data().class;
+                        hasClass = snapshot.data().hasClass;
+                        waitConfirm = snapshot.data().waitConfirm;
                     }
                 });
-            classDate.sort((a, b) => {
+            setClass.sort((a, b) => {
                 return Number(a) - Number(b);
             });
-            classDate.push("-1");
+            setClass.push("-1");
+            hasClass.sort((a, b) => {
+                return Number(a) - Number(b);
+            });
+            hasClass.push("-1");
+            waitConfirm.sort((a, b) => {
+                return Number(a) - Number(b);
+            });
+            waitConfirm.push("-1");
             let index = 0;
+            let hIndex = 0;
+            let wIndex = 0;
             const endDate = new Date(selectedYear, selectedMonth, 0);
             const holidayList = await getHoliday(selectedYear, selectedMonth);
             for (let i = 1; i <= endDate.getDate(); i++) {
@@ -200,14 +214,26 @@ export default PT = ({ navigation, route }) => {
                 } else {
                     item["color"] = "black";
                 }
-                if (i === Number(classDate[index])) {
-                    item["hasClass"] = true;
+                if (i === Number(setClass[index])) {
+                    item["setFinish"] = true;
                     if (item["pressable"] === false) {
                         item["pressable"] = true;
                     }
                     index += 1;
                 } else {
+                    item["setFinish"] = false;
+                }
+                if (i === Number(hasClass[hIndex])) {
+                    item["hasClass"] = true;
+                    hIndex += 1;
+                } else {
                     item["hasClass"] = false;
+                }
+                if (i === Number(waitConfirm[wIndex])) {
+                    item["waitConfirm"] = true;
+                    wIndex += 1;
+                } else {
+                    item["waitConfirm"] = false;
                 }
                 items.push(item);
             }
@@ -329,6 +355,7 @@ export default PT = ({ navigation, route }) => {
                         .set({
                             class: [selectedDate.toString()],
                             hasClass: [],
+                            waitConfirm: [],
                         });
                 });
         }
@@ -442,18 +469,36 @@ export default PT = ({ navigation, route }) => {
                 .doc(yearMonthStr)
                 .update({ hasClass: arrayUnion(selectedDate.toString()) });
             await db
+                .collection("classes")
+                .doc(ptName)
+                .collection(uid)
+                .doc(yearMonthStr)
+                .collection(selectedDate.toString())
+                .where("confirm", "==", false)
+                .get()
+                .then(async (docs) => {
+                    if (docs.size <= 0) {
+                        await db
+                            .collection("classes")
+                            .doc(ptName)
+                            .collection(uid)
+                            .doc(yearMonthStr)
+                            .update({ waitConfirm: arrayDelete(selectedDate.toString()) });
+                    }
+                });
+            await db
                 .collection("users")
                 .doc(uid)
                 .collection("classes")
                 .doc(yearMonthStr)
-                .update({ date: arrayUnion(selectedDate.toString()) })
+                .update({ ptDate: arrayUnion(selectedDate.toString()) })
                 .catch(async () => {
                     await db
                         .collection("users")
                         .doc(uid)
                         .collection("classes")
                         .doc(yearMonthStr)
-                        .set({ date: [selectedDate.toString()] });
+                        .set({ ptDate: [selectedDate.toString()] });
                 });
             await db
                 .collection("users")
@@ -522,7 +567,7 @@ export default PT = ({ navigation, route }) => {
                 .doc(uid)
                 .collection("classes")
                 .doc(yearMonthStr)
-                .update({ date: arrayDelete(selectedDate.toString()) });
+                .update({ ptDate: arrayDelete(selectedDate.toString()) });
             await db
                 .collection("users")
                 .doc(uid)
@@ -729,7 +774,7 @@ export default PT = ({ navigation, route }) => {
                                 styles.day,
                                 item.isHeader
                                     ? { backgroundColor: "white" }
-                                    : item.hasClass
+                                    : item.setFinish
                                     ? { backgroundColor: "white" }
                                     : { backgroundColor: "#b3b3b3" },
                             ]}
@@ -739,6 +784,32 @@ export default PT = ({ navigation, route }) => {
                             }}
                             disabled={!item.pressable}
                         >
+                            {item.hasClass && (
+                                <View
+                                    style={{
+                                        position: "absolute",
+                                        backgroundColor: "red",
+                                        width: wp("3%"),
+                                        aspectRatio: 1,
+                                        borderRadius: 30,
+                                        top: 5,
+                                        right: 5,
+                                    }}
+                                />
+                            )}
+                            {item.waitConfirm && (
+                                <View
+                                    style={{
+                                        position: "absolute",
+                                        backgroundColor: "blue",
+                                        width: wp("3%"),
+                                        aspectRatio: 1,
+                                        borderRadius: 30,
+                                        top: 5,
+                                        right: 5,
+                                    }}
+                                />
+                            )}
                             <View
                                 style={
                                     item.isToday

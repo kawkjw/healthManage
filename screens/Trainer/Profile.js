@@ -164,28 +164,55 @@ export default Profile = ({ navigation, route }) => {
                         .doc(moment(today).format("YYYY-MM"))
                         .get()
                         .then(async (doc) => {
-                            const { date } = doc.data();
-                            if (date.indexOf(today.getDate().toString()) !== -1) {
-                                if (classNameList[0] === "pt") {
+                            let date = [];
+                            let ptDate = [];
+                            if (doc.data().date !== undefined) {
+                                date = doc.data().date;
+                            }
+                            if (doc.data().ptDate !== undefined) {
+                                ptDate = doc.data().ptDate;
+                            }
+                            if (classNameList[0] === "pt") {
+                                //pt
+                                if (ptDate.indexOf(today.getDate().toString()) !== -1) {
                                     setTodayClassInfo({
                                         pt: await getPTClass(today.getDate().toString()),
                                     });
-                                } else if (classNameList[0] === "gx") {
-                                    setTodayClassInfo(
-                                        await getGXClass(
-                                            today.getDate().toString(),
-                                            classNameList.slice(1)
-                                        )
-                                    );
                                 }
-                            }
-                            if (date.indexOf((today.getDate() + 1).toString()) !== -1) {
-                                if (classNameList[0] === "pt") {
+                                if (ptDate.indexOf((today.getDate() + 1).toString()) !== -1) {
                                     setTomorrowClassInfo({
                                         pt: await getPTClass((today.getDate() + 1).toString()),
                                     });
-                                } else if (classNameList[0] === "gx") {
-                                    if (classNameList[1] === "squash") {
+                                }
+                            } else if (classNameList[0] === "gx") {
+                                //gx
+                                if (classNameList[1] === "squash") {
+                                    //squash
+                                    //today
+                                    if (date.indexOf(today.getDate().toString()) !== -1) {
+                                        setTodayClassInfo(
+                                            await getGXClass(
+                                                today.getDate().toString(),
+                                                classNameList.slice(1)
+                                            )
+                                        );
+                                    }
+                                    if (ptDate.indexOf(today.getDate().toString()) !== -1) {
+                                        setTodayClassInfo({
+                                            ...todayClassInfo,
+                                            squashpt: await getPTClass(today.getDate().toString()),
+                                        });
+                                    }
+                                    //tomorrow
+                                    if (date.indexOf((today.getDate() + 1).toString()) !== -1) {
+                                        setTomorrowClassInfo(
+                                            await getGXClass(
+                                                (today.getDate() + 1).toString(),
+                                                classNameList.slice(1)
+                                            )
+                                        );
+                                    }
+                                    if (ptDate.indexOf((today.getDate() + 1).toString()) !== -1) {
                                         setTomorrowClassInfo({
                                             ...tomorrowClassInfo,
                                             squashpt: await getPTClass(
@@ -193,18 +220,33 @@ export default Profile = ({ navigation, route }) => {
                                             ),
                                         });
                                     }
-                                    setTomorrowClassInfo(
-                                        await getGXClass(
-                                            (today.getDate() + 1).toString(),
-                                            classNameList.slice(1)
-                                        )
-                                    );
+                                } else {
+                                    //gx except squash
+                                    if (date.indexOf(today.getDate().toString()) !== -1) {
+                                        setTodayClassInfo(
+                                            await getGXClass(
+                                                today.getDate().toString(),
+                                                classNameList.slice(1)
+                                            )
+                                        );
+                                    }
+                                    if (date.indexOf((today.getDate() + 1).toString()) !== -1) {
+                                        setTomorrowClassInfo(
+                                            await getGXClass(
+                                                (today.getDate() + 1).toString(),
+                                                classNameList.slice(1)
+                                            )
+                                        );
+                                    }
                                 }
                             }
                         });
                 })
                 .then(() => setLoading(false))
-                .catch((error) => setLoading(false));
+                .catch((error) => {
+                    setLoading(false);
+                    console.log(error);
+                });
         }
     };
 

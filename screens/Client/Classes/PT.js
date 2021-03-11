@@ -260,6 +260,12 @@ export default PT = ({ navigation, route }) => {
                         clientUid: uid,
                         isGroup: isGroup,
                     });
+                    await db
+                        .collection("classes")
+                        .doc(ptName)
+                        .collection(trainerUid)
+                        .doc(yearMonthStr)
+                        .update({ waitConfirm: arrayUnion(selectedDate.toString()) });
                     const startDate = new Date(
                         selectedYear,
                         selectedMonth - 1,
@@ -567,7 +573,7 @@ export default PT = ({ navigation, route }) => {
                                                     </Text>
                                                 ) : (
                                                     <Text style={TextSize.normalSize}>
-                                                        예약 안됨
+                                                        예약 없음
                                                     </Text>
                                                 )
                                             ) : (
