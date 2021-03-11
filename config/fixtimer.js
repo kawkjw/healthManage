@@ -47,4 +47,4 @@ if (Platform.OS === "android") {
 
 import { LogBox } from "react-native";
 
-LogBox.ignoreLogs(["Setting a timer"]);
+LogBox.ignoreLogs(["Setting a timer", "Require cycle"]);

@@ -153,7 +153,11 @@ export default Profile = ({ navigation }) => {
                             .get()
                             .then((docs) => {
                                 docs.forEach((doc) => {
-                                    temp[name] = doc.data();
+                                    if (doc.data().check === undefined) temp[name] = doc.data();
+                                    else {
+                                        const index = kinds.indexOf(name);
+                                        kinds.splice(index, 1);
+                                    }
                                 });
                             });
                     });

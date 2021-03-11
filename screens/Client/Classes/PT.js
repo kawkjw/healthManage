@@ -590,7 +590,11 @@ export default PT = ({ navigation, route }) => {
                                             )}
                                         </View>
                                         {availTime.isAvail ? (
-                                            availTime.hasReserve ? null : availTime.isToday ? null : (
+                                            availTime.hasReserve ? (
+                                                availTime.isToday ? null : (
+                                                    <View style={{ flex: 1 }} />
+                                                )
+                                            ) : availTime.isToday ? null : (
                                                 <TouchableOpacity
                                                     style={[
                                                         styles.availButton,
