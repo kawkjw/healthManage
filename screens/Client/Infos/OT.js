@@ -584,7 +584,11 @@ export default OT = ({ navigation, route }) => {
                                             )}
                                         </View>
                                         {availTime.isAvail ? (
-                                            availTime.hasReserve ? null : availTime.isToday ? null : (
+                                            availTime.hasReserve ? (
+                                                availTime.isToday ? null : (
+                                                    <View style={{ flex: 1 }} />
+                                                )
+                                            ) : availTime.isToday ? null : (
                                                 <TouchableOpacity
                                                     style={[
                                                         styles.availButton,
@@ -617,7 +621,7 @@ export default OT = ({ navigation, route }) => {
                                                     <Text style={TextSize.normalSize}>예약</Text>
                                                 </TouchableOpacity>
                                             )
-                                        ) : (
+                                        ) : availTime.isToday ? null : (
                                             <View style={{ flex: 1 }} />
                                         )}
                                     </View>
