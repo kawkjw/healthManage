@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import {
     Alert,
     Keyboard,
@@ -15,11 +15,12 @@ import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
 import moment from "moment";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { pushNotificationsToAdmin } from "../../../config/MyExpo";
-import { enToMiniKo } from "../../../config/hooks";
 import SegmentedPicker from "react-native-segmented-picker";
+import { DataContext } from "../../Auth";
 
 export default ExtendDate = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
+    const { classNames } = useContext(DataContext);
     const [availExtend, setAvailExtend] = useState([]);
     const [extendDate, setExtendDate] = useState({ date: "7" });
     const [extendReason, setExtendReason] = useState("");
@@ -222,7 +223,9 @@ export default ExtendDate = ({ navigation, route }) => {
                                         color="black"
                                     />
                                     <Text style={[TextSize.normalSize, { flex: 2 }]}>
-                                        {enToMiniKo(membership.name)}
+                                        {classNames[membership.name] !== undefined
+                                            ? classNames[membership.name].miniKo
+                                            : "Error"}
                                     </Text>
                                     <Text style={[TextSize.normalSize, { flex: 2 }]}>
                                         {membership.month + "개월권"}

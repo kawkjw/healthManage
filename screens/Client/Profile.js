@@ -211,6 +211,7 @@ export default Profile = ({ navigation }) => {
                 .get()
                 .then((docs) => {
                     if (docs.size !== 0) {
+                        setExtendBool({ ...extendBool, hasExtend: true });
                         kinds.forEach((kind) => {
                             if (temp[kind].extended !== undefined) {
                                 docs.forEach((doc) => {
