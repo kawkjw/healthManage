@@ -1307,7 +1307,6 @@ export default PT = ({ navigation, route }) => {
                             >
                                 <View
                                     style={{
-                                        flex: 1,
                                         alignItems: "center",
                                         justifyContent: "center",
                                         paddingLeft: 10,
@@ -1330,13 +1329,26 @@ export default PT = ({ navigation, route }) => {
                                             styles.availButton,
                                             availList[index] === null || availList[index] === false
                                                 ? settingLoading
-                                                    ? {
-                                                          backgroundColor:
-                                                              "rgba(255, 255, 255, 0.3)",
-                                                      }
+                                                    ? [
+                                                          {
+                                                              backgroundColor:
+                                                                  "rgba(255, 255, 255, 0.3)",
+                                                          },
+                                                          Platform.OS === "android"
+                                                              ? { elevation: 0 }
+                                                              : undefined,
+                                                      ]
                                                     : { backgroundColor: "white" }
                                                 : settingLoading
-                                                ? { backgroundColor: "rgba(102, 204, 255, 0.3)" }
+                                                ? [
+                                                      {
+                                                          backgroundColor:
+                                                              "rgba(102, 204, 255, 0.3)",
+                                                      },
+                                                      Platform.OS === "android"
+                                                          ? { elevation: 0 }
+                                                          : undefined,
+                                                  ]
                                                 : {
                                                       backgroundColor: "#66ccff",
                                                   },
@@ -1369,13 +1381,26 @@ export default PT = ({ navigation, route }) => {
                                             styles.availButton,
                                             availList[index] === null || availList[index] === true
                                                 ? settingLoading
-                                                    ? {
-                                                          backgroundColor:
-                                                              "rgba(255, 255, 255, 0.3)",
-                                                      }
+                                                    ? [
+                                                          {
+                                                              backgroundColor:
+                                                                  "rgba(255, 255, 255, 0.3)",
+                                                          },
+                                                          Platform.OS === "android"
+                                                              ? { elevation: 0 }
+                                                              : undefined,
+                                                      ]
                                                     : { backgroundColor: "white" }
                                                 : settingLoading
-                                                ? { backgroundColor: "rgba(255, 153, 153, 0.3)" }
+                                                ? [
+                                                      {
+                                                          backgroundColor:
+                                                              "rgba(255, 153, 153, 0.3)",
+                                                      },
+                                                      Platform.OS === "android"
+                                                          ? { elevation: 0 }
+                                                          : undefined,
+                                                  ]
                                                 : {
                                                       backgroundColor: "#ff9999",
                                                   },
