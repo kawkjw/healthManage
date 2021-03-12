@@ -88,10 +88,14 @@ export default Locker = () => {
             .doc(id.toString())
             .delete()
             .then(() => {
-                Alert.alert("성공", "성공적으로 제거되었습니다.", [{ text: "확인" }]);
+                Alert.alert("성공", "성공적으로 제거되었습니다.", [{ text: "확인" }], {
+                    cancelable: false,
+                });
             })
             .catch((error) => {
-                Alert.alert("실패", "이미 제거되었습니다.", [{ text: "확인" }]);
+                Alert.alert("실패", "이미 제거되었습니다.", [{ text: "확인" }], {
+                    cancelable: false,
+                });
             });
         setChanged(!changed);
     };
@@ -163,23 +167,27 @@ export default Locker = () => {
                                                                         setChanged(!changed);
                                                                     },
                                                                 },
-                                                            ]
+                                                            ],
+                                                            { cancelable: false }
                                                         );
                                                     });
                                             }
                                         })
                                         .catch((error) => {
-                                            Alert.alert("실패", error.message);
+                                            Alert.alert("실패", error.message, [{ text: "확인" }], {
+                                                cancelable: false,
+                                            });
                                         });
                                 },
                             },
                             { text: "취소" },
-                        ]
+                        ],
+                        { cancelable: false }
                     );
                 });
             })
             .catch((error) => {
-                Alert.alert("실패", error.message);
+                Alert.alert("실패", error.message, [{ text: "확인" }], { cancelable: false });
             });
     };
 
@@ -213,33 +221,44 @@ export default Locker = () => {
                                             {
                                                 text: "삭제",
                                                 onPress: () => {
-                                                    Alert.alert("확실합니까?", "", [
-                                                        { text: "취소" },
-                                                        {
-                                                            text: "삭제",
-                                                            onPress: () => {
-                                                                removeLocker(item.id);
+                                                    Alert.alert(
+                                                        "확실합니까?",
+                                                        "",
+                                                        [
+                                                            { text: "취소" },
+                                                            {
+                                                                text: "삭제",
+                                                                onPress: () => {
+                                                                    removeLocker(item.id);
+                                                                },
+                                                                style: "destructive",
                                                             },
-                                                            style: "destructive",
-                                                        },
-                                                    ]);
+                                                        ],
+                                                        { cancelable: false }
+                                                    );
                                                 },
                                                 style: "destructive",
                                             },
                                             { text: "확인" },
-                                        ]
+                                        ],
+                                        { cancelable: false }
                                     );
                                 } else {
-                                    Alert.alert(item.id.toString(), "비어있음", [
-                                        {
-                                            text: "추가",
-                                            onPress: () => {
-                                                setSelectedLocker(item.id);
-                                                setVisible(true);
+                                    Alert.alert(
+                                        item.id.toString(),
+                                        "비어있음",
+                                        [
+                                            {
+                                                text: "추가",
+                                                onPress: () => {
+                                                    setSelectedLocker(item.id);
+                                                    setVisible(true);
+                                                },
                                             },
-                                        },
-                                        { text: "확인" },
-                                    ]);
+                                            { text: "확인" },
+                                        ],
+                                        { cancelable: false }
+                                    );
                                 }
                             }}
                         >

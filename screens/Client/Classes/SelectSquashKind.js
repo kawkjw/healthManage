@@ -24,7 +24,9 @@ export default SelectSquashKind = ({ navigation, route }) => {
                             trainerUid: route.params.trainerUid,
                         });
                     } else {
-                        Alert.alert("경고", "스쿼시 개인 수업권이 없습니다.", [{ text: "확인" }]);
+                        Alert.alert("경고", "스쿼시 개인 수업권이 없습니다.", [{ text: "확인" }], {
+                            cancelable: false,
+                        });
                     }
                 }}
             >
@@ -50,7 +52,9 @@ export default SelectSquashKind = ({ navigation, route }) => {
                             week: 2,
                         });
                     } else {
-                        Alert.alert("경고", "스쿼시 단체 수업권이 없습니다.", [{ text: "확인" }]);
+                        Alert.alert("경고", "스쿼시 단체 수업권이 없습니다.", [{ text: "확인" }], {
+                            cancelable: false,
+                        });
                     }
                 }}
             >

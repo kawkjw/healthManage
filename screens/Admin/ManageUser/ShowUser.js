@@ -269,7 +269,7 @@ export default ShowUser = ({ route }) => {
             { navigation: "Profile" }
         );
         setChange(!change);
-        Alert.alert("성공", "연장 승인 됨");
+        Alert.alert("성공", "연장 승인 됨", [{ text: "확인" }], { cancelable: false });
     };
 
     const onCancel = async (extendInfo) => {
@@ -286,7 +286,7 @@ export default ShowUser = ({ route }) => {
             "이용권 연장 신청 취소되었습니다."
         );
         setChange(!change);
-        Alert.alert("성공", "연장 취소 됨");
+        Alert.alert("성공", "연장 취소 됨", [{ text: "확인" }], { cancelable: false });
     };
 
     return (
@@ -432,13 +432,18 @@ export default ShowUser = ({ route }) => {
                                                     },
                                                 ]}
                                                 onPress={() =>
-                                                    Alert.alert("경고", "승인하시겠습니까?", [
-                                                        { text: "취소", style: "cancel" },
-                                                        {
-                                                            text: "확인",
-                                                            onPress: () => onConfirm(obj),
-                                                        },
-                                                    ])
+                                                    Alert.alert(
+                                                        "경고",
+                                                        "승인하시겠습니까?",
+                                                        [
+                                                            { text: "취소", style: "cancel" },
+                                                            {
+                                                                text: "확인",
+                                                                onPress: () => onConfirm(obj),
+                                                            },
+                                                        ],
+                                                        { cancelable: false }
+                                                    )
                                                 }
                                             >
                                                 <Text style={TextSize.normalSize}>승인</Text>
@@ -454,13 +459,18 @@ export default ShowUser = ({ route }) => {
                                                     },
                                                 ]}
                                                 onPress={() =>
-                                                    Alert.alert("경고", "신청 취소하시겠습니까", [
-                                                        { text: "취소", style: "cancel" },
-                                                        {
-                                                            text: "확인",
-                                                            onPress: () => onCancel(obj),
-                                                        },
-                                                    ])
+                                                    Alert.alert(
+                                                        "경고",
+                                                        "신청 취소하시겠습니까",
+                                                        [
+                                                            { text: "취소", style: "cancel" },
+                                                            {
+                                                                text: "확인",
+                                                                onPress: () => onCancel(obj),
+                                                            },
+                                                        ],
+                                                        { cancelable: false }
+                                                    )
                                                 }
                                             >
                                                 <Text

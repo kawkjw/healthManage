@@ -46,7 +46,8 @@ export default Menu = ({ navigation }) => {
                         Alert.alert(
                             "주의사항",
                             "3개월권은 연장 불가능이며, 6개월권은 1번, 12개월권은 2번까지 연장 가능합니다.",
-                            [{ text: "확인", onPress: () => navigation.navigate("ExtendDate") }]
+                            [{ text: "확인", onPress: () => navigation.navigate("ExtendDate") }],
+                            { cancelable: false }
                         )
                     }
                 >

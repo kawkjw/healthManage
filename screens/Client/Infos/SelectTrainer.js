@@ -68,7 +68,9 @@ export default SelectTrainer = ({ navigation, route }) => {
                 setTrainers(temp);
             });
         } else {
-            Alert.alert("경고", "남은 OT 횟수가 없습니다.", [{ text: "확인" }]);
+            Alert.alert("경고", "남은 OT 횟수가 없습니다.", [{ text: "확인" }], {
+                cancelable: false,
+            });
             navigation.goBack();
         }
     };

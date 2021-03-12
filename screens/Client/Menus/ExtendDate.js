@@ -65,9 +65,12 @@ export default ExtendDate = ({ navigation, route }) => {
                             })
                             .then(async (list) => {
                                 if (list.length === 0) {
-                                    Alert.alert("경고", "연장 가능한 이용권이 없습니다.", [
-                                        { text: "확인" },
-                                    ]);
+                                    Alert.alert(
+                                        "경고",
+                                        "연장 가능한 이용권이 없습니다.",
+                                        [{ text: "확인" }],
+                                        { cancelable: false }
+                                    );
                                     navigation.goBack();
                                 }
                                 let temp = [];
@@ -107,9 +110,12 @@ export default ExtendDate = ({ navigation, route }) => {
                                 });
                                 await Promise.all(promises);
                                 if (temp.length === 0) {
-                                    Alert.alert("경고", "연장 가능한 이용권이 없습니다.", [
-                                        { text: "확인" },
-                                    ]);
+                                    Alert.alert(
+                                        "경고",
+                                        "연장 가능한 이용권이 없습니다.",
+                                        [{ text: "확인" }],
+                                        { cancelable: false }
+                                    );
                                     navigation.goBack();
                                 } else {
                                     setAvailExtend(temp);
@@ -119,7 +125,8 @@ export default ExtendDate = ({ navigation, route }) => {
                         Alert.alert(
                             "경고",
                             "승인 대기 중입니다.\n승인 완료 후 신청해 주시기 바랍니다.",
-                            [{ text: "확인" }]
+                            [{ text: "확인" }],
+                            { cancelable: false }
                         );
                         navigation.goBack();
                     }
@@ -173,7 +180,12 @@ export default ExtendDate = ({ navigation, route }) => {
                 },
             }
         );
-        Alert.alert("성공", "연장 신청 완료", [{ text: "OK", onPress: () => navigation.goBack() }]);
+        Alert.alert(
+            "성공",
+            "연장 신청 완료",
+            [{ text: "OK", onPress: () => navigation.goBack() }],
+            { cancelable: false }
+        );
     };
 
     return (
@@ -288,7 +300,8 @@ export default ExtendDate = ({ navigation, route }) => {
                                         [
                                             { text: "취소" },
                                             { text: "확인", onPress: () => onSubmit() },
-                                        ]
+                                        ],
+                                        { cancelable: false }
                                     );
                                 }}
                                 disabled={!extendReason}

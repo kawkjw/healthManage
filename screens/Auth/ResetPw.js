@@ -5,16 +5,16 @@ import {
     TextInput,
     TouchableOpacity,
     SafeAreaView,
-    StatusBar,
     Keyboard,
     KeyboardAvoidingView,
     Platform,
+    Alert,
 } from "react-native";
 import myBase from "../../config/MyBase";
 import { AuthStyles } from "../../css/MyStyles";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
-export default ResetPw = () => {
+export default ResetPw = ({ navigation }) => {
     const [email, setEmail] = useState("");
     const [checkEmail, setCheckEmail] = useState(false);
 
@@ -36,15 +36,22 @@ export default ResetPw = () => {
             .auth()
             .sendPasswordResetEmail(email)
             .then(() => {
-                alert("Send Password Reset Mail");
+                Alert.alert("성공", "비밀번호 초기화 메일이 전송되었습니다.", [{ text: "확인" }], {
+                    cancelable: false,
+                });
+                navigation.goBack();
             })
             .catch((error) => {
                 if (error.code === "auth/invalid-email") {
-                    alert("Invalid Email");
+                    Alert.alert("경고", "이메일이 잘못 입력되었습니다.", [{ text: "확인" }], {
+                        cancelable: false,
+                    });
                 } else if (error.code === "auth/user-not-found") {
-                    alert("User Not Found");
+                    Alert.alert("경고", "가입되지 않은 이메일입니다.", [{ text: "확인" }], {
+                        cancelable: false,
+                    });
                 } else {
-                    alert(error.message);
+                    Alert.alert("Error", error.message, [{ text: "OK" }], { cancelable: false });
                 }
             });
     };

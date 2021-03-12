@@ -87,7 +87,8 @@ const MyStack = () => {
                                                 ? classNames[name].miniKo
                                                 : "Error"
                                         } 회원권 시작일 설정이 되지 않았습니다.\n관리자에게 문의해주시기 바랍니다.`,
-                                        [{ text: "확인" }]
+                                        [{ text: "확인" }],
+                                        { cancelable: false }
                                     );
                                 }
                                 if (end.toDate() < today) {
@@ -111,7 +112,8 @@ const MyStack = () => {
                                                         );
                                                     },
                                                 },
-                                            ]
+                                            ],
+                                            { cancelable: false }
                                         );
                                     }
                                 }
@@ -156,14 +158,19 @@ const MyStack = () => {
                         docs.forEach((doc) => {
                             const { count } = doc.data();
                             if (count === 0) {
-                                Alert.alert("경고", "남은 스쿼시 PT 횟수가 없습니다.", [
-                                    {
-                                        text: "확인",
-                                        onPress: async () => {
-                                            await doc.ref.update({ count: -1 });
+                                Alert.alert(
+                                    "경고",
+                                    "남은 스쿼시 PT 횟수가 없습니다.",
+                                    [
+                                        {
+                                            text: "확인",
+                                            onPress: async () => {
+                                                await doc.ref.update({ count: -1 });
+                                            },
                                         },
-                                    },
-                                ]);
+                                    ],
+                                    { cancelable: false }
+                                );
                             }
                         });
                     },
@@ -187,14 +194,19 @@ const MyStack = () => {
                         docs.forEach((doc) => {
                             const { count } = doc.data();
                             if (count === 0) {
-                                Alert.alert("경고", "남은 PT 횟수가 없습니다.", [
-                                    {
-                                        text: "확인",
-                                        onPress: async () => {
-                                            await doc.ref.update({ count: -1 });
+                                Alert.alert(
+                                    "경고",
+                                    "남은 PT 횟수가 없습니다.",
+                                    [
+                                        {
+                                            text: "확인",
+                                            onPress: async () => {
+                                                await doc.ref.update({ count: -1 });
+                                            },
                                         },
-                                    },
-                                ]);
+                                    ],
+                                    { cancelable: false }
+                                );
                             }
                         });
                     },

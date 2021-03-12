@@ -31,14 +31,19 @@ export default Class = ({ navigation }) => {
                 })
                 .then(async (list) => {
                     if (list.length === 0) {
-                        Alert.alert("회원권이 없습니다.", "예약할 수 없습니다.", [
-                            {
-                                text: "확인",
-                                onPress: () => {
-                                    navigation.goBack();
+                        Alert.alert(
+                            "회원권이 없습니다.",
+                            "예약할 수 없습니다.",
+                            [
+                                {
+                                    text: "확인",
+                                    onPress: () => {
+                                        navigation.goBack();
+                                    },
                                 },
-                            },
-                        ]);
+                            ],
+                            { cancelable: false }
+                        );
                     } else {
                         let availabeClass = [];
                         const promises = list.map(async (kind) => {
@@ -119,13 +124,17 @@ export default Class = ({ navigation }) => {
     const goClassReservation = (classname) => {
         if (classname === "yoga" || classname === "zoomba") {
             if (memberships.indexOf("gx") === -1) {
-                Alert.alert("경고", "GX 회원권이 없습니다.", [{ text: "확인" }]);
+                Alert.alert("경고", "GX 회원권이 없습니다.", [{ text: "확인" }], {
+                    cancelable: false,
+                });
             } else {
                 navigation.navigate("SelectDate", { classname: classname });
             }
         } else if (classname === "pilates") {
             if (memberships.indexOf("pilates2") === -1 && memberships.indexOf("pilates3") === -1) {
-                Alert.alert("경고", "필라테스 회원권이 없습니다.", [{ text: "확인" }]);
+                Alert.alert("경고", "필라테스 회원권이 없습니다.", [{ text: "확인" }], {
+                    cancelable: false,
+                });
             } else {
                 navigation.navigate("SelectDate", {
                     classname: classname,
@@ -137,7 +146,12 @@ export default Class = ({ navigation }) => {
                 memberships.indexOf("squashpt") === -1 &&
                 memberships.indexOf("squashgroup") === -1
             ) {
-                Alert.alert("경고", "스워시 개인 또는 단체 수업권이 없습니다.", [{ text: "확인" }]);
+                Alert.alert(
+                    "경고",
+                    "스워시 개인 또는 단체 수업권이 없습니다.",
+                    [{ text: "확인" }],
+                    { cancelable: false }
+                );
             } else {
                 navigation.navigate("SelectSquashKind", {
                     availPt: memberships.indexOf("squashpt") > -1,
@@ -152,7 +166,8 @@ export default Class = ({ navigation }) => {
                 `${
                     classNames[classname] !== undefined ? classNames[classname].ko : "Error"
                 } 회원권이 없습니다.`,
-                [{ text: "확인" }]
+                [{ text: "확인" }],
+                { cancelable: false }
             );
         } else {
             if (classname === "pt") {

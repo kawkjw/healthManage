@@ -230,17 +230,22 @@ export default PT = ({ navigation, route }) => {
                 });
             });
         if (count <= 0) {
-            Alert.alert("경고", "남은 PT 횟수가 없습니다. ", [
-                {
-                    text: "확인",
-                    onPress: () => {
-                        navigation.reset({
-                            index: 1,
-                            routes: [{ name: "HomeScreen" }],
-                        });
+            Alert.alert(
+                "경고",
+                "남은 PT 횟수가 없습니다. ",
+                [
+                    {
+                        text: "확인",
+                        onPress: () => {
+                            navigation.reset({
+                                index: 1,
+                                routes: [{ name: "HomeScreen" }],
+                            });
+                        },
                     },
-                },
-            ]);
+                ],
+                { cancelable: false }
+            );
             return;
         } else {
             const yearMonthStr =
@@ -329,27 +334,37 @@ export default PT = ({ navigation, route }) => {
                             },
                         }
                     );
-                    Alert.alert("성공", "수업이 예약되었습니다.", [
-                        {
-                            text: "확인",
-                            onPress: () => {
-                                const backup = selectedDate;
-                                setSelectedDate(0);
-                                setSelectedDate(backup);
+                    Alert.alert(
+                        "성공",
+                        "수업이 예약되었습니다.",
+                        [
+                            {
+                                text: "확인",
+                                onPress: () => {
+                                    const backup = selectedDate;
+                                    setSelectedDate(0);
+                                    setSelectedDate(backup);
+                                },
                             },
-                        },
-                    ]);
+                        ],
+                        { cancelable: false }
+                    );
                 } else {
-                    Alert.alert("실패", "이미 예약되어 있습니다.", [
-                        {
-                            text: "확인",
-                            onPress: () => {
-                                const backup = selectedDate;
-                                setSelectedDate(0);
-                                setSelectedDate(backup);
+                    Alert.alert(
+                        "실패",
+                        "이미 예약되어 있습니다.",
+                        [
+                            {
+                                text: "확인",
+                                onPress: () => {
+                                    const backup = selectedDate;
+                                    setSelectedDate(0);
+                                    setSelectedDate(backup);
+                                },
                             },
-                        },
-                    ]);
+                        ],
+                        { cancelable: false }
+                    );
                 }
             });
         }
@@ -620,7 +635,8 @@ export default PT = ({ navigation, route }) => {
                                                                             availTime.timeStr
                                                                         ),
                                                                 },
-                                                            ]
+                                                            ],
+                                                            { cancelable: false }
                                                         );
                                                     }}
                                                 >

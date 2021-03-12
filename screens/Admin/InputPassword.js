@@ -18,7 +18,6 @@ import { WrongNumContext } from "./ANavigator";
 
 export default InputPassword = ({ navigation, route }) => {
     const [password, setPassword] = useState("");
-    //const [num, setNum] = useState(0);
     const { signOut } = useContext(AuthContext);
     const { num, setNum } = useContext(WrongNumContext);
 
@@ -36,7 +35,8 @@ export default InputPassword = ({ navigation, route }) => {
             Alert.alert(
                 "경고",
                 `비밀번호 ${num + 1}회 틀렸습니다.\n5회 틀릴 경우 로그아웃 됩니다.`,
-                [{ text: "확인" }]
+                [{ text: "확인" }],
+                { cancelable: false }
             );
         }
     };

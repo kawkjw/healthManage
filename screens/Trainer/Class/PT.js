@@ -87,7 +87,9 @@ export default PT = ({ navigation, route }) => {
                     );
                 });
                 if (list.length === 0) {
-                    Alert.alert("경고", "설정 가능한 날이 없습니다.", [{ text: "확인" }]);
+                    Alert.alert("경고", "설정 가능한 날이 없습니다.", [{ text: "확인" }], {
+                        cancelable: false,
+                    });
                     setRadioSelect("allDay");
                 } else {
                     setNoHasClass(list);
@@ -125,7 +127,9 @@ export default PT = ({ navigation, route }) => {
                             );
                         });
                         if (list.length === 0) {
-                            Alert.alert("경고", "설정 가능한 날이 없습니다.", [{ text: "확인" }]);
+                            Alert.alert("경고", "설정 가능한 날이 없습니다.", [{ text: "확인" }], {
+                                cancelable: false,
+                            });
                         } else {
                             setRadioSelect("allDay");
                             setModalAllDays(true);
@@ -523,16 +527,21 @@ export default PT = ({ navigation, route }) => {
                 `${selectedDate}일 ${availTime}`,
                 { navigation: "Profile" }
             );
-            Alert.alert("성공", "예약 승인되었습니다.", [
-                {
-                    text: "확인",
-                    onPress: () => {
-                        const backup = selectedDate;
-                        setSelectedDate(0);
-                        setSelectedDate(backup);
+            Alert.alert(
+                "성공",
+                "예약 승인되었습니다.",
+                [
+                    {
+                        text: "확인",
+                        onPress: () => {
+                            const backup = selectedDate;
+                            setSelectedDate(0);
+                            setSelectedDate(backup);
+                        },
                     },
-                },
-            ]);
+                ],
+                { cancelable: false }
+            );
         }
     };
 
@@ -621,30 +630,40 @@ export default PT = ({ navigation, route }) => {
                     });
                     await docRef.update({ count: count + 1 });
                 });
-            Alert.alert("취소됨", "예약이 취소되었습니다.", [
-                {
-                    text: "확인",
-                    onPress: () => {
-                        const backup = selectedDate;
-                        setSelectedDate(0);
-                        setSelectedDate(backup);
+            Alert.alert(
+                "취소됨",
+                "예약이 취소되었습니다.",
+                [
+                    {
+                        text: "확인",
+                        onPress: () => {
+                            const backup = selectedDate;
+                            setSelectedDate(0);
+                            setSelectedDate(backup);
+                        },
                     },
-                },
-            ]);
+                ],
+                { cancelable: false }
+            );
         }
     };
 
     const alertWhenClose = () =>
-        Alert.alert("경고", "저장되지 않은 설정은 사라집니다.\n그래도 닫으시겠습니까?", [
-            { text: "취소", style: "cancel" },
-            {
-                text: "확인",
-                onPress: () => {
-                    setModalAllDays(false);
-                    setAvailList(availList.map((_) => null));
+        Alert.alert(
+            "경고",
+            "저장되지 않은 설정은 사라집니다.\n그래도 닫으시겠습니까?",
+            [
+                { text: "취소", style: "cancel" },
+                {
+                    text: "확인",
+                    onPress: () => {
+                        setModalAllDays(false);
+                        setAvailList(availList.map((_) => null));
+                    },
                 },
-            },
-        ]);
+            ],
+            { cancelable: false }
+        );
 
     const alertWhenTableClose = () => {
         if (alreadySetUp) {
@@ -663,7 +682,8 @@ export default PT = ({ navigation, route }) => {
                             setSelectedDate(0);
                         },
                     },
-                ]
+                ],
+                { cancelable: false }
             );
         }
         setChange(!change);
@@ -709,16 +729,21 @@ export default PT = ({ navigation, route }) => {
         });
         await Promise.all(rootPromises);
         setSettingLoading(false);
-        Alert.alert("성공", "설정 완료했습니다.", [
-            {
-                text: "확인",
-                onPress: () => {
-                    setModalAllDays(false);
-                    setAvailList(availList.map((_) => null));
-                    setChange(!change);
+        Alert.alert(
+            "성공",
+            "설정 완료했습니다.",
+            [
+                {
+                    text: "확인",
+                    onPress: () => {
+                        setModalAllDays(false);
+                        setAvailList(availList.map((_) => null));
+                        setChange(!change);
+                    },
                 },
-            },
-        ]);
+            ],
+            { cancelable: false }
+        );
     };
 
     return (
@@ -1080,7 +1105,8 @@ export default PT = ({ navigation, route }) => {
                                                                                         availTime.str
                                                                                     ),
                                                                             },
-                                                                        ]
+                                                                        ],
+                                                                        { cancelable: false }
                                                                     )
                                                                 }
                                                             >
@@ -1114,7 +1140,8 @@ export default PT = ({ navigation, route }) => {
                                                                                         availTime.str
                                                                                     ),
                                                                             },
-                                                                        ]
+                                                                        ],
+                                                                        { cancelable: false }
                                                                     )
                                                                 }
                                                             >
@@ -1145,7 +1172,8 @@ export default PT = ({ navigation, route }) => {
                                                                                         availTime.str
                                                                                     ),
                                                                             },
-                                                                        ]
+                                                                        ],
+                                                                        { cancelable: false }
                                                                     )
                                                                 }
                                                             >
@@ -1220,14 +1248,18 @@ export default PT = ({ navigation, route }) => {
                             style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
                             onPress={() => {
                                 if (availList.includes(null)) {
-                                    Alert.alert("경고", "모든 시간 설정 해주시기 바랍니다.", [
-                                        { text: "확인" },
-                                    ]);
+                                    Alert.alert(
+                                        "경고",
+                                        "모든 시간 설정 해주시기 바랍니다.",
+                                        [{ text: "확인" }],
+                                        { cancelable: false }
+                                    );
                                 } else {
                                     Alert.alert(
                                         "경고",
                                         "설정 완료하는 시간이 오래 걸릴 수 있습니다.",
-                                        [{ text: "확인", onPress: () => setAllDays() }]
+                                        [{ text: "확인", onPress: () => setAllDays() }],
+                                        { cancelable: false }
                                     );
                                 }
                             }}

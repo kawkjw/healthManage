@@ -375,7 +375,9 @@ export default Profile = ({ navigation }) => {
         const phoneProvider = new firebase.auth.PhoneAuthProvider();
         await phoneProvider.verifyPhoneNumber(profilePhone, appVerifier.current).then((id) => {
             setVerificationId(id);
-            Alert.alert("성공", "인증 문자를 확인해주세요.", [{ text: "확인" }]);
+            Alert.alert("성공", "인증 문자를 확인해주세요.", [{ text: "확인" }], {
+                cancelable: false,
+            });
         });
     };
 
@@ -397,16 +399,21 @@ export default Profile = ({ navigation }) => {
                                 thisuser.update({
                                     phoneNumber: changePhone,
                                 });
-                                Alert.alert("성공", "변경되었습니다.", [
-                                    {
-                                        text: "확인",
-                                        onPress: () => {
-                                            setChangePhone("");
-                                            setChange(!change);
-                                            setModalPhoneVisible(false);
+                                Alert.alert(
+                                    "성공",
+                                    "변경되었습니다.",
+                                    [
+                                        {
+                                            text: "확인",
+                                            onPress: () => {
+                                                setChangePhone("");
+                                                setChange(!change);
+                                                setModalPhoneVisible(false);
+                                            },
                                         },
-                                    },
-                                ]);
+                                    ],
+                                    { cancelable: false }
+                                );
                             }
                         })
                         .catch((error) => console.log(error));
@@ -415,7 +422,9 @@ export default Profile = ({ navigation }) => {
                     console.log(error.code, error.message);
                 });
         } else {
-            Alert.alert("경고", "이 계정은 당신 것이 아닙니다.", [{ text: "확인" }]);
+            Alert.alert("경고", "이 계정은 당신 것이 아닙니다.", [{ text: "확인" }], {
+                cancelable: false,
+            });
             signOut();
         }
     };
@@ -498,30 +507,43 @@ export default Profile = ({ navigation }) => {
                                     });
                                 }
                             });
-                            Alert.alert("성공", "변경되었습니다.", [
-                                {
-                                    text: "확인",
-                                    onPress: () => {
-                                        setChangeEmail("");
-                                        setChkUsedEmail(false);
-                                        signOut();
+                            Alert.alert(
+                                "성공",
+                                "변경되었습니다.",
+                                [
+                                    {
+                                        text: "확인",
+                                        onPress: () => {
+                                            setChangeEmail("");
+                                            setChkUsedEmail(false);
+                                            signOut();
+                                        },
                                     },
-                                },
-                            ]);
+                                ],
+                                { cancelable: false }
+                            );
                         });
                 })
                 .catch((error) => {
                     console.log(error.code, error.message);
-                    Alert.alert("경고", "비밀번호가 틀립니다.", [
-                        { text: "확인", onPress: () => setPassword("") },
-                    ]);
+                    Alert.alert(
+                        "경고",
+                        "비밀번호가 틀립니다.",
+                        [{ text: "확인", onPress: () => setPassword("") }],
+                        { cancelable: false }
+                    );
                 });
         } else {
-            Alert.alert("경고", "이 계정은 당신 것이 아닙니다.", [
-                {
-                    text: "확인",
-                },
-            ]);
+            Alert.alert(
+                "경고",
+                "이 계정은 당신 것이 아닙니다.",
+                [
+                    {
+                        text: "확인",
+                    },
+                ],
+                { cancelable: false }
+            );
             signOut();
         }
     };
@@ -544,7 +566,9 @@ export default Profile = ({ navigation }) => {
                             setIsRun(!isRun);
                             setCount(15);
                         } else {
-                            Alert.alert("경고", "회원권이 없습니다.", [{ text: "확인" }]);
+                            Alert.alert("경고", "회원권이 없습니다.", [{ text: "확인" }], {
+                                cancelable: false,
+                            });
                         }
                     }}
                 >
@@ -1029,7 +1053,8 @@ export default Profile = ({ navigation }) => {
                                         Alert.alert(
                                             "경고",
                                             "인증을 위한 문자 전송 버튼을 눌러주세요.",
-                                            [{ text: "확인" }]
+                                            [{ text: "확인" }],
+                                            { cancelable: false }
                                         );
                                     }
                                 }}

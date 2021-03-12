@@ -178,14 +178,19 @@ export default GX = ({ navigation, route }) => {
             .doc(cid);
         const { currentClient, maxClient, start, end, trainer } = (await classInDB.get()).data();
         if (currentClient >= maxClient) {
-            Alert.alert("경고", "예약 가능한 자리가 없습니다.", [
-                {
-                    text: "확인",
-                    onPress: () => {
-                        setModalClass(false);
+            Alert.alert(
+                "경고",
+                "예약 가능한 자리가 없습니다.",
+                [
+                    {
+                        text: "확인",
+                        onPress: () => {
+                            setModalClass(false);
+                        },
                     },
-                },
-            ]);
+                ],
+                { cancelable: false }
+            );
         } else {
             await classInDB
                 .collection("clients")
@@ -229,27 +234,37 @@ export default GX = ({ navigation, route }) => {
                                     .doc(date)
                                     .set({ date: [selectDate.toString()] });
                             });
-                        Alert.alert("성공", "예약되었습니다.", [
-                            {
-                                text: "확인",
-                                onPress: () => {
-                                    setModalClass(false);
-                                    setSelectDate(0);
+                        Alert.alert(
+                            "성공",
+                            "예약되었습니다.",
+                            [
+                                {
+                                    text: "확인",
+                                    onPress: () => {
+                                        setModalClass(false);
+                                        setSelectDate(0);
+                                    },
                                 },
-                            },
-                        ]);
+                            ],
+                            { cancelable: false }
+                        );
                     } else {
                         clients.forEach((client) => {
                             if (client.exists) {
-                                Alert.alert("경고", "이미 예약되었습니다.", [
-                                    {
-                                        text: "확인",
-                                        onPress: () => {
-                                            setModalClass(false);
-                                            setSelectDate(0);
+                                Alert.alert(
+                                    "경고",
+                                    "이미 예약되었습니다.",
+                                    [
+                                        {
+                                            text: "확인",
+                                            onPress: () => {
+                                                setModalClass(false);
+                                                setSelectDate(0);
+                                            },
                                         },
-                                    },
-                                ]);
+                                    ],
+                                    { cancelable: false }
+                                );
                             }
                         });
                     }
@@ -363,13 +378,15 @@ export default GX = ({ navigation, route }) => {
                                                     text: "확인",
                                                     onPress: () => reserveClass(c.cid),
                                                 },
-                                            ]
+                                            ],
+                                            { cancelable: false }
                                         );
                                     } else {
                                         Alert.alert(
                                             "경고",
                                             `이미 주${route.params.week}회 예약하셨습니다.`,
-                                            [{ text: "확인" }]
+                                            [{ text: "확인" }],
+                                            { cancelable: false }
                                         );
                                     }
                                 }}

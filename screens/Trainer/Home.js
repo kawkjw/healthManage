@@ -127,12 +127,17 @@ export default Home = ({ navigation, route }) => {
                 });
             }
         } else {
-            Alert.alert("경고", "담당 과목 설정이 안되어 있습니다.\n내 정보에서 설정해주세요.", [
-                {
-                    text: "확인",
-                    onPress: () => navigation.navigate("Profile", { showModal: true }),
-                },
-            ]);
+            Alert.alert(
+                "경고",
+                "담당 과목 설정이 안되어 있습니다.\n내 정보에서 설정해주세요.",
+                [
+                    {
+                        text: "확인",
+                        onPress: () => navigation.navigate("Profile", { showModal: true }),
+                    },
+                ],
+                { cancelable: false }
+            );
         }
     };
 

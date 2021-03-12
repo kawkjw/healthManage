@@ -149,24 +149,35 @@ export default SignUp = ({ navigation }) => {
                     });
                     if (Object.keys(data).length === 0) {
                         setChkUsedEmail(true);
-                        Alert.alert("성공", "사용하셔도 됩니다.", [{ text: "확인" }]);
+                        Alert.alert("성공", "사용하셔도 됩니다.", [{ text: "확인" }], {
+                            cancelable: false,
+                        });
                     } else {
-                        Alert.alert("경고", "이미 사용된 이메일 주소 입니다.", [
-                            {
-                                text: "확인",
-                                onPress: () => {
-                                    setEmail("");
-                                    setChkUsedEmail(false);
+                        Alert.alert(
+                            "경고",
+                            "이미 사용된 이메일 주소 입니다.",
+                            [
+                                {
+                                    text: "확인",
+                                    onPress: () => {
+                                        setEmail("");
+                                        setChkUsedEmail(false);
+                                    },
                                 },
-                            },
-                        ]);
+                            ],
+                            { cancelable: false }
+                        );
                     }
                 })
                 .catch((error) => console.log(error));
         } else if (!email) {
-            Alert.alert("경고", "이메일 주소를 입력해주세요.", [{ text: "확인" }]);
+            Alert.alert("경고", "이메일 주소를 입력해주세요.", [{ text: "확인" }], {
+                cancelable: false,
+            });
         } else {
-            Alert.alert("경고", "잘못된 이메일 주소입니다.", [{ text: "확인" }]);
+            Alert.alert("경고", "잘못된 이메일 주소입니다.", [{ text: "확인" }], {
+                cancelable: false,
+            });
         }
     };
 
@@ -181,7 +192,9 @@ export default SignUp = ({ navigation }) => {
         const phoneProvider = new firebase.auth.PhoneAuthProvider();
         await phoneProvider.verifyPhoneNumber(profilePhone, appVerifier.current).then((id) => {
             setVerificationId(id);
-            Alert.alert("성공", "인증 문자를 보냈습니다.", [{ text: "확인" }]);
+            Alert.alert("성공", "인증 문자를 보냈습니다.", [{ text: "확인" }], {
+                cancelable: false,
+            });
         });
     };
 

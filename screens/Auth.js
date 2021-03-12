@@ -103,13 +103,21 @@ export default Auth = () => {
                     })
                     .catch((error) => {
                         if (error.code === "auth/wrong-password") {
-                            Alert.alert("경고", "잘못된 비밀번호입니다.", [{ text: "확인" }]);
+                            Alert.alert("경고", "잘못된 비밀번호입니다.", [{ text: "확인" }], {
+                                cancelable: false,
+                            });
                         } else if (error.code === "auth/invalid-email") {
-                            Alert.alert("경고", "잘못된 이메일 형식입니다.", [{ text: "확인" }]);
+                            Alert.alert("경고", "잘못된 이메일 형식입니다.", [{ text: "확인" }], {
+                                cancelable: false,
+                            });
                         } else if (error.code === "auth/user-not-found") {
-                            Alert.alert("경고", "가입되지 않은 이메일입니다.", [{ text: "확인" }]);
+                            Alert.alert("경고", "가입되지 않은 이메일입니다.", [{ text: "확인" }], {
+                                cancelable: false,
+                            });
                         } else {
-                            Alert.alert("Error", error.message, [{ text: "확인" }]);
+                            Alert.alert("Error", error.message, [{ text: "확인" }], {
+                                cancelable: false,
+                            });
                         }
                         throw Error();
                     });
@@ -317,7 +325,8 @@ export default Auth = () => {
                                                 }
                                             },
                                         },
-                                    ]
+                                    ],
+                                    { cancelable: false }
                                 );
                             })
                             .catch((error) => console.log(error));
@@ -326,16 +335,25 @@ export default Auth = () => {
                         const errorCode = error.code;
                         const errorMessage = error.message;
                         if (errorCode === "auth/email-already-in-use") {
-                            Alert.alert("경고", "이미 사용된 이메일입니다.", [{ text: "확인" }]);
+                            Alert.alert("경고", "이미 사용된 이메일입니다.", [{ text: "확인" }], {
+                                cancelable: false,
+                            });
                         } else {
                             if (errorMessage === "auth/invalid-verification-code") {
-                                Alert.alert("경고", "잘못된 인증 코드입니다.");
+                                Alert.alert("경고", "잘못된 인증 코드입니다.", [{ text: "확인" }], {
+                                    cancelable: false,
+                                });
                             } else if (errorMessage === "auth/credential-already-in-use") {
-                                Alert.alert("경고", "이미 가입된 휴대폰번호입니다.");
+                                Alert.alert("경고", "이미 가입된 휴대폰번호입니다."),
+                                    [{ text: "확인" }],
+                                    { cancelable: false };
                             } else {
-                                Alert.alert("Error", errorCode + "\n" + errorMessage, [
-                                    { text: "확인" },
-                                ]);
+                                Alert.alert(
+                                    "Error",
+                                    errorCode + "\n" + errorMessage,
+                                    [{ text: "확인" }],
+                                    { cancelable: false }
+                                );
                             }
                         }
                         throw Error(errorMessage);

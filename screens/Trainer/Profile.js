@@ -260,10 +260,14 @@ export default Profile = ({ navigation, route }) => {
     const submitSetClass = async () => {
         if (radioSelected === 0) {
             if (Number(ptStartTime) >= Number(ptEndTime)) {
-                Alert.alert("경고", "잘못된 범위의 시간입니다.");
+                Alert.alert("경고", "잘못된 범위의 시간입니다.", [{ text: "확인" }], {
+                    cancelable: false,
+                });
                 return;
             } else if (Number(ptStartTime) < 8 || Number(ptEndTime) > 22) {
-                Alert.alert("경고", "최소 : 8, 최대 : 22");
+                Alert.alert("경고", "최소 : 8, 최대 : 22", [{ text: "확인" }], {
+                    cancelable: false,
+                });
                 return;
             } else {
                 let str =
@@ -281,14 +285,20 @@ export default Profile = ({ navigation, route }) => {
             }
         } else if (radioSelected === 1) {
             if (radioGxSelected === -1) {
-                Alert.alert("경고", "하나를 선택해주세요.");
+                Alert.alert("경고", "하나를 선택해주세요.", [{ text: "확인" }], {
+                    cancelable: false,
+                });
                 return;
             } else if (radioGxSelected === 1) {
                 if (Number(ptStartTime) >= Number(ptEndTime)) {
-                    Alert.alert("경고", "잘못된 범위의 시간입니다.");
+                    Alert.alert("경고", "잘못된 범위의 시간입니다.", [{ text: "확인" }], {
+                        cancelable: false,
+                    });
                     return;
                 } else if (Number(ptStartTime) < 8 || Number(ptEndTime) > 22) {
-                    Alert.alert("경고", "최소 : 8, 최대 : 22");
+                    Alert.alert("경고", "최소 : 8, 최대 : 22", [{ text: "확인" }], {
+                        cancelable: false,
+                    });
                     return;
                 } else {
                     let str =
@@ -595,7 +605,8 @@ export default Profile = ({ navigation, route }) => {
                                                         text: "확인",
                                                         onPress: () => submitSetClass(),
                                                     },
-                                                ]
+                                                ],
+                                                { cancelable: false }
                                             );
                                         }}
                                     >
