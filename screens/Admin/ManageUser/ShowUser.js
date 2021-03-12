@@ -377,7 +377,9 @@ export default ShowUser = ({ route }) => {
                                     }}
                                 >
                                     <View style={{ flex: 3 }}>
-                                        <View style={{ flexDirection: "row" }}>
+                                        <View
+                                            style={{ flexDirection: "row", alignItems: "center" }}
+                                        >
                                             <MaterialCommunityIcons
                                                 name="check-circle-outline"
                                                 size={RFPercentage(2)}
@@ -395,6 +397,7 @@ export default ShowUser = ({ route }) => {
                                             style={{
                                                 paddingLeft: RFPercentage(2) + 3,
                                                 flexDirection: "row",
+                                                alignItems: "center",
                                             }}
                                         >
                                             <Ionicons
