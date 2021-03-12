@@ -94,7 +94,7 @@ export default SelectUser = ({ navigation, route }) => {
                     keyExtractor={(item, index) => index}
                 />
             ) : (
-                <Text style={TextSize.largeSize}>Not Found Client</Text>
+                <Text style={TextSize.largeSize}>검색 결과가 없습니다.</Text>
             )}
         </SafeAreaView>
     );

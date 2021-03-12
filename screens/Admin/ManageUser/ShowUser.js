@@ -191,8 +191,10 @@ export default ShowUser = ({ route }) => {
                         <Text
                             style={[
                                 TextSize.normalSize,
-                                membership[kind].end.toDate() < today
-                                    ? { textDecorationLine: "line-through" }
+                                membership[kind].end !== undefined
+                                    ? membership[kind].end.toDate() < today
+                                        ? { textDecorationLine: "line-through" }
+                                        : undefined
                                     : undefined,
                             ]}
                         >
@@ -202,15 +204,19 @@ export default ShowUser = ({ route }) => {
                     <Text
                         style={[
                             TextSize.normalSize,
-                            membership[kind].end.toDate() < today
-                                ? { textDecorationLine: "line-through" }
+                            membership[kind].end !== undefined
+                                ? membership[kind].end.toDate() < today
+                                    ? { textDecorationLine: "line-through" }
+                                    : undefined
                                 : undefined,
                         ]}
                     >
-                        {moment(membership[kind].start.toDate()).format("YY. MM. DD.") +
-                            " ~ " +
-                            moment(membership[kind].end.toDate()).format("YY. MM. DD.") +
-                            " "}
+                        {membership[kind].start === undefined || membership[kind].end === undefined
+                            ? "시작일 설정 필요"
+                            : moment(membership[kind].start.toDate()).format("YY. MM. DD.") +
+                              " ~ " +
+                              moment(membership[kind].end.toDate()).format("YY. MM. DD.") +
+                              " "}
                         ({membership[kind].month}개월권)
                     </Text>
                 </View>
