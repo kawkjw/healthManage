@@ -11,15 +11,18 @@
             "backgroundColor": "#ffffff"
         },
         "updates": {
-            "fallbackToCacheTimeout": 0
+            "enabled": true,
+            "fallbackToCacheTimeout": 60000
         },
         "assetBundlePatterns": ["**/*"],
         "ios": {
             "bundleIdentifier": "com.test.healthmanage",
-            "supportsTablet": false
+            "supportsTablet": false,
+            "googleServicesFile": "./GoogleService-Info.plist"
         },
         "android": {
             "package": "com.test.healthmanage",
+            "googleServicesFile": "./google-services.json",
             "softwareKeyboardLayoutMode": "pan",
             "adaptiveIcon": {
                 "foregroundImage": "./assets/adaptive-icon.png",
