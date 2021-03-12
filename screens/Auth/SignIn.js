@@ -69,7 +69,7 @@ export default SignIn = ({ navigation }) => {
                 showsVerticalScrollIndicator={false}
                 scrollEnabled={false}
                 extraHeight={Platform.select({ android: 100, ios: 130 })}
-                extraScrollHeight={120}
+                extraScrollHeight={hp("17%")}
                 enableOnAndroid={true}
                 enableAutomaticScroll
             >
