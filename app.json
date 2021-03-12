@@ -12,7 +12,7 @@
         },
         "updates": {
             "enabled": true,
-            "fallbackToCacheTimeout": 60000
+            "fallbackToCacheTimeout": 0
         },
         "assetBundlePatterns": ["**/*"],
         "ios": {
