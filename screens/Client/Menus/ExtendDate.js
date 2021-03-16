@@ -121,6 +121,16 @@ export default ExtendDate = ({ navigation, route }) => {
                                 } else {
                                     setAvailExtend(temp);
                                 }
+                            })
+                            .catch((error) => {
+                                console.log("ExtendDate", error);
+                                Alert.alert(
+                                    "경고",
+                                    "연장 가능한 이용권이 없습니다.",
+                                    [{ text: "확인" }],
+                                    { cancelable: false }
+                                );
+                                navigation.goBack();
                             });
                     } else {
                         Alert.alert(

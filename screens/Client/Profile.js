@@ -202,6 +202,10 @@ export default Profile = ({ navigation }) => {
                     if (info && kinds.length !== expiredNum) {
                         setCanGenQR(true);
                     }
+                })
+                .catch((error) => {
+                    console.log("Profile", error);
+                    setMembershipInfo("회원권이 없습니다.");
                 });
             setExtendBool({ hasExtend: false, confirmExtend: false });
             await thisuser
@@ -554,8 +558,8 @@ export default Profile = ({ navigation }) => {
     const widthImage = widthButton - 60;
 
     return (
-        <SafeAreaView style={MyStyles.container}>
-            <View style={{ flex: 1, justifyContent: "center" }}>
+        <SafeAreaView style={[MyStyles.container, { justifyContent: "center" }]}>
+            <View style={{ justifyContent: "center", height: hp("90%") }}>
                 <TouchableOpacity
                     style={[
                         MyStyles.button,

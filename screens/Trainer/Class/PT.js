@@ -471,7 +471,10 @@ export default PT = ({ navigation, route }) => {
                 .doc(ptName)
                 .collection(uid)
                 .doc(yearMonthStr)
-                .update({ hasClass: arrayUnion(selectedDate.toString()) });
+                .update({
+                    hasClass: arrayUnion(selectedDate.toString()),
+                    waitConfirm: arrayDelete(selectedDate.toString()),
+                });
             await db
                 .collection("classes")
                 .doc(ptName)
@@ -564,6 +567,12 @@ export default PT = ({ navigation, route }) => {
                 .doc(ptName)
                 .collection(uid)
                 .doc(yearMonthStr)
+                .update({ waitConfirm: arrayDelete(selectedDate.toString()) });
+            await db
+                .collection("classes")
+                .doc(ptName)
+                .collection(uid)
+                .doc(yearMonthStr)
                 .collection(selectedDate.toString())
                 .doc(availTime)
                 .update({
@@ -625,11 +634,17 @@ export default PT = ({ navigation, route }) => {
                     let docRef;
                     let count = 0;
                     docs.forEach((doc) => {
-                        count = doc.data();
+                        count = doc.data().count;
                         docRef = doc.ref;
                     });
                     await docRef.update({ count: count + 1 });
                 });
+            await pushNotificationsToPerson(
+                myBase.auth().currentUser.displayName,
+                clientUid,
+                "예약 취소되었습니다.",
+                `${selectedDate}일 ${availTime}`
+            );
             Alert.alert(
                 "취소됨",
                 "예약이 취소되었습니다.",

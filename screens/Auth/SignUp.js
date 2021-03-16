@@ -424,41 +424,42 @@ export default SignUp = ({ navigation }) => {
                     </View>
                     <View style={AuthStyles.textView}>
                         <Text style={AuthStyles.text}>생년월일</Text>
-                        <View
-                            style={{
-                                flexDirection: "row",
-                                borderWidth: 1,
-                                alignItems: "center",
+                        <TouchableOpacity
+                            onPress={() => {
+                                Keyboard.dismiss();
+                                picker.current.show();
                             }}
                         >
-                            <View style={{ flex: 2, alignItems: "center" }}>
-                                <Text style={TextSize.largerSize}>{birthday.year}</Text>
-                            </View>
-                            <View style={{ alignItems: "center" }}>
-                                <Text style={TextSize.largerSize}>{" / "}</Text>
-                            </View>
-                            <View style={{ flex: 2, alignItems: "center" }}>
-                                <Text style={TextSize.largerSize}>{birthday.month}</Text>
-                            </View>
-                            <View style={{ alignItems: "center" }}>
-                                <Text style={TextSize.largerSize}>{" / "}</Text>
-                            </View>
-                            <View style={{ flex: 2, alignItems: "center" }}>
-                                <Text style={TextSize.largerSize}>{birthday.day}</Text>
-                            </View>
-                            <TouchableOpacity
-                                onPress={() => {
-                                    Keyboard.dismiss();
-                                    picker.current.show();
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                    borderWidth: 1,
+                                    alignItems: "center",
                                 }}
                             >
+                                <View style={{ flex: 2, alignItems: "center" }}>
+                                    <Text style={TextSize.largerSize}>{birthday.year}</Text>
+                                </View>
+                                <View style={{ alignItems: "center" }}>
+                                    <Text style={TextSize.largerSize}>{" / "}</Text>
+                                </View>
+                                <View style={{ flex: 2, alignItems: "center" }}>
+                                    <Text style={TextSize.largerSize}>{birthday.month}</Text>
+                                </View>
+                                <View style={{ alignItems: "center" }}>
+                                    <Text style={TextSize.largerSize}>{" / "}</Text>
+                                </View>
+                                <View style={{ flex: 2, alignItems: "center" }}>
+                                    <Text style={TextSize.largerSize}>{birthday.day}</Text>
+                                </View>
+
                                 <MaterialCommunityIcons
                                     name="chevron-down"
                                     size={30}
                                     color="black"
                                 />
-                            </TouchableOpacity>
-                        </View>
+                            </View>
+                        </TouchableOpacity>
                     </View>
                     <View style={AuthStyles.textView}>
                         <Text style={AuthStyles.text}>주소</Text>

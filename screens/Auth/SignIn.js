@@ -68,7 +68,7 @@ export default SignIn = ({ navigation }) => {
                 keyboardShouldPersistTaps="always"
                 showsVerticalScrollIndicator={false}
                 scrollEnabled={false}
-                extraHeight={Platform.select({ android: 100, ios: 130 })}
+                extraHeight={Platform.select({ android: 120, ios: 130 })}
                 extraScrollHeight={hp("17%")}
                 enableOnAndroid={true}
                 enableAutomaticScroll
@@ -132,7 +132,7 @@ export default SignIn = ({ navigation }) => {
                         style={[
                             MyStyles.image,
                             {
-                                width: "100%",
+                                width: wp("80%"),
                                 alignSelf: "center",
                                 marginBottom: 30,
                             },

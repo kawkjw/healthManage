@@ -199,14 +199,17 @@ const MyStack = () => {
                     <View
                         style={[
                             {
-                                borderRadius: 100,
                                 position: "absolute",
                                 width: 10,
                                 height: 10,
                                 top: 0,
                                 right: 0,
                             },
-                            unread ? { backgroundColor: "red" } : { backgroundColor: "white" },
+                            notificationAvail
+                                ? unread
+                                    ? { backgroundColor: "red", borderRadius: 10 }
+                                    : { display: "none" }
+                                : undefined,
                         ]}
                     />
                     <MaterialIcons

@@ -12,6 +12,7 @@ import {
 } from "react-native";
 import { MyStyles, TextSize } from "../../css/MyStyles";
 import * as Notifications from "expo-notifications";
+import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 export default Home = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -61,9 +62,9 @@ export default Home = ({ navigation, route }) => {
     }, []);
 
     return (
-        <SafeAreaView style={MyStyles.container}>
+        <SafeAreaView style={[MyStyles.container, { justifyContent: "center" }]}>
             <StatusBar barStyle={Platform.OS === "ios" ? "dark-content" : "default"} />
-            <View style={{ flex: 1, justifyContent: "center" }}>
+            <View style={{ justifyContent: "center", height: hp("90%") }}>
                 <TouchableOpacity
                     style={[
                         MyStyles.profileButton,

@@ -199,7 +199,6 @@ const MyStack = () => {
                     <View
                         style={[
                             {
-                                borderRadius: 100,
                                 position: "absolute",
                                 width: 10,
                                 height: 10,
@@ -208,7 +207,7 @@ const MyStack = () => {
                             },
                             notificationAvail
                                 ? unread
-                                    ? { backgroundColor: "red" }
+                                    ? { backgroundColor: "red", borderRadius: 10 }
                                     : { display: "none" }
                                 : undefined,
                         ]}

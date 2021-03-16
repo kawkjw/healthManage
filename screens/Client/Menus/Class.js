@@ -116,6 +116,9 @@ export default Class = ({ navigation }) => {
                         await Promise.all(promises);
                         setMemberships(availabeClass);
                     }
+                })
+                .catch((error) => {
+                    console.log("Class Menu", error);
                 });
         };
         getMemberships();

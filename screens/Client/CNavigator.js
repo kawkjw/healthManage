@@ -142,6 +142,10 @@ const MyStack = () => {
                     }
                     setMembershipString(string);
                 }
+            })
+            .catch((error) => {
+                console.log("CNaviagtor", error);
+                setMembershipString("회원권이 없습니다.");
             });
 
         if (kinds.indexOf("squashpt") !== -1) {
@@ -396,14 +400,17 @@ const MyStack = () => {
                     <View
                         style={[
                             {
-                                borderRadius: 100,
                                 position: "absolute",
                                 width: 10,
                                 height: 10,
                                 top: 0,
                                 right: 0,
                             },
-                            unread ? { backgroundColor: "red" } : { backgroundColor: "white" },
+                            notificationAvail
+                                ? unread
+                                    ? { backgroundColor: "red", borderRadius: 10 }
+                                    : { display: "none" }
+                                : undefined,
                         ]}
                     />
                     <MaterialIcons
@@ -663,7 +670,7 @@ const MyStack = () => {
                 name="Info"
                 component={Info}
                 options={({ navigation }) => ({
-                    title: "정보",
+                    title: "OT 예약 및 기구 사용 정보",
                     headerLeft: () => renderGoBackButton(navigation),
                 })}
             />

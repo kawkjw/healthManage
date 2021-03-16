@@ -59,6 +59,9 @@ export default ShowUser = ({ route }) => {
                 await Promise.all(promises);
                 setMembershipKinds(kinds);
                 setMembership(temp);
+            })
+            .catch((error) => {
+                console.log("ShowUser", error);
             });
     };
 

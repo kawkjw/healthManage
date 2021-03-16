@@ -24,7 +24,7 @@ export default Menu = ({ navigation }) => {
                     ]}
                     onPress={() => navigation.navigate("Info")}
                 >
-                    <Text style={TextSize.largeSize}>정보</Text>
+                    <Text style={TextSize.largeSize}>OT 예약 및 기구 사용 정보</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
                     style={[
