@@ -1,12 +1,10 @@
 import React, { useContext, useEffect } from "react";
-import { Dimensions, SafeAreaView, ScrollView, Text, TouchableOpacity } from "react-native";
+import { SafeAreaView, ScrollView, Text, TouchableOpacity } from "react-native";
 import myBase, { db } from "../../config/MyBase";
 import { MyStyles, TextSize } from "../../css/MyStyles";
 import { AuthContext } from "../Auth";
 
 export default ClientInfoMenu = ({ navigation, route }) => {
-    const { width } = Dimensions.get("screen");
-    const widthButton = width - 40;
     const { signOut } = useContext(AuthContext);
 
     useEffect(() => {
@@ -36,31 +34,19 @@ export default ClientInfoMenu = ({ navigation, route }) => {
                 showsVerticalScrollIndicator={false}
             >
                 <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
-                    ]}
+                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
                     onPress={() => navigation.navigate("PtInfo", { ptName: "pt" })}
                 >
                     <Text style={TextSize.largeSize}>PT</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
-                    ]}
+                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
                     onPress={() => navigation.navigate("PtInfo", { ptName: "squash" })}
                 >
                     <Text style={TextSize.largeSize}>스쿼시 PT</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
-                    ]}
+                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
                     onPress={() => navigation.navigate("GxInfo")}
                 >
                     <Text style={TextSize.largeSize}>GX</Text>

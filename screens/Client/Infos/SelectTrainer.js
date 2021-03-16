@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Dimensions, SafeAreaView, ScrollView, Text, TouchableOpacity } from "react-native";
+import { Alert, SafeAreaView, ScrollView, Text, TouchableOpacity } from "react-native";
 import { MyStyles, TextSize } from "../../../css/MyStyles";
 import myBase, { db } from "../../../config/MyBase";
 
 export default SelectTrainer = ({ navigation, route }) => {
-    const { width } = Dimensions.get("screen");
-    const widthButton = width - 40;
     const uid = myBase.auth().currentUser.uid;
     const [trainers, setTrainers] = useState([]);
 
@@ -92,11 +90,7 @@ export default SelectTrainer = ({ navigation, route }) => {
                 {trainers.map((trainer, index) => (
                     <TouchableOpacity
                         key={index}
-                        style={[
-                            MyStyles.phoneButton,
-                            MyStyles.buttonShadow,
-                            { width: widthButton, marginBottom: 20 },
-                        ]}
+                        style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
                         onPress={() =>
                             navigation.navigate("OT", {
                                 trainerName: trainer.name,

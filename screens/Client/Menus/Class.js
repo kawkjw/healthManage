@@ -1,12 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Dimensions, SafeAreaView, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
+import { SafeAreaView, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { MyStyles, TextSize } from "../../../css/MyStyles";
 import myBase, { db } from "../../../config/MyBase";
 import { DataContext } from "../../Auth";
 
 export default Class = ({ navigation }) => {
-    const { width } = Dimensions.get("screen");
-    const widthButton = width - 40;
     const [memberships, setMemberships] = useState([]);
     const [ptTrainerInfo, setPtTrainerInfo] = useState({ name: "", uid: "" });
     const [squashPtTrainerInfo, setSquashPtTrainerInfo] = useState({ name: "", uid: "" });
@@ -196,11 +194,7 @@ export default Class = ({ navigation }) => {
                 contentContainerStyle={{ alignItems: "center" }}
             >
                 <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
-                    ]}
+                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
                     onPress={() => goClassReservation("pt")}
                 >
                     <Text
@@ -215,11 +209,7 @@ export default Class = ({ navigation }) => {
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
-                    ]}
+                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
                     onPress={() => goClassReservation("pilates")}
                 >
                     <Text
@@ -235,11 +225,7 @@ export default Class = ({ navigation }) => {
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
-                    ]}
+                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
                     onPress={() => goClassReservation("spinning")}
                 >
                     <Text
@@ -254,11 +240,7 @@ export default Class = ({ navigation }) => {
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
-                    ]}
+                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
                     onPress={() => goClassReservation("squash")}
                 >
                     <Text
@@ -274,11 +256,7 @@ export default Class = ({ navigation }) => {
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
-                    ]}
+                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
                     onPress={() => goClassReservation("yoga")}
                 >
                     <Text
@@ -293,11 +271,7 @@ export default Class = ({ navigation }) => {
                     </Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 40 },
-                    ]}
+                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 40 }]}
                     onPress={() => goClassReservation("zoomba")}
                 >
                     <Text

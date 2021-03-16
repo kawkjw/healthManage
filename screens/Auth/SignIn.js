@@ -11,7 +11,6 @@ import {
     ScrollView,
     Image,
     ActivityIndicator,
-    KeyboardAvoidingView,
 } from "react-native";
 import { AuthContext } from "../Auth";
 import { AuthStyles, MyStyles, TextSize } from "../../css/MyStyles";
@@ -133,6 +132,7 @@ export default SignIn = ({ navigation }) => {
                             MyStyles.image,
                             {
                                 width: wp("80%"),
+                                aspectRatio: 1,
                                 alignSelf: "center",
                                 marginBottom: 30,
                             },

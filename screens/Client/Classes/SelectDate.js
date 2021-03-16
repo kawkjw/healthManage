@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Dimensions, SafeAreaView, Text, TouchableOpacity, ScrollView } from "react-native";
+import { SafeAreaView, Text, TouchableOpacity, ScrollView } from "react-native";
 import { MyStyles, TextSize } from "../../../css/MyStyles";
 
 export default SelectDate = ({ navigation, route }) => {
-    const { width } = Dimensions.get("screen");
-    const widthButton = width - 40;
-
     const { classname } = route.params;
     const [sixDate, setSixDate] = useState([]);
 
@@ -46,7 +43,7 @@ export default SelectDate = ({ navigation, route }) => {
                             style={[
                                 MyStyles.phoneButton,
                                 MyStyles.buttonShadow,
-                                { width: widthButton, marginBottom: 20 },
+                                { marginBottom: 20 },
                                 i === sixDate.length - 1 ? { marginBottom: 40 } : undefined,
                             ]}
                             onPress={() => {

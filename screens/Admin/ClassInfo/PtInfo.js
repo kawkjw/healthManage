@@ -21,6 +21,7 @@ import { DataContext } from "../../Auth";
 import { getHoliday } from "../../../config/hooks";
 import { TextSize } from "../../../css/MyStyles";
 import Modal from "react-native-modal";
+import { RFPercentage } from "react-native-responsive-fontsize";
 
 export default ClassInfo = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -257,7 +258,7 @@ export default ClassInfo = ({ navigation, route }) => {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <View style={{ flexDirection: "row", height: 30 }}>
+            <View style={{ flexDirection: "row", height: hp("5%") }}>
                 <View
                     style={{
                         flex: 1,
@@ -267,7 +268,7 @@ export default ClassInfo = ({ navigation, route }) => {
                     }}
                 >
                     <TouchableOpacity activeOpacity={0.5} onPress={goPreMonth}>
-                        <MaterialIcons name="chevron-left" size={30} color="black" />
+                        <MaterialIcons name="chevron-left" size={RFPercentage(4)} color="black" />
                     </TouchableOpacity>
                 </View>
                 <View
@@ -294,7 +295,7 @@ export default ClassInfo = ({ navigation, route }) => {
                     }}
                 >
                     <TouchableOpacity activeOpacity={0.5} onPress={goNextMonth}>
-                        <MaterialIcons name="chevron-right" size={30} color="black" />
+                        <MaterialIcons name="chevron-right" size={RFPercentage(4)} color="black" />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -353,13 +354,14 @@ export default ClassInfo = ({ navigation, route }) => {
                                     }
                                 >
                                     <Text
-                                        style={
+                                        style={[
+                                            TextSize.largeSize,
                                             item.color === "black"
                                                 ? { color: "black" }
                                                 : item.color === "blue"
                                                 ? { color: "blue" }
-                                                : { color: "red" }
-                                        }
+                                                : { color: "red" },
+                                        ]}
                                     >
                                         {item.id}
                                     </Text>

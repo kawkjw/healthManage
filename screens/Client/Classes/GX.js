@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
     Alert,
-    Dimensions,
     FlatList,
     SafeAreaView,
     ScrollView,
@@ -22,8 +21,6 @@ import Modal from "react-native-modal";
 
 export default GX = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
-    const { width } = Dimensions.get("screen");
-    const widthButton = width - 40;
     const { classname, date } = route.params;
     const today = new Date();
     const [data, setData] = useState([]);
@@ -310,7 +307,7 @@ export default GX = ({ navigation, route }) => {
                             >
                                 <Text
                                     style={[
-                                        TextSize.normalSize,
+                                        TextSize.largeSize,
                                         item.color === "black"
                                             ? { color: "black" }
                                             : item.color === "blue"
@@ -365,7 +362,7 @@ export default GX = ({ navigation, route }) => {
                                 style={[
                                     MyStyles.phoneButton,
                                     MyStyles.buttonShadow,
-                                    { width: widthButton, marginBottom: 20 },
+                                    { marginBottom: 20 },
                                 ]}
                                 onPress={() => {
                                     if (availReserve) {

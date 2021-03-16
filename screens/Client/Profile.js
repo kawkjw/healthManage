@@ -3,7 +3,6 @@ import {
     SafeAreaView,
     Text,
     TouchableOpacity,
-    Dimensions,
     View,
     Image,
     TextInput,
@@ -553,18 +552,14 @@ export default Profile = ({ navigation }) => {
         }
     };
 
-    const { width } = Dimensions.get("screen");
-    const widthButton = width - 40;
-    const widthImage = widthButton - 60;
-
     return (
         <SafeAreaView style={[MyStyles.container, { justifyContent: "center" }]}>
-            <View style={{ justifyContent: "center", height: hp("90%") }}>
+            <View style={{ justifyContent: "center", alignItems: "center" }}>
                 <TouchableOpacity
                     style={[
                         MyStyles.button,
                         MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 15 },
+                        { width: wp("90%"), aspectRatio: 1, marginBottom: 15 },
                     ]}
                     onPress={() => {
                         if (canGenQR) {
@@ -581,14 +576,14 @@ export default Profile = ({ navigation }) => {
                         <>
                             <View
                                 style={{
-                                    marginBottom: 10,
+                                    //marginBottom: 10,
                                     alignItems: "center",
                                 }}
                             >
                                 {data.length > 0 ? (
                                     <QRCode
                                         value={data}
-                                        size={200}
+                                        size={wp("65%")}
                                         bgColor="#000000"
                                         fgColor="#FFFFFF"
                                     />
@@ -603,7 +598,7 @@ export default Profile = ({ navigation }) => {
                         <>
                             <Text style={TextSize.largeSize}>입장 코드 생성</Text>
                             <Image
-                                style={[MyStyles.image, { width: widthImage }]}
+                                style={[MyStyles.image, { width: wp("80%"), aspectRatio: 1 }]}
                                 source={require("../../assets/qrcode-test.png")}
                             />
                         </>
@@ -618,7 +613,7 @@ export default Profile = ({ navigation }) => {
                         <Text>뒤로가기</Text>
                     </TouchableOpacity>*/}
                 </TouchableOpacity>
-                <View style={[MyStyles.buttonShadow, { width: widthButton, height: "40%" }]}>
+                <View style={[MyStyles.buttonShadow, { width: wp("90%"), height: hp("33%") }]}>
                     {loading ? (
                         <View
                             style={{

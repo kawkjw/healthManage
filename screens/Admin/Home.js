@@ -3,7 +3,6 @@ import {
     SafeAreaView,
     Text,
     TouchableOpacity,
-    Dimensions,
     StatusBar,
     Platform,
     ScrollView,
@@ -13,8 +12,6 @@ import * as Notifications from "expo-notifications";
 import myBase, { db } from "../../config/MyBase";
 
 export default Home = ({ navigation, route }) => {
-    const { width } = Dimensions.get("screen");
-    const widthButton = width - 40;
     const uid = myBase.auth().currentUser.uid;
 
     useEffect(() => {
@@ -85,41 +82,25 @@ export default Home = ({ navigation, route }) => {
                 showsVerticalScrollIndicator={false}
             >
                 <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
-                    ]}
+                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
                     onPress={() => navigation.navigate("ClassInfoMenu")}
                 >
                     <Text style={TextSize.largeSize}>수업 정보</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
-                    ]}
+                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
                     onPress={() => navigation.navigate("Locker")}
                 >
                     <Text style={TextSize.largeSize}>락커</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
-                    ]}
+                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
                     onPress={() => navigation.navigate("ClientInfoMenu")}
                 >
                     <Text style={TextSize.largeSize}>고객 정보</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
-                    ]}
+                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
                     onPress={() => navigation.navigate("InputPassword")}
                 >
                     <Text style={TextSize.largeSize}>결산</Text>

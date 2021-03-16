@@ -5,20 +5,18 @@ import {
     View,
     Text,
     TouchableOpacity,
-    Dimensions,
     Linking,
     StatusBar,
     Platform,
 } from "react-native";
 import { MyStyles, TextSize } from "../../css/MyStyles";
 import * as Notifications from "expo-notifications";
-import { heightPercentageToDP as hp } from "react-native-responsive-screen";
+import {
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
+} from "react-native-responsive-screen";
 
 export default Home = ({ navigation, route }) => {
-    const { width } = Dimensions.get("screen");
-    const widthButton = width - 40;
-    const widthImage = widthButton - 60;
-
     useEffect(() => {
         const notificationSubscription = Notifications.addNotificationReceivedListener(
             async (notification) => {
@@ -64,13 +62,13 @@ export default Home = ({ navigation, route }) => {
     return (
         <SafeAreaView style={[MyStyles.container, { justifyContent: "center" }]}>
             <StatusBar barStyle={Platform.OS === "ios" ? "dark-content" : "default"} />
-            <View style={{ justifyContent: "center", height: hp("90%") }}>
+            <View style={{ justifyContent: "center", alignItems: "center" }}>
                 <TouchableOpacity
                     style={[
                         MyStyles.profileButton,
                         MyStyles.buttonShadow,
                         {
-                            width: widthButton,
+                            width: wp("90%"),
                             marginBottom: 20,
                             justifyContent: "center",
                         },
@@ -78,24 +76,20 @@ export default Home = ({ navigation, route }) => {
                     onPress={() => navigation.navigate("Profile")}
                 >
                     <Image
-                        style={[MyStyles.image, { width: widthImage }]}
+                        style={[MyStyles.image, { width: wp("80%"), aspectRatio: 1 }]}
                         source={{
                             uri: "https://reactnative.dev/img/tiny_logo.png",
                         }}
                     />
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
-                    ]}
+                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
                     onPress={() => navigation.navigate("Menu")}
                 >
                     <Text style={TextSize.largeSize}>메뉴</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { width: widthButton }]}
+                    style={[MyStyles.phoneButton, MyStyles.buttonShadow]}
                     onPress={() => {
                         Linking.openURL("tel:12345678");
                     }}

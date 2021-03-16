@@ -1,21 +1,15 @@
 import React from "react";
-import { Alert, Dimensions, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
+import { Alert, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
 import { MyStyles, TextSize } from "../../../css/MyStyles";
 
 export default SelectSquashKind = ({ navigation, route }) => {
-    const { width } = Dimensions.get("screen");
-    const widthButton = width - 40;
     const { availPt, availGroup } = route.params;
 
     return (
         <SafeAreaView style={MyStyles.container}>
             <View style={{ height: 20 }} />
             <TouchableOpacity
-                style={[
-                    MyStyles.phoneButton,
-                    MyStyles.buttonShadow,
-                    { width: widthButton, marginBottom: 20 },
-                ]}
+                style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
                 onPress={() => {
                     if (availPt) {
                         navigation.navigate("PT", {
@@ -40,11 +34,7 @@ export default SelectSquashKind = ({ navigation, route }) => {
                 </Text>
             </TouchableOpacity>
             <TouchableOpacity
-                style={[
-                    MyStyles.phoneButton,
-                    MyStyles.buttonShadow,
-                    { width: widthButton, marginBottom: 20 },
-                ]}
+                style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
                 onPress={() => {
                     if (availGroup) {
                         navigation.navigate("SelectDate", {

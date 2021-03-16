@@ -1,5 +1,9 @@
 import { StyleSheet, Platform } from "react-native";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 
 export const MyStyles = StyleSheet.create({
     container: {
@@ -23,16 +27,15 @@ export const MyStyles = StyleSheet.create({
         }),
     },
     profileButton: {
-        aspectRatio: 1,
         alignItems: "center",
         padding: 20,
     },
     image: {
-        aspectRatio: 1,
         resizeMode: "stretch",
     },
     phoneButton: {
-        aspectRatio: 7 / 2,
+        width: wp("90%"),
+        height: hp("10%"),
         alignItems: "center",
         justifyContent: "center",
     },

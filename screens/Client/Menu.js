@@ -1,11 +1,8 @@
 import React from "react";
-import { Dimensions, SafeAreaView, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
+import { SafeAreaView, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { MyStyles, TextSize } from "../../css/MyStyles";
 
 export default Menu = ({ navigation }) => {
-    const { width } = Dimensions.get("screen");
-    const widthButton = width - 40;
-
     return (
         <SafeAreaView style={MyStyles.container}>
             <ScrollView
@@ -17,31 +14,19 @@ export default Menu = ({ navigation }) => {
                 contentContainerStyle={{ alignItems: "center" }}
             >
                 <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
-                    ]}
+                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
                     onPress={() => navigation.navigate("Info")}
                 >
                     <Text style={TextSize.largeSize}>OT 예약 및 기구 사용 정보</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 20 },
-                    ]}
+                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
                     onPress={() => navigation.navigate("Class")}
                 >
                     <Text style={TextSize.largeSize}>예약</Text>
                 </TouchableOpacity>
                 <TouchableOpacity
-                    style={[
-                        MyStyles.phoneButton,
-                        MyStyles.buttonShadow,
-                        { width: widthButton, marginBottom: 40 },
-                    ]}
+                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 40 }]}
                     onPress={() =>
                         Alert.alert(
                             "주의사항",

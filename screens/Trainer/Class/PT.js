@@ -763,7 +763,7 @@ export default PT = ({ navigation, route }) => {
 
     return (
         <SafeAreaView>
-            <View style={{ flexDirection: "row", height: 30 }}>
+            <View style={{ flexDirection: "row", height: hp("5%") }}>
                 <View
                     style={{
                         flex: 1,
@@ -773,7 +773,7 @@ export default PT = ({ navigation, route }) => {
                     }}
                 >
                     <TouchableOpacity activeOpacity={0.5} onPress={goPreMonth}>
-                        <MaterialIcons name="chevron-left" size={30} color="black" />
+                        <MaterialIcons name="chevron-left" size={RFPercentage(4)} color="black" />
                     </TouchableOpacity>
                 </View>
                 <View
@@ -800,7 +800,7 @@ export default PT = ({ navigation, route }) => {
                     }}
                 >
                     <TouchableOpacity activeOpacity={0.5} onPress={goNextMonth}>
-                        <MaterialIcons name="chevron-right" size={30} color="black" />
+                        <MaterialIcons name="chevron-right" size={RFPercentage(4)} color="black" />
                     </TouchableOpacity>
                 </View>
             </View>
@@ -865,13 +865,14 @@ export default PT = ({ navigation, route }) => {
                                 }
                             >
                                 <Text
-                                    style={
+                                    style={[
+                                        TextSize.largeSize,
                                         item.color === "black"
                                             ? { color: "black" }
                                             : item.color === "blue"
                                             ? { color: "blue" }
-                                            : { color: "red" }
-                                    }
+                                            : { color: "red" },
+                                    ]}
                                 >
                                     {item.id}
                                 </Text>

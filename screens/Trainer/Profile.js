@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import {
     Alert,
-    Dimensions,
     Keyboard,
     Linking,
     SafeAreaView,
@@ -13,7 +12,10 @@ import {
 import myBase, { arrayUnion, db } from "../../config/MyBase";
 import { AuthContext, DataContext } from "../Auth";
 import { AuthStyles, MyStyles, TextSize } from "../../css/MyStyles";
-import { heightPercentageToDP as hp } from "react-native-responsive-screen";
+import {
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
+} from "react-native-responsive-screen";
 import Modal from "react-native-modal";
 import RadioForm, {
     RadioButton,
@@ -25,8 +27,6 @@ import moment from "moment";
 import { MaterialIcons } from "@expo/vector-icons";
 
 export default Profile = ({ navigation, route }) => {
-    const { width } = Dimensions.get("screen");
-    const widthButton = width - 40;
     const today = new Date();
 
     const { signOut } = useContext(AuthContext);
@@ -245,7 +245,7 @@ export default Profile = ({ navigation, route }) => {
                 .then(() => setLoading(false))
                 .catch((error) => {
                     setLoading(false);
-                    console.log(error);
+                    console.log("Trainer Profile", error);
                 });
         }
     };
@@ -463,7 +463,7 @@ export default Profile = ({ navigation, route }) => {
             <View
                 style={[
                     MyStyles.buttonShadow,
-                    { width: widthButton, height: hp("85%"), padding: 15 },
+                    { width: wp("90%"), height: hp("85%"), padding: 15 },
                 ]}
             >
                 <Text style={MyStyles.profileText}>이름 : {name}</Text>
