@@ -33,12 +33,6 @@ export const MyStyles = StyleSheet.create({
     image: {
         resizeMode: "stretch",
     },
-    phoneButton: {
-        width: wp("90%"),
-        height: hp("10%"),
-        alignItems: "center",
-        justifyContent: "center",
-    },
     backButton: {
         width: "50%",
         alignItems: "center",
@@ -46,7 +40,6 @@ export const MyStyles = StyleSheet.create({
         paddingHorizontal: 20,
         paddingVertical: 10,
     },
-
     button: {
         aspectRatio: 1,
         alignItems: "center",
@@ -62,6 +55,13 @@ export const MyStyles = StyleSheet.create({
     },
     flexCenter: {
         flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+    },
+    surface: { elevation: 6, marginBottom: 20, borderRadius: 20 },
+    menu: {
+        width: wp("90%"),
+        height: hp("10%"),
         alignItems: "center",
         justifyContent: "center",
     },

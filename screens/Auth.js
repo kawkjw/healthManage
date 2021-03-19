@@ -231,6 +231,14 @@ export default Auth = () => {
                                             .slice(1)
                                             .join("");
                                         await db
+                                            .collection("users")
+                                            .doc(currentUser.id)
+                                            .collection("memberships")
+                                            .doc("list")
+                                            .set({
+                                                classes: [],
+                                            });
+                                        await db
                                             .collection("temporary")
                                             .doc(phoneId)
                                             .get()
@@ -244,14 +252,6 @@ export default Auth = () => {
                                                         if (doc.data().classes !== undefined) {
                                                             classes = doc.data().classes;
                                                         }
-                                                    });
-                                                await db
-                                                    .collection("users")
-                                                    .doc(currentUser.id)
-                                                    .collection("memberships")
-                                                    .doc("list")
-                                                    .set({
-                                                        classes: [],
                                                     });
                                                 const promises = classes.map(async (name) => {
                                                     await temp.ref
@@ -291,7 +291,7 @@ export default Auth = () => {
                                                         });
                                                 });
                                                 await Promise.all(promises);
-                                                //temp.ref.delete();
+                                                temp.ref.delete();
                                             });
                                     }
                                 }
@@ -424,22 +424,20 @@ export default Auth = () => {
                                 <Stack.Screen
                                     name="resetpw"
                                     component={ResetPw}
-                                    options={({ navigation }) => ({
+                                    options={{
                                         title: "비밀번호 초기화",
                                         gestureEnabled: false,
                                         animationTypeForReplace: state.isSignout ? "pop" : "push",
-                                        headerLeft: () => renderGoBackButton(navigation),
-                                    })}
+                                    }}
                                 />
                                 <Stack.Screen
                                     name="signup"
                                     component={SignUp}
-                                    options={({ navigation }) => ({
+                                    options={{
                                         title: "회원가입",
                                         gestureEnabled: false,
                                         animationTypeForReplace: state.isSignout ? "pop" : "push",
-                                        headerLeft: () => renderGoBackButton(navigation),
-                                    })}
+                                    }}
                                 />
                             </>
                         ) : (

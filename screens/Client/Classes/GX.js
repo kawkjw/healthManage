@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import {
     Alert,
     FlatList,
-    SafeAreaView,
     ScrollView,
     StyleSheet,
     Text,
@@ -18,6 +17,7 @@ import myBase, { arrayUnion, db } from "../../../config/MyBase";
 import moment from "moment";
 import { getHoliday } from "../../../config/hooks";
 import Modal from "react-native-modal";
+import { Surface } from "react-native-paper";
 
 export default GX = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
@@ -270,12 +270,20 @@ export default GX = ({ navigation, route }) => {
     };
 
     return (
-        <SafeAreaView>
+        <View style={{ flex: 1 }}>
             <FlatList
                 data={data}
                 windowSize={1}
                 renderItem={({ item }) => (
-                    <View style={{ flex: 1, flexDirection: "column", margin: 5 }}>
+                    <Surface
+                        style={{
+                            flex: 1,
+                            flexDirection: "column",
+                            margin: 5,
+                            elevation: 4,
+                            borderRadius: 10,
+                        }}
+                    >
                         <TouchableOpacity
                             style={[
                                 styles.day,
@@ -319,11 +327,12 @@ export default GX = ({ navigation, route }) => {
                                 </Text>
                             </View>
                         </TouchableOpacity>
-                    </View>
+                    </Surface>
                 )}
                 numColumns={7}
                 keyExtractor={(item, index) => index}
             />
+            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
             <Modal
                 isVisible={modalClass}
                 style={{ justifyContent: "flex-end", margin: 0 }}
@@ -333,7 +342,7 @@ export default GX = ({ navigation, route }) => {
                 <View
                     style={{
                         height: hp("90%"),
-                        backgroundColor: "white",
+                        backgroundColor: "rgb(250, 250, 250)",
                     }}
                 >
                     <View style={{ flexDirection: "row", height: hp("5%") }}>
@@ -357,44 +366,45 @@ export default GX = ({ navigation, route }) => {
                         contentContainerStyle={{ alignItems: "center" }}
                     >
                         {classList.map((c, index) => (
-                            <TouchableOpacity
-                                key={index}
-                                style={[
-                                    MyStyles.phoneButton,
-                                    MyStyles.buttonShadow,
-                                    { marginBottom: 20 },
-                                ]}
-                                onPress={() => {
-                                    if (availReserve) {
-                                        Alert.alert(
-                                            selectDate.toString() + "일 " + c.start + "~" + c.end,
-                                            "확실합니까?",
-                                            [
-                                                { text: "취소" },
-                                                {
-                                                    text: "확인",
-                                                    onPress: () => reserveClass(c.cid),
-                                                },
-                                            ],
-                                            { cancelable: false }
-                                        );
-                                    } else {
-                                        Alert.alert(
-                                            "경고",
-                                            `이미 주${route.params.week}회 예약하셨습니다.`,
-                                            [{ text: "확인" }],
-                                            { cancelable: false }
-                                        );
-                                    }
-                                }}
-                                disabled={c.isToday}
-                            >
-                                <Text style={[TextSize.largeSize, { marginBottom: 5 }]}>
-                                    {selectDate}일 {c.start}~{c.end} ({c.currentClient}/
-                                    {c.maxClient})
-                                </Text>
-                                <Text style={TextSize.largeSize}>트레이너 : {c.trainer}</Text>
-                            </TouchableOpacity>
+                            <Surface key={index} style={MyStyles.surface}>
+                                <TouchableOpacity
+                                    style={MyStyles.menu}
+                                    onPress={() => {
+                                        if (availReserve) {
+                                            Alert.alert(
+                                                selectDate.toString() +
+                                                    "일 " +
+                                                    c.start +
+                                                    "~" +
+                                                    c.end,
+                                                "확실합니까?",
+                                                [
+                                                    { text: "취소" },
+                                                    {
+                                                        text: "확인",
+                                                        onPress: () => reserveClass(c.cid),
+                                                    },
+                                                ],
+                                                { cancelable: false }
+                                            );
+                                        } else {
+                                            Alert.alert(
+                                                "경고",
+                                                `이미 주${route.params.week}회 예약하셨습니다.`,
+                                                [{ text: "확인" }],
+                                                { cancelable: false }
+                                            );
+                                        }
+                                    }}
+                                    disabled={c.isToday}
+                                >
+                                    <Text style={[TextSize.largeSize, { marginBottom: 5 }]}>
+                                        {selectDate}일 {c.start}~{c.end} ({c.currentClient}/
+                                        {c.maxClient})
+                                    </Text>
+                                    <Text style={TextSize.largeSize}>트레이너 : {c.trainer}</Text>
+                                </TouchableOpacity>
+                            </Surface>
                         ))}
                         {classList.length === 0 ? (
                             <Text style={TextSize.largeSize}>수업이 없습니다.</Text>
@@ -402,7 +412,7 @@ export default GX = ({ navigation, route }) => {
                     </ScrollView>
                 </View>
             </Modal>
-        </SafeAreaView>
+        </View>
     );
 };
 
@@ -413,7 +423,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         height: wp("14%"),
         backgroundColor: "grey",
-        borderWidth: 1,
         borderRadius: 10,
     },
 });

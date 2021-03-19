@@ -5,7 +5,6 @@ import {
     FlatList,
     Image,
     Platform,
-    SafeAreaView,
     ScrollView,
     StyleSheet,
     Text,
@@ -24,6 +23,7 @@ import { getHoliday } from "../../../config/hooks";
 import { TextSize } from "../../../css/MyStyles";
 import Modal from "react-native-modal";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import { Surface } from "react-native-paper";
 
 export default PT = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -372,7 +372,7 @@ export default PT = ({ navigation, route }) => {
     };
 
     return (
-        <SafeAreaView>
+        <View style={{ flex: 1 }}>
             <View style={{ flexDirection: "row", height: hp("5%") }}>
                 <View
                     style={{
@@ -418,7 +418,15 @@ export default PT = ({ navigation, route }) => {
                 data={data}
                 windowSize={1}
                 renderItem={({ item }) => (
-                    <View style={{ flex: 1, flexDirection: "column", margin: 5 }}>
+                    <Surface
+                        style={{
+                            flex: 1,
+                            flexDirection: "column",
+                            margin: 5,
+                            elevation: 4,
+                            borderRadius: 10,
+                        }}
+                    >
                         <TouchableOpacity
                             style={[
                                 styles.day,
@@ -462,7 +470,7 @@ export default PT = ({ navigation, route }) => {
                                 </Text>
                             </View>
                         </TouchableOpacity>
-                    </View>
+                    </Surface>
                 )}
                 numColumns={7}
                 keyExtractor={(item, index) => index}
@@ -654,7 +662,8 @@ export default PT = ({ navigation, route }) => {
                     )}
                 </View>
             </Modal>
-        </SafeAreaView>
+            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+        </View>
     );
 };
 
@@ -665,7 +674,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         height: wp("14%"),
         backgroundColor: "grey",
-        borderWidth: 1,
         borderRadius: 10,
     },
     availButton: {

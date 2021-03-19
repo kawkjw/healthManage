@@ -1,44 +1,60 @@
 import React from "react";
-import { SafeAreaView, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
+import { Text, TouchableOpacity, ScrollView, Alert, View } from "react-native";
+import { Surface } from "react-native-paper";
+import {
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
+} from "react-native-responsive-screen";
 import { MyStyles, TextSize } from "../../css/MyStyles";
 
 export default Menu = ({ navigation }) => {
     return (
-        <SafeAreaView style={MyStyles.container}>
+        <View style={MyStyles.container}>
             <ScrollView
                 style={{
-                    flex: 1,
                     paddingTop: 20,
                     alignSelf: "stretch",
                 }}
                 contentContainerStyle={{ alignItems: "center" }}
             >
-                <TouchableOpacity
-                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
-                    onPress={() => navigation.navigate("Info")}
-                >
-                    <Text style={TextSize.largeSize}>OT 예약 및 기구 사용 정보</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
-                    onPress={() => navigation.navigate("Class")}
-                >
-                    <Text style={TextSize.largeSize}>예약</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 40 }]}
-                    onPress={() =>
-                        Alert.alert(
-                            "주의사항",
-                            "3개월권은 연장 불가능이며, 6개월권은 1번, 12개월권은 2번까지 연장 가능합니다.",
-                            [{ text: "확인", onPress: () => navigation.navigate("ExtendDate") }],
-                            { cancelable: false }
-                        )
-                    }
-                >
-                    <Text style={TextSize.largeSize}>회원권 연장 신청</Text>
-                </TouchableOpacity>
+                <Surface style={MyStyles.surface}>
+                    <TouchableOpacity
+                        style={MyStyles.menu}
+                        onPress={() => navigation.navigate("Info")}
+                    >
+                        <Text style={TextSize.largeSize}>OT 예약 및 기구 사용 정보</Text>
+                    </TouchableOpacity>
+                </Surface>
+                <Surface style={MyStyles.surface}>
+                    <TouchableOpacity
+                        style={MyStyles.menu}
+                        onPress={() => navigation.navigate("Class")}
+                    >
+                        <Text style={TextSize.largeSize}>예약</Text>
+                    </TouchableOpacity>
+                </Surface>
+                <Surface style={MyStyles.surface}>
+                    <TouchableOpacity
+                        style={MyStyles.menu}
+                        onPress={() =>
+                            Alert.alert(
+                                "주의사항",
+                                "3개월권은 연장 불가능이며, 6개월권은 1번, 12개월권은 2번까지 연장 가능합니다.",
+                                [
+                                    {
+                                        text: "확인",
+                                        onPress: () => navigation.navigate("ExtendDate"),
+                                    },
+                                ],
+                                { cancelable: false }
+                            )
+                        }
+                    >
+                        <Text style={TextSize.largeSize}>회원권 연장 신청</Text>
+                    </TouchableOpacity>
+                </Surface>
             </ScrollView>
-        </SafeAreaView>
+            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+        </View>
     );
 };

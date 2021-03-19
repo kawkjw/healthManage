@@ -5,7 +5,6 @@ import {
     TouchableOpacity,
     View,
     Image,
-    TextInput,
     Alert,
     Keyboard,
     ScrollView,
@@ -27,6 +26,7 @@ import {
     widthPercentageToDP as wp,
 } from "react-native-responsive-screen";
 import Modal from "react-native-modal";
+import { Button, Surface, TextInput } from "react-native-paper";
 
 export default Profile = ({ navigation }) => {
     const [data, setData] = useState("");
@@ -555,65 +555,61 @@ export default Profile = ({ navigation }) => {
     return (
         <SafeAreaView style={[MyStyles.container, { justifyContent: "center" }]}>
             <View style={{ justifyContent: "center", alignItems: "center" }}>
-                <TouchableOpacity
-                    style={[
-                        MyStyles.button,
-                        MyStyles.buttonShadow,
-                        { width: wp("85%"), aspectRatio: 1, marginBottom: 15 },
-                    ]}
-                    onPress={() => {
-                        if (canGenQR) {
-                            setIsRun(!isRun);
-                            setCount(15);
-                        } else {
-                            Alert.alert("경고", "회원권이 없습니다.", [{ text: "확인" }], {
-                                cancelable: false,
-                            });
-                        }
-                    }}
-                >
-                    {isRun ? (
-                        <>
-                            <View
-                                style={{
-                                    //marginBottom: 10,
-                                    alignItems: "center",
-                                }}
-                            >
-                                {data.length > 0 ? (
-                                    <QRCode
-                                        value={data}
-                                        size={wp("65%")}
-                                        bgColor="#000000"
-                                        fgColor="#FFFFFF"
-                                    />
-                                ) : undefined}
-
-                                <Text style={[TextSize.largeSize, { marginTop: 10 }]}>
-                                    유효시간 {isRun ? count : 0}초
-                                </Text>
-                            </View>
-                        </>
-                    ) : (
-                        <>
-                            <Text style={TextSize.largeSize}>입장 코드 생성</Text>
-                            <Image
-                                style={[MyStyles.image, { width: wp("80%"), aspectRatio: 1 }]}
-                                source={require("../../assets/qrcode-test.png")}
-                            />
-                        </>
-                    )}
-                    {/*<TouchableOpacity
-                        style={[MyStyles.backButton, MyStyles.buttonShadow, { borderRadius: 10 }]}
+                <Surface style={{ elevation: 6, borderRadius: 20, marginBottom: 15 }}>
+                    <TouchableOpacity
+                        style={{
+                            width: wp("85%"),
+                            //aspectRatio: 1,
+                            alignItems: "center",
+                            justifyContent: "center",
+                            paddingVertical: 20,
+                        }}
                         onPress={() => {
-                            setIsRun(false);
-                            navigation.goBack();
+                            if (canGenQR) {
+                                setIsRun(!isRun);
+                                setCount(15);
+                            } else {
+                                Alert.alert("경고", "회원권이 없습니다.", [{ text: "확인" }], {
+                                    cancelable: false,
+                                });
+                            }
                         }}
                     >
-                        <Text>뒤로가기</Text>
-                    </TouchableOpacity>*/}
-                </TouchableOpacity>
-                <View style={[MyStyles.buttonShadow, { width: wp("85%"), height: hp("33%") }]}>
+                        {isRun ? (
+                            <>
+                                <View
+                                    style={{
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    {data.length > 0 ? (
+                                        <QRCode
+                                            value={data}
+                                            size={wp("65%")}
+                                            bgColor="#000000"
+                                            fgColor="#FFFFFF"
+                                        />
+                                    ) : undefined}
+
+                                    <Text style={[TextSize.largeSize, { marginTop: 10 }]}>
+                                        유효시간 {isRun ? count : 0}초
+                                    </Text>
+                                </View>
+                            </>
+                        ) : (
+                            <>
+                                <Text style={TextSize.largeSize}>입장 코드 생성</Text>
+                                <Image
+                                    style={[MyStyles.image, { width: wp("80%"), aspectRatio: 1 }]}
+                                    source={require("../../assets/qrcode-test.png")}
+                                />
+                            </>
+                        )}
+                    </TouchableOpacity>
+                </Surface>
+                <Surface
+                    style={{ width: wp("85%"), height: hp("33%"), borderRadius: 20, elevation: 6 }}
+                >
                     {loading ? (
                         <View
                             style={{
@@ -933,7 +929,7 @@ export default Profile = ({ navigation }) => {
                             </ScrollView>
                         </View>
                     )}
-                </View>
+                </Surface>
             </View>
             <Modal
                 isVisible={modalPhoneVisible}
@@ -980,7 +976,6 @@ export default Profile = ({ navigation }) => {
                                 paddingHorizontal: 30,
                             }}
                         >
-                            <Text style={AuthStyles.text}>변경할 휴대폰 번호</Text>
                             <View
                                 style={{
                                     flexDirection: "row",
@@ -988,13 +983,13 @@ export default Profile = ({ navigation }) => {
                                 }}
                             >
                                 <TextInput
-                                    style={[
-                                        AuthStyles.textInput,
-                                        {
-                                            flex: 3,
-                                            marginRight: 7,
-                                        },
-                                    ]}
+                                    style={{
+                                        flex: 9,
+                                        marginRight: 7,
+                                    }}
+                                    label="변경할 휴대폰 번호"
+                                    dense={true}
+                                    mode="outlined"
                                     placeholder="010-0000-0000"
                                     keyboardType="phone-pad"
                                     autoCompleteType="tel"
@@ -1003,13 +998,14 @@ export default Profile = ({ navigation }) => {
                                     onChangeText={setChangePhone}
                                     maxLength={13}
                                 />
-                                <TouchableOpacity
-                                    style={AuthStyles.authButton}
+                                <Button
+                                    style={{ flex: 1, marginTop: 8, justifyContent: "center" }}
+                                    mode="contained"
                                     onPress={() => sendCode()}
                                     disabled={!changePhone}
                                 >
-                                    <Text style={TextSize.normalSize}>전송</Text>
-                                </TouchableOpacity>
+                                    전송
+                                </Button>
                             </View>
                             <View style={{ marginBottom: 10 }}>
                                 {verificationId !== "" && (
@@ -1022,7 +1018,9 @@ export default Profile = ({ navigation }) => {
                                     </Text>
                                 )}
                                 <TextInput
-                                    style={AuthStyles.textInput}
+                                    label="인증 코드"
+                                    mode="outlined"
+                                    dense={true}
                                     placeholder="123456"
                                     keyboardType="phone-pad"
                                     maxLength={6}

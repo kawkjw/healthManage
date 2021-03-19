@@ -1,8 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
-import { SafeAreaView, Text, TouchableOpacity, ScrollView, Alert } from "react-native";
+import { View, TouchableOpacity, ScrollView, Alert } from "react-native";
 import { MyStyles, TextSize } from "../../../css/MyStyles";
 import myBase, { db } from "../../../config/MyBase";
 import { DataContext } from "../../Auth";
+import { Surface, Text } from "react-native-paper";
+import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 export default Class = ({ navigation }) => {
     const [memberships, setMemberships] = useState([]);
@@ -184,7 +186,7 @@ export default Class = ({ navigation }) => {
     };
 
     return (
-        <SafeAreaView style={MyStyles.container}>
+        <View style={MyStyles.container}>
             <ScrollView
                 style={{
                     flex: 1,
@@ -193,99 +195,112 @@ export default Class = ({ navigation }) => {
                 }}
                 contentContainerStyle={{ alignItems: "center" }}
             >
-                <TouchableOpacity
-                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
-                    onPress={() => goClassReservation("pt")}
-                >
-                    <Text
-                        style={[
-                            TextSize.largeSize,
-                            memberships.indexOf("pt") === -1
-                                ? { color: "red" }
-                                : { color: "black" },
-                        ]}
+                <Surface style={MyStyles.surface}>
+                    <TouchableOpacity
+                        style={MyStyles.menu}
+                        onPress={() => goClassReservation("pt")}
                     >
-                        PT
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
-                    onPress={() => goClassReservation("pilates")}
-                >
-                    <Text
-                        style={[
-                            TextSize.largeSize,
-                            memberships.indexOf("pilates2") === -1 &&
-                            memberships.indexOf("pilates3") === -1
-                                ? { color: "red" }
-                                : { color: "black" },
-                        ]}
+                        <Text
+                            style={[
+                                TextSize.largeSize,
+                                memberships.indexOf("pt") === -1
+                                    ? { color: "red" }
+                                    : { color: "black" },
+                            ]}
+                        >
+                            PT
+                        </Text>
+                    </TouchableOpacity>
+                </Surface>
+                <Surface style={MyStyles.surface}>
+                    <TouchableOpacity
+                        style={MyStyles.menu}
+                        onPress={() => goClassReservation("pilates")}
                     >
-                        필라테스
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
-                    onPress={() => goClassReservation("spinning")}
-                >
-                    <Text
-                        style={[
-                            TextSize.largeSize,
-                            memberships.indexOf("spinning") === -1
-                                ? { color: "red" }
-                                : { color: "black" },
-                        ]}
+                        <Text
+                            style={[
+                                TextSize.largeSize,
+                                memberships.indexOf("pilates2") === -1 &&
+                                memberships.indexOf("pilates3") === -1
+                                    ? { color: "red" }
+                                    : { color: "black" },
+                            ]}
+                        >
+                            필라테스
+                        </Text>
+                    </TouchableOpacity>
+                </Surface>
+                <Surface style={MyStyles.surface}>
+                    <TouchableOpacity
+                        style={MyStyles.menu}
+                        onPress={() => goClassReservation("spinning")}
                     >
-                        스피닝
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
-                    onPress={() => goClassReservation("squash")}
-                >
-                    <Text
-                        style={[
-                            TextSize.largeSize,
-                            memberships.indexOf("squashpt") === -1 &&
-                            memberships.indexOf("squashgroup") === -1
-                                ? { color: "red" }
-                                : { color: "black" },
-                        ]}
+                        <Text
+                            style={[
+                                TextSize.largeSize,
+                                memberships.indexOf("spinning") === -1
+                                    ? { color: "red" }
+                                    : { color: "black" },
+                            ]}
+                        >
+                            스피닝
+                        </Text>
+                    </TouchableOpacity>
+                </Surface>
+                <Surface style={MyStyles.surface}>
+                    <TouchableOpacity
+                        style={MyStyles.menu}
+                        onPress={() => goClassReservation("squash")}
                     >
-                        스쿼시
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
-                    onPress={() => goClassReservation("yoga")}
-                >
-                    <Text
-                        style={[
-                            TextSize.largeSize,
-                            memberships.indexOf("GX") === -1
-                                ? { color: "red" }
-                                : { color: "black" },
-                        ]}
+                        <Text
+                            style={[
+                                TextSize.largeSize,
+                                memberships.indexOf("squashpt") === -1 &&
+                                memberships.indexOf("squashgroup") === -1
+                                    ? { color: "red" }
+                                    : { color: "black" },
+                            ]}
+                        >
+                            스쿼시
+                        </Text>
+                    </TouchableOpacity>
+                </Surface>
+                <Surface style={MyStyles.surface}>
+                    <TouchableOpacity
+                        style={MyStyles.menu}
+                        onPress={() => goClassReservation("yoga")}
                     >
-                        요가
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 40 }]}
-                    onPress={() => goClassReservation("zoomba")}
-                >
-                    <Text
-                        style={[
-                            TextSize.largeSize,
-                            memberships.indexOf("GX") === -1
-                                ? { color: "red" }
-                                : { color: "black" },
-                        ]}
+                        <Text
+                            style={[
+                                TextSize.largeSize,
+                                memberships.indexOf("gx") === -1
+                                    ? { color: "red" }
+                                    : { color: "black" },
+                            ]}
+                        >
+                            요가
+                        </Text>
+                    </TouchableOpacity>
+                </Surface>
+                <Surface style={MyStyles.surface}>
+                    <TouchableOpacity
+                        style={MyStyles.menu}
+                        onPress={() => goClassReservation("zoomba")}
                     >
-                        줌바
-                    </Text>
-                </TouchableOpacity>
+                        <Text
+                            style={[
+                                TextSize.largeSize,
+                                memberships.indexOf("gx") === -1
+                                    ? { color: "red" }
+                                    : { color: "black" },
+                            ]}
+                        >
+                            줌바
+                        </Text>
+                    </TouchableOpacity>
+                </Surface>
             </ScrollView>
-        </SafeAreaView>
+            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+        </View>
     );
 };

@@ -1,14 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import {
-    Text,
-    SafeAreaView,
-    FlatList,
-    View,
-    TouchableOpacity,
-    StyleSheet,
-    Image,
-    Linking,
-} from "react-native";
+import { Text, FlatList, View, TouchableOpacity, StyleSheet, Image, Linking } from "react-native";
 import myBase, { db } from "../../../config/MyBase";
 import {
     heightPercentageToDP as hp,
@@ -247,7 +238,7 @@ export default GX = ({ navigation, route }) => {
     };
 
     return (
-        <SafeAreaView>
+        <View style={{ flex: 1 }}>
             <View style={{ flexDirection: "row", height: hp("5%") }}>
                 <View
                     style={{
@@ -328,6 +319,7 @@ export default GX = ({ navigation, route }) => {
                 keyExtractor={(item, index) => index}
                 scrollEnabled={false}
             />
+            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
             <SegmentedPicker
                 ref={picker}
                 onConfirm={(select) => {
@@ -357,7 +349,7 @@ export default GX = ({ navigation, route }) => {
             >
                 <View
                     style={{
-                        flex: 1,
+                        height: hp("95%"),
                         backgroundColor: "white",
                     }}
                 >
@@ -435,94 +427,98 @@ export default GX = ({ navigation, route }) => {
                         ))
                     )}
                 </View>
-            </Modal>
-            <Modal
-                isVisible={modalClientInfo}
-                style={{ justifyContent: "flex-end", margin: 0 }}
-                onBackdropPress={() => setModalClientInfo(false)}
-                onBackButtonPress={() => setModalClientInfo(false)}
-            >
-                <View
-                    style={{
-                        height: hp("90%"),
-                        backgroundColor: "white",
-                    }}
+                <Modal
+                    isVisible={modalClientInfo}
+                    style={{ justifyContent: "flex-end", margin: 0 }}
+                    onBackdropPress={() => setModalClientInfo(false)}
+                    onBackButtonPress={() => setModalClientInfo(false)}
                 >
-                    <View style={{ flexDirection: "row", height: hp("5%") }}>
-                        <TouchableOpacity
-                            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-                            onPress={() => {
-                                setModalClientInfo(false);
-                            }}
-                        >
-                            <Text style={TextSize.largeSize}>닫기</Text>
-                        </TouchableOpacity>
-                        <View style={{ flex: 6, alignItems: "center", justifyContent: "center" }}>
-                            <Text style={TextSize.largeSize}>고객 명단</Text>
-                        </View>
-                        <View style={{ flex: 1 }} />
-                    </View>
-                    <View style={{ paddingHorizontal: 10 }}>
-                        {clientList.length === 0 ? (
-                            <Text
-                                style={[
-                                    TextSize.largeSize,
-                                    {
-                                        paddingLeft: 10,
-                                        color: "red",
-                                    },
-                                ]}
+                    <View
+                        style={{
+                            height: hp("90%"),
+                            backgroundColor: "white",
+                        }}
+                    >
+                        <View style={{ flexDirection: "row", height: hp("5%") }}>
+                            <TouchableOpacity
+                                style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+                                onPress={() => {
+                                    setModalClientInfo(false);
+                                }}
                             >
-                                예약한 고객이 없습니다.
-                            </Text>
-                        ) : (
-                            clientList.map((client, index) => (
-                                <View
-                                    key={index}
-                                    style={{
-                                        flexDirection: "row",
-                                        paddingLeft: 10,
-                                    }}
+                                <Text style={TextSize.largeSize}>닫기</Text>
+                            </TouchableOpacity>
+                            <View
+                                style={{ flex: 6, alignItems: "center", justifyContent: "center" }}
+                            >
+                                <Text style={TextSize.largeSize}>고객 명단</Text>
+                            </View>
+                            <View style={{ flex: 1 }} />
+                        </View>
+                        <View style={{ paddingHorizontal: 10 }}>
+                            {clientList.length === 0 ? (
+                                <Text
+                                    style={[
+                                        TextSize.largeSize,
+                                        {
+                                            paddingLeft: 10,
+                                            color: "red",
+                                        },
+                                    ]}
                                 >
+                                    예약한 고객이 없습니다.
+                                </Text>
+                            ) : (
+                                clientList.map((client, index) => (
                                     <View
+                                        key={index}
                                         style={{
-                                            width: wp("4%"),
-                                            alignItems: "flex-end",
+                                            flexDirection: "row",
+                                            paddingLeft: 10,
                                         }}
                                     >
-                                        <Text style={TextSize.normalSize}>
-                                            {(index + 1).toString() + ". "}
-                                        </Text>
-                                    </View>
-                                    <View
-                                        style={{
-                                            width: wp("15%"),
-                                            alignItems: "center",
-                                        }}
-                                    >
-                                        <Text style={TextSize.normalSize}>{client.name}</Text>
-                                    </View>
-                                    <TouchableOpacity
-                                        onPress={() => Linking.openURL(`tel:${client.phoneNumber}`)}
-                                    >
-                                        <Text
-                                            style={[
-                                                TextSize.normalSize,
-                                                {
-                                                    color: "blue",
-                                                },
-                                            ]}
+                                        <View
+                                            style={{
+                                                width: wp("4%"),
+                                                alignItems: "flex-end",
+                                            }}
                                         >
-                                            {client.phoneNumber}
-                                        </Text>
-                                    </TouchableOpacity>
-                                </View>
-                            ))
-                        )}
+                                            <Text style={TextSize.normalSize}>
+                                                {(index + 1).toString() + ". "}
+                                            </Text>
+                                        </View>
+                                        <View
+                                            style={{
+                                                width: wp("15%"),
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            <Text style={TextSize.normalSize}>{client.name}</Text>
+                                        </View>
+                                        <TouchableOpacity
+                                            onPress={() =>
+                                                Linking.openURL(`tel:${client.phoneNumber}`)
+                                            }
+                                        >
+                                            <Text
+                                                style={[
+                                                    TextSize.normalSize,
+                                                    {
+                                                        color: "blue",
+                                                    },
+                                                ]}
+                                            >
+                                                {client.phoneNumber}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                ))
+                            )}
+                        </View>
                     </View>
-                </View>
+                </Modal>
             </Modal>
-        </SafeAreaView>
+        </View>
     );
 };
 

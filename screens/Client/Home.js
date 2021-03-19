@@ -15,6 +15,7 @@ import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
 } from "react-native-responsive-screen";
+import { Surface } from "react-native-paper";
 
 export default Home = ({ navigation, route }) => {
     useEffect(() => {
@@ -62,40 +63,72 @@ export default Home = ({ navigation, route }) => {
     return (
         <SafeAreaView style={[MyStyles.container, { justifyContent: "center" }]}>
             <StatusBar barStyle={Platform.OS === "ios" ? "dark-content" : "default"} />
-            <View style={{ justifyContent: "center", alignItems: "center" }}>
-                <TouchableOpacity
-                    style={[
-                        MyStyles.profileButton,
-                        MyStyles.buttonShadow,
-                        {
-                            width: wp("90%"),
-                            marginBottom: 20,
-                            justifyContent: "center",
-                        },
-                    ]}
-                    onPress={() => navigation.navigate("Profile")}
-                >
-                    <Image
-                        style={[MyStyles.image, { width: wp("80%"), aspectRatio: 1 }]}
-                        source={{
-                            uri: "https://reactnative.dev/img/tiny_logo.png",
-                        }}
-                    />
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
-                    onPress={() => navigation.navigate("Menu")}
-                >
-                    <Text style={TextSize.largeSize}>메뉴</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[MyStyles.phoneButton, MyStyles.buttonShadow]}
-                    onPress={() => {
-                        Linking.openURL("tel:12345678");
+            <View style={{ alignItems: "center" }}>
+                <Surface
+                    style={{
+                        elevation: 6,
+                        marginBottom: 20,
+                        borderRadius: 20,
                     }}
                 >
-                    <Text style={TextSize.largeSize}>전화 연결</Text>
-                </TouchableOpacity>
+                    <TouchableOpacity
+                        style={{
+                            width: wp("90%"),
+                            aspectRatio: 1,
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }}
+                        onPress={() => navigation.navigate("Profile")}
+                    >
+                        <Image
+                            style={[MyStyles.image, { width: wp("80%"), aspectRatio: 1 }]}
+                            source={{
+                                uri: "https://reactnative.dev/img/tiny_logo.png",
+                            }}
+                        />
+                    </TouchableOpacity>
+                </Surface>
+                <Surface
+                    style={{
+                        elevation: 6,
+                        marginBottom: 20,
+                        borderRadius: 20,
+                    }}
+                >
+                    <TouchableOpacity
+                        style={{
+                            width: wp("90%"),
+                            height: hp("10%"),
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }}
+                        onPress={() => navigation.navigate("Menu")}
+                    >
+                        <Text style={TextSize.largeSize}>메뉴</Text>
+                    </TouchableOpacity>
+                </Surface>
+
+                <Surface
+                    style={{
+                        elevation: 6,
+                        marginBottom: 20,
+                        borderRadius: 20,
+                    }}
+                >
+                    <TouchableOpacity
+                        style={{
+                            width: wp("90%"),
+                            height: hp("10%"),
+                            alignItems: "center",
+                            justifyContent: "center",
+                        }}
+                        onPress={() => {
+                            Linking.openURL("tel:12345678");
+                        }}
+                    >
+                        <Text style={TextSize.largeSize}>전화 연결</Text>
+                    </TouchableOpacity>
+                </Surface>
             </View>
         </SafeAreaView>
     );

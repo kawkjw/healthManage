@@ -1,22 +1,16 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import {
-    Alert,
-    Keyboard,
-    SafeAreaView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-} from "react-native";
+import { Alert, Keyboard, TouchableOpacity, View } from "react-native";
 import myBase, { db } from "../../../config/MyBase";
-import { AuthStyles, MyStyles, TextSize } from "../../../css/MyStyles";
+import { MyStyles, TextSize } from "../../../css/MyStyles";
 import { RFPercentage } from "react-native-responsive-fontsize";
-import { MaterialIcons, MaterialCommunityIcons } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
 import moment from "moment";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { pushNotificationsToAdmin } from "../../../config/MyExpo";
 import SegmentedPicker from "react-native-segmented-picker";
 import { DataContext } from "../../Auth";
+import { Surface, Text, TextInput } from "react-native-paper";
+import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 export default ExtendDate = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
@@ -200,7 +194,7 @@ export default ExtendDate = ({ navigation, route }) => {
     };
 
     return (
-        <SafeAreaView style={{ flex: 1, alignItems: "center" }}>
+        <View style={{ flex: 1, alignItems: "center" }}>
             <KeyboardAwareScrollView
                 style={{ alignSelf: "stretch" }}
                 contentContainerStyle={{ height: "100%" }}
@@ -215,7 +209,7 @@ export default ExtendDate = ({ navigation, route }) => {
                     activeOpacity={1}
                 >
                     <View style={{ paddingHorizontal: 20 }}>
-                        <View style={[{ marginVertical: 15, padding: 15 }, MyStyles.buttonShadow]}>
+                        <Surface style={[{ marginVertical: 15, padding: 15 }, MyStyles.surface]}>
                             <Text style={TextSize.largeSize}>연장 가능한 이용권</Text>
                             {availExtend.map((membership, index) => (
                                 <View
@@ -249,82 +243,68 @@ export default ExtendDate = ({ navigation, route }) => {
                                     </Text>
                                 </View>
                             ))}
-                        </View>
-                        <View style={[MyStyles.buttonShadow, { padding: 15 }]}>
-                            <Text style={TextSize.normalSize}>연장할 일수</Text>
-                            <View
-                                style={{
-                                    flexDirection: "row",
-                                    alignItems: "center",
-                                    borderWidth: 1,
-                                    marginTop: 5,
-                                    marginBottom: 10,
-                                }}
-                            >
-                                <View style={{ flex: 1, alignItems: "center" }}>
-                                    <Text style={TextSize.largeSize}>{extendDate.date} 일동안</Text>
-                                </View>
-                                <TouchableOpacity
-                                    onPress={() => {
-                                        Keyboard.dismiss();
-                                        picker.current.show();
-                                    }}
-                                >
-                                    <MaterialCommunityIcons
-                                        name="chevron-down"
-                                        size={30}
-                                        color="black"
-                                    />
-                                </TouchableOpacity>
+                        </Surface>
+                        <Surface style={[MyStyles.surface, { padding: 15 }]}>
+                            <View>
+                                <TextInput
+                                    label="연장할 일수"
+                                    value={extendDate.date + "일 동안"}
+                                    editable={false}
+                                    dense={true}
+                                    mode="outlined"
+                                    right={
+                                        <TextInput.Icon
+                                            name="chevron-down"
+                                            onPress={() => {
+                                                Keyboard.dismiss();
+                                                picker.current.show();
+                                            }}
+                                        />
+                                    }
+                                />
                             </View>
-                            <Text style={TextSize.normalSize}>연장 사유</Text>
                             <View
                                 style={{
-                                    borderWidth: 1,
                                     marginTop: 5,
                                     marginBottom: 10,
                                 }}
                             >
                                 <TextInput
-                                    style={[AuthStyles.textInput, { borderWidth: 0 }]}
+                                    label="연장 사유"
                                     keyboardType="default"
                                     placeholder="사유 30자 이내"
                                     value={extendReason}
                                     onChangeText={setExtendReason}
                                     maxLength={30}
                                     multiline={true}
+                                    dense={true}
+                                    mode="outlined"
                                 />
                             </View>
-                            <TouchableOpacity
-                                style={[
-                                    [
-                                        MyStyles.buttonShadow,
-                                        {
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            borderRadius: 10,
-                                        },
-                                    ],
-                                ]}
-                                onPress={() => {
-                                    Alert.alert(
-                                        "확실합니까?",
-                                        `연장 일수: ${extendDate.date}\n연장 사유: ${extendReason}`,
-                                        [
-                                            { text: "취소" },
-                                            { text: "확인", onPress: () => onSubmit() },
-                                        ],
-                                        { cancelable: false }
-                                    );
-                                }}
-                                disabled={!extendReason}
-                            >
-                                <Text style={[TextSize.normalSize, { margin: 10 }]}>제출</Text>
-                            </TouchableOpacity>
-                        </View>
+                            <Surface style={{ elevation: 6, borderRadius: 10 }}>
+                                <TouchableOpacity
+                                    style={{ alignItems: "center" }}
+                                    onPress={() => {
+                                        Alert.alert(
+                                            "확실합니까?",
+                                            `연장 일수: ${extendDate.date}\n연장 사유: ${extendReason}`,
+                                            [
+                                                { text: "취소" },
+                                                { text: "확인", onPress: () => onSubmit() },
+                                            ],
+                                            { cancelable: false }
+                                        );
+                                    }}
+                                    disabled={!extendReason}
+                                >
+                                    <Text style={[TextSize.normalSize, { margin: 10 }]}>제출</Text>
+                                </TouchableOpacity>
+                            </Surface>
+                        </Surface>
                     </View>
                 </TouchableOpacity>
             </KeyboardAwareScrollView>
+            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
             <SegmentedPicker
                 ref={picker}
                 onCancel={(select) => {
@@ -337,6 +317,6 @@ export default ExtendDate = ({ navigation, route }) => {
                 options={[{ key: "date", items: dateList }]}
                 confirmText="확인"
             />
-        </SafeAreaView>
+        </View>
     );
 };

@@ -9,7 +9,7 @@ import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 
 const theme = {
     ...DefaultTheme,
-    colors: { ...DefaultTheme.colors, primary: "#3366cc", accent: "#3366cc" },
+    colors: { ...DefaultTheme.colors, primary: "#3366cc", accent: "#0066cc" },
 };
 
 Notifications.setNotificationHandler({

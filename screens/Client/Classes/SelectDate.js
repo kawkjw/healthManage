@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { MyStyles, TextSize } from "../../../css/MyStyles";
+import { heightPercentageToDP as hp } from "react-native-responsive-screen";
+import { Surface } from "react-native-paper";
 
 export default SelectDate = ({ navigation, route }) => {
     const { classname } = route.params;
@@ -27,7 +29,7 @@ export default SelectDate = ({ navigation, route }) => {
     }, []);
 
     return (
-        <SafeAreaView style={MyStyles.container}>
+        <View style={MyStyles.container}>
             <ScrollView
                 style={{
                     flex: 1,
@@ -38,34 +40,32 @@ export default SelectDate = ({ navigation, route }) => {
             >
                 {sixDate.map((d, i) => {
                     return (
-                        <TouchableOpacity
-                            key={i}
-                            style={[
-                                MyStyles.phoneButton,
-                                MyStyles.buttonShadow,
-                                { marginBottom: 20 },
-                                i === sixDate.length - 1 ? { marginBottom: 40 } : undefined,
-                            ]}
-                            onPress={() => {
-                                if (classname === "pilates" || classname === "squash") {
-                                    navigation.navigate("GX", {
-                                        classname: classname,
-                                        date: d,
-                                        week: route.params.week,
-                                    });
-                                } else {
-                                    navigation.navigate("GX", {
-                                        classname: classname,
-                                        date: d,
-                                    });
-                                }
-                            }}
-                        >
-                            <Text style={TextSize.largeSize}>{d}</Text>
-                        </TouchableOpacity>
+                        <Surface style={MyStyles.surface}>
+                            <TouchableOpacity
+                                key={i}
+                                style={MyStyles.menu}
+                                onPress={() => {
+                                    if (classname === "pilates" || classname === "squash") {
+                                        navigation.navigate("GX", {
+                                            classname: classname,
+                                            date: d,
+                                            week: route.params.week,
+                                        });
+                                    } else {
+                                        navigation.navigate("GX", {
+                                            classname: classname,
+                                            date: d,
+                                        });
+                                    }
+                                }}
+                            >
+                                <Text style={TextSize.largeSize}>{d}</Text>
+                            </TouchableOpacity>
+                        </Surface>
                     );
                 })}
             </ScrollView>
-        </SafeAreaView>
+            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+        </View>
     );
 };

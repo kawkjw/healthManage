@@ -15,7 +15,6 @@ import Modal from "react-native-modal";
 import {
     TextInput,
     RadioButton,
-    Text,
     Button,
     HelperText,
     IconButton,
@@ -240,7 +239,7 @@ export default SignUp = ({ navigation }) => {
                 onBackdropPress={() => setModalAddress(false)}
                 onBackButtonPress={() => setModalAddress(false)}
             >
-                <View
+                <SafeAreaView
                     style={{
                         flex: 1,
                         backgroundColor: "white",
@@ -251,6 +250,7 @@ export default SignUp = ({ navigation }) => {
                             onPress={() => setModalAddress(false)}
                             style={{ width: wp("10%") }}
                             mode="text"
+                            labelStyle={Platform.OS === "ios" ? { paddingVertical: 8 } : undefined}
                         >
                             닫기
                         </Button>
@@ -267,7 +267,7 @@ export default SignUp = ({ navigation }) => {
                             setModalAddress(false);
                         }}
                     />
-                </View>
+                </SafeAreaView>
             </Modal>
             <View style={{ height: hp("2%") }}></View>
             <KeyboardAwareScrollView
@@ -300,7 +300,7 @@ export default SignUp = ({ navigation }) => {
                                 onValueChange={(value) => setSexSelected(value)}
                                 value={sexSelected}
                             >
-                                <View style={{ flexDirection: "row" }}>
+                                <View style={{ flexDirection: "row", alignItems: "center" }}>
                                     <View
                                         style={{
                                             flexDirection: "row",
@@ -308,7 +308,14 @@ export default SignUp = ({ navigation }) => {
                                         }}
                                     >
                                         <RadioButton value={0} color="#0099ff" />
-                                        <Text>남</Text>
+                                        <Button
+                                            mode="text"
+                                            onPress={() => setSexSelected(0)}
+                                            labelStyle={{ marginHorizontal: 5, marginVertical: 5 }}
+                                            compact={true}
+                                        >
+                                            남
+                                        </Button>
                                     </View>
                                     <View
                                         style={{
@@ -317,14 +324,21 @@ export default SignUp = ({ navigation }) => {
                                         }}
                                     >
                                         <RadioButton value={1} color="#0099ff" />
-                                        <Text>여</Text>
+                                        <Button
+                                            mode="text"
+                                            onPress={() => setSexSelected(1)}
+                                            labelStyle={{ marginHorizontal: 5, marginVertical: 5 }}
+                                            compact={true}
+                                        >
+                                            여
+                                        </Button>
                                     </View>
                                 </View>
                             </RadioButton.Group>
                         </View>
                     </View>
                     <View style={{ marginBottom: 5 }}>
-                        <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                        <View style={{ flexDirection: "row" }}>
                             <View style={{ flex: 9 }}>
                                 <TextInput
                                     label="이메일"
@@ -343,7 +357,12 @@ export default SignUp = ({ navigation }) => {
                                 ) : null}
                             </View>
                             <Button
-                                style={{ flex: 1, marginTop: 7, marginLeft: 5 }}
+                                style={{
+                                    flex: 1,
+                                    marginTop: 5,
+                                    marginLeft: 6,
+                                    justifyContent: "center",
+                                }}
                                 onPress={checkUsedEmail}
                                 mode="contained"
                                 labelStyle={{ fontWeight: "bold" }}
@@ -446,7 +465,7 @@ export default SignUp = ({ navigation }) => {
                     <View>
                         <View style={{ flexDirection: "row", alignItems: "center" }}>
                             <Checkbox
-                                status={selected ? "checked" : "unchecked"}
+                                status={selected ? "checked" : "indeterminate"}
                                 onPress={() => setSelected(!selected)}
                             />
                             <Button

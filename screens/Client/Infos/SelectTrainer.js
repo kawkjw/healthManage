@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Alert, SafeAreaView, ScrollView, Text, TouchableOpacity } from "react-native";
+import { Alert, View, ScrollView, Text, TouchableOpacity } from "react-native";
 import { MyStyles, TextSize } from "../../../css/MyStyles";
 import myBase, { db } from "../../../config/MyBase";
+import { Surface } from "react-native-paper";
+import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 export default SelectTrainer = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
@@ -78,7 +80,7 @@ export default SelectTrainer = ({ navigation, route }) => {
     }, []);
 
     return (
-        <SafeAreaView style={MyStyles.container}>
+        <View style={MyStyles.container}>
             <ScrollView
                 style={{
                     flex: 1,
@@ -88,20 +90,22 @@ export default SelectTrainer = ({ navigation, route }) => {
                 contentContainerStyle={{ alignItems: "center" }}
             >
                 {trainers.map((trainer, index) => (
-                    <TouchableOpacity
-                        key={index}
-                        style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
-                        onPress={() =>
-                            navigation.navigate("OT", {
-                                trainerName: trainer.name,
-                                trainerUid: trainer.uid,
-                            })
-                        }
-                    >
-                        <Text style={TextSize.largeSize}>{trainer.name}</Text>
-                    </TouchableOpacity>
+                    <Surface key={index} style={MyStyles.surface}>
+                        <TouchableOpacity
+                            style={MyStyles.menu}
+                            onPress={() =>
+                                navigation.navigate("OT", {
+                                    trainerName: trainer.name,
+                                    trainerUid: trainer.uid,
+                                })
+                            }
+                        >
+                            <Text style={TextSize.largeSize}>{trainer.name}</Text>
+                        </TouchableOpacity>
+                    </Surface>
                 ))}
             </ScrollView>
-        </SafeAreaView>
+            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+        </View>
     );
 };
