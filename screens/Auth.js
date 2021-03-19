@@ -15,6 +15,7 @@ import { ADMIN_CODE, TRAINER_CODE } from "@env";
 import { pushNotificationsToAdmin } from "../config/MyExpo";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import * as Crypto from "expo-crypto";
+import { Appbar } from "react-native-paper";
 
 const Stack = createStackNavigator();
 
@@ -379,11 +380,31 @@ export default Auth = () => {
         </TouchableOpacity>
     );
 
+    const CustomNavBar = (props) => {
+        const {
+            navigation,
+            previous,
+            scene: {
+                descriptor: {
+                    options: { title },
+                },
+            },
+        } = props;
+        return (
+            <Appbar.Header style={{ marginTop: 0 }}>
+                {previous ? <Appbar.BackAction onPress={navigation.goBack} /> : null}
+                <Appbar.Content title={title ? title : "My App"} />
+            </Appbar.Header>
+        );
+    };
+
     return (
         <AuthContext.Provider value={authContext}>
             <DataContext.Provider value={dataContext}>
                 <NavigationContainer>
-                    <Stack.Navigator>
+                    <Stack.Navigator
+                        screenOptions={{ header: (props) => <CustomNavBar {...props} /> }}
+                    >
                         {state.isLoading ? (
                             <Stack.Screen
                                 name="Loading"

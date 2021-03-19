@@ -1,33 +1,27 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import {
-    Text,
-    View,
-    TextInput,
-    TouchableOpacity,
-    SafeAreaView,
-    Keyboard,
-    Alert,
-    ActivityIndicator,
-    Platform,
-} from "react-native";
+import { View, TouchableOpacity, SafeAreaView, Keyboard, Alert, Platform } from "react-native";
 import { AuthContext } from "../Auth";
-import { AuthStyles, TextSize } from "../../css/MyStyles";
-import CheckBox from "../../config/CheckBox";
 import myBase, { db } from "../../config/MyBase";
 import firebase from "firebase";
 import { FirebaseRecaptchaVerifierModal, FirebaseRecaptchaBanner } from "expo-firebase-recaptcha";
-import { RFPercentage } from "react-native-responsive-fontsize";
-import { heightPercentageToDP as hp } from "react-native-responsive-screen";
+import {
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
+} from "react-native-responsive-screen";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import RadioForm, {
-    RadioButton,
-    RadioButtonInput,
-    RadioButtonLabel,
-} from "react-native-simple-radio-button";
-import { MaterialCommunityIcons } from "@expo/vector-icons";
 import SegmentedPicker from "react-native-segmented-picker";
 import Postcode from "react-native-daum-postcode";
 import Modal from "react-native-modal";
+import {
+    TextInput,
+    RadioButton,
+    Text,
+    Button,
+    HelperText,
+    IconButton,
+    Checkbox,
+} from "react-native-paper";
+import moment from "moment";
 
 export default SignUp = ({ navigation }) => {
     const appVerifier = useRef(null);
@@ -45,10 +39,6 @@ export default SignUp = ({ navigation }) => {
     const [checkPw, setCheckPw] = useState(false);
     const [correctPw, setCorrectPw] = useState(false);
     const [sexSelected, setSexSelected] = useState(-1);
-    const radioOptions = [
-        { label: "남", value: "man" },
-        { label: "여", value: "woman" },
-    ];
     const today = new Date();
     const picker = useRef();
     const [birthday, setBirthday] = useState({
@@ -73,12 +63,13 @@ export default SignUp = ({ navigation }) => {
             key: (d + 1).toString(),
         })),
     };
-    const [address, setAddress] = useState("주소 검색");
+    const [address, setAddress] = useState("");
     const [modalAddress, setModalAddress] = useState(false);
 
     const { signUp } = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
     const [showPasswordText, setShowPasswordText] = useState(false);
+    const [showCheckPasswordText, setShowCheckPasswordText] = useState(false);
 
     useEffect(() => {
         if (password && password === chkPassword) {
@@ -241,7 +232,7 @@ export default SignUp = ({ navigation }) => {
     };
 
     return (
-        <SafeAreaView style={AuthStyles.container}>
+        <SafeAreaView style={{ flex: 1 }}>
             <FirebaseRecaptchaVerifierModal ref={appVerifier} firebaseConfig={myBase.options} />
             <Modal
                 isVisible={modalAddress}
@@ -253,9 +244,17 @@ export default SignUp = ({ navigation }) => {
                     style={{
                         flex: 1,
                         backgroundColor: "white",
-                        height: hp("85%"),
                     }}
                 >
+                    <View style={{ height: hp("5%"), backgroundColor: "rgba(0, 0, 0, 0.1)" }}>
+                        <Button
+                            onPress={() => setModalAddress(false)}
+                            style={{ width: wp("10%") }}
+                            mode="text"
+                        >
+                            닫기
+                        </Button>
+                    </View>
                     <Postcode
                         style={{ flex: 1 }}
                         jsOptions={{ animation: true }}
@@ -270,6 +269,7 @@ export default SignUp = ({ navigation }) => {
                     />
                 </View>
             </Modal>
+            <View style={{ height: hp("2%") }}></View>
             <KeyboardAwareScrollView
                 contentContainerStyle={{ paddingHorizontal: -30 }}
                 keyboardShouldPersistTaps="always"
@@ -281,116 +281,86 @@ export default SignUp = ({ navigation }) => {
                 extraScrollHeight={120}
             >
                 <TouchableOpacity
-                    style={[AuthStyles.touchScreen, { height: hp("90%") }]}
+                    style={{ height: hp("90%"), paddingHorizontal: 30 }}
                     onPress={Keyboard.dismiss}
                     accessible={false}
                     activeOpacity={1}
                 >
-                    <View style={AuthStyles.textView}>
-                        <Text style={AuthStyles.text}>이름</Text>
+                    <View style={{ marginBottom: 5 }}>
                         <View style={{ flexDirection: "row", alignItems: "center" }}>
                             <TextInput
-                                style={[AuthStyles.textInput, { flex: 1 }]}
-                                placeholder="이름"
-                                autoCompleteType="name"
-                                keyboardType="default"
-                                textContentType="name"
+                                label="이름"
+                                style={{ flex: 1 }}
+                                dense={true}
                                 value={name}
                                 onChangeText={setName}
+                                mode="outlined"
                             />
-                            <RadioForm formHorizontal={true} animation={true}>
-                                {radioOptions.map((option, index) => (
-                                    <View key={index}>
-                                        <RadioButton
-                                            labelHorizontal={true}
-                                            wrapStyle={{
-                                                marginLeft: 10,
-                                            }}
-                                        >
-                                            <RadioButtonInput
-                                                obj={option}
-                                                index={index}
-                                                isSelected={sexSelected === index}
-                                                onPress={() => {
-                                                    setSexSelected(index);
-                                                }}
-                                                buttonSize={15}
-                                                buttonInnerColor={"black"}
-                                                buttonOuterColor={"black"}
-                                                buttonStyle={{ borderWidth: 1 }}
-                                            />
-                                            <RadioButtonLabel
-                                                obj={option}
-                                                index={index}
-                                                onPress={() => {
-                                                    setSexSelected(index);
-                                                }}
-                                                labelStyle={{
-                                                    fontSize: RFPercentage(2.5),
-                                                    marginLeft: 5,
-                                                }}
-                                            />
-                                        </RadioButton>
+                            <RadioButton.Group
+                                onValueChange={(value) => setSexSelected(value)}
+                                value={sexSelected}
+                            >
+                                <View style={{ flexDirection: "row" }}>
+                                    <View
+                                        style={{
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        <RadioButton value={0} color="#0099ff" />
+                                        <Text>남</Text>
                                     </View>
-                                ))}
-                            </RadioForm>
+                                    <View
+                                        style={{
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                        }}
+                                    >
+                                        <RadioButton value={1} color="#0099ff" />
+                                        <Text>여</Text>
+                                    </View>
+                                </View>
+                            </RadioButton.Group>
                         </View>
                     </View>
-                    <View style={AuthStyles.textView}>
-                        <Text style={AuthStyles.text}>이메일</Text>
-                        <View style={{ flexDirection: "row" }}>
-                            <TextInput
-                                style={[
-                                    AuthStyles.textInput,
-                                    email
-                                        ? checkEmail
-                                            ? { backgroundColor: "green" }
-                                            : { backgroundColor: "red" }
-                                        : undefined,
-                                    { flex: 3, marginRight: 10 },
-                                ]}
-                                placeholder="examples@example.com"
-                                autoCompleteType="email"
-                                keyboardType="email-address"
-                                textContentType="emailAddress"
-                                value={email}
-                                onChangeText={setEmail}
-                            />
-                            <TouchableOpacity
-                                style={AuthStyles.authButton}
+                    <View style={{ marginBottom: 5 }}>
+                        <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                            <View style={{ flex: 9 }}>
+                                <TextInput
+                                    label="이메일"
+                                    value={email}
+                                    onChangeText={setEmail}
+                                    mode="outlined"
+                                    style={{ marginBottom: 0 }}
+                                    dense={true}
+                                    error={!checkEmail && email}
+                                    keyboardType="email-address"
+                                />
+                                {!checkEmail && email ? (
+                                    <HelperText type="error" visible={true} padding="none">
+                                        잘못된 이메일 형식입니다.
+                                    </HelperText>
+                                ) : null}
+                            </View>
+                            <Button
+                                style={{ flex: 1, marginTop: 7, marginLeft: 5 }}
                                 onPress={checkUsedEmail}
+                                mode="contained"
+                                labelStyle={{ fontWeight: "bold" }}
                             >
-                                <Text style={AuthStyles.authText}>중복확인</Text>
-                            </TouchableOpacity>
+                                중복확인
+                            </Button>
                         </View>
                     </View>
-                    <View style={AuthStyles.textView}>
-                        <Text style={AuthStyles.text}>비밀번호</Text>
-                        {showPasswordText && (
-                            <Text
-                                style={{
-                                    color: "#8c8c8c",
-                                    marginBottom: 5,
-                                    fontSize: RFPercentage(2),
-                                }}
-                            >
-                                길이는 8자 이상 15자 이하이며{"\n"}영문, 숫자, 특수문자 중 2가지
-                                이상을 혼합하여 입력해주세요
-                            </Text>
-                        )}
+                    <View style={{ marginBottom: 5 }}>
                         <TextInput
-                            style={[
-                                AuthStyles.textInput,
-                                password
-                                    ? correctPw
-                                        ? { backgroundColor: "green" }
-                                        : { backgroundColor: "red" }
-                                    : undefined,
-                            ]}
-                            placeholder="비밀번호"
+                            label="비밀번호"
+                            mode="outlined"
+                            dense={true}
                             secureTextEntry={true}
                             value={password}
                             onChangeText={setPassword}
+                            error={!correctPw && password}
                             onFocus={(e) => {
                                 setShowPasswordText(true);
                             }}
@@ -398,150 +368,150 @@ export default SignUp = ({ navigation }) => {
                                 setShowPasswordText(false);
                             }}
                         />
+                        {showPasswordText && (
+                            <HelperText type="info" visible={true}>
+                                길이는 8자 이상 15자 이하이며{"\n"}영문, 숫자, 특수문자 중 2가지
+                                이상을 혼합하여 입력해주세요
+                            </HelperText>
+                        )}
                     </View>
-                    <View style={AuthStyles.textView}>
-                        <Text style={AuthStyles.text}>비밀번호 확인</Text>
+                    <View style={{ marginBottom: 5 }}>
                         <TextInput
-                            style={[
-                                AuthStyles.textInput,
-                                password
-                                    ? checkPw
-                                        ? { backgroundColor: "green" }
-                                        : { backgroundColor: "red" }
-                                    : undefined,
-                            ]}
-                            placeholder="비밀번호 확인"
+                            label="비밀번호 확인"
                             secureTextEntry={true}
                             value={chkPassword}
                             onChangeText={setChkPassword}
+                            error={!checkPw && password}
+                            mode="outlined"
+                            dense={true}
                             onFocus={(e) => {
-                                setShowPasswordText(true);
+                                setShowCheckPasswordText(true);
                             }}
                             onBlur={(e) => {
-                                setShowPasswordText(false);
+                                setShowCheckPasswordText(false);
                             }}
                         />
+                        {showCheckPasswordText && !checkPw ? (
+                            <HelperText type="error" visible={true}>
+                                비밀번호가 일치하지 않습니다.
+                            </HelperText>
+                        ) : null}
                     </View>
-                    <View style={AuthStyles.textView}>
-                        <Text style={AuthStyles.text}>생년월일</Text>
-                        <TouchableOpacity
-                            onPress={() => {
-                                Keyboard.dismiss();
-                                picker.current.show();
+                    <View style={{ marginBottom: 5 }}>
+                        <View
+                            style={{
+                                flexDirection: "row",
                             }}
                         >
-                            <View
-                                style={{
-                                    flexDirection: "row",
-                                    borderWidth: 1,
-                                    alignItems: "center",
-                                }}
-                            >
-                                <View style={{ flex: 2, alignItems: "center" }}>
-                                    <Text style={TextSize.largerSize}>{birthday.year}</Text>
-                                </View>
-                                <View style={{ alignItems: "center" }}>
-                                    <Text style={TextSize.largerSize}>{" / "}</Text>
-                                </View>
-                                <View style={{ flex: 2, alignItems: "center" }}>
-                                    <Text style={TextSize.largerSize}>{birthday.month}</Text>
-                                </View>
-                                <View style={{ alignItems: "center" }}>
-                                    <Text style={TextSize.largerSize}>{" / "}</Text>
-                                </View>
-                                <View style={{ flex: 2, alignItems: "center" }}>
-                                    <Text style={TextSize.largerSize}>{birthday.day}</Text>
-                                </View>
-
-                                <MaterialCommunityIcons
-                                    name="chevron-down"
-                                    size={30}
-                                    color="black"
-                                />
-                            </View>
-                        </TouchableOpacity>
-                    </View>
-                    <View style={AuthStyles.textView}>
-                        <Text style={AuthStyles.text}>주소</Text>
-                        <View style={{ flexDirection: "row" }}>
-                            <View style={{ borderWidth: 1, padding: 5, marginRight: 5, flex: 3 }}>
-                                <Text
-                                    style={[
-                                        TextSize.largeSize,
-                                        address === "주소 검색"
-                                            ? { color: "grey" }
-                                            : { color: "black" },
-                                    ]}
-                                >
-                                    {address}
-                                </Text>
-                            </View>
-                            <TouchableOpacity
-                                style={[AuthStyles.authButton, { marginLeft: 5 }]}
-                                onPress={() => {
-                                    Keyboard.dismiss();
-                                    setModalAddress(true);
-                                }}
-                            >
-                                <Text style={AuthStyles.authText}>검색</Text>
-                            </TouchableOpacity>
+                            <TextInput
+                                label="생년월일"
+                                value={moment(
+                                    [birthday.year, birthday.month, birthday.day].join(" "),
+                                    "YYYY M D"
+                                ).format("YYYY. MM. DD.")}
+                                editable={false}
+                                mode="outlined"
+                                style={{ flex: 1 }}
+                                dense={true}
+                            />
+                            <IconButton
+                                icon="calendar"
+                                size={28}
+                                color="#3366cc"
+                                onPress={() => picker.current.show()}
+                                style={{ marginBottom: 0 }}
+                            />
                         </View>
                     </View>
-                    <View style={AuthStyles.textView}>
-                        <CheckBox
-                            selected={selected}
-                            onPress={() => {
-                                setSelected(!selected);
-                                Keyboard.dismiss();
-                            }}
-                            text=" 관리자 코드 입력"
-                            textStyle={TextSize.normalSize}
-                            size={RFPercentage(2.5)}
-                            style={[{ width: "40%" }, selected && { marginBottom: 10 }]}
-                        />
-                        {selected ? (
-                            <>
+                    <View style={{ marginBottom: 5 }}>
+                        <View style={{ flexDirection: "row" }}>
+                            <TextInput
+                                label="주소 검색"
+                                value={address}
+                                editable={false}
+                                mode="outlined"
+                                onChangeText={setAddress}
+                                style={{ flex: 1 }}
+                                dense={true}
+                            />
+                            <IconButton
+                                icon="map-search-outline"
+                                size={28}
+                                color="#3366cc"
+                                onPress={() => setModalAddress(true)}
+                                style={{ marginBottom: 0 }}
+                            />
+                        </View>
+                    </View>
+                    <View>
+                        <View style={{ flexDirection: "row", alignItems: "center" }}>
+                            <Checkbox
+                                status={selected ? "checked" : "unchecked"}
+                                onPress={() => setSelected(!selected)}
+                            />
+                            <Button
+                                mode="text"
+                                onPress={() => setSelected(!selected)}
+                                labelStyle={{
+                                    marginHorizontal: 5,
+                                    marginVertical: 5,
+                                    color: "black",
+                                }}
+                            >
+                                관리자 코드 입력
+                            </Button>
+                        </View>
+                        {selected && (
+                            <View style={{ marginBottom: 5 }}>
                                 <TextInput
-                                    style={AuthStyles.textInput}
+                                    dense={true}
+                                    label="관리자 코드"
                                     placeholder="00000000"
                                     keyboardType="phone-pad"
+                                    mode="outlined"
                                     maxLength={8}
                                     value={adminCode}
                                     onChangeText={setAdminCode}
                                 />
-                            </>
-                        ) : null}
+                            </View>
+                        )}
                     </View>
-                    <View style={AuthStyles.textView}>
-                        <Text style={AuthStyles.text}>휴대폰 번호</Text>
+                    <View style={{ marginBottom: 5 }}>
                         <View style={{ marginBottom: 5, flexDirection: "row" }}>
                             <TextInput
-                                style={[AuthStyles.textInput, { flex: 3, marginRight: 7 }]}
+                                style={{ flex: 9 }}
+                                label="휴대폰 번호"
+                                mode="outlined"
+                                dense={true}
                                 placeholder="010-0000-0000"
-                                autoCompleteType="tel"
                                 keyboardType="phone-pad"
-                                textContentType="telephoneNumber"
                                 maxLength={13}
                                 value={phoneNumber}
                                 onChangeText={setPhoneNumber}
                             />
-                            <TouchableOpacity
-                                style={AuthStyles.authButton}
+                            <Button
+                                mode="contained"
+                                style={{
+                                    flex: 1,
+                                    marginTop: 5,
+                                    marginLeft: 6,
+                                    justifyContent: "center",
+                                }}
+                                labelStyle={{ fontWeight: "bold" }}
                                 onPress={() => {
                                     Keyboard.dismiss();
                                     sendCode();
                                 }}
                                 disabled={phoneNumber.length === 0}
                             >
-                                <Text style={AuthStyles.authText}>전송</Text>
-                            </TouchableOpacity>
+                                전송
+                            </Button>
                         </View>
                         <View>
-                            {verificationId !== "" && (
-                                <Text style={{ marginBottom: 5 }}>인증 문자 확인해주세요</Text>
-                            )}
                             <TextInput
-                                style={AuthStyles.textInput}
+                                label="인증코드"
+                                dense={true}
+                                mode="outlined"
                                 placeholder="123456"
                                 keyboardType="phone-pad"
                                 maxLength={6}
@@ -554,11 +524,18 @@ export default SignUp = ({ navigation }) => {
                                     }
                                 }}
                             />
+                            {verificationId !== "" && (
+                                <HelperText type="info" visible={true}>
+                                    인증 문자가 전송되었습니다.
+                                </HelperText>
+                            )}
                         </View>
                     </View>
-                    <View style={{ height: 35 }}>
-                        <TouchableOpacity
-                            style={AuthStyles.authButton}
+                    <View>
+                        <Button
+                            mode="contained"
+                            onPress={() => submit()}
+                            loading={loading}
                             disabled={
                                 !name ||
                                 !phoneNumber ||
@@ -572,16 +549,11 @@ export default SignUp = ({ navigation }) => {
                                 !verificationId ||
                                 sexSelected === -1 ||
                                 Number(birthday.year) === today.getFullYear() ||
-                                address === "주소 검색"
+                                !address
                             }
-                            onPress={() => submit()}
                         >
-                            {loading ? (
-                                <ActivityIndicator color="black" />
-                            ) : (
-                                <Text style={AuthStyles.authText}>회원가입</Text>
-                            )}
-                        </TouchableOpacity>
+                            회원가입
+                        </Button>
                     </View>
                     <View
                         style={{
@@ -602,13 +574,9 @@ export default SignUp = ({ navigation }) => {
                 onConfirm={(select) => {
                     setBirthday({ ...birthday, day: select.day });
                 }}
-                onValueChange={(select) => {
-                    if (select.column === "year") {
-                        setBirthday({ ...birthday, year: select.value });
-                    } else if (select.column === "month") {
-                        setBirthday({ ...birthday, month: select.value });
-                    }
-                }}
+                onValueChange={(select) =>
+                    setBirthday({ ...birthday, [select.column]: select.value })
+                }
                 confirmText="확인"
                 defaultSelections={birthday}
                 options={generateOptions()}

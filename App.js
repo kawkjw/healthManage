@@ -5,6 +5,12 @@ import * as Notifications from "expo-notifications";
 import { SafeAreaView, Text, TextInput } from "react-native";
 import * as Updates from "expo-updates";
 import { TextSize } from "./css/MyStyles";
+import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
+
+const theme = {
+    ...DefaultTheme,
+    colors: { ...DefaultTheme.colors, primary: "#3366cc", accent: "#3366cc" },
+};
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -41,7 +47,9 @@ export default function App() {
                     <Text style={TextSize.largerSize}>잠시만 기다려주세요.</Text>
                 </SafeAreaView>
             ) : (
-                <Auth />
+                <PaperProvider theme={theme}>
+                    <Auth />
+                </PaperProvider>
             )}
         </>
     );

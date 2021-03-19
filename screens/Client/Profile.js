@@ -559,7 +559,7 @@ export default Profile = ({ navigation }) => {
                     style={[
                         MyStyles.button,
                         MyStyles.buttonShadow,
-                        { width: wp("90%"), aspectRatio: 1, marginBottom: 15 },
+                        { width: wp("85%"), aspectRatio: 1, marginBottom: 15 },
                     ]}
                     onPress={() => {
                         if (canGenQR) {
@@ -613,7 +613,7 @@ export default Profile = ({ navigation }) => {
                         <Text>뒤로가기</Text>
                     </TouchableOpacity>*/}
                 </TouchableOpacity>
-                <View style={[MyStyles.buttonShadow, { width: wp("90%"), height: hp("33%") }]}>
+                <View style={[MyStyles.buttonShadow, { width: wp("85%"), height: hp("33%") }]}>
                     {loading ? (
                         <View
                             style={{

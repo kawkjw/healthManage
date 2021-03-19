@@ -1,18 +1,15 @@
 import React, { useEffect, useState } from "react";
 import {
-    Text,
-    View,
-    TextInput,
     TouchableOpacity,
     SafeAreaView,
     Keyboard,
     KeyboardAvoidingView,
-    Platform,
     Alert,
 } from "react-native";
 import myBase from "../../config/MyBase";
 import { AuthStyles } from "../../css/MyStyles";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
+import { Button, HelperText, TextInput } from "react-native-paper";
 
 export default ResetPw = ({ navigation }) => {
     const [email, setEmail] = useState("");
@@ -57,52 +54,41 @@ export default ResetPw = ({ navigation }) => {
     };
 
     return (
-        <SafeAreaView style={AuthStyles.container}>
-            <KeyboardAvoidingView
-                behavior={Platform.OS === "ios" ? "padding" : "height"}
-                style={{ flex: 1, alignSelf: "stretch" }}
+        <SafeAreaView style={{ flex: 1 }}>
+            <TouchableOpacity
+                style={AuthStyles.touchScreen}
+                onPress={Keyboard.dismiss}
+                accessible={false}
+                activeOpacity={1}
             >
-                <TouchableOpacity
-                    style={AuthStyles.touchScreen}
-                    onPress={Keyboard.dismiss}
-                    accessible={false}
-                    activeOpacity={1}
+                <KeyboardAvoidingView
+                    style={{
+                        paddingHorizontal: 20,
+                        height: hp("90%"),
+                        alignSelf: "stretch",
+                        justifyContent: "center",
+                    }}
+                    behavior="position"
+                    keyboardVerticalOffset={-100}
                 >
-                    <KeyboardAvoidingView
-                        style={{
-                            paddingHorizontal: 20,
-                            height: hp("90%"),
-                            alignSelf: "stretch",
-                            justifyContent: "center",
-                        }}
-                        behavior="position"
-                        keyboardVerticalOffset={-100}
-                    >
-                        <Text style={AuthStyles.text}>이메일</Text>
-                        <TextInput
-                            style={[
-                                AuthStyles.textInput,
-                                email
-                                    ? checkEmail
-                                        ? { backgroundColor: "green" }
-                                        : { backgroundColor: "red" }
-                                    : undefined,
-                            ]}
-                            placeholder="examples@example.com"
-                            autoCompleteType="email"
-                            keyboardType="email-address"
-                            textContentType="emailAddress"
-                            value={email}
-                            onChangeText={setEmail}
-                        />
-                        <View style={{ height: 35, marginTop: 10 }}>
-                            <TouchableOpacity style={AuthStyles.authButton} onPress={sendResetMail}>
-                                <Text style={AuthStyles.authText}>비밀번호 초기화</Text>
-                            </TouchableOpacity>
-                        </View>
-                    </KeyboardAvoidingView>
-                </TouchableOpacity>
-            </KeyboardAvoidingView>
+                    <TextInput
+                        label="이메일"
+                        placeholder="examples@example.com"
+                        keyboardType="email-address"
+                        value={email}
+                        onChangeText={setEmail}
+                        mode="outlined"
+                        error={!checkEmail && email}
+                        dense={true}
+                    />
+                    <HelperText type="error" visible={email && !checkEmail}>
+                        이메일 형식이 맞지 않습니다.
+                    </HelperText>
+                    <Button mode="contained" onPress={sendResetMail}>
+                        비밀번호 초기화
+                    </Button>
+                </KeyboardAvoidingView>
+            </TouchableOpacity>
         </SafeAreaView>
     );
 };
