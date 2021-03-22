@@ -456,8 +456,8 @@ const MyStack = () => {
                 <Stack.Screen
                     name="PtInfo"
                     component={PtInfo}
-                    options={({ navigation }) => ({
-                        headerTitle: "PT",
+                    options={({ navigation, route }) => ({
+                        headerTitle: route.params.ptName === "pt" ? "PT" : "스쿼시 PT",
                         headerLeft: () => renderGoBackButton(navigation),
                     })}
                 />
