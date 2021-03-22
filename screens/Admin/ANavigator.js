@@ -24,11 +24,11 @@ import * as Permissions from "expo-permissions";
 import Modal from "react-native-modal";
 import * as Notifications from "expo-notifications";
 import myBase, { db } from "../../config/MyBase";
-import moment from "moment";
 import InputPassword from "./InputPassword";
 import Sales from "./Sales";
 import { TextSize } from "../../css/MyStyles";
 import { displayedAt } from "../../config/hooks";
+import { Badge, Button, Card } from "react-native-paper";
 
 const Stack = createStackNavigator();
 export const WrongNumContext = createContext();
@@ -171,7 +171,7 @@ const MyStack = () => {
             }}
             onPress={() => navigation.goBack()}
         >
-            <MaterialIcons name="arrow-back-ios" size={RFPercentage(2.5)} color="black" />
+            <MaterialIcons name="arrow-back-ios" size={RFPercentage(2.5)} color="white" />
         </TouchableOpacity>
     );
 
@@ -182,8 +182,6 @@ const MyStack = () => {
                     marginLeft: 10,
                     alignItems: "center",
                     justifyContent: "center",
-                    width: "100%",
-                    height: "60%",
                 }}
             >
                 <TouchableOpacity
@@ -196,26 +194,17 @@ const MyStack = () => {
                         }
                     }}
                 >
-                    <View
-                        style={[
-                            {
-                                position: "absolute",
-                                width: 10,
-                                height: 10,
-                                top: 0,
-                                right: 0,
-                            },
-                            notificationAvail
-                                ? unread
-                                    ? { backgroundColor: "red", borderRadius: 10 }
-                                    : { display: "none" }
-                                : undefined,
-                        ]}
-                    />
+                    {notificationAvail && (
+                        <Badge
+                            size={10}
+                            visible={unread}
+                            style={{ position: "absolute", right: 3 }}
+                        />
+                    )}
                     <MaterialIcons
                         name={notificationAvail ? "notifications" : "notifications-off"}
-                        size={30}
-                        color="black"
+                        size={RFPercentage(3.5)}
+                        color="white"
                     />
                 </TouchableOpacity>
                 <Modal
@@ -234,31 +223,17 @@ const MyStack = () => {
                             paddingBottom: 60,
                         }}
                     >
-                        <View style={{ flexDirection: "row" }}>
-                            <TouchableOpacity
-                                style={{
-                                    padding: 5,
-                                    width: wp("13%"),
-                                    alignItems: "center",
-                                }}
+                        <View style={{ flexDirection: "row", backgroundColor: "#3366cc" }}>
+                            <Button
                                 onPress={() => setModalNotification(false)}
+                                mode="text"
+                                compact={true}
+                                labelStyle={{ padding: 4, color: "white", fontWeight: "bold" }}
                             >
-                                <Text
-                                    style={[
-                                        TextSize.normalSize,
-                                        {
-                                            margin: 7,
-                                        },
-                                    ]}
-                                >
-                                    닫기
-                                </Text>
-                            </TouchableOpacity>
-                            <TouchableOpacity
+                                닫기
+                            </Button>
+                            <Button
                                 style={{
-                                    margin: 5,
-                                    width: wp("20%"),
-                                    alignItems: "center",
                                     position: "absolute",
                                     right: 0,
                                 }}
@@ -266,20 +241,12 @@ const MyStack = () => {
                                     checkAllNotification();
                                     setModalNotification(false);
                                 }}
+                                compact={true}
+                                labelStyle={{ padding: 4, color: "white", fontWeight: "bold" }}
                             >
-                                <Text
-                                    style={[
-                                        TextSize.normalSize,
-                                        {
-                                            padding: 7,
-                                        },
-                                    ]}
-                                >
-                                    모두 읽음
-                                </Text>
-                            </TouchableOpacity>
+                                모두 읽음
+                            </Button>
                         </View>
-                        <View style={{ borderWidth: 1 }} />
                         <View>
                             <View style={{ paddingLeft: 10, marginVertical: 3 }}>
                                 <Text style={{ color: "#595959" }}>
@@ -293,110 +260,71 @@ const MyStack = () => {
                             ) : (
                                 <ScrollView>
                                     {messages.map((message, index) => (
-                                        <View
+                                        <Card
                                             key={index}
-                                            style={{
-                                                padding: 10,
-                                                borderWidth: 1,
-                                                marginHorizontal: 10,
-                                                marginBottom: 10,
+                                            style={[
+                                                message.isRead && { borderColor: "grey" },
+                                                {
+                                                    borderWidth: 1,
+                                                    marginHorizontal: 10,
+                                                    marginBottom: 10,
+                                                    elevation: 5,
+                                                },
+                                            ]}
+                                            onPress={() => {
+                                                setModalNotification(false);
+                                                if (!message.isRead) {
+                                                    checkNotification(message.id);
+                                                }
+                                                if (message.data.navigation) {
+                                                    navigation.navigate(message.data.navigation, {
+                                                        ...message.data.datas,
+                                                    });
+                                                }
                                             }}
                                         >
-                                            <TouchableOpacity
-                                                onPress={() => {
-                                                    setModalNotification(false);
-                                                    if (!message.isRead) {
-                                                        checkNotification(message.id);
-                                                    }
-                                                    if (message.data.navigation) {
-                                                        navigation.navigate(
-                                                            message.data.navigation,
-                                                            {
-                                                                ...message.data.datas,
-                                                            }
-                                                        );
-                                                    }
-                                                }}
-                                            >
-                                                <View
-                                                    style={{
-                                                        flexDirection: "row",
-                                                    }}
-                                                >
-                                                    <View
-                                                        style={{
-                                                            flex: 1,
-                                                        }}
-                                                    >
+                                            <Card.Content>
+                                                <View style={{ flexDirection: "row" }}>
+                                                    <View style={{ flex: 1 }}>
                                                         <Text
-                                                            style={[
-                                                                message.isRead
-                                                                    ? {
-                                                                          color: "grey",
-                                                                      }
-                                                                    : {
-                                                                          color: "black",
-                                                                      },
-                                                            ]}
+                                                            style={
+                                                                message.isRead && { color: "grey" }
+                                                            }
                                                         >
                                                             {message.sendFrom + " 로부터"}
                                                         </Text>
                                                     </View>
                                                     <View
-                                                        style={{
-                                                            alignItems: "flex-end",
-                                                            flex: 1,
-                                                        }}
+                                                        style={{ flex: 1, alignItems: "flex-end" }}
                                                     >
                                                         <Text
-                                                            style={[
-                                                                message.isRead
-                                                                    ? {
-                                                                          color: "grey",
-                                                                      }
-                                                                    : {
-                                                                          color: "black",
-                                                                      },
-                                                            ]}
+                                                            style={
+                                                                message.isRead && { color: "grey" }
+                                                            }
                                                         >
                                                             {displayedAt(message.sendDate.toDate())}
                                                         </Text>
                                                     </View>
                                                 </View>
-                                                <Text
-                                                    style={[
-                                                        message.isRead
-                                                            ? {
-                                                                  color: "grey",
-                                                              }
-                                                            : {
-                                                                  color: "black",
-                                                              },
-                                                        {
-                                                            fontWeight: "bold",
-                                                        },
-                                                    ]}
-                                                >
-                                                    {message.title}
-                                                </Text>
-                                                <Text
-                                                    style={[
-                                                        message.isRead
-                                                            ? {
-                                                                  color: "grey",
-                                                              }
-                                                            : {
-                                                                  color: "black",
-                                                              },
-                                                        {
-                                                            marginLeft: 7,
-                                                        },
-                                                    ]}
-                                                >
-                                                    {message.body}
-                                                </Text>
-                                            </TouchableOpacity>
-                                        </View>
+                                                <View style={{ paddingLeft: 5 }}>
+                                                    <Text
+                                                        style={[
+                                                            message.isRead && { color: "grey" },
+                                                            { fontWeight: "bold" },
+                                                        ]}
+                                                    >
+                                                        {message.title}
+                                                    </Text>
+                                                </View>
+                                                <View style={{ paddingLeft: 10 }}>
+                                                    <Text
+                                                        style={message.isRead && { color: "grey" }}
+                                                    >
+                                                        {message.body}
+                                                    </Text>
+                                                </View>
+                                            </Card.Content>
+                                        </Card>
                                     ))}
                                 </ScrollView>
                             )}
@@ -410,7 +338,10 @@ const MyStack = () => {
         <WrongNumContext.Provider value={{ num: num, setNum: setNum }}>
             <Stack.Navigator
                 initialRouteName="HomeScreen"
-                //screenOptions={{ headerStyle: { backgroundColor: "black" }, headerTintColor: "white" }}
+                screenOptions={{
+                    headerStyle: { backgroundColor: "#3366cc" },
+                    headerTitleStyle: { color: "white" },
+                }}
             >
                 <Stack.Screen
                     name="HomeScreen"
@@ -432,7 +363,9 @@ const MyStack = () => {
                                     signOut();
                                 }}
                             >
-                                <Text style={TextSize.normalSize}>로그아웃</Text>
+                                <Text style={[TextSize.normalSize, { color: "white" }]}>
+                                    로그아웃
+                                </Text>
                             </TouchableOpacity>
                         ),
                     })}

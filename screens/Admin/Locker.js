@@ -1,10 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import { StyleSheet, View, FlatList, Text, TouchableOpacity, Alert, Platform } from "react-native";
 import myBase, { db } from "../../config/MyBase";
-import Dialog from "react-native-dialog";
-import { widthPercentageToDP as wp } from "react-native-responsive-screen";
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 import { AuthContext } from "../Auth";
 import { TextSize } from "../../css/MyStyles";
+import { Surface, Dialog, TextInput, Button, Portal } from "react-native-paper";
 
 export default Locker = () => {
     const [data, setData] = useState();
@@ -193,23 +196,39 @@ export default Locker = () => {
 
     return (
         <View style={styles.container}>
-            <Dialog.Container visible={visible}>
-                <Dialog.Title>휴대폰 번호 입력</Dialog.Title>
-                <Dialog.Input
-                    value={phoneNumber}
-                    onChangeText={setPhoneNumber}
-                    keyboardType="phone-pad"
-                    maxLength={13}
-                    style={Platform.OS === "android" ? { borderWidth: 1 } : undefined}
-                />
-                <Dialog.Button label="취소" onPress={handleCancel} />
-                <Dialog.Button label="확인" onPress={addLocker} />
-            </Dialog.Container>
+            <Portal>
+                <Dialog visible={visible} dismissable={false}>
+                    <Dialog.Title>휴대폰 번호 입력</Dialog.Title>
+                    <Dialog.Content>
+                        <TextInput
+                            label="휴대폰 번호"
+                            mode="outlined"
+                            dense={true}
+                            value={phoneNumber}
+                            onChangeText={setPhoneNumber}
+                            keyboardType="phone-pad"
+                            maxLength={13}
+                        />
+                    </Dialog.Content>
+                    <Dialog.Actions>
+                        <Button onPress={handleCancel}>취소</Button>
+                        <Button onPress={addLocker}>확인</Button>
+                    </Dialog.Actions>
+                </Dialog>
+            </Portal>
             <FlatList
                 data={data}
                 windowSize={1}
                 renderItem={({ item }) => (
-                    <View style={{ flex: 1, flexDirection: "column", margin: 5 }}>
+                    <Surface
+                        style={{
+                            flex: 1,
+                            flexDirection: "column",
+                            margin: 5,
+                            elevation: 4,
+                            borderRadius: 10,
+                        }}
+                    >
                         <TouchableOpacity
                             style={styles.locker}
                             onPress={() => {
@@ -273,11 +292,12 @@ export default Locker = () => {
                                 {item.id}
                             </Text>
                         </TouchableOpacity>
-                    </View>
+                    </Surface>
                 )}
                 numColumns={7}
                 keyExtractor={(item, index) => index}
             />
+            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
         </View>
     );
 };
@@ -293,7 +313,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         height: wp("14%"),
         backgroundColor: "white",
-        borderWidth: 1,
         borderRadius: 10,
     },
 });

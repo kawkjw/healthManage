@@ -1,9 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, Image, SafeAreaView, StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, Text, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { db } from "../../../config/MyBase";
-import { widthPercentageToDP as wp } from "react-native-responsive-screen";
+import {
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+} from "react-native-responsive-screen";
 import { TextSize } from "../../../css/MyStyles";
+import { ActivityIndicator, Surface } from "react-native-paper";
 
 export default SelectUser = ({ navigation, route }) => {
     const [findUsers, setFindUsers] = useState([]);
@@ -53,7 +57,7 @@ export default SelectUser = ({ navigation, route }) => {
     }, []);
 
     return (
-        <SafeAreaView
+        <View
             style={[
                 styles.container,
                 findUsers.length === 0 ? { alignItems: "center" } : undefined,
@@ -67,16 +71,20 @@ export default SelectUser = ({ navigation, route }) => {
                         justifyContent: "center",
                     }}
                 >
-                    <Image
-                        style={{ width: 50, height: 50 }}
-                        source={require("../../../assets/loading.gif")}
-                    />
+                    <ActivityIndicator animating={true} size="large" color="black" />
                 </View>
             ) : findUsers.length !== 0 ? (
                 <FlatList
                     data={findUsers}
                     renderItem={({ item }) => (
-                        <View style={{ flexDirection: "column", margin: 5 }}>
+                        <Surface
+                            style={{
+                                flexDirection: "column",
+                                margin: 5,
+                                elevation: 4,
+                                borderRadius: 10,
+                            }}
+                        >
                             <TouchableOpacity
                                 style={styles.item}
                                 onPress={() =>
@@ -88,7 +96,7 @@ export default SelectUser = ({ navigation, route }) => {
                                 <Text>{item.name}</Text>
                                 <Text>{item.phoneNumber}</Text>
                             </TouchableOpacity>
-                        </View>
+                        </Surface>
                     )}
                     numColumns={3}
                     keyExtractor={(item, index) => index}
@@ -96,7 +104,9 @@ export default SelectUser = ({ navigation, route }) => {
             ) : (
                 <Text style={TextSize.largeSize}>검색 결과가 없습니다.</Text>
             )}
-        </SafeAreaView>
+
+            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+        </View>
     );
 };
 
@@ -112,7 +122,6 @@ const styles = StyleSheet.create({
         width: wp("30%"),
         height: wp("30%"),
         backgroundColor: "white",
-        borderWidth: 1,
         borderRadius: 10,
     },
 });

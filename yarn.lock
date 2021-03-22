@@ -7054,13 +7054,6 @@ react-native-daum-postcode@^1.0.9:
   resolved "https://registry.yarnpkg.com/react-native-daum-postcode/-/react-native-daum-postcode-1.0.9.tgz#957053c142434cbf8b2f3b0f1842153fc8e8ed2c"
   integrity sha512-xrlYmbyn6geCRz4M2O7AQTUpRvrVnbIvpXzL0tPj9+k2c18YnRmTWWUT6L2FVMuFDM5kHt/egLLQm7+04sOsGw==
 
-react-native-dialog@^6.1.2:
-  version "6.1.2"
-  resolved "https://registry.yarnpkg.com/react-native-dialog/-/react-native-dialog-6.1.2.tgz#ddf261b85426fa77c91095b516e5dedd8f0c5c4b"
-  integrity sha512-9d/GDoCYAaEbiJZY832pw4z+c0SrFzbMT+aIBnSRqc122cIo+Sub2yE8ermj12vS+A0/898RSQIn0x7CnGnzMw==
-  dependencies:
-    prop-types "^15.7.2"
-
 react-native-dotenv@^2.4.3:
   version "2.4.3"
   resolved "https://registry.yarnpkg.com/react-native-dotenv/-/react-native-dotenv-2.4.3.tgz#1d04043ecbba185dc1ddc01fd22b5aec162b891c"

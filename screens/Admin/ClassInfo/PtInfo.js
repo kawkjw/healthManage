@@ -22,6 +22,7 @@ import { getHoliday } from "../../../config/hooks";
 import { TextSize } from "../../../css/MyStyles";
 import Modal from "react-native-modal";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import { ActivityIndicator, Button, Surface } from "react-native-paper";
 
 export default ClassInfo = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -257,7 +258,7 @@ export default ClassInfo = ({ navigation, route }) => {
     };
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
             <View style={{ flexDirection: "row", height: hp("5%") }}>
                 <View
                     style={{
@@ -307,21 +308,20 @@ export default ClassInfo = ({ navigation, route }) => {
                         justifyContent: "center",
                     }}
                 >
-                    <Image
-                        style={{ width: 50, height: 50 }}
-                        source={require("../../../assets/loading.gif")}
-                    />
+                    <ActivityIndicator animating={true} size="large" color="black" />
                 </View>
             ) : (
                 <FlatList
                     data={data}
                     windowSize={1}
                     renderItem={({ item }) => (
-                        <View
+                        <Surface
                             style={{
                                 flex: 1,
                                 flexDirection: "column",
                                 margin: 5,
+                                elevation: 4,
+                                borderRadius: 10,
                             }}
                         >
                             <TouchableOpacity
@@ -367,12 +367,14 @@ export default ClassInfo = ({ navigation, route }) => {
                                     </Text>
                                 </View>
                             </TouchableOpacity>
-                        </View>
+                        </Surface>
                     )}
                     numColumns={7}
                     keyExtractor={(item, index) => index}
                 />
             )}
+
+            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
             <SegmentedPicker
                 ref={picker}
                 onConfirm={(select) => {
@@ -406,18 +408,20 @@ export default ClassInfo = ({ navigation, route }) => {
                         backgroundColor: "white",
                     }}
                 >
-                    <View style={{ flexDirection: "row", height: hp("5%") }}>
-                        <TouchableOpacity
-                            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+                    <View style={{ flexDirection: "row", backgroundColor: "#3366cc" }}>
+                        <Button
                             onPress={() => {
                                 setModalClassInfo(false);
                                 setSelectedDate(0);
                             }}
+                            labelStyle={[TextSize.largeSize, { color: "white" }]}
                         >
-                            <Text style={TextSize.largeSize}>닫기</Text>
-                        </TouchableOpacity>
+                            닫기
+                        </Button>
                         <View style={{ flex: 6, alignItems: "center", justifyContent: "center" }}>
-                            <Text style={TextSize.largeSize}>{selectedDate + "일"}</Text>
+                            <Text style={[TextSize.largeSize, { color: "white" }]}>
+                                {selectedDate + "일"}
+                            </Text>
                         </View>
                         <View style={{ flex: 1 }} />
                     </View>
@@ -439,7 +443,7 @@ export default ClassInfo = ({ navigation, route }) => {
                     )}
                 </View>
             </Modal>
-        </SafeAreaView>
+        </View>
     );
 };
 
@@ -450,7 +454,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         height: wp("14%"),
         backgroundColor: "grey",
-        borderWidth: 1,
         borderRadius: 10,
     },
 });

@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Alert, Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { db } from "../../../config/MyBase";
 import moment from "moment";
 import { MyStyles, TextSize } from "../../../css/MyStyles";
@@ -11,6 +11,7 @@ import { RFPercentage } from "react-native-responsive-fontsize";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import { pushNotificationsToPerson } from "../../../config/MyExpo";
 import { DataContext } from "../../Auth";
+import { ActivityIndicator, Surface } from "react-native-paper";
 
 export default ShowUser = ({ route }) => {
     const { classNames } = useContext(DataContext);
@@ -293,7 +294,7 @@ export default ShowUser = ({ route }) => {
     };
 
     return (
-        <SafeAreaView style={{ flex: 1, alignItems: "center" }}>
+        <View style={{ flex: 1, alignItems: "center" }}>
             {isLoading ? (
                 <View
                     style={{
@@ -302,17 +303,18 @@ export default ShowUser = ({ route }) => {
                         justifyContent: "center",
                     }}
                 >
-                    <Image
-                        style={{ width: 50, height: 50 }}
-                        source={require("../../../assets/loading.gif")}
-                    />
+                    <ActivityIndicator animating={true} size="large" color="black" />
                 </View>
             ) : (
-                <View
-                    style={[
-                        MyStyles.buttonShadow,
-                        { padding: 15, width: wp("95%"), marginTop: 10 },
-                    ]}
+                <Surface
+                    style={{
+                        padding: 15,
+                        width: wp("95%"),
+                        flex: 1,
+                        marginVertical: 10,
+                        elevation: 6,
+                        borderRadius: 15,
+                    }}
                 >
                     <ScrollView>
                         <View style={{ marginBottom: 10 }}>
@@ -520,8 +522,9 @@ export default ShowUser = ({ route }) => {
                             </View>
                         )}
                     </ScrollView>
-                </View>
+                </Surface>
             )}
-        </SafeAreaView>
+            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+        </View>
     );
 };

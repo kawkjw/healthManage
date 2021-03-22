@@ -1,20 +1,12 @@
 import React, { useContext, useEffect, useState } from "react";
-import {
-    Alert,
-    Keyboard,
-    SafeAreaView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-    KeyboardAvoidingView,
-} from "react-native";
+import { Alert, Keyboard, TouchableOpacity, View, KeyboardAvoidingView } from "react-native";
 import * as Crypto from "expo-crypto";
 import { ADMIN_PW } from "@env";
 import { AuthStyles, MyStyles, TextSize } from "../../css/MyStyles";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { AuthContext } from "../Auth";
 import { WrongNumContext } from "./ANavigator";
+import { Button, TextInput } from "react-native-paper";
 
 export default InputPassword = ({ navigation, route }) => {
     const [password, setPassword] = useState("");
@@ -48,7 +40,7 @@ export default InputPassword = ({ navigation, route }) => {
     }, [num]);
 
     return (
-        <SafeAreaView style={AuthStyles.container}>
+        <View style={AuthStyles.container}>
             <TouchableOpacity
                 style={{ alignSelf: "stretch" }}
                 onPress={Keyboard.dismiss}
@@ -58,7 +50,7 @@ export default InputPassword = ({ navigation, route }) => {
                 <KeyboardAvoidingView
                     style={{
                         paddingHorizontal: 40,
-                        height: hp("90%"),
+                        height: hp("84%"),
                         alignSelf: "stretch",
                         justifyContent: "center",
                     }}
@@ -66,30 +58,25 @@ export default InputPassword = ({ navigation, route }) => {
                     keyboardVerticalOffset={-100}
                 >
                     <TextInput
+                        label="비밀번호"
+                        mode="flat"
                         value={password}
                         onChangeText={setPassword}
                         placeholder="비밀번호"
                         secureTextEntry={true}
-                        style={AuthStyles.textInput}
+                        style={{ marginBottom: 10 }}
                     />
-                    <TouchableOpacity
-                        style={[
-                            MyStyles.buttonShadow,
-                            {
-                                marginTop: 10,
-                                height: hp("5%"),
-                                borderRadius: 10,
-                                alignItems: "center",
-                                justifyContent: "center",
-                            },
-                        ]}
+                    <Button
+                        mode="contained"
                         disabled={!password}
                         onPress={checkPassword}
+                        labelStyle={TextSize.largeSize}
                     >
-                        <Text style={TextSize.largeSize}>확인</Text>
-                    </TouchableOpacity>
+                        확인
+                    </Button>
                 </KeyboardAvoidingView>
             </TouchableOpacity>
-        </SafeAreaView>
+            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+        </View>
     );
 };

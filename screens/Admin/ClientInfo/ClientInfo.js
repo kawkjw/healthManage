@@ -6,6 +6,7 @@ import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
 } from "react-native-responsive-screen";
+import { ActivityIndicator, Surface } from "react-native-paper";
 
 export default ClientInfo = ({ navigation, route }) => {
     const [clientsInfo, setClientsInfo] = useState([]);
@@ -72,40 +73,56 @@ export default ClientInfo = ({ navigation, route }) => {
         <SafeAreaView style={MyStyles.container}>
             <View style={{ flexDirection: "row" }}>
                 {koList.slice(0, 7).map((letter, index) => (
-                    <TouchableOpacity
+                    <Surface
                         key={index}
                         style={{
                             flex: 1,
-                            alignItems: "center",
-                            justifyContent: "center",
-                            borderWidth: 1,
-                            backgroundColor: "white",
-                            height: hp("3%"),
+                            elevation: 6,
                             margin: 3,
+                            height: hp("3%"),
+                            borderRadius: 5,
                         }}
-                        onPress={() => setLetterIndex(index)}
                     >
-                        <Text style={TextSize.normalSize}>{letter}</Text>
-                    </TouchableOpacity>
+                        <TouchableOpacity
+                            style={{
+                                flex: 1,
+                                alignItems: "center",
+                                justifyContent: "center",
+                                backgroundColor: "white",
+                                margin: 3,
+                            }}
+                            onPress={() => setLetterIndex(index)}
+                        >
+                            <Text style={TextSize.normalSize}>{letter}</Text>
+                        </TouchableOpacity>
+                    </Surface>
                 ))}
             </View>
             <View style={{ flexDirection: "row" }}>
                 {koList.slice(7, koList.length).map((letter, index) => (
-                    <TouchableOpacity
+                    <Surface
                         key={index}
                         style={{
                             flex: 1,
-                            alignItems: "center",
-                            justifyContent: "center",
-                            borderWidth: 1,
-                            backgroundColor: "white",
-                            height: hp("3%"),
+                            elevation: 6,
                             margin: 3,
+                            height: hp("3%"),
+                            borderRadius: 5,
                         }}
-                        onPress={() => setLetterIndex(index + 7)}
                     >
-                        <Text style={TextSize.normalSize}>{letter}</Text>
-                    </TouchableOpacity>
+                        <TouchableOpacity
+                            style={{
+                                flex: 1,
+                                alignItems: "center",
+                                justifyContent: "center",
+                                backgroundColor: "white",
+                                margin: 3,
+                            }}
+                            onPress={() => setLetterIndex(index + 7)}
+                        >
+                            <Text style={TextSize.normalSize}>{letter}</Text>
+                        </TouchableOpacity>
+                    </Surface>
                 ))}
             </View>
             {loading ? (
@@ -116,48 +133,46 @@ export default ClientInfo = ({ navigation, route }) => {
                         justifyContent: "center",
                     }}
                 >
-                    <Image
-                        style={{ width: 50, height: 50 }}
-                        source={require("../../../assets/loading.gif")}
-                    />
+                    <ActivityIndicator animating={true} size="large" color="black" />
                 </View>
             ) : (
                 <ScrollView
                     style={{ alignSelf: "stretch" }}
                     contentContainerStyle={{ alignItems: "center" }}
                 >
+                    <View style={{ height: hp("1%") }} />
                     {clientsInfo.length === 0 ? (
                         <Text>No Client</Text>
                     ) : (
                         clientsInfo.map((client, index) => (
-                            <TouchableOpacity
+                            <Surface
                                 key={index}
-                                onPress={() => {
-                                    navigation.navigate("ShowUser", { user: client.info });
+                                style={{
+                                    elevation: 6,
+                                    width: wp("95%"),
+                                    borderRadius: 15,
+                                    marginBottom: 10,
                                 }}
                             >
-                                <View
-                                    style={[
-                                        MyStyles.buttonShadow,
-                                        {
-                                            padding: 10,
-                                            width: wp("95%"),
-                                            marginBottom: 15,
-                                        },
-                                        index === 0 ? { marginTop: 10 } : undefined,
-                                    ]}
+                                <TouchableOpacity
+                                    style={{ padding: 10 }}
+                                    onPress={() => {
+                                        navigation.navigate("ShowUser", { user: client.info });
+                                    }}
                                 >
-                                    <Text style={TextSize.normalSize}>
-                                        이름 : {client.info.name}
-                                    </Text>
-                                    <Text style={TextSize.normalSize}>
-                                        이메일 : {client.info.email}
-                                    </Text>
-                                    <Text style={TextSize.normalSize}>
-                                        휴대폰번호 : {client.info.phoneNumber}
-                                    </Text>
-                                </View>
-                            </TouchableOpacity>
+                                    <View>
+                                        <Text style={TextSize.normalSize}>
+                                            이름 : {client.info.name}
+                                        </Text>
+                                        <Text style={TextSize.normalSize}>
+                                            이메일 : {client.info.email}
+                                        </Text>
+                                        <Text style={TextSize.normalSize}>
+                                            휴대폰번호 : {client.info.phoneNumber}
+                                        </Text>
+                                    </View>
+                                </TouchableOpacity>
+                            </Surface>
                         ))
                     )}
                 </ScrollView>

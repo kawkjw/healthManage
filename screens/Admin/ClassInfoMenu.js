@@ -1,8 +1,10 @@
 import React, { useContext, useEffect } from "react";
-import { SafeAreaView, ScrollView, Text, TouchableOpacity } from "react-native";
+import { SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Surface } from "react-native-paper";
 import myBase, { db } from "../../config/MyBase";
 import { MyStyles, TextSize } from "../../css/MyStyles";
 import { AuthContext } from "../Auth";
+import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 export default ClientInfoMenu = ({ navigation, route }) => {
     const { signOut } = useContext(AuthContext);
@@ -33,25 +35,32 @@ export default ClientInfoMenu = ({ navigation, route }) => {
                 contentContainerStyle={{ alignItems: "center" }}
                 showsVerticalScrollIndicator={false}
             >
-                <TouchableOpacity
-                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
-                    onPress={() => navigation.navigate("PtInfo", { ptName: "pt" })}
-                >
-                    <Text style={TextSize.largeSize}>PT</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
-                    onPress={() => navigation.navigate("PtInfo", { ptName: "squash" })}
-                >
-                    <Text style={TextSize.largeSize}>스쿼시 PT</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
-                    onPress={() => navigation.navigate("GxInfo")}
-                >
-                    <Text style={TextSize.largeSize}>GX</Text>
-                </TouchableOpacity>
+                <Surface style={MyStyles.surface}>
+                    <TouchableOpacity
+                        style={MyStyles.menu}
+                        onPress={() => navigation.navigate("PtInfo", { ptName: "pt" })}
+                    >
+                        <Text style={TextSize.largeSize}>PT</Text>
+                    </TouchableOpacity>
+                </Surface>
+                <Surface style={MyStyles.surface}>
+                    <TouchableOpacity
+                        style={MyStyles.menu}
+                        onPress={() => navigation.navigate("PtInfo", { ptName: "squash" })}
+                    >
+                        <Text style={TextSize.largeSize}>스쿼시 PT</Text>
+                    </TouchableOpacity>
+                </Surface>
+                <Surface style={MyStyles.surface}>
+                    <TouchableOpacity
+                        style={MyStyles.menu}
+                        onPress={() => navigation.navigate("GxInfo")}
+                    >
+                        <Text style={TextSize.largeSize}>GX</Text>
+                    </TouchableOpacity>
+                </Surface>
             </ScrollView>
+            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
         </SafeAreaView>
     );
 };

@@ -10,6 +10,7 @@ import {
 import { MyStyles, TextSize } from "../../css/MyStyles";
 import * as Notifications from "expo-notifications";
 import myBase, { db } from "../../config/MyBase";
+import { Surface } from "react-native-paper";
 
 export default Home = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
@@ -81,30 +82,38 @@ export default Home = ({ navigation, route }) => {
                 contentContainerStyle={{ alignItems: "center" }}
                 showsVerticalScrollIndicator={false}
             >
-                <TouchableOpacity
-                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
-                    onPress={() => navigation.navigate("ClassInfoMenu")}
-                >
-                    <Text style={TextSize.largeSize}>수업 정보</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
-                    onPress={() => navigation.navigate("Locker")}
-                >
-                    <Text style={TextSize.largeSize}>락커</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
-                    onPress={() => navigation.navigate("ClientInfoMenu")}
-                >
-                    <Text style={TextSize.largeSize}>고객 정보</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
-                    onPress={() => navigation.navigate("InputPassword")}
-                >
-                    <Text style={TextSize.largeSize}>결산</Text>
-                </TouchableOpacity>
+                <Surface style={MyStyles.surface}>
+                    <TouchableOpacity
+                        style={MyStyles.menu}
+                        onPress={() => navigation.navigate("ClassInfoMenu")}
+                    >
+                        <Text style={TextSize.largeSize}>수업 정보</Text>
+                    </TouchableOpacity>
+                </Surface>
+                <Surface style={MyStyles.surface}>
+                    <TouchableOpacity
+                        style={MyStyles.menu}
+                        onPress={() => navigation.navigate("Locker")}
+                    >
+                        <Text style={TextSize.largeSize}>락커</Text>
+                    </TouchableOpacity>
+                </Surface>
+                <Surface style={MyStyles.surface}>
+                    <TouchableOpacity
+                        style={MyStyles.menu}
+                        onPress={() => navigation.navigate("ClientInfoMenu")}
+                    >
+                        <Text style={TextSize.largeSize}>고객 정보</Text>
+                    </TouchableOpacity>
+                </Surface>
+                <Surface style={MyStyles.surface}>
+                    <TouchableOpacity
+                        style={MyStyles.menu}
+                        onPress={() => navigation.navigate("InputPassword")}
+                    >
+                        <Text style={TextSize.largeSize}>결산</Text>
+                    </TouchableOpacity>
+                </Surface>
             </ScrollView>
         </SafeAreaView>
     );

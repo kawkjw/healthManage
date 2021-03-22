@@ -23,6 +23,7 @@ import { Text as SvgText } from "react-native-svg";
 import { db } from "../../config/MyBase";
 import { TextSize } from "../../css/MyStyles";
 import { DataContext } from "../Auth";
+import { ActivityIndicator, Surface } from "react-native-paper";
 
 export default Sales = ({ navigation, route }) => {
     const today = new Date();
@@ -549,673 +550,693 @@ export default Sales = ({ navigation, route }) => {
     };
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
-            <View style={{ flexDirection: "row" }}>
-                <TouchableOpacity style={styles.menuButton} onPress={() => setMenu(0)}>
-                    <View style={menu === 0 ? { borderBottomWidth: 1 } : undefined}>
-                        <Text style={styles.menuText}>일간</Text>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.menuButton} onPress={() => setMenu(1)}>
-                    <View style={menu === 1 ? { borderBottomWidth: 1 } : undefined}>
-                        <Text style={styles.menuText}>월간</Text>
-                    </View>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.menuButton} onPress={() => setMenu(2)}>
-                    <View style={menu === 2 ? { borderBottomWidth: 1 } : undefined}>
-                        <Text style={styles.menuText}>통계</Text>
-                    </View>
-                </TouchableOpacity>
-            </View>
-            <SegmentedPicker
-                ref={picker}
-                onConfirm={(select) => {
-                    setSelections(select);
-                    setSelectedYear(Number(select.year));
-                    setSelectedMonth(Number(select.month));
-                    setDateChange(!dateChange);
-                }}
-                confirmText="확인"
-                defaultSelections={selections}
-                options={[
-                    {
-                        key: "year",
-                        items: yearList,
-                    },
-                    {
-                        key: "month",
-                        items: monthList,
-                    },
-                ]}
-            />
-
-            {menu === 0 && (
-                <>
-                    <View>
-                        <Animated.View style={{ height: dayAnimation }}>
-                            <View style={{ flexDirection: "row" }}>
-                                <View
-                                    style={{
-                                        flex: 1,
-                                        alignItems: "flex-start",
-                                        justifyContent: "center",
-                                        paddingLeft: 10,
-                                    }}
-                                >
-                                    <TouchableOpacity activeOpacity={0.5} onPress={goPreMonth}>
-                                        <MaterialIcons
-                                            name="chevron-left"
-                                            size={30}
-                                            color="black"
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                                <View
-                                    style={{
-                                        flex: 1,
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                    }}
-                                >
-                                    <TouchableOpacity onPress={() => picker.current.show()}>
-                                        <Text style={TextSize.largerSize}>
-                                            {selectedYear +
-                                                "-" +
-                                                (selectedMonth < 10
-                                                    ? "0" + selectedMonth
-                                                    : selectedMonth)}
-                                        </Text>
-                                    </TouchableOpacity>
-                                </View>
-                                <View
-                                    style={{
-                                        flex: 1,
-                                        alignItems: "flex-end",
-                                        justifyContent: "center",
-                                        paddingRight: 10,
-                                    }}
-                                >
-                                    <TouchableOpacity activeOpacity={0.5} onPress={goNextMonth}>
-                                        <MaterialIcons
-                                            name="chevron-right"
-                                            size={30}
-                                            color="black"
-                                        />
-                                    </TouchableOpacity>
-                                </View>
+        <View style={{ flex: 1 }}>
+            <View style={{ flex: 1 }}>
+                <View style={{ flexDirection: "row" }}>
+                    <Surface style={styles.surface}>
+                        <TouchableOpacity style={styles.alignCenter} onPress={() => setMenu(0)}>
+                            <View style={menu === 0 ? { borderBottomWidth: 1 } : undefined}>
+                                <Text style={styles.menuText}>일간</Text>
                             </View>
-                            <FlatList
-                                data={data}
-                                windowSize={1}
-                                renderItem={({ item }) => (
+                        </TouchableOpacity>
+                    </Surface>
+                    <Surface style={styles.surface}>
+                        <TouchableOpacity style={styles.alignCenter} onPress={() => setMenu(1)}>
+                            <View style={menu === 1 ? { borderBottomWidth: 1 } : undefined}>
+                                <Text style={styles.menuText}>월간</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </Surface>
+                    <Surface style={styles.surface}>
+                        <TouchableOpacity style={styles.alignCenter} onPress={() => setMenu(2)}>
+                            <View style={menu === 2 ? { borderBottomWidth: 1 } : undefined}>
+                                <Text style={styles.menuText}>통계</Text>
+                            </View>
+                        </TouchableOpacity>
+                    </Surface>
+                </View>
+                <SegmentedPicker
+                    ref={picker}
+                    onConfirm={(select) => {
+                        setSelections(select);
+                        setSelectedYear(Number(select.year));
+                        setSelectedMonth(Number(select.month));
+                        setDateChange(!dateChange);
+                    }}
+                    confirmText="확인"
+                    defaultSelections={selections}
+                    options={[
+                        {
+                            key: "year",
+                            items: yearList,
+                        },
+                        {
+                            key: "month",
+                            items: monthList,
+                        },
+                    ]}
+                />
+
+                {menu === 0 && (
+                    <>
+                        <View>
+                            <Animated.View style={{ height: dayAnimation }}>
+                                <View style={{ flexDirection: "row" }}>
                                     <View
                                         style={{
                                             flex: 1,
-                                            flexDirection: "column",
-                                            margin: 5,
+                                            alignItems: "flex-start",
+                                            justifyContent: "center",
+                                            paddingLeft: 10,
                                         }}
                                     >
-                                        <TouchableOpacity
-                                            style={[
-                                                styles.day,
-                                                item.isBlank
-                                                    ? { backgroundColor: "#b3b3b3" }
-                                                    : undefined,
-                                            ]}
-                                            onPress={() => {
-                                                onSelectDay();
-                                                setSelectedDate(Number(item.id));
+                                        <TouchableOpacity activeOpacity={0.5} onPress={goPreMonth}>
+                                            <MaterialIcons
+                                                name="chevron-left"
+                                                size={30}
+                                                color="black"
+                                            />
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View
+                                        style={{
+                                            flex: 1,
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                        }}
+                                    >
+                                        <TouchableOpacity onPress={() => picker.current.show()}>
+                                            <Text style={TextSize.largerSize}>
+                                                {selectedYear +
+                                                    "-" +
+                                                    (selectedMonth < 10
+                                                        ? "0" + selectedMonth
+                                                        : selectedMonth)}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View
+                                        style={{
+                                            flex: 1,
+                                            alignItems: "flex-end",
+                                            justifyContent: "center",
+                                            paddingRight: 10,
+                                        }}
+                                    >
+                                        <TouchableOpacity activeOpacity={0.5} onPress={goNextMonth}>
+                                            <MaterialIcons
+                                                name="chevron-right"
+                                                size={30}
+                                                color="black"
+                                            />
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                                <FlatList
+                                    data={data}
+                                    windowSize={1}
+                                    renderItem={({ item }) => (
+                                        <Surface
+                                            style={{
+                                                flex: 1,
+                                                flexDirection: "column",
+                                                margin: 5,
+                                                elevation: 4,
+                                                borderRadius: 10,
                                             }}
-                                            disabled={!item.pressable}
                                         >
-                                            <View
-                                                style={
-                                                    item.isToday
-                                                        ? {
-                                                              backgroundColor: "#99ddff",
-                                                              borderRadius: 50,
-                                                              width: wp("8%"),
-                                                              height: wp("8%"),
-                                                              alignItems: "center",
-                                                              justifyContent: "center",
-                                                          }
-                                                        : undefined
-                                                }
+                                            <TouchableOpacity
+                                                style={[
+                                                    styles.day,
+                                                    item.isBlank
+                                                        ? { backgroundColor: "#b3b3b3" }
+                                                        : undefined,
+                                                ]}
+                                                onPress={() => {
+                                                    onSelectDay();
+                                                    setSelectedDate(Number(item.id));
+                                                }}
+                                                disabled={!item.pressable}
                                             >
+                                                <View
+                                                    style={
+                                                        item.isToday
+                                                            ? {
+                                                                  backgroundColor: "#99ddff",
+                                                                  borderRadius: 50,
+                                                                  width: wp("8%"),
+                                                                  height: wp("8%"),
+                                                                  alignItems: "center",
+                                                                  justifyContent: "center",
+                                                              }
+                                                            : undefined
+                                                    }
+                                                >
+                                                    <Text
+                                                        style={[
+                                                            TextSize.largeSize,
+                                                            item.color === "black"
+                                                                ? { color: "black" }
+                                                                : item.color === "blue"
+                                                                ? { color: "blue" }
+                                                                : { color: "red" },
+                                                        ]}
+                                                    >
+                                                        {item.id}
+                                                    </Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        </Surface>
+                                    )}
+                                    numColumns={7}
+                                    keyExtractor={(item, index) => index}
+                                    scrollEnabled={false}
+                                />
+                            </Animated.View>
+                            <Animated.View
+                                style={{
+                                    opacity: dayInfoAnimation,
+                                }}
+                            >
+                                <View style={{ backgroundColor: "white", padding: 10 }}>
+                                    <Text style={TextSize.largeSize}>
+                                        {moment(
+                                            `${selectedYear} ${selectedMonth} ${selectedDate}`,
+                                            "YYYY M D"
+                                        ).format("YYYY년 MM월 DD일 결산")}
+                                    </Text>
+                                    {loading ? (
+                                        <View
+                                            style={{
+                                                width: wp("100%"),
+                                                height: hp("50%"),
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                backgroundColor: "white",
+                                            }}
+                                        >
+                                            <ActivityIndicator
+                                                animating={true}
+                                                size="large"
+                                                color="black"
+                                            />
+                                        </View>
+                                    ) : (
+                                        <View>
+                                            <View style={{ flexDirection: "row" }}>
                                                 <Text
                                                     style={[
-                                                        TextSize.largeSize,
-                                                        item.color === "black"
-                                                            ? { color: "black" }
-                                                            : item.color === "blue"
-                                                            ? { color: "blue" }
-                                                            : { color: "red" },
+                                                        TextSize.normalSize,
+                                                        { flex: 1, textAlign: "right" },
                                                     ]}
                                                 >
-                                                    {item.id}
+                                                    현금 총액:
+                                                </Text>
+                                                <Text style={[TextSize.normalSize, { flex: 5 }]}>
+                                                    {" " + priceToString(dayCash)}원
                                                 </Text>
                                             </View>
-                                        </TouchableOpacity>
-                                    </View>
-                                )}
-                                numColumns={7}
-                                keyExtractor={(item, index) => index}
-                                scrollEnabled={false}
-                            />
-                        </Animated.View>
-                        <Animated.View
-                            style={{
-                                opacity: dayInfoAnimation,
-                            }}
-                        >
-                            <View style={{ backgroundColor: "white", padding: 10 }}>
-                                <Text style={TextSize.largeSize}>
-                                    {moment(
-                                        `${selectedYear} ${selectedMonth} ${selectedDate}`,
-                                        "YYYY M D"
-                                    ).format("YYYY년 MM월 DD일 결산")}
-                                </Text>
-                                {loading ? (
-                                    <View
-                                        style={{
-                                            width: wp("100%"),
-                                            height: hp("50%"),
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            backgroundColor: "white",
-                                        }}
-                                    >
-                                        <Image
-                                            style={{ width: 50, height: 50 }}
-                                            source={require("../../assets/loading.gif")}
-                                        />
-                                    </View>
-                                ) : (
-                                    <View>
-                                        <View style={{ flexDirection: "row" }}>
-                                            <Text
-                                                style={[
-                                                    TextSize.normalSize,
-                                                    { flex: 1, textAlign: "right" },
-                                                ]}
-                                            >
-                                                현금 총액:
-                                            </Text>
-                                            <Text style={[TextSize.normalSize, { flex: 5 }]}>
-                                                {" " + priceToString(dayCash)}원
-                                            </Text>
-                                        </View>
-                                        <View style={{ flexDirection: "row" }}>
-                                            <Text
-                                                style={[
-                                                    TextSize.normalSize,
-                                                    { flex: 1, textAlign: "right" },
-                                                ]}
-                                            >
-                                                카드 총액:
-                                            </Text>
-                                            <Text style={[TextSize.normalSize, { flex: 5 }]}>
-                                                {" " + priceToString(dayCard)}원
-                                            </Text>
-                                        </View>
-                                        <View style={{ flexDirection: "row" }}>
-                                            <Text
-                                                style={[
-                                                    TextSize.normalSize,
-                                                    { flex: 1, textAlign: "right" },
-                                                ]}
-                                            >
-                                                합계:
-                                            </Text>
-                                            <Text style={[TextSize.normalSize, { flex: 5 }]}>
-                                                {" " + priceToString(dayCash + dayCard)}원
-                                            </Text>
-                                        </View>
-                                    </View>
-                                )}
-                            </View>
-                        </Animated.View>
-                    </View>
-                    <Animated.View
-                        style={{
-                            position: "absolute",
-                            right: 10,
-                            bottom: 10,
-                            opacity: dayBackAnimation,
-                            transform: [{ translateY: dayMoveAnimation }],
-                        }}
-                    >
-                        <TouchableOpacity
-                            onPress={() => {
-                                onSelectDayMenu();
-                            }}
-                            disabled={selectedDate === 0}
-                        >
-                            <Ionicons
-                                name="arrow-back-circle-outline"
-                                size={RFPercentage(7)}
-                                color="black"
-                            />
-                        </TouchableOpacity>
-                    </Animated.View>
-                </>
-            )}
-            {menu === 1 && (
-                <>
-                    <View>
-                        <Animated.View style={{ height: monthAnimation }}>
-                            <View style={{ flexDirection: "row" }}>
-                                <View
-                                    style={{
-                                        flex: 1,
-                                        alignItems: "flex-start",
-                                        justifyContent: "center",
-                                        paddingLeft: 10,
-                                    }}
-                                >
-                                    <TouchableOpacity
-                                        activeOpacity={0.5}
-                                        onPress={() => setMonthYear(monthYear - 1)}
-                                    >
-                                        <MaterialIcons
-                                            name="chevron-left"
-                                            size={30}
-                                            color="black"
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                                <View
-                                    style={{
-                                        flex: 1,
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                    }}
-                                >
-                                    <View>
-                                        <Text style={TextSize.largerSize}>{monthYear}</Text>
-                                    </View>
-                                </View>
-                                <View
-                                    style={{
-                                        flex: 1,
-                                        alignItems: "flex-end",
-                                        justifyContent: "center",
-                                        paddingRight: 10,
-                                    }}
-                                >
-                                    <TouchableOpacity
-                                        activeOpacity={0.5}
-                                        onPress={() => setMonthYear(monthYear + 1)}
-                                    >
-                                        <MaterialIcons
-                                            name="chevron-right"
-                                            size={30}
-                                            color="black"
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                            <FlatList
-                                data={monthData}
-                                windowSize={1}
-                                renderItem={({ item }) => (
-                                    <View
-                                        style={{
-                                            flex: 1,
-                                            flexDirection: "column",
-                                            margin: 5,
-                                        }}
-                                    >
-                                        <TouchableOpacity
-                                            style={[styles.day]}
-                                            onPress={() => {
-                                                setMonthMonth(item.id);
-                                                onSelectMonth();
-                                            }}
-                                        >
-                                            <View
-                                                style={
-                                                    today.getMonth() + 1 === item.id
-                                                        ? {
-                                                              backgroundColor: "#99ddff",
-                                                              borderRadius: 40,
-                                                              width: wp("10%"),
-                                                              height: wp("9%"),
-                                                              alignItems: "center",
-                                                              justifyContent: "center",
-                                                          }
-                                                        : undefined
-                                                }
-                                            >
-                                                <Text style={TextSize.largeSize}>
-                                                    {item.id + "월"}
-                                                </Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    </View>
-                                )}
-                                numColumns={4}
-                                keyExtractor={(item, index) => index}
-                                scrollEnabled={false}
-                            />
-                        </Animated.View>
-                        <Animated.View
-                            style={{
-                                opacity: monthInfoAnimation,
-                            }}
-                        >
-                            <View
-                                style={{
-                                    padding: 10,
-                                    backgroundColor: "white",
-                                }}
-                            >
-                                <Text style={TextSize.largeSize}>
-                                    {moment(`${monthYear} ${monthMonth}`, "YYYY M").format(
-                                        "YYYY년 MM월 결산"
-                                    )}
-                                    {today.getMonth() + 1 === monthMonth
-                                        ? "(현재까지의 결산)"
-                                        : undefined}
-                                </Text>
-                                {loading ? (
-                                    <View
-                                        style={{
-                                            width: wp("100%"),
-                                            height: hp("50%"),
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            backgroundColor: "white",
-                                        }}
-                                    >
-                                        <Image
-                                            style={{ width: 50, height: 50 }}
-                                            source={require("../../assets/loading.gif")}
-                                        />
-                                    </View>
-                                ) : (
-                                    <View>
-                                        <View style={{ flexDirection: "row" }}>
-                                            <Text
-                                                style={[
-                                                    TextSize.normalSize,
-                                                    { flex: 1, textAlign: "right" },
-                                                ]}
-                                            >
-                                                현금 총액:
-                                            </Text>
-                                            <Text style={[TextSize.normalSize, { flex: 5 }]}>
-                                                {" " + priceToString(monthCash)}원
-                                            </Text>
-                                        </View>
-                                        <View style={{ flexDirection: "row" }}>
-                                            <Text
-                                                style={[
-                                                    TextSize.normalSize,
-                                                    { flex: 1, textAlign: "right" },
-                                                ]}
-                                            >
-                                                카드 총액:
-                                            </Text>
-                                            <Text style={[TextSize.normalSize, { flex: 5 }]}>
-                                                {" " + priceToString(monthCard)}원
-                                            </Text>
-                                        </View>
-                                        <View style={{ flexDirection: "row" }}>
-                                            <Text
-                                                style={[
-                                                    TextSize.normalSize,
-                                                    { flex: 1, textAlign: "right" },
-                                                ]}
-                                            >
-                                                합계:
-                                            </Text>
-                                            <Text style={[TextSize.normalSize, { flex: 5 }]}>
-                                                {" " + priceToString(monthCash + monthCard)}원
-                                            </Text>
-                                        </View>
-                                    </View>
-                                )}
-                            </View>
-                        </Animated.View>
-                    </View>
-                    <Animated.View
-                        style={{
-                            position: "absolute",
-                            right: 10,
-                            bottom: 10,
-                            opacity: monthBackAnimation,
-                            transform: [{ translateY: monthMoveAnimation }],
-                        }}
-                    >
-                        <TouchableOpacity
-                            onPress={() => {
-                                onSelectMonthMenu();
-                            }}
-                        >
-                            <Ionicons
-                                name="arrow-back-circle-outline"
-                                size={RFPercentage(7)}
-                                color="black"
-                            />
-                        </TouchableOpacity>
-                    </Animated.View>
-                </>
-            )}
-            {menu === 2 && (
-                <>
-                    <View>
-                        <Animated.View style={{ height: statsAnimation }}>
-                            <View style={{ flexDirection: "row" }}>
-                                <View
-                                    style={{
-                                        flex: 1,
-                                        alignItems: "flex-start",
-                                        justifyContent: "center",
-                                        paddingLeft: 10,
-                                    }}
-                                >
-                                    <TouchableOpacity
-                                        activeOpacity={0.5}
-                                        onPress={() => setStatsYear(statsYear - 1)}
-                                    >
-                                        <MaterialIcons
-                                            name="chevron-left"
-                                            size={30}
-                                            color="black"
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                                <View
-                                    style={{
-                                        flex: 1,
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                    }}
-                                >
-                                    <View>
-                                        <Text style={TextSize.largerSize}>{statsYear}</Text>
-                                    </View>
-                                </View>
-                                <View
-                                    style={{
-                                        flex: 1,
-                                        alignItems: "flex-end",
-                                        justifyContent: "center",
-                                        paddingRight: 10,
-                                    }}
-                                >
-                                    <TouchableOpacity
-                                        activeOpacity={0.5}
-                                        onPress={() => setStatsYear(statsYear + 1)}
-                                    >
-                                        <MaterialIcons
-                                            name="chevron-right"
-                                            size={30}
-                                            color="black"
-                                        />
-                                    </TouchableOpacity>
-                                </View>
-                            </View>
-                            <FlatList
-                                data={monthData}
-                                windowSize={1}
-                                renderItem={({ item }) => (
-                                    <View
-                                        style={{
-                                            flex: 1,
-                                            flexDirection: "column",
-                                            margin: 5,
-                                        }}
-                                    >
-                                        <TouchableOpacity
-                                            style={[styles.day]}
-                                            onPress={() => {
-                                                setStatsMonth(item.id);
-                                                onSelectStats();
-                                            }}
-                                        >
-                                            <View
-                                                style={
-                                                    today.getMonth() + 1 === item.id
-                                                        ? {
-                                                              backgroundColor: "#99ddff",
-                                                              borderRadius: 40,
-                                                              width: wp("10%"),
-                                                              height: wp("9%"),
-                                                              alignItems: "center",
-                                                              justifyContent: "center",
-                                                          }
-                                                        : undefined
-                                                }
-                                            >
-                                                <Text style={TextSize.largeSize}>
-                                                    {item.id + "월"}
-                                                </Text>
-                                            </View>
-                                        </TouchableOpacity>
-                                    </View>
-                                )}
-                                numColumns={4}
-                                keyExtractor={(item, index) => index}
-                                scrollEnabled={false}
-                            />
-                        </Animated.View>
-                        <Animated.View
-                            style={{
-                                opacity: statsInfoAnimation,
-                            }}
-                        >
-                            <View
-                                style={{
-                                    padding: 10,
-                                    backgroundColor: "white",
-                                }}
-                            >
-                                <Text style={TextSize.largeSize}>
-                                    {moment(`${statsYear} ${statsMonth}`, "YYYY M").format(
-                                        "YYYY년 MM월 통계"
-                                    )}
-                                    {today.getMonth() + 1 === statsMonth
-                                        ? "(현재까지의 결산)"
-                                        : undefined}
-                                </Text>
-                                {loading ? (
-                                    <View
-                                        style={{
-                                            width: wp("100%"),
-                                            height: hp("50%"),
-                                            alignItems: "center",
-                                            justifyContent: "center",
-                                            backgroundColor: "white",
-                                        }}
-                                    >
-                                        <Image
-                                            style={{ width: 50, height: 50 }}
-                                            source={require("../../assets/loading.gif")}
-                                        />
-                                    </View>
-                                ) : (
-                                    <View>
-                                        {renderStats()}
-                                        <View style={{ flexDirection: "row", height: hp("50%") }}>
-                                            <YAxis
-                                                data={chart}
-                                                contentInset={{ top: 13, bottom: 13 }}
-                                                svg={{
-                                                    fill: "black",
-                                                    fontSize: RFPercentage(1.9),
-                                                }}
-                                                numberOfTicks={10}
-                                                formatLabel={(value) =>
-                                                    Number(value) !== 0
-                                                        ? Number(value)
-                                                              .toString()
-                                                              .substr(
-                                                                  0,
-                                                                  Number(value).toString().length -
-                                                                      4
-                                                              ) + "만"
-                                                        : 0
-                                                }
-                                                min={0}
-                                                style={{ marginBottom: 20, width: wp("9%") }}
-                                            />
-                                            <View style={{ flex: 1 }}>
-                                                <BarChart
-                                                    data={chart}
-                                                    style={{ flex: 1, marginLeft: 10 }}
-                                                    svg={{ fill: "#1e99ff" }}
-                                                    contentInset={{ top: 13, bottom: 13 }}
-                                                    gridMin={0}
+                                            <View style={{ flexDirection: "row" }}>
+                                                <Text
+                                                    style={[
+                                                        TextSize.normalSize,
+                                                        { flex: 1, textAlign: "right" },
+                                                    ]}
                                                 >
-                                                    <Grid />
-                                                    <Labels />
-                                                </BarChart>
-                                                <XAxis
-                                                    data={chart}
-                                                    formatLabel={(value, index) => label[index]}
-                                                    svg={{
-                                                        fontSize: RFPercentage(1.9),
-                                                        fill: "black",
-                                                    }}
-                                                    contentInset={{ left: 40, right: 30 }}
-                                                    style={{
-                                                        height: 20,
-                                                        width: "100%",
-                                                    }}
-                                                />
+                                                    카드 총액:
+                                                </Text>
+                                                <Text style={[TextSize.normalSize, { flex: 5 }]}>
+                                                    {" " + priceToString(dayCard)}원
+                                                </Text>
+                                            </View>
+                                            <View style={{ flexDirection: "row" }}>
+                                                <Text
+                                                    style={[
+                                                        TextSize.normalSize,
+                                                        { flex: 1, textAlign: "right" },
+                                                    ]}
+                                                >
+                                                    합계:
+                                                </Text>
+                                                <Text style={[TextSize.normalSize, { flex: 5 }]}>
+                                                    {" " + priceToString(dayCash + dayCard)}원
+                                                </Text>
                                             </View>
                                         </View>
-                                    </View>
-                                )}
-                            </View>
-                        </Animated.View>
-                    </View>
-                    <Animated.View
-                        style={{
-                            position: "absolute",
-                            right: 10,
-                            bottom: 10,
-                            opacity: statsBackAnimation,
-                            transform: [{ translateY: statsMoveAnimation }],
-                        }}
-                    >
-                        <TouchableOpacity
-                            onPress={() => {
-                                onSelectStatsMenu();
+                                    )}
+                                </View>
+                            </Animated.View>
+                        </View>
+                        <Animated.View
+                            style={{
+                                position: "absolute",
+                                right: 10,
+                                bottom: 10,
+                                opacity: dayBackAnimation,
+                                transform: [{ translateY: dayMoveAnimation }],
                             }}
                         >
-                            <Ionicons
-                                name="arrow-back-circle-outline"
-                                size={RFPercentage(7)}
-                                color="black"
-                            />
-                        </TouchableOpacity>
-                    </Animated.View>
-                </>
-            )}
-        </SafeAreaView>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    onSelectDayMenu();
+                                }}
+                                disabled={selectedDate === 0}
+                            >
+                                <Ionicons
+                                    name="arrow-back-circle-outline"
+                                    size={RFPercentage(7)}
+                                    color="black"
+                                />
+                            </TouchableOpacity>
+                        </Animated.View>
+                    </>
+                )}
+                {menu === 1 && (
+                    <>
+                        <View>
+                            <Animated.View style={{ height: monthAnimation }}>
+                                <View style={{ flexDirection: "row" }}>
+                                    <View
+                                        style={{
+                                            flex: 1,
+                                            alignItems: "flex-start",
+                                            justifyContent: "center",
+                                            paddingLeft: 10,
+                                        }}
+                                    >
+                                        <TouchableOpacity
+                                            activeOpacity={0.5}
+                                            onPress={() => setMonthYear(monthYear - 1)}
+                                        >
+                                            <MaterialIcons
+                                                name="chevron-left"
+                                                size={30}
+                                                color="black"
+                                            />
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View
+                                        style={{
+                                            flex: 1,
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                        }}
+                                    >
+                                        <View>
+                                            <Text style={TextSize.largerSize}>{monthYear}</Text>
+                                        </View>
+                                    </View>
+                                    <View
+                                        style={{
+                                            flex: 1,
+                                            alignItems: "flex-end",
+                                            justifyContent: "center",
+                                            paddingRight: 10,
+                                        }}
+                                    >
+                                        <TouchableOpacity
+                                            activeOpacity={0.5}
+                                            onPress={() => setMonthYear(monthYear + 1)}
+                                        >
+                                            <MaterialIcons
+                                                name="chevron-right"
+                                                size={30}
+                                                color="black"
+                                            />
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                                <FlatList
+                                    data={monthData}
+                                    windowSize={1}
+                                    renderItem={({ item }) => (
+                                        <Surface
+                                            style={{
+                                                flex: 1,
+                                                flexDirection: "column",
+                                                margin: 5,
+                                                elevation: 4,
+                                                borderRadius: 10,
+                                            }}
+                                        >
+                                            <TouchableOpacity
+                                                style={[styles.day]}
+                                                onPress={() => {
+                                                    setMonthMonth(item.id);
+                                                    onSelectMonth();
+                                                }}
+                                            >
+                                                <View
+                                                    style={
+                                                        today.getMonth() + 1 === item.id
+                                                            ? {
+                                                                  backgroundColor: "#99ddff",
+                                                                  borderRadius: 40,
+                                                                  width: wp("10%"),
+                                                                  height: wp("9%"),
+                                                                  alignItems: "center",
+                                                                  justifyContent: "center",
+                                                              }
+                                                            : undefined
+                                                    }
+                                                >
+                                                    <Text style={TextSize.largeSize}>
+                                                        {item.id + "월"}
+                                                    </Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        </Surface>
+                                    )}
+                                    numColumns={4}
+                                    keyExtractor={(item, index) => index}
+                                    scrollEnabled={false}
+                                />
+                            </Animated.View>
+                            <Animated.View
+                                style={{
+                                    opacity: monthInfoAnimation,
+                                }}
+                            >
+                                <View
+                                    style={{
+                                        padding: 10,
+                                        backgroundColor: "white",
+                                    }}
+                                >
+                                    <Text style={TextSize.largeSize}>
+                                        {moment(`${monthYear} ${monthMonth}`, "YYYY M").format(
+                                            "YYYY년 MM월 결산"
+                                        )}
+                                        {today.getMonth() + 1 === monthMonth
+                                            ? "(현재까지의 결산)"
+                                            : undefined}
+                                    </Text>
+                                    {loading ? (
+                                        <View
+                                            style={{
+                                                width: wp("100%"),
+                                                height: hp("50%"),
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                backgroundColor: "white",
+                                            }}
+                                        >
+                                            <ActivityIndicator
+                                                animating={true}
+                                                size="large"
+                                                color="black"
+                                            />
+                                        </View>
+                                    ) : (
+                                        <View>
+                                            <View style={{ flexDirection: "row" }}>
+                                                <Text
+                                                    style={[
+                                                        TextSize.normalSize,
+                                                        { flex: 1, textAlign: "right" },
+                                                    ]}
+                                                >
+                                                    현금 총액:
+                                                </Text>
+                                                <Text style={[TextSize.normalSize, { flex: 5 }]}>
+                                                    {" " + priceToString(monthCash)}원
+                                                </Text>
+                                            </View>
+                                            <View style={{ flexDirection: "row" }}>
+                                                <Text
+                                                    style={[
+                                                        TextSize.normalSize,
+                                                        { flex: 1, textAlign: "right" },
+                                                    ]}
+                                                >
+                                                    카드 총액:
+                                                </Text>
+                                                <Text style={[TextSize.normalSize, { flex: 5 }]}>
+                                                    {" " + priceToString(monthCard)}원
+                                                </Text>
+                                            </View>
+                                            <View style={{ flexDirection: "row" }}>
+                                                <Text
+                                                    style={[
+                                                        TextSize.normalSize,
+                                                        { flex: 1, textAlign: "right" },
+                                                    ]}
+                                                >
+                                                    합계:
+                                                </Text>
+                                                <Text style={[TextSize.normalSize, { flex: 5 }]}>
+                                                    {" " + priceToString(monthCash + monthCard)}원
+                                                </Text>
+                                            </View>
+                                        </View>
+                                    )}
+                                </View>
+                            </Animated.View>
+                        </View>
+                        <Animated.View
+                            style={{
+                                position: "absolute",
+                                right: 10,
+                                bottom: 10,
+                                opacity: monthBackAnimation,
+                                transform: [{ translateY: monthMoveAnimation }],
+                            }}
+                        >
+                            <TouchableOpacity
+                                onPress={() => {
+                                    onSelectMonthMenu();
+                                }}
+                            >
+                                <Ionicons
+                                    name="arrow-back-circle-outline"
+                                    size={RFPercentage(7)}
+                                    color="black"
+                                />
+                            </TouchableOpacity>
+                        </Animated.View>
+                    </>
+                )}
+                {menu === 2 && (
+                    <>
+                        <View>
+                            <Animated.View style={{ height: statsAnimation }}>
+                                <View style={{ flexDirection: "row" }}>
+                                    <View
+                                        style={{
+                                            flex: 1,
+                                            alignItems: "flex-start",
+                                            justifyContent: "center",
+                                            paddingLeft: 10,
+                                        }}
+                                    >
+                                        <TouchableOpacity
+                                            activeOpacity={0.5}
+                                            onPress={() => setStatsYear(statsYear - 1)}
+                                        >
+                                            <MaterialIcons
+                                                name="chevron-left"
+                                                size={30}
+                                                color="black"
+                                            />
+                                        </TouchableOpacity>
+                                    </View>
+                                    <View
+                                        style={{
+                                            flex: 1,
+                                            alignItems: "center",
+                                            justifyContent: "center",
+                                        }}
+                                    >
+                                        <View>
+                                            <Text style={TextSize.largerSize}>{statsYear}</Text>
+                                        </View>
+                                    </View>
+                                    <View
+                                        style={{
+                                            flex: 1,
+                                            alignItems: "flex-end",
+                                            justifyContent: "center",
+                                            paddingRight: 10,
+                                        }}
+                                    >
+                                        <TouchableOpacity
+                                            activeOpacity={0.5}
+                                            onPress={() => setStatsYear(statsYear + 1)}
+                                        >
+                                            <MaterialIcons
+                                                name="chevron-right"
+                                                size={30}
+                                                color="black"
+                                            />
+                                        </TouchableOpacity>
+                                    </View>
+                                </View>
+                                <FlatList
+                                    data={monthData}
+                                    windowSize={1}
+                                    renderItem={({ item }) => (
+                                        <Surface
+                                            style={{
+                                                flex: 1,
+                                                flexDirection: "column",
+                                                margin: 5,
+                                                elevation: 4,
+                                                borderRadius: 10,
+                                            }}
+                                        >
+                                            <TouchableOpacity
+                                                style={[styles.day]}
+                                                onPress={() => {
+                                                    setStatsMonth(item.id);
+                                                    onSelectStats();
+                                                }}
+                                            >
+                                                <View
+                                                    style={
+                                                        today.getMonth() + 1 === item.id
+                                                            ? {
+                                                                  backgroundColor: "#99ddff",
+                                                                  borderRadius: 40,
+                                                                  width: wp("10%"),
+                                                                  height: wp("9%"),
+                                                                  alignItems: "center",
+                                                                  justifyContent: "center",
+                                                              }
+                                                            : undefined
+                                                    }
+                                                >
+                                                    <Text style={TextSize.largeSize}>
+                                                        {item.id + "월"}
+                                                    </Text>
+                                                </View>
+                                            </TouchableOpacity>
+                                        </Surface>
+                                    )}
+                                    numColumns={4}
+                                    keyExtractor={(item, index) => index}
+                                    scrollEnabled={false}
+                                />
+                            </Animated.View>
+                            <Animated.View
+                                style={{
+                                    opacity: statsInfoAnimation,
+                                }}
+                            >
+                                <View
+                                    style={{
+                                        padding: 10,
+                                        backgroundColor: "white",
+                                    }}
+                                >
+                                    <Text style={TextSize.largeSize}>
+                                        {moment(`${statsYear} ${statsMonth}`, "YYYY M").format(
+                                            "YYYY년 MM월 통계"
+                                        )}
+                                        {today.getMonth() + 1 === statsMonth
+                                            ? "(현재까지의 결산)"
+                                            : undefined}
+                                    </Text>
+                                    {loading ? (
+                                        <View
+                                            style={{
+                                                width: wp("100%"),
+                                                height: hp("50%"),
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                backgroundColor: "white",
+                                            }}
+                                        >
+                                            <ActivityIndicator
+                                                animating={true}
+                                                size="large"
+                                                color="black"
+                                            />
+                                        </View>
+                                    ) : (
+                                        <View>
+                                            {renderStats()}
+                                            <View
+                                                style={{ flexDirection: "row", height: hp("45%") }}
+                                            >
+                                                <YAxis
+                                                    data={chart}
+                                                    contentInset={{ top: 13, bottom: 13 }}
+                                                    svg={{
+                                                        fill: "black",
+                                                        fontSize: RFPercentage(1.9),
+                                                    }}
+                                                    numberOfTicks={10}
+                                                    formatLabel={(value) =>
+                                                        Number(value) !== 0
+                                                            ? Number(value)
+                                                                  .toString()
+                                                                  .substr(
+                                                                      0,
+                                                                      Number(value).toString()
+                                                                          .length - 4
+                                                                  ) + "만"
+                                                            : 0
+                                                    }
+                                                    min={0}
+                                                    style={{ marginBottom: 20, width: wp("9%") }}
+                                                />
+                                                <View style={{ flex: 1 }}>
+                                                    <BarChart
+                                                        data={chart}
+                                                        style={{ flex: 1, marginLeft: 10 }}
+                                                        svg={{ fill: "#1e99ff" }}
+                                                        contentInset={{ top: 13, bottom: 13 }}
+                                                        gridMin={0}
+                                                    >
+                                                        <Grid />
+                                                        <Labels />
+                                                    </BarChart>
+                                                    <XAxis
+                                                        data={chart}
+                                                        formatLabel={(value, index) => label[index]}
+                                                        svg={{
+                                                            fontSize: RFPercentage(1.9),
+                                                            fill: "black",
+                                                        }}
+                                                        contentInset={{ left: 40, right: 30 }}
+                                                        style={{
+                                                            height: 20,
+                                                            width: "100%",
+                                                        }}
+                                                    />
+                                                </View>
+                                            </View>
+                                        </View>
+                                    )}
+                                </View>
+                            </Animated.View>
+                        </View>
+                        <Animated.View
+                            style={{
+                                position: "absolute",
+                                right: 10,
+                                bottom: 10,
+                                opacity: statsBackAnimation,
+                                transform: [{ translateY: statsMoveAnimation }],
+                            }}
+                        >
+                            <TouchableOpacity
+                                onPress={() => {
+                                    onSelectStatsMenu();
+                                }}
+                            >
+                                <Ionicons
+                                    name="arrow-back-circle-outline"
+                                    size={RFPercentage(7)}
+                                    color="black"
+                                />
+                            </TouchableOpacity>
+                        </Animated.View>
+                    </>
+                )}
+            </View>
+            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+        </View>
     );
 };
 
@@ -1223,15 +1244,17 @@ const styles = StyleSheet.create({
     menuText: {
         fontSize: RFPercentage(2.2),
     },
-    menuButton: {
-        flex: 1,
+    alignCenter: {
         alignItems: "center",
         justifyContent: "center",
-        backgroundColor: "white",
-        borderWidth: 0.5,
+    },
+    surface: {
+        flex: 1,
         height: hp("5%"),
-        margin: 3,
+        margin: 5,
+        elevation: 6,
         borderRadius: 10,
+        justifyContent: "center",
     },
     day: {
         flex: 1,
@@ -1239,7 +1262,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         height: wp("14%"),
         backgroundColor: "white",
-        borderWidth: 1,
         borderRadius: 10,
     },
 });

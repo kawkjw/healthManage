@@ -388,7 +388,7 @@ const MyStack = () => {
             >
                 <TouchableOpacity
                     style={{ width: wp("8%") }}
-                    onPress={async () => {
+                    onPress={() => {
                         if (notificationAvail) {
                             setModalNotification(true);
                         } else {
@@ -396,7 +396,13 @@ const MyStack = () => {
                         }
                     }}
                 >
-                    <Badge size={10} visible={unread} style={{ position: "absolute", right: 3 }} />
+                    {notificationAvail && (
+                        <Badge
+                            size={10}
+                            visible={unread}
+                            style={{ position: "absolute", right: 3 }}
+                        />
+                    )}
                     <MaterialIcons
                         name={notificationAvail ? "notifications" : "notifications-off"}
                         size={RFPercentage(3.5)}

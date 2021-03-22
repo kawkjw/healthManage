@@ -25,6 +25,7 @@ import { getHoliday } from "../../../config/hooks";
 import { TextSize } from "../../../css/MyStyles";
 import Modal from "react-native-modal";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import { ActivityIndicator, Button, Surface } from "react-native-paper";
 
 export default ClassInfo = ({ navigation }) => {
     const { width } = Dimensions.get("screen");
@@ -316,21 +317,20 @@ export default ClassInfo = ({ navigation }) => {
                         justifyContent: "center",
                     }}
                 >
-                    <Image
-                        style={{ width: 50, height: 50 }}
-                        source={require("../../../assets/loading.gif")}
-                    />
+                    <ActivityIndicator animating={true} size="large" color="black" />
                 </View>
             ) : (
                 <FlatList
                     data={data}
                     windowSize={1}
                     renderItem={({ item }) => (
-                        <View
+                        <Surface
                             style={{
                                 flex: 1,
                                 flexDirection: "column",
                                 margin: 5,
+                                elevation: 4,
+                                borderRadius: 10,
                             }}
                         >
                             <TouchableOpacity
@@ -376,12 +376,13 @@ export default ClassInfo = ({ navigation }) => {
                                     </Text>
                                 </View>
                             </TouchableOpacity>
-                        </View>
+                        </Surface>
                     )}
                     numColumns={7}
                     keyExtractor={(item, index) => index}
                 />
             )}
+            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
             <SegmentedPicker
                 ref={picker}
                 onConfirm={(select) => {
@@ -410,18 +411,20 @@ export default ClassInfo = ({ navigation }) => {
                 onBackButtonPress={() => setModalClassInfo(false)}
             >
                 <View style={{ flex: 1, backgroundColor: "white" }}>
-                    <View style={{ flexDirection: "row", height: hp("5%"), borderBottomWidth: 1 }}>
-                        <TouchableOpacity
-                            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+                    <View style={{ flexDirection: "row", backgroundColor: "#3366cc" }}>
+                        <Button
                             onPress={() => {
                                 setModalClassInfo(false);
                                 setSelectedDate(0);
                             }}
+                            labelStyle={[TextSize.largeSize, { color: "white" }]}
                         >
-                            <Text style={TextSize.largeSize}>닫기</Text>
-                        </TouchableOpacity>
+                            닫기
+                        </Button>
                         <View style={{ flex: 6, alignItems: "center", justifyContent: "center" }}>
-                            <Text style={TextSize.largeSize}>{selectedDate + "일"}</Text>
+                            <Text style={[TextSize.largeSize, { color: "white" }]}>
+                                {selectedDate + "일"}
+                            </Text>
                         </View>
                         <View style={{ flex: 1 }} />
                     </View>
@@ -439,7 +442,7 @@ export default ClassInfo = ({ navigation }) => {
                             />
                         </View>
                     ) : (
-                        <ScrollView style={{ marginTop: 10 }}>
+                        <ScrollView style={{ marginTop: 5 }}>
                             {gxList.map((gxName, index) => (
                                 <View key={index} style={{ marginBottom: 5 }}>
                                     {classData[gxName].length === 0 ? null : (
@@ -465,12 +468,14 @@ export default ClassInfo = ({ navigation }) => {
                                         {classData[gxName].length === 0
                                             ? null
                                             : classData[gxName].map((value, index) => (
-                                                  <View
+                                                  <Surface
                                                       key={index}
                                                       style={{
                                                           width: wp("80%"),
                                                           height: hp("7%"),
                                                           margin: 5,
+                                                          elevation: 6,
+                                                          borderRadius: 15,
                                                       }}
                                                   >
                                                       <TouchableOpacity
@@ -513,7 +518,7 @@ export default ClassInfo = ({ navigation }) => {
                                                               </Text>
                                                           </View>
                                                       </TouchableOpacity>
-                                                  </View>
+                                                  </Surface>
                                               ))}
                                     </View>
                                 </View>
@@ -536,17 +541,17 @@ export default ClassInfo = ({ navigation }) => {
                         backgroundColor: "white",
                     }}
                 >
-                    <View style={{ flexDirection: "row", height: hp("5%"), borderBottomWidth: 1 }}>
-                        <TouchableOpacity
-                            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+                    <View style={{ flexDirection: "row", backgroundColor: "#3366cc" }}>
+                        <Button
                             onPress={() => {
                                 setModalClientsInfo(false);
                             }}
+                            labelStyle={[TextSize.largeSize, { color: "white" }]}
                         >
                             <Text style={TextSize.largeSize}>닫기</Text>
-                        </TouchableOpacity>
+                        </Button>
                         <View style={{ flex: 6, alignItems: "center", justifyContent: "center" }}>
-                            <Text style={TextSize.largeSize}>고객 정보</Text>
+                            <Text style={[TextSize.largeSize, { color: "white" }]}>고객 정보</Text>
                         </View>
                         <View style={{ flex: 1 }} />
                     </View>
@@ -628,7 +633,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         height: wp("14%"),
         backgroundColor: "grey",
-        borderWidth: 1,
         borderRadius: 10,
     },
     availButton: {
@@ -636,18 +640,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
         backgroundColor: "white",
-        borderWidth: 1,
         borderRadius: 15,
-        borderColor: "grey",
-        ...Platform.select({
-            ios: {
-                shadowColor: "#c6c6c6",
-                shadowOffset: { width: 5, height: 5 },
-                shadowOpacity: 5,
-            },
-            android: {
-                elevation: 10,
-            },
-        }),
     },
 });
