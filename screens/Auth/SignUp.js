@@ -366,6 +366,7 @@ export default SignUp = ({ navigation }) => {
                                 onPress={checkUsedEmail}
                                 mode="contained"
                                 labelStyle={{ fontWeight: "bold" }}
+                                disabled={!email}
                             >
                                 중복확인
                             </Button>

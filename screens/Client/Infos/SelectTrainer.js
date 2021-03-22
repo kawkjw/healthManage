@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Alert, View, ScrollView, Text, TouchableOpacity } from "react-native";
+import { Alert, View, ScrollView, TouchableOpacity } from "react-native";
 import { MyStyles, TextSize } from "../../../css/MyStyles";
 import myBase, { db } from "../../../config/MyBase";
-import { Surface } from "react-native-paper";
+import { Surface, Text } from "react-native-paper";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 export default SelectTrainer = ({ navigation, route }) => {
@@ -59,6 +59,13 @@ export default SelectTrainer = ({ navigation, route }) => {
         const num = await getOtNum();
         if (num > 0) {
             let temp = [];
+            navigation.setOptions({
+                headerRight: () => (
+                    <View style={{ margin: 10 }}>
+                        <Text style={{ color: "white" }}>{num}회 남음</Text>
+                    </View>
+                ),
+            });
             await getPtTrainerUid().then(async (list) => {
                 const promises = list.map(async (uid) => {
                     const name = await getPtTrainerName(uid);

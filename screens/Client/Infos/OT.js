@@ -23,7 +23,7 @@ import { getHoliday } from "../../../config/hooks";
 import { TextSize } from "../../../css/MyStyles";
 import Modal from "react-native-modal";
 import { RFPercentage } from "react-native-responsive-fontsize";
-import { Surface } from "react-native-paper";
+import { ActivityIndicator, Colors, Surface } from "react-native-paper";
 
 export default OT = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -45,9 +45,11 @@ export default OT = ({ navigation, route }) => {
     const [modalTimeTable, setModalTimeTable] = useState(false);
     const [availTimeList, setAvailTimeList] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [cloading, setCloading] = useState(true);
 
     useEffect(() => {
         const showCalendar = async () => {
+            setCloading(true);
             const yearMonthStr =
                 selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);
 
@@ -117,6 +119,7 @@ export default OT = ({ navigation, route }) => {
                 items.push({ id: " ", pressable: false, isHeader: true });
             }
             setData(items);
+            setCloading(false);
         };
         showCalendar();
     }, [change]);
@@ -408,68 +411,74 @@ export default OT = ({ navigation, route }) => {
                     </TouchableOpacity>
                 </View>
             </View>
-            <FlatList
-                data={data}
-                windowSize={1}
-                renderItem={({ item }) => (
-                    <Surface
-                        style={{
-                            flex: 1,
-                            flexDirection: "column",
-                            margin: 5,
-                            elevation: 4,
-                            borderRadius: 10,
-                        }}
-                    >
-                        <TouchableOpacity
-                            style={[
-                                styles.day,
-                                item.isHeader
-                                    ? { backgroundColor: "white" }
-                                    : item.hasClass
-                                    ? { backgroundColor: "white" }
-                                    : { backgroundColor: "#b3b3b3" },
-                            ]}
-                            onPress={() => {
-                                setModalTimeTable(item.pressable);
-                                setSelectedDate(Number(item.id));
+            {cloading ? (
+                <View style={{ flex: 1, justifyContent: "center" }}>
+                    <ActivityIndicator animating={true} color={Colors.black} size="large" />
+                </View>
+            ) : (
+                <FlatList
+                    data={data}
+                    windowSize={1}
+                    renderItem={({ item }) => (
+                        <Surface
+                            style={{
+                                flex: 1,
+                                flexDirection: "column",
+                                margin: 5,
+                                elevation: 4,
+                                borderRadius: 10,
                             }}
-                            disabled={!item.pressable}
                         >
-                            <View
-                                style={
-                                    item.isToday
-                                        ? {
-                                              backgroundColor: "#99ddff",
-                                              borderRadius: 50,
-                                              width: wp("8%"),
-                                              height: wp("8%"),
-                                              alignItems: "center",
-                                              justifyContent: "center",
-                                          }
-                                        : undefined
-                                }
+                            <TouchableOpacity
+                                style={[
+                                    styles.day,
+                                    item.isHeader
+                                        ? { backgroundColor: "white" }
+                                        : item.hasClass
+                                        ? { backgroundColor: "white" }
+                                        : { backgroundColor: "#b3b3b3" },
+                                ]}
+                                onPress={() => {
+                                    setModalTimeTable(item.pressable);
+                                    setSelectedDate(Number(item.id));
+                                }}
+                                disabled={!item.pressable}
                             >
-                                <Text
-                                    style={[
-                                        TextSize.largeSize,
-                                        item.color === "black"
-                                            ? { color: "black" }
-                                            : item.color === "blue"
-                                            ? { color: "blue" }
-                                            : { color: "red" },
-                                    ]}
+                                <View
+                                    style={
+                                        item.isToday
+                                            ? {
+                                                  backgroundColor: "#99ddff",
+                                                  borderRadius: 50,
+                                                  width: wp("8%"),
+                                                  height: wp("8%"),
+                                                  alignItems: "center",
+                                                  justifyContent: "center",
+                                              }
+                                            : undefined
+                                    }
                                 >
-                                    {item.id}
-                                </Text>
-                            </View>
-                        </TouchableOpacity>
-                    </Surface>
-                )}
-                numColumns={7}
-                keyExtractor={(item, index) => index}
-                scrollEnabled={false}
-            />
+                                    <Text
+                                        style={[
+                                            TextSize.largeSize,
+                                            item.color === "black"
+                                                ? { color: "black" }
+                                                : item.color === "blue"
+                                                ? { color: "blue" }
+                                                : { color: "red" },
+                                        ]}
+                                    >
+                                        {item.id}
+                                    </Text>
+                                </View>
+                            </TouchableOpacity>
+                        </Surface>
+                    )}
+                    numColumns={7}
+                    keyExtractor={(item, index) => index}
+                    scrollEnabled={false}
+                />
+            )}
             <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
             <SegmentedPicker
                 ref={picker}

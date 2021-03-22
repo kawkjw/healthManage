@@ -26,7 +26,7 @@ import {
     widthPercentageToDP as wp,
 } from "react-native-responsive-screen";
 import Modal from "react-native-modal";
-import { Button, Surface, TextInput } from "react-native-paper";
+import { Button, HelperText, Surface, TextInput } from "react-native-paper";
 
 export default Profile = ({ navigation }) => {
     const [data, setData] = useState("");
@@ -585,7 +585,7 @@ export default Profile = ({ navigation }) => {
                                     {data.length > 0 ? (
                                         <QRCode
                                             value={data}
-                                            size={wp("65%")}
+                                            size={wp("60%")}
                                             bgColor="#000000"
                                             fgColor="#FFFFFF"
                                         />
@@ -608,7 +608,7 @@ export default Profile = ({ navigation }) => {
                     </TouchableOpacity>
                 </Surface>
                 <Surface
-                    style={{ width: wp("85%"), height: hp("33%"), borderRadius: 20, elevation: 6 }}
+                    style={{ width: wp("85%"), height: hp("35%"), borderRadius: 20, elevation: 6 }}
                 >
                     {loading ? (
                         <View
@@ -944,17 +944,24 @@ export default Profile = ({ navigation }) => {
                         backgroundColor: "white",
                     }}
                 >
-                    <View style={{ flexDirection: "row", height: hp("5%") }}>
-                        <TouchableOpacity
-                            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            height: hp("5%"),
+                            borderBottomWidth: 1,
+                            borderBottomColor: "grey",
+                        }}
+                    >
+                        <Button
+                            mode="text"
                             onPress={() => {
                                 setChangePhone("");
                                 setVerifyCode("");
                                 setModalPhoneVisible(!modalPhoneVisible);
                             }}
                         >
-                            <Text style={TextSize.largeSize}>닫기</Text>
-                        </TouchableOpacity>
+                            닫기
+                        </Button>
                         <View style={{ flex: 7 }} />
                     </View>
                     <FirebaseRecaptchaVerifierModal
@@ -979,7 +986,7 @@ export default Profile = ({ navigation }) => {
                             <View
                                 style={{
                                     flexDirection: "row",
-                                    marginBottom: 10,
+                                    marginBottom: 5,
                                 }}
                             >
                                 <TextInput
@@ -1008,15 +1015,6 @@ export default Profile = ({ navigation }) => {
                                 </Button>
                             </View>
                             <View style={{ marginBottom: 10 }}>
-                                {verificationId !== "" && (
-                                    <Text
-                                        style={{
-                                            marginBottom: 5,
-                                        }}
-                                    >
-                                        인증 코드 발송되었습니다.
-                                    </Text>
-                                )}
                                 <TextInput
                                     label="인증 코드"
                                     mode="outlined"
@@ -1033,17 +1031,14 @@ export default Profile = ({ navigation }) => {
                                         }
                                     }}
                                 />
+                                {verificationId !== "" && (
+                                    <HelperText type="info" visible={true}>
+                                        인증 문자가 전송되었습니다.
+                                    </HelperText>
+                                )}
                             </View>
-                            <TouchableOpacity
-                                style={[
-                                    MyStyles.buttonShadow,
-                                    {
-                                        height: hp("5%"),
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                        borderRadius: 10,
-                                    },
-                                ]}
+                            <Button
+                                mode="contained"
                                 onPress={() => {
                                     if (verificationId !== "") {
                                         dbChangePhone();
@@ -1058,8 +1053,8 @@ export default Profile = ({ navigation }) => {
                                 }}
                                 disabled={!verificationId || !changePhone || !verifyCode}
                             >
-                                <Text style={TextSize.normalSize}>확인</Text>
-                            </TouchableOpacity>
+                                확인
+                            </Button>
                         </View>
                         <View
                             style={{
@@ -1086,9 +1081,15 @@ export default Profile = ({ navigation }) => {
                         backgroundColor: "white",
                     }}
                 >
-                    <View style={{ flexDirection: "row", height: hp("5%") }}>
-                        <TouchableOpacity
-                            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            borderBottomColor: "grey",
+                            borderBottomWidth: 1,
+                        }}
+                    >
+                        <Button
+                            mode="text"
                             onPress={() => {
                                 setChangeEmail("");
                                 setChkUsedEmail(false);
@@ -1097,7 +1098,7 @@ export default Profile = ({ navigation }) => {
                             }}
                         >
                             <Text style={TextSize.largeSize}>닫기</Text>
-                        </TouchableOpacity>
+                        </Button>
                         <View style={{ flex: 7 }} />
                     </View>
                     <TouchableOpacity
@@ -1112,71 +1113,59 @@ export default Profile = ({ navigation }) => {
                                 paddingHorizontal: 30,
                             }}
                         >
-                            <View style={AuthStyles.textView}>
-                                <Text style={AuthStyles.text}>변경할 이메일 주소</Text>
+                            <View style={{ marginBottom: 5 }}>
                                 <View
                                     style={{
                                         flexDirection: "row",
+                                        marginBottom: 5,
+                                        alignItems: "flex-start",
                                     }}
                                 >
-                                    <TextInput
-                                        style={[
-                                            AuthStyles.textInput,
-                                            changeEmail
-                                                ? checkEmail
-                                                    ? {
-                                                          backgroundColor: "green",
-                                                      }
-                                                    : {
-                                                          backgroundColor: "red",
-                                                      }
-                                                : undefined,
-                                            {
-                                                flex: 3,
-                                                marginRight: 7,
-                                            },
-                                        ]}
-                                        placeholder="examples@example.com"
-                                        keyboardType="email-address"
-                                        autoCompleteType="email"
-                                        textContentType="emailAddress"
-                                        value={changeEmail}
-                                        onChangeText={setChangeEmail}
-                                    />
-                                    <TouchableOpacity
-                                        style={AuthStyles.authButton}
+                                    <View style={{ flex: 9, marginRight: 7 }}>
+                                        <TextInput
+                                            label="변경할 이메일 주소"
+                                            mode="outlined"
+                                            dense={true}
+                                            placeholder="examples@example.com"
+                                            keyboardType="email-address"
+                                            value={changeEmail}
+                                            onChangeText={setChangeEmail}
+                                            error={changeEmail && !checkEmail}
+                                        />
+                                        {changeEmail && !checkEmail ? (
+                                            <HelperText type="error" visible={true}>
+                                                이메일 형식이 맞지 않습니다.
+                                            </HelperText>
+                                        ) : null}
+                                    </View>
+                                    <Button
+                                        mode="contained"
+                                        style={{ flex: 1, justifyContent: "center", marginTop: 10 }}
                                         onPress={() => checkUsedEmail()}
                                         disabled={!changePhone}
                                     >
-                                        <Text style={TextSize.normalSize}>중복확인</Text>
-                                    </TouchableOpacity>
+                                        중복확인
+                                    </Button>
                                 </View>
                             </View>
                             <View style={AuthStyles.textView}>
-                                <Text style={AuthStyles.text}>비밀번호</Text>
                                 <TextInput
-                                    style={AuthStyles.textInput}
-                                    placeholder="비밀번호 입력"
+                                    label="비밀번호"
+                                    mode="outlined"
+                                    dense={true}
+                                    placeholder="비밀번호"
                                     secureTextEntry={true}
                                     value={password}
                                     onChangeText={setPassword}
                                 />
                             </View>
-                            <TouchableOpacity
-                                style={[
-                                    MyStyles.buttonShadow,
-                                    {
-                                        height: hp("5%"),
-                                        alignItems: "center",
-                                        justifyContent: "center",
-                                        borderRadius: 10,
-                                    },
-                                ]}
+                            <Button
+                                mode="contained"
                                 onPress={() => dbChangeEmail()}
                                 disabled={!changeEmail || !password || !chkUsedEmail}
                             >
-                                <Text style={TextSize.normalSize}>확인</Text>
-                            </TouchableOpacity>
+                                확인
+                            </Button>
                         </View>
                     </TouchableOpacity>
                 </View>

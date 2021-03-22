@@ -9,7 +9,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { pushNotificationsToAdmin } from "../../../config/MyExpo";
 import SegmentedPicker from "react-native-segmented-picker";
 import { DataContext } from "../../Auth";
-import { Surface, Text, TextInput } from "react-native-paper";
+import { ActivityIndicator, Colors, Surface, Text, TextInput } from "react-native-paper";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 export default ExtendDate = ({ navigation, route }) => {
@@ -24,9 +24,11 @@ export default ExtendDate = ({ navigation, route }) => {
         value: (x + 7).toString(),
         key: (x + 7).toString(),
     }));
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const getMembsership = async () => {
+            setLoading(true);
             await db
                 .collection("users")
                 .doc(uid)
@@ -136,6 +138,7 @@ export default ExtendDate = ({ navigation, route }) => {
                         navigation.goBack();
                     }
                 });
+            setLoading(false);
         };
         getMembsership();
     }, []);
@@ -195,115 +198,127 @@ export default ExtendDate = ({ navigation, route }) => {
 
     return (
         <View style={{ flex: 1, alignItems: "center" }}>
-            <KeyboardAwareScrollView
-                style={{ alignSelf: "stretch" }}
-                contentContainerStyle={{ height: "100%" }}
-                keyboardShouldPersistTaps="always"
-                showsVerticalScrollIndicator={false}
-                scrollEnabled={false}
-                extraScrollHeight={80}
-            >
-                <TouchableOpacity
-                    style={{ alignSelf: "stretch", height: "100%" }}
-                    onPress={Keyboard.dismiss}
-                    activeOpacity={1}
+            {loading ? (
+                <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+                    <ActivityIndicator animating={true} size="large" color={Colors.black} />
+                    <Text style={TextSize.normalSize}>연장 가능한 이용권을 가져오는 중입니다.</Text>
+                </View>
+            ) : (
+                <KeyboardAwareScrollView
+                    style={{ alignSelf: "stretch" }}
+                    contentContainerStyle={{ height: "100%" }}
+                    keyboardShouldPersistTaps="always"
+                    showsVerticalScrollIndicator={false}
+                    scrollEnabled={false}
+                    extraScrollHeight={80}
                 >
-                    <View style={{ paddingHorizontal: 20 }}>
-                        <Surface style={[{ marginVertical: 15, padding: 15 }, MyStyles.surface]}>
-                            <Text style={TextSize.largeSize}>연장 가능한 이용권</Text>
-                            {availExtend.map((membership, index) => (
-                                <View
-                                    key={index}
-                                    style={{
-                                        flexDirection: "row",
-                                        alignItems: "center",
-                                        marginTop: 5,
-                                    }}
-                                >
-                                    <MaterialIcons
-                                        style={{ marginRight: 7 }}
-                                        name="circle"
-                                        size={RFPercentage(1.2)}
-                                        color="black"
-                                    />
-                                    <Text style={[TextSize.normalSize, { flex: 2 }]}>
-                                        {classNames[membership.name] !== undefined
-                                            ? classNames[membership.name].miniKo
-                                            : "Error"}
-                                    </Text>
-                                    <Text style={[TextSize.normalSize, { flex: 2 }]}>
-                                        {membership.month + "개월권"}
-                                    </Text>
-                                    <Text style={[TextSize.normalSize, { flex: 4 }]}>
-                                        {moment(membership.end.toDate()).format("YYYY. MM. DD") +
-                                            "까지"}
-                                    </Text>
-                                    <Text style={[TextSize.normalSize, { flex: 3 }]}>
-                                        {membership.remain + "번 연장 가능"}
-                                    </Text>
-                                </View>
-                            ))}
-                        </Surface>
-                        <Surface style={[MyStyles.surface, { padding: 15 }]}>
-                            <View>
-                                <TextInput
-                                    label="연장할 일수"
-                                    value={extendDate.date + "일 동안"}
-                                    editable={false}
-                                    dense={true}
-                                    mode="outlined"
-                                    right={
-                                        <TextInput.Icon
-                                            name="chevron-down"
-                                            onPress={() => {
-                                                Keyboard.dismiss();
-                                                picker.current.show();
-                                            }}
-                                        />
-                                    }
-                                />
-                            </View>
-                            <View
-                                style={{
-                                    marginTop: 5,
-                                    marginBottom: 10,
-                                }}
+                    <TouchableOpacity
+                        style={{ alignSelf: "stretch", height: "100%" }}
+                        onPress={Keyboard.dismiss}
+                        activeOpacity={1}
+                    >
+                        <View style={{ paddingHorizontal: 20 }}>
+                            <Surface
+                                style={[{ marginVertical: 15, padding: 15 }, MyStyles.surface]}
                             >
-                                <TextInput
-                                    label="연장 사유"
-                                    keyboardType="default"
-                                    placeholder="사유 30자 이내"
-                                    value={extendReason}
-                                    onChangeText={setExtendReason}
-                                    maxLength={30}
-                                    multiline={true}
-                                    dense={true}
-                                    mode="outlined"
-                                />
-                            </View>
-                            <Surface style={{ elevation: 6, borderRadius: 10 }}>
-                                <TouchableOpacity
-                                    style={{ alignItems: "center" }}
-                                    onPress={() => {
-                                        Alert.alert(
-                                            "확실합니까?",
-                                            `연장 일수: ${extendDate.date}\n연장 사유: ${extendReason}`,
-                                            [
-                                                { text: "취소" },
-                                                { text: "확인", onPress: () => onSubmit() },
-                                            ],
-                                            { cancelable: false }
-                                        );
-                                    }}
-                                    disabled={!extendReason}
-                                >
-                                    <Text style={[TextSize.normalSize, { margin: 10 }]}>제출</Text>
-                                </TouchableOpacity>
+                                <Text style={TextSize.largeSize}>연장 가능한 이용권</Text>
+                                {availExtend.map((membership, index) => (
+                                    <View
+                                        key={index}
+                                        style={{
+                                            flexDirection: "row",
+                                            alignItems: "center",
+                                            marginTop: 5,
+                                        }}
+                                    >
+                                        <MaterialIcons
+                                            style={{ marginRight: 7 }}
+                                            name="circle"
+                                            size={RFPercentage(1.2)}
+                                            color="black"
+                                        />
+                                        <Text style={[TextSize.normalSize, { flex: 2 }]}>
+                                            {classNames[membership.name] !== undefined
+                                                ? classNames[membership.name].miniKo
+                                                : "Error"}
+                                        </Text>
+                                        <Text style={[TextSize.normalSize, { flex: 2 }]}>
+                                            {membership.month + "개월권"}
+                                        </Text>
+                                        <Text style={[TextSize.normalSize, { flex: 4 }]}>
+                                            {moment(membership.end.toDate()).format(
+                                                "YYYY. MM. DD"
+                                            ) + "까지"}
+                                        </Text>
+                                        <Text style={[TextSize.normalSize, { flex: 3 }]}>
+                                            {membership.remain + "번 연장 가능"}
+                                        </Text>
+                                    </View>
+                                ))}
                             </Surface>
-                        </Surface>
-                    </View>
-                </TouchableOpacity>
-            </KeyboardAwareScrollView>
+                            <Surface style={[MyStyles.surface, { padding: 15 }]}>
+                                <View>
+                                    <TextInput
+                                        label="연장할 일수"
+                                        value={extendDate.date + "일 동안"}
+                                        editable={false}
+                                        dense={true}
+                                        mode="outlined"
+                                        right={
+                                            <TextInput.Icon
+                                                name="chevron-down"
+                                                onPress={() => {
+                                                    Keyboard.dismiss();
+                                                    picker.current.show();
+                                                }}
+                                            />
+                                        }
+                                    />
+                                </View>
+                                <View
+                                    style={{
+                                        marginTop: 5,
+                                        marginBottom: 10,
+                                    }}
+                                >
+                                    <TextInput
+                                        label="연장 사유"
+                                        keyboardType="default"
+                                        placeholder="사유 30자 이내"
+                                        value={extendReason}
+                                        onChangeText={setExtendReason}
+                                        maxLength={30}
+                                        multiline={true}
+                                        dense={true}
+                                        mode="outlined"
+                                    />
+                                </View>
+                                <Surface style={{ elevation: 6, borderRadius: 10 }}>
+                                    <TouchableOpacity
+                                        style={{ alignItems: "center" }}
+                                        onPress={() => {
+                                            Alert.alert(
+                                                "확실합니까?",
+                                                `연장 일수: ${extendDate.date}\n연장 사유: ${extendReason}`,
+                                                [
+                                                    { text: "취소" },
+                                                    { text: "확인", onPress: () => onSubmit() },
+                                                ],
+                                                { cancelable: false }
+                                            );
+                                        }}
+                                        disabled={!extendReason}
+                                    >
+                                        <Text style={[TextSize.normalSize, { margin: 10 }]}>
+                                            제출
+                                        </Text>
+                                    </TouchableOpacity>
+                                </Surface>
+                            </Surface>
+                        </View>
+                    </TouchableOpacity>
+                </KeyboardAwareScrollView>
+            )}
             <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
             <SegmentedPicker
                 ref={picker}

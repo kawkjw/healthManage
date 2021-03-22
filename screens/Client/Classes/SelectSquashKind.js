@@ -9,7 +9,7 @@ export default SelectSquashKind = ({ navigation, route }) => {
 
     return (
         <View style={MyStyles.container}>
-            <View style={{ marginTop: 20 }}>
+            <View style={{ flex: 1, marginTop: 20 }}>
                 <Surface style={MyStyles.surface}>
                     <TouchableOpacity
                         style={MyStyles.menu}
