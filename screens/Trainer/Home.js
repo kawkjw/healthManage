@@ -140,7 +140,7 @@ export default Home = ({ navigation, route }) => {
 
     return (
         <SafeAreaView style={MyStyles.container}>
-            <StatusBar barStyle={Platform.OS === "ios" ? "dark-content" : "default"} />
+            <StatusBar barStyle="light-content" />
             <View style={{ marginTop: 10 }}>
                 <Surface style={MyStyles.surface}>
                     <TouchableOpacity

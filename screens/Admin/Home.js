@@ -76,7 +76,7 @@ export default Home = ({ navigation, route }) => {
 
     return (
         <SafeAreaView style={MyStyles.container}>
-            <StatusBar barStyle={Platform.OS === "ios" ? "dark-content" : "default"} />
+            <StatusBar barStyle="light-content" />
             <ScrollView
                 style={{ flex: 1, alignSelf: "stretch", paddingVertical: 10 }}
                 contentContainerStyle={{ alignItems: "center" }}

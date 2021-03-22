@@ -35,7 +35,7 @@ export default SignIn = ({ navigation }) => {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <StatusBar barStyle={Platform.OS === "ios" ? "dark-content" : "default"} />
+            <StatusBar barStyle="light-content" />
             <KeyboardAwareScrollView
                 contentContainerStyle={{
                     marginTop: 30,

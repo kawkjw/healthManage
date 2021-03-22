@@ -62,7 +62,7 @@ export default Home = ({ navigation, route }) => {
 
     return (
         <SafeAreaView style={[MyStyles.container, { justifyContent: "center" }]}>
-            <StatusBar barStyle={Platform.OS === "ios" ? "dark-content" : "default"} />
+            <StatusBar barStyle="light-content" />
             <View style={{ alignItems: "center" }}>
                 <Surface style={MyStyles.surface}>
                     <TouchableOpacity

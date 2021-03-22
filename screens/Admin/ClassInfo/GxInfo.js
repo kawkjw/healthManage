@@ -2,10 +2,7 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 import {
     Dimensions,
     FlatList,
-    Image,
     Linking,
-    Platform,
-    SafeAreaView,
     ScrollView,
     StyleSheet,
     Text,
@@ -267,7 +264,7 @@ export default ClassInfo = ({ navigation }) => {
     };
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
             <View style={{ flexDirection: "row", height: hp("5%") }}>
                 <View
                     style={{
@@ -410,216 +407,227 @@ export default ClassInfo = ({ navigation }) => {
                 onBackdropPress={() => setModalClassInfo(false)}
                 onBackButtonPress={() => setModalClassInfo(false)}
             >
-                <View style={{ flex: 1, backgroundColor: "white" }}>
-                    <View style={{ flexDirection: "row", backgroundColor: "#3366cc" }}>
-                        <Button
-                            onPress={() => {
-                                setModalClassInfo(false);
-                                setSelectedDate(0);
-                            }}
-                            labelStyle={[TextSize.largeSize, { color: "white" }]}
-                        >
-                            닫기
-                        </Button>
-                        <View style={{ flex: 6, alignItems: "center", justifyContent: "center" }}>
-                            <Text style={[TextSize.largeSize, { color: "white" }]}>
-                                {selectedDate + "일"}
-                            </Text>
+                <View style={{ height: hp("95%") }}>
+                    <View style={{ flex: 1, backgroundColor: "white" }}>
+                        <View style={{ flexDirection: "row", backgroundColor: "#3366cc" }}>
+                            <Button
+                                onPress={() => {
+                                    setModalClassInfo(false);
+                                    setSelectedDate(0);
+                                }}
+                                labelStyle={[TextSize.largeSize, { color: "white" }]}
+                            >
+                                닫기
+                            </Button>
+                            <View
+                                style={{ flex: 6, alignItems: "center", justifyContent: "center" }}
+                            >
+                                <Text style={[TextSize.largeSize, { color: "white" }]}>
+                                    {selectedDate + "일"}
+                                </Text>
+                            </View>
+                            <View style={{ flex: 1 }} />
                         </View>
-                        <View style={{ flex: 1 }} />
-                    </View>
-                    {loadingInModal ? (
-                        <View
-                            style={{
-                                flex: 1,
-                                alignItems: "center",
-                                justifyContent: "center",
-                            }}
-                        >
-                            <ActivityIndicator animating={true} size="large" color="black" />
-                        </View>
-                    ) : (
-                        <ScrollView style={{ marginTop: 5 }}>
-                            {gxList.map((gxName, index) => (
-                                <View key={index} style={{ marginBottom: 5 }}>
-                                    {classData[gxName].length === 0 ? null : (
-                                        <Text
-                                            style={[
-                                                TextSize.largeSize,
-                                                {
-                                                    marginLeft: 20,
-                                                },
-                                            ]}
+                        {loadingInModal ? (
+                            <View
+                                style={{
+                                    flex: 1,
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                }}
+                            >
+                                <ActivityIndicator animating={true} size="large" color="black" />
+                            </View>
+                        ) : (
+                            <ScrollView style={{ marginTop: 5 }}>
+                                {gxList.map((gxName, index) => (
+                                    <View key={index} style={{ marginBottom: 5 }}>
+                                        {classData[gxName].length === 0 ? null : (
+                                            <Text
+                                                style={[
+                                                    TextSize.largeSize,
+                                                    {
+                                                        marginLeft: 20,
+                                                    },
+                                                ]}
+                                            >
+                                                {classNames[gxName] !== undefined
+                                                    ? classNames[gxName].ko
+                                                    : "Error"}
+                                            </Text>
+                                        )}
+                                        <View
+                                            style={{
+                                                paddingHorizontal: 10,
+                                                alignItems: "center",
+                                            }}
                                         >
-                                            {classNames[gxName] !== undefined
-                                                ? classNames[gxName].ko
-                                                : "Error"}
-                                        </Text>
-                                    )}
-                                    <View
-                                        style={{
-                                            paddingHorizontal: 10,
-                                            alignItems: "center",
-                                        }}
-                                    >
-                                        {classData[gxName].length === 0
-                                            ? null
-                                            : classData[gxName].map((value, index) => (
-                                                  <Surface
-                                                      key={index}
-                                                      style={{
-                                                          width: wp("80%"),
-                                                          height: hp("7%"),
-                                                          margin: 5,
-                                                          elevation: 6,
-                                                          borderRadius: 15,
-                                                      }}
-                                                  >
-                                                      <TouchableOpacity
-                                                          style={[styles.availButton]}
-                                                          onPress={() => {
-                                                              setSelectedClass({
-                                                                  ...value,
-                                                                  start: moment(
-                                                                      value.start.toDate()
-                                                                  ).format("HH:mm"),
-                                                                  end: moment(
-                                                                      value.end.toDate()
-                                                                  ).format("HH:mm"),
-                                                              });
-                                                              setModalClientsInfo(true);
+                                            {classData[gxName].length === 0
+                                                ? null
+                                                : classData[gxName].map((value, index) => (
+                                                      <Surface
+                                                          key={index}
+                                                          style={{
+                                                              width: wp("80%"),
+                                                              height: hp("7%"),
+                                                              margin: 5,
+                                                              elevation: 6,
+                                                              borderRadius: 15,
                                                           }}
                                                       >
-                                                          <View
-                                                              style={{
-                                                                  flexDirection: "row",
+                                                          <TouchableOpacity
+                                                              style={[styles.availButton]}
+                                                              onPress={() => {
+                                                                  setSelectedClass({
+                                                                      ...value,
+                                                                      start: moment(
+                                                                          value.start.toDate()
+                                                                      ).format("HH:mm"),
+                                                                      end: moment(
+                                                                          value.end.toDate()
+                                                                      ).format("HH:mm"),
+                                                                  });
+                                                                  setModalClientsInfo(true);
                                                               }}
                                                           >
-                                                              <Text style={TextSize.largeSize}>
-                                                                  {moment(
-                                                                      value.start.toDate()
-                                                                  ).format("HH:mm") +
-                                                                      " ~ " +
-                                                                      moment(
-                                                                          value.end.toDate()
-                                                                      ).format("HH:mm")}
-                                                              </Text>
-                                                              <Text style={TextSize.largeSize}>
-                                                                  {" 강사 " +
-                                                                      value.trainer +
-                                                                      " (" +
-                                                                      value.currentClient +
-                                                                      "/" +
-                                                                      value.maxClient +
-                                                                      ")"}
-                                                              </Text>
-                                                          </View>
-                                                      </TouchableOpacity>
-                                                  </Surface>
-                                              ))}
+                                                              <View
+                                                                  style={{
+                                                                      flexDirection: "row",
+                                                                  }}
+                                                              >
+                                                                  <Text style={TextSize.largeSize}>
+                                                                      {moment(
+                                                                          value.start.toDate()
+                                                                      ).format("HH:mm") +
+                                                                          " ~ " +
+                                                                          moment(
+                                                                              value.end.toDate()
+                                                                          ).format("HH:mm")}
+                                                                  </Text>
+                                                                  <Text style={TextSize.largeSize}>
+                                                                      {" 강사 " +
+                                                                          value.trainer +
+                                                                          " (" +
+                                                                          value.currentClient +
+                                                                          "/" +
+                                                                          value.maxClient +
+                                                                          ")"}
+                                                                  </Text>
+                                                              </View>
+                                                          </TouchableOpacity>
+                                                      </Surface>
+                                                  ))}
+                                        </View>
                                     </View>
-                                </View>
-                            ))}
-                        </ScrollView>
-                    )}
-                </View>
-            </Modal>
-            <Modal
-                isVisible={modalClientsInfo}
-                style={{ justifyContent: "flex-end", margin: 0 }}
-                swipeDirection={["down"]}
-                onSwipeComplete={() => setModalClientsInfo(false)}
-                onBackdropPress={() => setModalClientsInfo(false)}
-                onBackButtonPress={() => setModalClientsInfo(false)}
-            >
-                <View
-                    style={{
-                        height: hp("90%"),
-                        backgroundColor: "white",
-                    }}
-                >
-                    <View style={{ flexDirection: "row", backgroundColor: "#3366cc" }}>
-                        <Button
-                            onPress={() => {
-                                setModalClientsInfo(false);
-                            }}
-                            labelStyle={[TextSize.largeSize, { color: "white" }]}
-                        >
-                            <Text style={TextSize.largeSize}>닫기</Text>
-                        </Button>
-                        <View style={{ flex: 6, alignItems: "center", justifyContent: "center" }}>
-                            <Text style={[TextSize.largeSize, { color: "white" }]}>고객 정보</Text>
-                        </View>
-                        <View style={{ flex: 1 }} />
-                    </View>
-                    <View style={{ padding: 10 }}>
-                        <Text style={TextSize.largeSize}>
-                            {selectedDate}일 {selectedClass.start} ~ {selectedClass.end} (강사{" "}
-                            {selectedClass.trainer})
-                        </Text>
-                        <View style={{ marginTop: 10 }} />
-                        {selectedClass.clients.length === 0 ? (
-                            <Text
-                                style={[
-                                    TextSize.largeSize,
-                                    {
-                                        paddingLeft: 10,
-                                        color: "red",
-                                    },
-                                ]}
-                            >
-                                예약한 고객이 없습니다.
-                            </Text>
-                        ) : (
-                            selectedClass.clients.map((client, index) => (
-                                <View
-                                    key={index}
-                                    style={{
-                                        paddingLeft: 10,
-                                        flexDirection: "row",
-                                    }}
-                                >
-                                    <View
-                                        style={{
-                                            marginRight: 5,
-                                            width: wp("4%"),
-                                            alignItems: "flex-end",
-                                        }}
-                                    >
-                                        <Text style={TextSize.normalSize}>
-                                            {(index + 1).toString() + ". "}
-                                        </Text>
-                                    </View>
-                                    <View
-                                        style={{
-                                            marginRight: 5,
-                                            width: wp("11%"),
-                                            alignItems: "center",
-                                        }}
-                                    >
-                                        <Text style={TextSize.normalSize}>{client.name}</Text>
-                                    </View>
-                                    <TouchableOpacity
-                                        onPress={() => Linking.openURL(`tel:${client.phoneNumber}`)}
-                                    >
-                                        <Text
-                                            style={[
-                                                TextSize.normalSize,
-                                                {
-                                                    color: "#3399ff",
-                                                },
-                                            ]}
-                                        >
-                                            {client.phoneNumber}
-                                        </Text>
-                                    </TouchableOpacity>
-                                </View>
-                            ))
+                                ))}
+                            </ScrollView>
                         )}
                     </View>
                 </View>
+
+                <Modal
+                    isVisible={modalClientsInfo}
+                    style={{ justifyContent: "flex-end", margin: 0 }}
+                    swipeDirection={["down"]}
+                    onSwipeComplete={() => setModalClientsInfo(false)}
+                    onBackdropPress={() => setModalClientsInfo(false)}
+                    onBackButtonPress={() => setModalClientsInfo(false)}
+                >
+                    <View
+                        style={{
+                            height: hp("85%"),
+                            backgroundColor: "white",
+                        }}
+                    >
+                        <View style={{ flexDirection: "row", backgroundColor: "#3366cc" }}>
+                            <Button
+                                onPress={() => {
+                                    setModalClientsInfo(false);
+                                }}
+                                labelStyle={[TextSize.largeSize, { color: "white" }]}
+                            >
+                                <Text style={TextSize.largeSize}>닫기</Text>
+                            </Button>
+                            <View
+                                style={{ flex: 6, alignItems: "center", justifyContent: "center" }}
+                            >
+                                <Text style={[TextSize.largeSize, { color: "white" }]}>
+                                    고객 정보
+                                </Text>
+                            </View>
+                            <View style={{ flex: 1 }} />
+                        </View>
+                        <View style={{ padding: 10 }}>
+                            <Text style={TextSize.largeSize}>
+                                {selectedDate}일 {selectedClass.start} ~ {selectedClass.end} (강사{" "}
+                                {selectedClass.trainer})
+                            </Text>
+                            <View style={{ marginTop: 10 }} />
+                            {selectedClass.clients.length === 0 ? (
+                                <Text
+                                    style={[
+                                        TextSize.largeSize,
+                                        {
+                                            paddingLeft: 10,
+                                            color: "red",
+                                        },
+                                    ]}
+                                >
+                                    예약한 고객이 없습니다.
+                                </Text>
+                            ) : (
+                                selectedClass.clients.map((client, index) => (
+                                    <View
+                                        key={index}
+                                        style={{
+                                            paddingLeft: 10,
+                                            flexDirection: "row",
+                                        }}
+                                    >
+                                        <View
+                                            style={{
+                                                marginRight: 5,
+                                                width: wp("4%"),
+                                                alignItems: "flex-end",
+                                            }}
+                                        >
+                                            <Text style={TextSize.normalSize}>
+                                                {(index + 1).toString() + ". "}
+                                            </Text>
+                                        </View>
+                                        <View
+                                            style={{
+                                                marginRight: 5,
+                                                width: wp("11%"),
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            <Text style={TextSize.normalSize}>{client.name}</Text>
+                                        </View>
+                                        <TouchableOpacity
+                                            onPress={() =>
+                                                Linking.openURL(`tel:${client.phoneNumber}`)
+                                            }
+                                        >
+                                            <Text
+                                                style={[
+                                                    TextSize.normalSize,
+                                                    {
+                                                        color: "#3399ff",
+                                                    },
+                                                ]}
+                                            >
+                                                {client.phoneNumber}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                ))
+                            )}
+                        </View>
+                    </View>
+                </Modal>
             </Modal>
-        </SafeAreaView>
+        </View>
     );
 };
 

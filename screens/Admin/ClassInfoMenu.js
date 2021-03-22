@@ -1,5 +1,5 @@
 import React, { useContext, useEffect } from "react";
-import { SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { Surface } from "react-native-paper";
 import myBase, { db } from "../../config/MyBase";
 import { MyStyles, TextSize } from "../../css/MyStyles";
@@ -29,7 +29,7 @@ export default ClientInfoMenu = ({ navigation, route }) => {
     }, []);
 
     return (
-        <SafeAreaView style={MyStyles.container}>
+        <View style={MyStyles.container}>
             <ScrollView
                 style={{ flex: 1, alignSelf: "stretch", paddingVertical: 10 }}
                 contentContainerStyle={{ alignItems: "center" }}
@@ -61,6 +61,6 @@ export default ClientInfoMenu = ({ navigation, route }) => {
                 </Surface>
             </ScrollView>
             <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
-        </SafeAreaView>
+        </View>
     );
 };

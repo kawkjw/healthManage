@@ -5,7 +5,7 @@ import { ActivityIndicator, Colors } from "react-native-paper";
 export default LoadingScreen = () => {
     return (
         <View style={styles.container}>
-            <StatusBar barStyle={Platform.OS === "ios" ? "dark-content" : "default"} />
+            <StatusBar barStyle="light-content" />
             <View
                 style={{
                     flex: 1,

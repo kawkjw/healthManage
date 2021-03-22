@@ -52,6 +52,9 @@ export const getHoliday = async (year, month) => {
             } else {
                 holidayJson = item;
             }
+        })
+        .catch((error) => {
+            console.log("getholiday", error);
         });
     let holidayList = Array(endDate.getDate() + 1).fill(false);
     holidayJson.forEach((holiday) => {
