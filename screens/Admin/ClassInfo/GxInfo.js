@@ -436,10 +436,7 @@ export default ClassInfo = ({ navigation }) => {
                                 justifyContent: "center",
                             }}
                         >
-                            <Image
-                                style={{ width: 50, height: 50 }}
-                                source={require("../../../assets/loading.gif")}
-                            />
+                            <ActivityIndicator animating={true} size="large" color="black" />
                         </View>
                     ) : (
                         <ScrollView style={{ marginTop: 5 }}>

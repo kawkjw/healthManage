@@ -433,10 +433,7 @@ export default ClassInfo = ({ navigation, route }) => {
                                 justifyContent: "center",
                             }}
                         >
-                            <Image
-                                style={{ width: 50, height: 50 }}
-                                source={require("../../../assets/loading.gif")}
-                            />
+                            <ActivityIndicator animating={true} size="large" color="black" />
                         </View>
                     ) : (
                         <TimeTable kind="pt" classData={classData} nameList={classNames} />
