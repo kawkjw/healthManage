@@ -400,10 +400,12 @@ export default GX = ({ navigation, route }) => {
                                 <FlatList
                                     data={classList[className]}
                                     renderItem={({ item }) => (
-                                        <View
+                                        <Surface
                                             style={{
                                                 flexDirection: "column",
                                                 margin: 5,
+                                                elevation: 4,
+                                                borderRadius: 10,
                                             }}
                                         >
                                             <TouchableOpacity
@@ -426,7 +428,7 @@ export default GX = ({ navigation, route }) => {
                                                         item.info.maxClient}
                                                 </Text>
                                             </TouchableOpacity>
-                                        </View>
+                                        </Surface>
                                     )}
                                     numColumns={3}
                                     keyExtractor={(item, index) => index}
@@ -540,7 +542,6 @@ const styles = StyleSheet.create({
         width: wp("30%"),
         height: wp("30%"),
         backgroundColor: "white",
-        borderWidth: 1,
         borderRadius: 10,
     },
     day: {
