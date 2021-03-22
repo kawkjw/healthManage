@@ -27,7 +27,7 @@ import myBase, { db } from "../../config/MyBase";
 import InputPassword from "./InputPassword";
 import Sales from "./Sales";
 import { TextSize } from "../../css/MyStyles";
-import { displayedAt } from "../../config/hooks";
+import { displayedAt, checkBatchimEnding } from "../../config/hooks";
 import { Badge, Button, Card } from "react-native-paper";
 
 const Stack = createStackNavigator();
@@ -291,7 +291,12 @@ const MyStack = () => {
                                                                 message.isRead && { color: "grey" }
                                                             }
                                                         >
-                                                            {message.sendFrom + " 로부터"}
+                                                            {message.sendFrom +
+                                                                (checkBatchimEnding(
+                                                                    message.sendFrom
+                                                                )
+                                                                    ? " 으로부터"
+                                                                    : " 로부터")}
                                                         </Text>
                                                     </View>
                                                     <View

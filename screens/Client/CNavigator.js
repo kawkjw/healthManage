@@ -491,7 +491,12 @@ const MyStack = () => {
                                                                 message.isRead && { color: "grey" }
                                                             }
                                                         >
-                                                            {message.sendFrom + " 로부터"}
+                                                            {message.sendFrom +
+                                                                (checkBatchimEnding(
+                                                                    message.sendFrom
+                                                                )
+                                                                    ? " 으로부터"
+                                                                    : " 로부터")}
                                                         </Text>
                                                     </View>
                                                     <View
