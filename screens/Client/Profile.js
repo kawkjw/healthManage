@@ -26,7 +26,7 @@ import {
     widthPercentageToDP as wp,
 } from "react-native-responsive-screen";
 import Modal from "react-native-modal";
-import { Button, HelperText, Surface, TextInput } from "react-native-paper";
+import { ActivityIndicator, Button, HelperText, Surface, TextInput } from "react-native-paper";
 
 export default Profile = ({ navigation }) => {
     const [data, setData] = useState("");
@@ -618,10 +618,7 @@ export default Profile = ({ navigation }) => {
                                 justifyContent: "center",
                             }}
                         >
-                            <Image
-                                style={{ width: 50, height: 50 }}
-                                source={require("../../assets/loading.gif")}
-                            />
+                            <ActivityIndicator animating={true} size="large" color="black" />
                         </View>
                     ) : (
                         <View style={{ paddingBottom: 15 }}>

@@ -1,30 +1,17 @@
 import React, { useContext, useEffect, useState } from "react";
-import {
-    Alert,
-    Keyboard,
-    Linking,
-    SafeAreaView,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
-} from "react-native";
+import { Alert, Keyboard, Linking, SafeAreaView, TouchableOpacity, View } from "react-native";
 import myBase, { arrayUnion, db } from "../../config/MyBase";
 import { AuthContext, DataContext } from "../Auth";
-import { AuthStyles, MyStyles, TextSize } from "../../css/MyStyles";
+import { MyStyles, TextSize } from "../../css/MyStyles";
 import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
 } from "react-native-responsive-screen";
 import Modal from "react-native-modal";
-import RadioForm, {
-    RadioButton,
-    RadioButtonInput,
-    RadioButtonLabel,
-} from "react-native-simple-radio-button";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import moment from "moment";
 import { MaterialIcons } from "@expo/vector-icons";
+import { Text, Button, Surface, TextInput, RadioButton } from "react-native-paper";
 
 export default Profile = ({ navigation, route }) => {
     const today = new Date();
@@ -40,19 +27,15 @@ export default Profile = ({ navigation, route }) => {
         className: [],
     });
     const { name, email, phoneNumber, permission, className } = userInfo;
-    const radioOptions = [
-        { label: "PT", value: "pt" },
-        { label: "GX", value: "gx" },
-    ];
     const [modalSetClass, setModalSetClass] = useState(false);
     const [radioSelected, setRadioSelected] = useState(-1);
     const [ptStartTime, setPtStartTime] = useState("");
     const [ptEndTime, setPtEndTime] = useState("");
     const radioGxOptions = [
-        { label: "스피닝", value: "spinning" },
-        { label: "스쿼시", value: "squash" },
-        { label: "필라테스", value: "pilates" },
-        { label: "GX", value: "yoga.zoomba" },
+        { label: "스피닝", str: "spinning", value: 0 },
+        { label: "스쿼시", str: "squash", value: 1 },
+        { label: "필라테스", str: "pilates", value: 2 },
+        { label: "GX", str: "yoga.zoomba", value: 3 },
     ];
     const [radioGxSelected, setRadioGxSelected] = useState(-1);
     const [todayClassInfo, setTodayClassInfo] = useState({});
@@ -317,7 +300,7 @@ export default Profile = ({ navigation, route }) => {
                     setUserInfo({ ...userInfo, className: str.split(".") });
                 }
             } else {
-                let str = "gx." + radioGxOptions[radioGxSelected].value;
+                let str = "gx." + radioGxOptions[radioGxSelected].str;
                 await db.collection("users").doc(uid).update({ className: str });
                 setModalSetClass(false);
                 setUserInfo({ ...userInfo, className: str.split(".") });
@@ -460,444 +443,497 @@ export default Profile = ({ navigation, route }) => {
 
     return (
         <SafeAreaView style={[MyStyles.container, { justifyContent: "center" }]}>
-            <View
-                style={[
-                    MyStyles.buttonShadow,
-                    { width: wp("90%"), height: hp("85%"), padding: 15 },
-                ]}
-            >
-                <Text style={MyStyles.profileText}>이름 : {name}</Text>
-                <Text style={MyStyles.profileText}>이메일 : {email}</Text>
-                <Text style={MyStyles.profileText}>휴대폰번호 : {phoneNumber}</Text>
-                <View style={{ flexDirection: "row" }}>
-                    <Text style={MyStyles.profileText}>담당 : </Text>
-                    <TouchableOpacity
-                        onPress={() => {
-                            setPtStartTime("");
-                            setPtEndTime("");
-                            setRadioSelected(-1);
-                            setRadioGxSelected(-1);
-                            setModalSetClass(true);
-                        }}
-                        disabled={className[0] !== "Need to Set Up"}
-                    >
-                        <Text
-                            style={[
-                                MyStyles.profileText,
-                                className[0] === "Need to Set Up"
-                                    ? { color: "#1e90ff" }
-                                    : undefined,
-                            ]}
-                        >
-                            {classNames[className[0]] !== undefined
-                                ? classNames[className[0]].ko
-                                : "여기를 눌러 설정해주세요."}
-                            {className[0] === "pt"
-                                ? "(" + className[1] + ":00 ~ " + className[2] + ":00)"
-                                : className[0] === "gx"
-                                ? className[1] === "squash"
-                                    ? "(" +
-                                      (classNames[className[1]] !== undefined
-                                          ? classNames[className[1]].ko
-                                          : "Error") +
-                                      "(" +
-                                      className[2] +
-                                      ":00 ~ " +
-                                      className[3] +
-                                      ":00)" +
-                                      ")"
-                                    : "(" +
-                                      className
-                                          .slice(1)
-                                          .map((value) =>
-                                              classNames[value] !== undefined
-                                                  ? classNames[value].ko
-                                                  : "Error"
-                                          )
-                                          .join(", ") +
-                                      ")"
-                                : null}
-                        </Text>
-                    </TouchableOpacity>
-                    <Modal
-                        isVisible={modalSetClass}
-                        style={{ justifyContent: "flex-end", margin: 0 }}
-                        onBackdropPress={() => setModalSetClass(false)}
-                        onBackButtonPress={() => setModalSetClass(false)}
-                        avoidKeyboard={true}
-                    >
-                        <TouchableOpacity
-                            onPress={Keyboard.dismiss}
-                            accessible={false}
-                            activeOpacity={1}
-                        >
-                            <View
-                                style={{
-                                    backgroundColor: "white",
-                                    height: hp("30%"),
+            <Surface style={{ elevation: 6, borderRadius: 20, padding: 15 }}>
+                <View style={{ width: wp("85%"), height: hp("80%") }}>
+                    <Text style={MyStyles.profileText}>이름 : {name}</Text>
+                    <Text style={MyStyles.profileText}>이메일 : {email}</Text>
+                    <Text style={MyStyles.profileText}>휴대폰번호 : {phoneNumber}</Text>
+                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                        <Text style={MyStyles.profileText}>담당 : </Text>
+                        {className[0] === "Need to Set Up" ? (
+                            <Button
+                                mode="text"
+                                compact={true}
+                                onPress={() => {
+                                    setPtStartTime("");
+                                    setPtEndTime("");
+                                    setRadioSelected(-1);
+                                    setRadioGxSelected(-1);
+                                    setModalSetClass(true);
                                 }}
+                                labelStyle={{
+                                    marginVertical: 0,
+                                    marginHorizontal: 0,
+                                    color: "#1e90ff",
+                                }}
+                            >
+                                여기를 눌러 설정해주세요.
+                            </Button>
+                        ) : (
+                            <Text style={TextSize.normalSize}>
+                                {classNames[className[0]] === undefined
+                                    ? "Error"
+                                    : classNames[className[0]].ko}
+                                {className[0] === "pt"
+                                    ? "(" + className[1] + ":00 ~ " + className[2] + ":00)"
+                                    : className[0] === "gx"
+                                    ? className[1] === "squash"
+                                        ? "(" +
+                                          (classNames[className[1]] !== undefined
+                                              ? classNames[className[1]].ko
+                                              : "Error") +
+                                          "(" +
+                                          className[2] +
+                                          ":00 ~ " +
+                                          className[3] +
+                                          ":00)" +
+                                          ")"
+                                        : "(" +
+                                          className
+                                              .slice(1)
+                                              .map((value) =>
+                                                  classNames[value] !== undefined
+                                                      ? classNames[value].ko
+                                                      : "Error"
+                                              )
+                                              .join(", ") +
+                                          ")"
+                                    : null}
+                            </Text>
+                        )}
+                        <Modal
+                            isVisible={modalSetClass}
+                            style={{ justifyContent: "flex-end", margin: 0 }}
+                            onBackdropPress={() => setModalSetClass(false)}
+                            onBackButtonPress={() => setModalSetClass(false)}
+                            avoidKeyboard={true}
+                        >
+                            <TouchableOpacity
+                                onPress={Keyboard.dismiss}
+                                accessible={false}
+                                activeOpacity={1}
                             >
                                 <View
                                     style={{
-                                        flexDirection: "row",
+                                        backgroundColor: "white",
+                                        height: hp("30%"),
                                     }}
                                 >
-                                    <TouchableOpacity
+                                    <View
                                         style={{
-                                            flex: 1,
-                                            alignItems: "center",
+                                            flexDirection: "row",
                                         }}
-                                        onPress={() => setModalSetClass(false)}
                                     >
-                                        <Text style={[TextSize.normalSize, { margin: 7 }]}>
+                                        <Button mode="text" onPress={() => setModalSetClass(false)}>
                                             닫기
-                                        </Text>
-                                    </TouchableOpacity>
-                                    <View style={{ flex: 6 }} />
-                                    <TouchableOpacity
-                                        style={{
-                                            alignItems: "center",
-                                            flex: 1,
-                                        }}
-                                        onPress={() => {
-                                            let gxStr = "";
-                                            if (radioSelected === 1 && radioGxSelected !== -1) {
-                                                gxStr =
-                                                    gxStr +
-                                                    (classNames[
-                                                        radioGxOptions[radioGxSelected].value
-                                                    ] !== undefined
-                                                        ? classNames[
-                                                              radioGxOptions[radioGxSelected].value
-                                                          ].ko
-                                                        : radioGxOptions[radioGxSelected].value ===
-                                                          "yoga.zoomba"
-                                                        ? "(요가, 줌바)"
-                                                        : "Error");
-                                                if (radioGxSelected === 1) {
+                                        </Button>
+                                        <Button
+                                            mode="text"
+                                            style={{ position: "absolute", right: 0 }}
+                                            onPress={() => {
+                                                let gxStr = "";
+                                                if (radioSelected === 1 && radioGxSelected !== -1) {
                                                     gxStr =
                                                         gxStr +
-                                                        "(" +
-                                                        `${Number(ptStartTime)}시부터 ${Number(
-                                                            ptEndTime
-                                                        )}시까지` +
-                                                        ")";
+                                                        (classNames[
+                                                            radioGxOptions[radioGxSelected].value
+                                                        ] !== undefined
+                                                            ? classNames[
+                                                                  radioGxOptions[radioGxSelected]
+                                                                      .value
+                                                              ].ko
+                                                            : radioGxOptions[radioGxSelected]
+                                                                  .value === "yoga.zoomba"
+                                                            ? "(요가, 줌바)"
+                                                            : "Error");
+                                                    if (radioGxSelected === 1) {
+                                                        gxStr =
+                                                            gxStr +
+                                                            "(" +
+                                                            `${Number(ptStartTime)}시부터 ${Number(
+                                                                ptEndTime
+                                                            )}시까지` +
+                                                            ")";
+                                                    }
                                                 }
-                                            }
-                                            Alert.alert(
-                                                (radioSelected === 0
-                                                    ? "PT"
-                                                    : radioSelected === 1
-                                                    ? "GX"
-                                                    : null) +
-                                                    ":" +
+                                                Alert.alert(
                                                     (radioSelected === 0
-                                                        ? `${Number(ptStartTime)}시부터 ${Number(
-                                                              ptEndTime
-                                                          )}시까지`
+                                                        ? "PT"
                                                         : radioSelected === 1
-                                                        ? gxStr
-                                                        : null),
-                                                "확실합니까?",
-                                                [
-                                                    { text: "취소" },
-                                                    {
-                                                        text: "확인",
-                                                        onPress: () => submitSetClass(),
-                                                    },
-                                                ],
-                                                { cancelable: false }
-                                            );
-                                        }}
-                                    >
-                                        <Text style={[TextSize.normalSize, { margin: 7 }]}>
+                                                        ? "GX"
+                                                        : null) +
+                                                        ":" +
+                                                        (radioSelected === 0
+                                                            ? `${Number(
+                                                                  ptStartTime
+                                                              )}시부터 ${Number(ptEndTime)}시까지`
+                                                            : radioSelected === 1
+                                                            ? gxStr
+                                                            : null),
+                                                    "확실합니까?",
+                                                    [
+                                                        { text: "취소" },
+                                                        {
+                                                            text: "확인",
+                                                            onPress: () => submitSetClass(),
+                                                        },
+                                                    ],
+                                                    { cancelable: false }
+                                                );
+                                            }}
+                                        >
                                             확인
-                                        </Text>
-                                    </TouchableOpacity>
-                                </View>
-                                <View style={{ flex: 1, paddingVertical: 10 }}>
-                                    <RadioForm formHorizontal={true} animation={true}>
-                                        {radioOptions.map((option, index) => (
-                                            <View key={index}>
-                                                <RadioButton
-                                                    labelHorizontal={true}
-                                                    wrapStyle={{
-                                                        marginLeft: 10,
+                                        </Button>
+                                    </View>
+                                    <View style={{ flex: 1, marginLeft: 10 }}>
+                                        <RadioButton.Group
+                                            value={radioSelected}
+                                            onValueChange={(value) => setRadioSelected(value)}
+                                        >
+                                            <View
+                                                style={{
+                                                    flexDirection: "row",
+                                                    alignItems: "center",
+                                                }}
+                                            >
+                                                <View
+                                                    style={{
+                                                        flexDirection: "row",
+                                                        alignItems: "center",
                                                     }}
                                                 >
-                                                    <RadioButtonInput
-                                                        obj={option}
-                                                        index={index}
-                                                        isSelected={radioSelected === index}
+                                                    <RadioButton value={0} color="#0099ff" />
+                                                    <Button
+                                                        mode="text"
                                                         onPress={() => {
-                                                            setRadioSelected(index);
-                                                            setRadioGxSelected(-1);
-                                                            setPtStartTime("");
-                                                            setPtEndTime("");
-                                                        }}
-                                                        buttonSize={15}
-                                                        buttonInnerColor={"black"}
-                                                        buttonOuterColor={"black"}
-                                                    />
-                                                    <RadioButtonLabel
-                                                        obj={option}
-                                                        index={index}
-                                                        onPress={() => {
-                                                            setRadioSelected(index);
+                                                            setRadioSelected(0);
                                                             setRadioGxSelected(-1);
                                                             setPtStartTime("");
                                                             setPtEndTime("");
                                                         }}
                                                         labelStyle={{
-                                                            fontSize: RFPercentage(2.2),
-                                                            marginLeft: 5,
+                                                            marginHorizontal: 5,
+                                                            marginVertical: 5,
                                                         }}
-                                                    />
-                                                </RadioButton>
-                                            </View>
-                                        ))}
-                                    </RadioForm>
-                                    {radioSelected === 0 ? (
-                                        <View
-                                            style={{
-                                                marginVertical: 20,
-                                                flexDirection: "row",
-                                                alignItems: "center",
-                                                paddingLeft: 40,
-                                            }}
-                                        >
-                                            <TextInput
-                                                style={[AuthStyles.textInput, { flex: 1 }]}
-                                                value={ptStartTime}
-                                                onChangeText={setPtStartTime}
-                                                keyboardType="number-pad"
-                                                placeholder={"00"}
-                                                maxLength={2}
-                                            />
-                                            <Text
-                                                style={[
-                                                    TextSize.largeSize,
-                                                    {
-                                                        flex: 1,
-                                                        marginLeft: 5,
-                                                    },
-                                                ]}
-                                            >
-                                                시부터
-                                            </Text>
-                                            <TextInput
-                                                style={[AuthStyles.textInput, { flex: 1 }]}
-                                                value={ptEndTime}
-                                                onChangeText={setPtEndTime}
-                                                keyboardType="number-pad"
-                                                placeholder={"24"}
-                                                maxLength={2}
-                                            />
-                                            <Text
-                                                style={[
-                                                    TextSize.largeSize,
-                                                    {
-                                                        flex: 1,
-                                                        marginLeft: 5,
-                                                    },
-                                                ]}
-                                            >
-                                                시까지
-                                            </Text>
-                                        </View>
-                                    ) : radioSelected === 1 ? (
-                                        <View
-                                            style={{
-                                                paddingLeft: 40,
-                                                marginVertical: 10,
-                                            }}
-                                        >
-                                            <RadioForm formHorizontal={true} animation={true}>
-                                                {radioGxOptions.slice(0, 2).map((option, index) => (
-                                                    <View key={index}>
-                                                        <RadioButton
-                                                            labelHorizontal={true}
-                                                            wrapStyle={{
-                                                                marginLeft: 10,
-                                                                marginRight: 25,
-                                                                marginBottom: 5,
-                                                            }}
-                                                        >
-                                                            <RadioButtonInput
-                                                                obj={option}
-                                                                index={index}
-                                                                isSelected={
-                                                                    radioGxSelected === index
-                                                                }
-                                                                onPress={() =>
-                                                                    setRadioGxSelected(index)
-                                                                }
-                                                                buttonSize={15}
-                                                                buttonInnerColor={"black"}
-                                                                buttonOuterColor={"black"}
-                                                            />
-                                                            <RadioButtonLabel
-                                                                obj={option}
-                                                                index={index}
-                                                                onPress={() =>
-                                                                    setRadioGxSelected(index)
-                                                                }
-                                                                labelStyle={{
-                                                                    fontSize: RFPercentage(2.2),
-                                                                    marginLeft: 5,
-                                                                }}
-                                                            />
-                                                        </RadioButton>
-                                                    </View>
-                                                ))}
-                                            </RadioForm>
-                                            <RadioForm formHorizontal={true} animation={true}>
-                                                {radioGxOptions.slice(2, 4).map((option, index) => (
-                                                    <View key={index + 2}>
-                                                        <RadioButton
-                                                            labelHorizontal={true}
-                                                            wrapStyle={{
-                                                                marginLeft: 10,
-                                                                marginRight: 10,
-                                                            }}
-                                                        >
-                                                            <RadioButtonInput
-                                                                obj={option}
-                                                                index={index + 2}
-                                                                isSelected={
-                                                                    radioGxSelected === index + 2
-                                                                }
-                                                                onPress={() =>
-                                                                    setRadioGxSelected(index + 2)
-                                                                }
-                                                                buttonSize={15}
-                                                                buttonInnerColor={"black"}
-                                                                buttonOuterColor={"black"}
-                                                            />
-                                                            <RadioButtonLabel
-                                                                obj={option}
-                                                                index={index + 2}
-                                                                onPress={() =>
-                                                                    setRadioGxSelected(index + 2)
-                                                                }
-                                                                labelStyle={{
-                                                                    fontSize: RFPercentage(2.2),
-                                                                    marginLeft: 5,
-                                                                }}
-                                                            />
-                                                        </RadioButton>
-                                                    </View>
-                                                ))}
-                                            </RadioForm>
-                                            {radioGxSelected === 1 && (
-                                                <View style={{ paddingLeft: 20, marginTop: 5 }}>
-                                                    <Text
-                                                        style={[
-                                                            TextSize.normalSize,
-                                                            {
-                                                                marginBottom: 5,
-                                                            },
-                                                        ]}
+                                                        compact={true}
                                                     >
-                                                        스쿼시 개인 수업 가능한 시간대
-                                                    </Text>
+                                                        PT
+                                                    </Button>
+                                                </View>
+                                                <View
+                                                    style={{
+                                                        flexDirection: "row",
+                                                        alignItems: "center",
+                                                    }}
+                                                >
+                                                    <RadioButton value={1} color="#0099ff" />
+                                                    <Button
+                                                        mode="text"
+                                                        onPress={() => {
+                                                            setRadioSelected(1);
+                                                            setRadioGxSelected(-1);
+                                                            setPtStartTime("");
+                                                            setPtEndTime("");
+                                                        }}
+                                                        labelStyle={{
+                                                            marginHorizontal: 5,
+                                                            marginVertical: 5,
+                                                        }}
+                                                        compact={true}
+                                                    >
+                                                        GX
+                                                    </Button>
+                                                </View>
+                                            </View>
+                                        </RadioButton.Group>
+                                        {radioSelected === 0 ? (
+                                            <View
+                                                style={{
+                                                    marginVertical: 20,
+                                                    flexDirection: "row",
+                                                    alignItems: "center",
+                                                    paddingLeft: 40,
+                                                }}
+                                            >
+                                                <TextInput
+                                                    label="시작"
+                                                    mode="outlined"
+                                                    dense={true}
+                                                    style={{ flex: 1 }}
+                                                    value={ptStartTime}
+                                                    onChangeText={setPtStartTime}
+                                                    keyboardType="number-pad"
+                                                    placeholder="00"
+                                                    maxLength={2}
+                                                />
+                                                <Text
+                                                    style={[
+                                                        TextSize.largeSize,
+                                                        {
+                                                            flex: 1,
+                                                            marginLeft: 5,
+                                                        },
+                                                    ]}
+                                                >
+                                                    시부터
+                                                </Text>
+                                                <TextInput
+                                                    label="종료"
+                                                    mode="outlined"
+                                                    dense={true}
+                                                    style={{ flex: 1 }}
+                                                    value={ptEndTime}
+                                                    onChangeText={setPtEndTime}
+                                                    keyboardType="number-pad"
+                                                    placeholder={"24"}
+                                                    maxLength={2}
+                                                />
+                                                <Text
+                                                    style={[
+                                                        TextSize.largeSize,
+                                                        {
+                                                            flex: 1,
+                                                            marginLeft: 5,
+                                                        },
+                                                    ]}
+                                                >
+                                                    시까지
+                                                </Text>
+                                            </View>
+                                        ) : radioSelected === 1 ? (
+                                            <View
+                                                style={{
+                                                    paddingHorizontal: 40,
+                                                }}
+                                            >
+                                                <RadioButton.Group
+                                                    value={radioGxSelected}
+                                                    onValueChange={(value) =>
+                                                        setRadioGxSelected(value)
+                                                    }
+                                                >
                                                     <View
                                                         style={{
                                                             flexDirection: "row",
                                                             alignItems: "center",
                                                         }}
                                                     >
-                                                        <TextInput
-                                                            style={[
-                                                                AuthStyles.textInput,
-                                                                { flex: 1 },
-                                                            ]}
-                                                            value={ptStartTime}
-                                                            onChangeText={setPtStartTime}
-                                                            keyboardType="number-pad"
-                                                            placeholder={"00"}
-                                                            maxLength={2}
-                                                        />
-                                                        <Text
-                                                            style={[
-                                                                TextSize.largeSize,
-                                                                {
-                                                                    flex: 1,
-                                                                    marginLeft: 5,
-                                                                },
-                                                            ]}
+                                                        <View
+                                                            style={{
+                                                                flex: 1,
+                                                                flexDirection: "row",
+                                                                alignItems: "center",
+                                                            }}
                                                         >
-                                                            시부터
-                                                        </Text>
-                                                        <TextInput
-                                                            style={[
-                                                                AuthStyles.textInput,
-                                                                { flex: 1 },
-                                                            ]}
-                                                            value={ptEndTime}
-                                                            onChangeText={setPtEndTime}
-                                                            keyboardType="number-pad"
-                                                            placeholder={"24"}
-                                                            maxLength={2}
-                                                        />
-                                                        <Text
-                                                            style={[
-                                                                TextSize.largeSize,
-                                                                {
-                                                                    flex: 1,
-                                                                    marginLeft: 5,
-                                                                },
-                                                            ]}
+                                                            <RadioButton
+                                                                value={0}
+                                                                color="#0099ff"
+                                                            />
+                                                            <Button
+                                                                mode="text"
+                                                                onPress={() => {
+                                                                    setRadioGxSelected(0);
+                                                                }}
+                                                                labelStyle={{
+                                                                    marginHorizontal: 5,
+                                                                    marginVertical: 5,
+                                                                    fontSize: RFPercentage(2),
+                                                                }}
+                                                                compact={true}
+                                                            >
+                                                                스피닝
+                                                            </Button>
+                                                        </View>
+                                                        <View
+                                                            style={{
+                                                                flex: 1,
+                                                                flexDirection: "row",
+                                                                alignItems: "center",
+                                                            }}
                                                         >
-                                                            시까지
-                                                        </Text>
+                                                            <RadioButton
+                                                                value={1}
+                                                                color="#0099ff"
+                                                            />
+                                                            <Button
+                                                                mode="text"
+                                                                onPress={() => {
+                                                                    setRadioGxSelected(1);
+                                                                }}
+                                                                labelStyle={{
+                                                                    marginHorizontal: 5,
+                                                                    marginVertical: 5,
+                                                                    fontSize: RFPercentage(2),
+                                                                }}
+                                                                compact={true}
+                                                            >
+                                                                스쿼시
+                                                            </Button>
+                                                        </View>
                                                     </View>
-                                                </View>
-                                            )}
-                                        </View>
-                                    ) : null}
+                                                    <View
+                                                        style={{
+                                                            flexDirection: "row",
+                                                            alignItems: "center",
+                                                        }}
+                                                    >
+                                                        <View
+                                                            style={{
+                                                                flex: 1,
+                                                                flexDirection: "row",
+                                                                alignItems: "center",
+                                                            }}
+                                                        >
+                                                            <RadioButton
+                                                                value={2}
+                                                                color="#0099ff"
+                                                            />
+                                                            <Button
+                                                                mode="text"
+                                                                onPress={() => {
+                                                                    setRadioGxSelected(2);
+                                                                }}
+                                                                labelStyle={{
+                                                                    marginHorizontal: 5,
+                                                                    marginVertical: 5,
+                                                                    fontSize: RFPercentage(2),
+                                                                }}
+                                                                compact={true}
+                                                            >
+                                                                필라테스
+                                                            </Button>
+                                                        </View>
+                                                        <View
+                                                            style={{
+                                                                flex: 1,
+                                                                flexDirection: "row",
+                                                                alignItems: "center",
+                                                            }}
+                                                        >
+                                                            <RadioButton
+                                                                value={3}
+                                                                color="#0099ff"
+                                                            />
+                                                            <Button
+                                                                mode="text"
+                                                                onPress={() => {
+                                                                    setRadioGxSelected(3);
+                                                                }}
+                                                                labelStyle={{
+                                                                    marginHorizontal: 5,
+                                                                    marginVertical: 5,
+                                                                    fontSize: RFPercentage(2),
+                                                                }}
+                                                                compact={true}
+                                                            >
+                                                                GX
+                                                            </Button>
+                                                        </View>
+                                                    </View>
+                                                </RadioButton.Group>
+                                                {radioGxSelected === 1 && (
+                                                    <View style={{ paddingLeft: 20, marginTop: 5 }}>
+                                                        <Text style={[TextSize.normalSize]}>
+                                                            스쿼시 개인 수업 가능한 시간대
+                                                        </Text>
+                                                        <View
+                                                            style={{
+                                                                flexDirection: "row",
+                                                                alignItems: "center",
+                                                            }}
+                                                        >
+                                                            <TextInput
+                                                                label="시작"
+                                                                mode="outlined"
+                                                                dense={true}
+                                                                style={{ flex: 1 }}
+                                                                value={ptStartTime}
+                                                                onChangeText={setPtStartTime}
+                                                                keyboardType="number-pad"
+                                                                placeholder="00"
+                                                                maxLength={2}
+                                                            />
+                                                            <Text
+                                                                style={[
+                                                                    TextSize.largeSize,
+                                                                    {
+                                                                        flex: 1,
+                                                                        marginLeft: 5,
+                                                                    },
+                                                                ]}
+                                                            >
+                                                                시부터
+                                                            </Text>
+                                                            <TextInput
+                                                                label="종료"
+                                                                dense={true}
+                                                                mode="outlined"
+                                                                style={{ flex: 1 }}
+                                                                value={ptEndTime}
+                                                                onChangeText={setPtEndTime}
+                                                                keyboardType="number-pad"
+                                                                placeholder={"24"}
+                                                                maxLength={2}
+                                                            />
+                                                            <Text
+                                                                style={[
+                                                                    TextSize.largeSize,
+                                                                    {
+                                                                        flex: 1,
+                                                                        marginLeft: 5,
+                                                                    },
+                                                                ]}
+                                                            >
+                                                                시까지
+                                                            </Text>
+                                                        </View>
+                                                    </View>
+                                                )}
+                                            </View>
+                                        ) : null}
+                                    </View>
                                 </View>
-                            </View>
-                        </TouchableOpacity>
-                    </Modal>
-                </View>
-                {className[0] === "Need to Set Up" ? undefined : (
-                    <View>
-                        <Text style={TextSize.largeSize}>오늘 수업</Text>
-                        {loading ? (
-                            <Text
-                                style={[
-                                    TextSize.normalSize,
-                                    {
-                                        marginBottom: 5,
-                                        marginLeft: 7,
-                                    },
-                                ]}
-                            >
-                                로딩 중
-                            </Text>
-                        ) : (
-                            renderClass(todayClassInfo)
-                        )}
-                        <Text style={TextSize.largeSize}>내일 수업</Text>
-                        {loading ? (
-                            <Text
-                                style={[
-                                    TextSize.normalSize,
-                                    {
-                                        marginBottom: 5,
-                                        marginLeft: 7,
-                                    },
-                                ]}
-                            >
-                                로딩 중
-                            </Text>
-                        ) : (
-                            renderClass(tomorrowClassInfo)
-                        )}
+                            </TouchableOpacity>
+                        </Modal>
                     </View>
-                )}
-            </View>
+                    {className[0] === "Need to Set Up" ? undefined : (
+                        <View>
+                            <Text style={TextSize.largeSize}>오늘 수업</Text>
+                            {loading ? (
+                                <Text
+                                    style={[
+                                        TextSize.normalSize,
+                                        {
+                                            marginBottom: 5,
+                                            marginLeft: 7,
+                                        },
+                                    ]}
+                                >
+                                    로딩 중
+                                </Text>
+                            ) : (
+                                renderClass(todayClassInfo)
+                            )}
+                            <Text style={TextSize.largeSize}>내일 수업</Text>
+                            {loading ? (
+                                <Text
+                                    style={[
+                                        TextSize.normalSize,
+                                        {
+                                            marginBottom: 5,
+                                            marginLeft: 7,
+                                        },
+                                    ]}
+                                >
+                                    로딩 중
+                                </Text>
+                            ) : (
+                                renderClass(tomorrowClassInfo)
+                            )}
+                        </View>
+                    )}
+                </View>
+            </Surface>
         </SafeAreaView>
     );
 };

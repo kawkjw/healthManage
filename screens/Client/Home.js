@@ -64,20 +64,9 @@ export default Home = ({ navigation, route }) => {
         <SafeAreaView style={[MyStyles.container, { justifyContent: "center" }]}>
             <StatusBar barStyle={Platform.OS === "ios" ? "dark-content" : "default"} />
             <View style={{ alignItems: "center" }}>
-                <Surface
-                    style={{
-                        elevation: 6,
-                        marginBottom: 20,
-                        borderRadius: 20,
-                    }}
-                >
+                <Surface style={MyStyles.surface}>
                     <TouchableOpacity
-                        style={{
-                            width: wp("90%"),
-                            aspectRatio: 1,
-                            alignItems: "center",
-                            justifyContent: "center",
-                        }}
+                        style={MyStyles.menuRatio1}
                         onPress={() => navigation.navigate("Profile")}
                     >
                         <Image
@@ -88,40 +77,18 @@ export default Home = ({ navigation, route }) => {
                         />
                     </TouchableOpacity>
                 </Surface>
-                <Surface
-                    style={{
-                        elevation: 6,
-                        marginBottom: 20,
-                        borderRadius: 20,
-                    }}
-                >
+                <Surface style={MyStyles.surface}>
                     <TouchableOpacity
-                        style={{
-                            width: wp("90%"),
-                            height: hp("10%"),
-                            alignItems: "center",
-                            justifyContent: "center",
-                        }}
+                        style={MyStyles.menu}
                         onPress={() => navigation.navigate("Menu")}
                     >
                         <Text style={TextSize.largeSize}>메뉴</Text>
                     </TouchableOpacity>
                 </Surface>
 
-                <Surface
-                    style={{
-                        elevation: 6,
-                        marginBottom: 20,
-                        borderRadius: 20,
-                    }}
-                >
+                <Surface style={MyStyles.surface}>
                     <TouchableOpacity
-                        style={{
-                            width: wp("90%"),
-                            height: hp("10%"),
-                            alignItems: "center",
-                            justifyContent: "center",
-                        }}
+                        style={MyStyles.menu}
                         onPress={() => {
                             Linking.openURL("tel:12345678");
                         }}

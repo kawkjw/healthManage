@@ -1,7 +1,6 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
     Text,
-    SafeAreaView,
     View,
     TouchableOpacity,
     FlatList,
@@ -12,7 +11,6 @@ import {
     Alert,
     Image,
     Linking,
-    ActivityIndicator,
 } from "react-native";
 import myBase, { arrayDelete, arrayUnion, db, fieldDelete } from "../../../config/MyBase";
 import {
@@ -31,6 +29,7 @@ import RadioForm, {
     RadioButtonInput,
     RadioButtonLabel,
 } from "react-native-simple-radio-button";
+import { ActivityIndicator, Badge, Button, Surface } from "react-native-paper";
 
 export default PT = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -138,7 +137,9 @@ export default PT = ({ navigation, route }) => {
                         }
                     }}
                 >
-                    <Text style={TextSize.largeSize}>{selectedMonth}월 설정</Text>
+                    <Text style={[TextSize.largeSize, { color: "white" }]}>
+                        {selectedMonth}월 설정
+                    </Text>
                 </TouchableOpacity>
             ),
         });
@@ -762,7 +763,7 @@ export default PT = ({ navigation, route }) => {
     };
 
     return (
-        <SafeAreaView>
+        <View style={{ flex: 1 }}>
             <View style={{ flexDirection: "row", height: hp("5%") }}>
                 <View
                     style={{
@@ -808,7 +809,15 @@ export default PT = ({ navigation, route }) => {
                 data={data}
                 windowSize={1}
                 renderItem={({ item }) => (
-                    <View style={{ flex: 1, flexDirection: "column", margin: 5 }}>
+                    <Surface
+                        style={{
+                            flex: 1,
+                            flexDirection: "column",
+                            margin: 5,
+                            elevation: 4,
+                            borderRadius: 10,
+                        }}
+                    >
                         <TouchableOpacity
                             style={[
                                 styles.day,
@@ -825,28 +834,21 @@ export default PT = ({ navigation, route }) => {
                             disabled={!item.pressable}
                         >
                             {item.hasClass && (
-                                <View
-                                    style={{
-                                        position: "absolute",
-                                        backgroundColor: "red",
-                                        width: wp("3%"),
-                                        aspectRatio: 1,
-                                        borderRadius: 30,
-                                        top: 5,
-                                        right: 5,
-                                    }}
+                                <Badge
+                                    visible={true}
+                                    size={10}
+                                    style={{ position: "absolute", top: 7, right: 5 }}
                                 />
                             )}
                             {item.waitConfirm && (
-                                <View
+                                <Badge
+                                    visible={true}
+                                    size={10}
                                     style={{
                                         position: "absolute",
-                                        backgroundColor: "blue",
-                                        width: wp("3%"),
-                                        aspectRatio: 1,
-                                        borderRadius: 30,
-                                        top: 5,
+                                        top: 7,
                                         right: 5,
+                                        backgroundColor: "blue",
                                     }}
                                 />
                             )}
@@ -878,12 +880,13 @@ export default PT = ({ navigation, route }) => {
                                 </Text>
                             </View>
                         </TouchableOpacity>
-                    </View>
+                    </Surface>
                 )}
                 numColumns={7}
                 keyExtractor={(item, index) => index}
                 scrollEnabled={false}
             />
+            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
             <SegmentedPicker
                 ref={picker}
                 onConfirm={(select) => {
@@ -917,15 +920,17 @@ export default PT = ({ navigation, route }) => {
                         backgroundColor: "white",
                     }}
                 >
-                    <View style={{ flexDirection: "row", height: hp("5%") }}>
-                        <TouchableOpacity
-                            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+                    <View style={{ flexDirection: "row", backgroundColor: "#3366cc" }}>
+                        <Button
                             onPress={() => alertWhenTableClose()}
+                            labelStyle={{ color: "white", fontSize: RFPercentage(2.2) }}
                         >
-                            <Text style={TextSize.largeSize}>닫기</Text>
-                        </TouchableOpacity>
+                            닫기
+                        </Button>
                         <View style={{ flex: 6, alignItems: "center", justifyContent: "center" }}>
-                            <Text style={TextSize.largeSize}>{selectedDate + "일"}</Text>
+                            <Text style={[TextSize.largeSize, { color: "white" }]}>
+                                {selectedDate + "일"}
+                            </Text>
                         </View>
                         <View style={{ flex: 1 }} />
                     </View>
@@ -937,10 +942,7 @@ export default PT = ({ navigation, route }) => {
                                 justifyContent: "center",
                             }}
                         >
-                            <Image
-                                style={{ width: 50, height: 50 }}
-                                source={require("../../../assets/loading.gif")}
-                            />
+                            <ActivityIndicator animating={true} color="black" size="large" />
                         </View>
                     ) : (
                         <ScrollView
@@ -955,23 +957,15 @@ export default PT = ({ navigation, route }) => {
                             {availTimeList.map((availTime, index) => (
                                 <View
                                     key={index}
-                                    style={[
-                                        {
-                                            flex: 1,
-                                            width: width,
-                                            height: hp("10%"),
-                                            borderBottomWidth: 1,
-                                            borderBottomColor: "grey",
-                                            flexDirection: "row",
-                                            paddingHorizontal: 10,
-                                        },
-                                        index === 0
-                                            ? {
-                                                  borderTopWidth: 1,
-                                                  borderTopColor: "grey",
-                                              }
-                                            : undefined,
-                                    ]}
+                                    style={{
+                                        flex: 1,
+                                        width: width,
+                                        height: hp("10%"),
+                                        borderBottomWidth: 1,
+                                        borderBottomColor: "grey",
+                                        flexDirection: "row",
+                                        paddingHorizontal: 10,
+                                    }}
                                 >
                                     <View
                                         style={{
@@ -1250,18 +1244,24 @@ export default PT = ({ navigation, route }) => {
                             <ActivityIndicator color="black" size={60} />
                         </View>
                     )}
-                    <View style={{ flexDirection: "row", height: hp("5%") }}>
-                        <TouchableOpacity
-                            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+                    <View
+                        style={{
+                            flexDirection: "row",
+                            backgroundColor: "#3366cc",
+                        }}
+                    >
+                        <Button
                             onPress={() => alertWhenClose()}
+                            labelStyle={{ color: "white", fontSize: RFPercentage(2.2) }}
                         >
-                            <Text style={TextSize.largeSize}>닫기</Text>
-                        </TouchableOpacity>
+                            닫기
+                        </Button>
                         <View style={{ flex: 6, alignItems: "center", justifyContent: "center" }}>
-                            <Text style={TextSize.largeSize}>{selectedMonth + "월달 설정"}</Text>
+                            <Text style={[TextSize.largeSize, { color: "white" }]}>
+                                {selectedMonth + "월달 설정"}
+                            </Text>
                         </View>
-                        <TouchableOpacity
-                            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+                        <Button
                             onPress={() => {
                                 if (availList.includes(null)) {
                                     Alert.alert(
@@ -1279,9 +1279,10 @@ export default PT = ({ navigation, route }) => {
                                     );
                                 }
                             }}
+                            labelStyle={{ color: "white", fontSize: RFPercentage(2.2) }}
                         >
-                            <Text style={TextSize.largeSize}>설정</Text>
-                        </TouchableOpacity>
+                            설정
+                        </Button>
                     </View>
                     <View style={{ marginTop: 10 }}>
                         <RadioForm formHorizontal={true} animation={true}>
@@ -1300,8 +1301,8 @@ export default PT = ({ navigation, route }) => {
                                                 option.func();
                                             }}
                                             buttonSize={15}
-                                            buttonInnerColor="black"
-                                            buttonOuterColor="black"
+                                            buttonInnerColor="#0099ff"
+                                            buttonOuterColor="#0099ff"
                                         />
                                         <RadioButtonLabel
                                             obj={option}
@@ -1482,7 +1483,7 @@ export default PT = ({ navigation, route }) => {
                     </ScrollView>
                 </View>
             </Modal>
-        </SafeAreaView>
+        </View>
     );
 };
 
@@ -1493,14 +1494,12 @@ const styles = StyleSheet.create({
         alignItems: "center",
         height: wp("14%"),
         backgroundColor: "grey",
-        borderWidth: 1,
         borderRadius: 10,
     },
     availButton: {
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
-        borderWidth: 1,
         borderRadius: RFPercentage(2.5),
         borderColor: "grey",
         ...Platform.select({

@@ -5,12 +5,13 @@ import {
     TouchableOpacity,
     StatusBar,
     Platform,
-    ScrollView,
+    View,
     Alert,
 } from "react-native";
 import { MyStyles, TextSize } from "../../css/MyStyles";
 import * as Notifications from "expo-notifications";
 import myBase, { db } from "../../config/MyBase";
+import { Surface } from "react-native-paper";
 
 export default Home = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
@@ -140,24 +141,21 @@ export default Home = ({ navigation, route }) => {
     return (
         <SafeAreaView style={MyStyles.container}>
             <StatusBar barStyle={Platform.OS === "ios" ? "dark-content" : "default"} />
-            <ScrollView
-                style={{ flex: 1, alignSelf: "stretch", paddingVertical: 10 }}
-                contentContainerStyle={{ alignItems: "center" }}
-                showsVerticalScrollIndicator={false}
-            >
-                <TouchableOpacity
-                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
-                    onPress={() => navigation.navigate("Profile")}
-                >
-                    <Text style={TextSize.largeSize}>내 정보</Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
-                    onPress={() => goMyClass()}
-                >
-                    <Text style={TextSize.largeSize}>수업 정보</Text>
-                </TouchableOpacity>
-            </ScrollView>
+            <View style={{ marginTop: 10 }}>
+                <Surface style={MyStyles.surface}>
+                    <TouchableOpacity
+                        style={MyStyles.menu}
+                        onPress={() => navigation.navigate("Profile")}
+                    >
+                        <Text style={TextSize.largeSize}>내 정보</Text>
+                    </TouchableOpacity>
+                </Surface>
+                <Surface style={MyStyles.surface}>
+                    <TouchableOpacity style={MyStyles.menu} onPress={() => goMyClass()}>
+                        <Text style={TextSize.largeSize}>수업 정보</Text>
+                    </TouchableOpacity>
+                </Surface>
+            </View>
         </SafeAreaView>
     );
 };

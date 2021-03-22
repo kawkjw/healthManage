@@ -13,6 +13,7 @@ import { getHoliday } from "../../../config/hooks";
 import { TextSize } from "../../../css/MyStyles";
 import Modal from "react-native-modal";
 import { RFPercentage } from "react-native-responsive-fontsize";
+import { ActivityIndicator, Button, Surface } from "react-native-paper";
 
 export default GX = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
@@ -284,7 +285,15 @@ export default GX = ({ navigation, route }) => {
                 data={data}
                 windowSize={1}
                 renderItem={({ item }) => (
-                    <View style={{ flex: 1, flexDirection: "column", margin: 5 }}>
+                    <Surface
+                        style={{
+                            flex: 1,
+                            flexDirection: "column",
+                            margin: 5,
+                            elevation: 4,
+                            borderRadius: 10,
+                        }}
+                    >
                         <TouchableOpacity
                             style={[
                                 styles.day,
@@ -313,7 +322,7 @@ export default GX = ({ navigation, route }) => {
                                 {item.id}
                             </Text>
                         </TouchableOpacity>
-                    </View>
+                    </Surface>
                 )}
                 numColumns={7}
                 keyExtractor={(item, index) => index}
@@ -353,18 +362,20 @@ export default GX = ({ navigation, route }) => {
                         backgroundColor: "white",
                     }}
                 >
-                    <View style={{ flexDirection: "row", height: hp("5%"), borderBottomWidth: 1 }}>
-                        <TouchableOpacity
-                            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+                    <View style={{ flexDirection: "row", backgroundColor: "#3366cc" }}>
+                        <Button
                             onPress={() => {
                                 setModalClassInfo(false);
                                 setSelectedDate(0);
                             }}
+                            labelStyle={[TextSize.largeSize, { color: "white" }]}
                         >
-                            <Text style={TextSize.largeSize}>닫기</Text>
-                        </TouchableOpacity>
+                            닫기
+                        </Button>
                         <View style={{ flex: 6, alignItems: "center", justifyContent: "center" }}>
-                            <Text style={TextSize.largeSize}>{selectedDate + "일"}</Text>
+                            <Text style={[TextSize.largeSize, { color: "white" }]}>
+                                {selectedDate + "일"}
+                            </Text>
                         </View>
                         <View style={{ flex: 1 }} />
                     </View>
@@ -376,10 +387,7 @@ export default GX = ({ navigation, route }) => {
                                 justifyContent: "center",
                             }}
                         >
-                            <Image
-                                style={{ width: 50, height: 50 }}
-                                source={require("../../../assets/loading.gif")}
-                            />
+                            <ActivityIndicator animating={true} size="large" color="black" />
                         </View>
                     ) : (
                         classNameList.map((className, index) => (
@@ -439,23 +447,25 @@ export default GX = ({ navigation, route }) => {
                             backgroundColor: "white",
                         }}
                     >
-                        <View style={{ flexDirection: "row", height: hp("5%") }}>
-                            <TouchableOpacity
-                                style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+                        <View style={{ flexDirection: "row", backgroundColor: "#3366cc" }}>
+                            <Button
                                 onPress={() => {
                                     setModalClientInfo(false);
                                 }}
+                                labelStyle={[TextSize.largeSize, { color: "white" }]}
                             >
-                                <Text style={TextSize.largeSize}>닫기</Text>
-                            </TouchableOpacity>
+                                닫기
+                            </Button>
                             <View
                                 style={{ flex: 6, alignItems: "center", justifyContent: "center" }}
                             >
-                                <Text style={TextSize.largeSize}>고객 명단</Text>
+                                <Text style={[TextSize.largeSize, { color: "white" }]}>
+                                    고객 명단
+                                </Text>
                             </View>
                             <View style={{ flex: 1 }} />
                         </View>
-                        <View style={{ paddingHorizontal: 10 }}>
+                        <View style={{ paddingHorizontal: 10, marginTop: 10 }}>
                             {clientList.length === 0 ? (
                                 <Text
                                     style={[
@@ -539,7 +549,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         height: wp("14%"),
         backgroundColor: "grey",
-        borderWidth: 1,
         borderRadius: 10,
     },
 });

@@ -65,6 +65,12 @@ export const MyStyles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center",
     },
+    menuRatio1: {
+        width: wp("90%"),
+        aspectRatio: 1,
+        alignItems: "center",
+        justifyContent: "center",
+    },
 });
 
 export const AuthStyles = StyleSheet.create({

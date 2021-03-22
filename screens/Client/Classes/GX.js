@@ -17,7 +17,7 @@ import myBase, { arrayUnion, db } from "../../../config/MyBase";
 import moment from "moment";
 import { getHoliday } from "../../../config/hooks";
 import Modal from "react-native-modal";
-import { ActivityIndicator, Colors, Surface } from "react-native-paper";
+import { ActivityIndicator, Button, Colors, Surface } from "react-native-paper";
 
 export default GX = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
@@ -154,6 +154,7 @@ export default GX = ({ navigation, route }) => {
                         c["currentClient"] = data.currentClient;
                         c["maxClient"] = data.maxClient;
                         c["start"] = moment(start).format("HH:mm");
+                        c["startDate"] = start;
                         c["end"] = moment(end).format("HH:mm");
                         c["isToday"] = today.getDate() === selectDate;
                         list.push(c);
@@ -169,6 +170,7 @@ export default GX = ({ navigation, route }) => {
     }, [selectDate]);
 
     const reserveClass = async (cid) => {
+        const reserveDate = new Date();
         const classInDB = db
             .collection("classes")
             .doc(classname)
@@ -177,10 +179,26 @@ export default GX = ({ navigation, route }) => {
             .collection(selectDate.toString())
             .doc(cid);
         const { currentClient, maxClient, start, end, trainer } = (await classInDB.get()).data();
+        const sub = (start.toDate().getTime() - reserveDate.getTime()) / 60000;
+        console.log(sub);
         if (currentClient >= maxClient) {
             Alert.alert(
                 "경고",
                 "예약 가능한 자리가 없습니다.",
+                [
+                    {
+                        text: "확인",
+                        onPress: () => {
+                            setModalClass(false);
+                        },
+                    },
+                ],
+                { cancelable: false }
+            );
+        } else if (sub <= 180) {
+            Alert.alert(
+                "경고",
+                "수업 시작 3시간전까지만 예약 가능합니다.",
                 [
                     {
                         text: "확인",
@@ -354,16 +372,16 @@ export default GX = ({ navigation, route }) => {
                         backgroundColor: "rgb(250, 250, 250)",
                     }}
                 >
-                    <View style={{ flexDirection: "row", height: hp("5%") }}>
-                        <TouchableOpacity
-                            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+                    <View style={{ flexDirection: "row", backgroundColor: "#3366cc" }}>
+                        <Button
                             onPress={() => {
                                 setModalClass(false);
                                 setSelectDate(0);
                             }}
+                            labelStyle={[TextSize.largeSize, { color: "white" }]}
                         >
-                            <Text style={TextSize.largeSize}>닫기</Text>
-                        </TouchableOpacity>
+                            닫기
+                        </Button>
                         <View style={{ flex: 7 }} />
                     </View>
                     <ScrollView
@@ -405,7 +423,7 @@ export default GX = ({ navigation, route }) => {
                                             );
                                         }
                                     }}
-                                    disabled={c.isToday}
+                                    disabled={c.startDate.getTime() - today.getTime() < 1}
                                 >
                                     <Text style={[TextSize.largeSize, { marginBottom: 5 }]}>
                                         {selectDate}일 {c.start}~{c.end} ({c.currentClient}/

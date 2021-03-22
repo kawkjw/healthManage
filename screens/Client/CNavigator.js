@@ -415,7 +415,7 @@ const MyStack = () => {
                     <View
                         style={{
                             height: hp("80%"),
-                            backgroundColor: "rgba(255, 255, 255, 1)",
+                            backgroundColor: "white",
                             paddingBottom: 60,
                         }}
                     >

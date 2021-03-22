@@ -23,7 +23,8 @@ import { getHoliday } from "../../../config/hooks";
 import { TextSize } from "../../../css/MyStyles";
 import Modal from "react-native-modal";
 import { RFPercentage } from "react-native-responsive-fontsize";
-import { ActivityIndicator, Colors, Surface } from "react-native-paper";
+import { ActivityIndicator, Button, Colors, Surface } from "react-native-paper";
+import moment from "moment";
 
 export default OT = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -165,6 +166,10 @@ export default OT = ({ navigation, route }) => {
                     let ptClass = {};
                     ptClass["timeStr"] = snapshot.id;
                     ptClass["isAvail"] = snapshot.data().isAvail;
+                    ptClass["date"] = moment(
+                        `${yearMonthStr}-${selectedDate} ${snapshot.id.split(" ")[0]}`,
+                        "YYYY-MM-DD hh:mm"
+                    ).toDate();
                     if (snapshot.data().isAvail) {
                         ptClass["hasReserve"] = snapshot.data().hasReservation;
                         if (snapshot.data().hasReservation) {
@@ -513,18 +518,20 @@ export default OT = ({ navigation, route }) => {
                         backgroundColor: "white",
                     }}
                 >
-                    <View style={{ flexDirection: "row", height: hp("5%") }}>
-                        <TouchableOpacity
-                            style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
+                    <View style={{ flexDirection: "row", backgroundColor: "#3366cc" }}>
+                        <Button
                             onPress={() => {
                                 setModalTimeTable(false);
                                 setSelectedDate(0);
                             }}
+                            labelStyle={[TextSize.largeSize, { color: "white" }]}
                         >
-                            <Text style={TextSize.largeSize}>닫기</Text>
-                        </TouchableOpacity>
+                            닫기
+                        </Button>
                         <View style={{ flex: 6, alignItems: "center", justifyContent: "center" }}>
-                            <Text style={TextSize.largeSize}>{selectedDate + "일"}</Text>
+                            <Text style={[TextSize.largeSize, { color: "white" }]}>
+                                {selectedDate + "일"}
+                            </Text>
                         </View>
                         <View style={{ flex: 1 }} />
                     </View>
@@ -536,10 +543,7 @@ export default OT = ({ navigation, route }) => {
                                 justifyContent: "center",
                             }}
                         >
-                            <Image
-                                style={{ width: 50, height: 50 }}
-                                source={require("../../../assets/loading.gif")}
-                            />
+                            <ActivityIndicator animating={true} size="large" color="black" />
                         </View>
                     ) : (
                         <ScrollView
@@ -622,7 +626,46 @@ export default OT = ({ navigation, route }) => {
                                                 availTime.isToday ? null : (
                                                     <View style={{ flex: 1 }} />
                                                 )
-                                            ) : availTime.isToday ? null : (
+                                            ) : availTime.isToday ? (
+                                                (availTime.date.getTime() - today.getTime()) /
+                                                    60000 <=
+                                                180 ? null : (
+                                                    <TouchableOpacity
+                                                        style={[
+                                                            styles.availButton,
+                                                            {
+                                                                backgroundColor: "white",
+                                                                height: hp("7%"),
+                                                            },
+                                                        ]}
+                                                        onPress={() => {
+                                                            Alert.alert(
+                                                                selectedDate.toString() +
+                                                                    "일 " +
+                                                                    availTime.timeStr,
+                                                                "확실합니까?",
+                                                                [
+                                                                    {
+                                                                        text: "취소",
+                                                                    },
+                                                                    {
+                                                                        text: "확인",
+                                                                        onPress: () =>
+                                                                            reservePTClass(
+                                                                                availTime.timeStr
+                                                                            ),
+                                                                    },
+                                                                ],
+                                                                { cancelable: false }
+                                                            );
+                                                        }}
+                                                    >
+                                                        <Text style={TextSize.normalSize}>
+                                                            예약
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                )
+                                            ) : (
                                                 <TouchableOpacity
                                                     style={[
                                                         styles.availButton,

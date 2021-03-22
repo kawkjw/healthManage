@@ -1,5 +1,6 @@
 import React from "react";
-import { View, StyleSheet, StatusBar, Image, Platform } from "react-native";
+import { View, StyleSheet, StatusBar, Platform } from "react-native";
+import { ActivityIndicator, Colors } from "react-native-paper";
 
 export default LoadingScreen = () => {
     return (
@@ -12,9 +13,11 @@ export default LoadingScreen = () => {
                     justifyContent: "center",
                 }}
             >
-                <Image
+                <ActivityIndicator
                     style={{ width: 50, height: 50 }}
-                    source={require("../assets/loading.gif")}
+                    animating={true}
+                    color={Colors.black}
+                    size="large"
                 />
             </View>
         </View>

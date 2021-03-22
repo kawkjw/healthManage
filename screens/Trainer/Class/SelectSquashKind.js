@@ -1,29 +1,40 @@
 import React from "react";
-import { SafeAreaView, Text, TouchableOpacity, View } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
+import { Surface } from "react-native-paper";
 import { MyStyles, TextSize } from "../../../css/MyStyles";
+import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 export default SelectSquashKind = ({ navigation, route }) => {
     return (
-        <SafeAreaView style={MyStyles.container}>
-            <View style={{ marginTop: 10 }} />
-            <TouchableOpacity
-                style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
-                onPress={() =>
-                    navigation.navigate("PT", { ptName: "squash", limit: route.params.limit })
-                }
-            >
-                <Text style={TextSize.largeSize}>개인 수업</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-                style={[MyStyles.phoneButton, MyStyles.buttonShadow, { marginBottom: 20 }]}
-                onPress={() =>
-                    navigation.navigate("GX", {
-                        className: ["squash"],
-                    })
-                }
-            >
-                <Text style={TextSize.largeSize}>그룹 수업</Text>
-            </TouchableOpacity>
-        </SafeAreaView>
+        <View style={MyStyles.container}>
+            <View style={{ flex: 1, marginTop: 10 }}>
+                <Surface style={MyStyles.surface}>
+                    <TouchableOpacity
+                        style={MyStyles.menu}
+                        onPress={() =>
+                            navigation.navigate("PT", {
+                                ptName: "squash",
+                                limit: route.params.limit,
+                            })
+                        }
+                    >
+                        <Text style={TextSize.largeSize}>개인 수업</Text>
+                    </TouchableOpacity>
+                </Surface>
+                <Surface style={MyStyles.surface}>
+                    <TouchableOpacity
+                        style={MyStyles.menu}
+                        onPress={() =>
+                            navigation.navigate("GX", {
+                                className: ["squash"],
+                            })
+                        }
+                    >
+                        <Text style={TextSize.largeSize}>그룹 수업</Text>
+                    </TouchableOpacity>
+                </Surface>
+            </View>
+            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+        </View>
     );
 };
