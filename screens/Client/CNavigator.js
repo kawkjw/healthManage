@@ -27,7 +27,7 @@ import ExtendDate from "./Menus/ExtendDate";
 import SelectTrainer from "./Infos/SelectTrainer";
 import OT from "./Infos/OT";
 import { TextSize } from "../../css/MyStyles";
-import { displayedAt } from "../../config/hooks";
+import { displayedAt, checkBatchimEnding } from "../../config/hooks";
 import { Badge, Button, Card, Text } from "react-native-paper";
 
 const Stack = createStackNavigator();

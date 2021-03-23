@@ -16,10 +16,9 @@ import * as Permissions from "expo-permissions";
 import Modal from "react-native-modal";
 import * as Notifications from "expo-notifications";
 import myBase, { db } from "../../config/MyBase";
-import moment from "moment";
 import SelectSquashKind from "./Class/SelectSquashKind";
 import { TextSize } from "../../css/MyStyles";
-import { displayedAt } from "../../config/hooks";
+import { displayedAt, checkBatchimEnding } from "../../config/hooks";
 import { Badge, Button, Card } from "react-native-paper";
 
 const Stack = createStackNavigator();
