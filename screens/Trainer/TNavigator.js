@@ -353,6 +353,7 @@ const MyStack = () => {
                                             </Card.Content>
                                         </Card>
                                     ))}
+                                    <View style={{ height: hp("1%") }} />
                                 </ScrollView>
                             )}
                         </View>
