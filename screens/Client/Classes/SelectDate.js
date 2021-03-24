@@ -40,9 +40,8 @@ export default SelectDate = ({ navigation, route }) => {
             >
                 {sixDate.map((d, i) => {
                     return (
-                        <Surface style={MyStyles.surface}>
+                        <Surface key={i} style={MyStyles.surface}>
                             <TouchableOpacity
-                                key={i}
                                 style={MyStyles.menu}
                                 onPress={() => {
                                     if (classname === "pilates" || classname === "squash") {
