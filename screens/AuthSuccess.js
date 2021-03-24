@@ -10,6 +10,7 @@ import { AuthContext } from "./Auth";
 import { AuthStyles, TextSize } from "../css/MyStyles";
 import { registerForPushNotificationAsync } from "../config/MyExpo";
 import ANavigator from "./Admin/ANavigator";
+import { Button } from "react-native-paper";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
@@ -106,7 +107,7 @@ const MyStack = () => {
     const VerifyEmail = () => {
         return (
             <>
-                <StatusBar barStyle={Platform.OS === "ios" ? "dark-content" : "default"} />
+                <StatusBar barStyle="light-content" />
                 <View
                     style={{
                         flex: 1,
@@ -122,18 +123,20 @@ const MyStack = () => {
                         </Text>
                     </View>
                     <View style={{ flexDirection: "row" }}>
-                        <TouchableOpacity
-                            style={[AuthStyles.authButton, { marginRight: 5 }]}
+                        <Button
+                            mode="contained"
+                            style={{ flex: 1, marginRight: 5 }}
                             onPress={reSendVerification}
                         >
-                            <Text>재전송</Text>
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            style={[AuthStyles.authButton, { marginLeft: 5 }]}
+                            재전송
+                        </Button>
+                        <Button
+                            mode="contained"
+                            style={{ flex: 1, marginLeft: 5 }}
                             onPress={signOut}
                         >
-                            <Text>로그아웃</Text>
-                        </TouchableOpacity>
+                            로그아웃
+                        </Button>
                     </View>
                 </View>
             </>
@@ -148,7 +151,15 @@ const MyStack = () => {
                     options={{ headerShown: false }}
                 />
             ) : !isVerified ? (
-                <Stack.Screen name="Verify" component={VerifyEmail} />
+                <Stack.Screen
+                    name="Verify"
+                    component={VerifyEmail}
+                    options={{
+                        headerStyle: { backgroundColor: "#3366cc" },
+                        title: "이메일 인증",
+                        headerTitleStyle: { color: "white" },
+                    }}
+                />
             ) : isAdmin ? (
                 <Stack.Screen
                     name="Admin"

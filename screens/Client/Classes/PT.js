@@ -3,7 +3,6 @@ import {
     Alert,
     Dimensions,
     FlatList,
-    Image,
     Platform,
     ScrollView,
     StyleSheet,
@@ -25,6 +24,7 @@ import Modal from "react-native-modal";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { ActivityIndicator, Button, Colors, Surface } from "react-native-paper";
 import moment from "moment";
+import * as Notifications from "expo-notifications";
 
 export default PT = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -329,6 +329,21 @@ export default PT = ({ navigation, route }) => {
                         .collection(ptName === "pt" ? ptName : ptName + "pt")
                         .doc(ptId)
                         .update({ count: count - 1 });
+                    const identifier = await Notifications.scheduleNotificationAsync({
+                        content: {
+                            title: "수업 예약 미리 알림",
+                            body: "예약하신 PT 수업이 시작까지 2시간 남았습니다.",
+                            sound: "default",
+                            badge: 1,
+                        },
+                        trigger: new Date(
+                            selectedYear,
+                            selectedMonth - 1,
+                            selectedDate,
+                            Number(timeStr.split(":")[0]) - 2,
+                            0
+                        ),
+                    });
                     await pushNotificationsToPerson(
                         myBase.auth().currentUser.displayName,
                         trainerUid,
@@ -340,6 +355,7 @@ export default PT = ({ navigation, route }) => {
                                 year: selectedYear,
                                 month: selectedMonth,
                                 date: selectedDate,
+                                identifier: identifier,
                             },
                         }
                     );
@@ -635,14 +651,61 @@ export default PT = ({ navigation, route }) => {
                                                 (availTime.date.getTime() - today.getTime()) /
                                                     60000 <=
                                                 180 ? null : (
-                                                    <TouchableOpacity
-                                                        style={[
-                                                            styles.availButton,
-                                                            {
-                                                                backgroundColor: "white",
+                                                    <Surface
+                                                        style={{
+                                                            flex: 1,
+                                                            borderRadius: 15,
+                                                            elevation: 6,
+                                                        }}
+                                                    >
+                                                        <TouchableOpacity
+                                                            style={{
                                                                 height: hp("7%"),
-                                                            },
-                                                        ]}
+                                                                alignItems: "center",
+                                                                justifyContent: "center",
+                                                            }}
+                                                            onPress={() => {
+                                                                Alert.alert(
+                                                                    selectedDate.toString() +
+                                                                        "일 " +
+                                                                        availTime.timeStr,
+                                                                    "확실합니까?",
+                                                                    [
+                                                                        {
+                                                                            text: "취소",
+                                                                        },
+                                                                        {
+                                                                            text: "확인",
+                                                                            onPress: () =>
+                                                                                reservePTClass(
+                                                                                    availTime.timeStr
+                                                                                ),
+                                                                        },
+                                                                    ],
+                                                                    { cancelable: false }
+                                                                );
+                                                            }}
+                                                        >
+                                                            <Text style={TextSize.normalSize}>
+                                                                예약
+                                                            </Text>
+                                                        </TouchableOpacity>
+                                                    </Surface>
+                                                )
+                                            ) : (
+                                                <Surface
+                                                    style={{
+                                                        flex: 1,
+                                                        borderRadius: 15,
+                                                        elevation: 6,
+                                                    }}
+                                                >
+                                                    <TouchableOpacity
+                                                        style={{
+                                                            height: hp("7%"),
+                                                            alignItems: "center",
+                                                            justifyContent: "center",
+                                                        }}
                                                         onPress={() => {
                                                             Alert.alert(
                                                                 selectedDate.toString() +
@@ -669,40 +732,7 @@ export default PT = ({ navigation, route }) => {
                                                             예약
                                                         </Text>
                                                     </TouchableOpacity>
-                                                )
-                                            ) : (
-                                                <TouchableOpacity
-                                                    style={[
-                                                        styles.availButton,
-                                                        {
-                                                            backgroundColor: "white",
-                                                            height: hp("7%"),
-                                                        },
-                                                    ]}
-                                                    onPress={() => {
-                                                        Alert.alert(
-                                                            selectedDate.toString() +
-                                                                "일 " +
-                                                                availTime.timeStr,
-                                                            "확실합니까?",
-                                                            [
-                                                                {
-                                                                    text: "취소",
-                                                                },
-                                                                {
-                                                                    text: "확인",
-                                                                    onPress: () =>
-                                                                        reservePTClass(
-                                                                            availTime.timeStr
-                                                                        ),
-                                                                },
-                                                            ],
-                                                            { cancelable: false }
-                                                        );
-                                                    }}
-                                                >
-                                                    <Text style={TextSize.normalSize}>예약</Text>
-                                                </TouchableOpacity>
+                                                </Surface>
                                             )
                                         ) : availTime.isToday ? null : (
                                             <View style={{ flex: 1 }} />

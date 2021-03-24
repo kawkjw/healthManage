@@ -309,7 +309,8 @@ export default PT = ({ navigation, route }) => {
                         obj["isAvail"] = bool.data().isAvail;
                         obj["hasReserve"] = bool.data().hasReservation;
                         obj["notEditable"] =
-                            today > new Date(selectedYear, selectedMonth - 1, selectedDate);
+                            today >
+                            new Date(selectedYear, selectedMonth - 1, selectedDate, i - 3, 0);
                         if (bool.data().hasReservation) {
                             const { name, phoneNumber } = (
                                 await db.collection("users").doc(bool.data().clientUid).get()

@@ -18,6 +18,7 @@ import moment from "moment";
 import { getHoliday } from "../../../config/hooks";
 import Modal from "react-native-modal";
 import { ActivityIndicator, Button, Colors, Surface } from "react-native-paper";
+import * as Notifications from "expo-notifications";
 
 export default GX = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
@@ -252,6 +253,15 @@ export default GX = ({ navigation, route }) => {
                                     .doc(date)
                                     .set({ date: [selectDate.toString()] });
                             });
+                        await Notifications.scheduleNotificationAsync({
+                            content: {
+                                title: "수업 예약 미리 알림",
+                                body: "예약하신 수업 시작까지 2시간 남았습니다.",
+                                sound: "default",
+                                badge: 1,
+                            },
+                            trigger: new Date(start.toDate().getTime() - 120 * 60 * 1000),
+                        });
                         Alert.alert(
                             "성공",
                             "예약되었습니다.",
