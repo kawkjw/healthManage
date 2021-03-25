@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
 import { Alert, View, ScrollView, TouchableOpacity } from "react-native";
-import { MyStyles, TextSize } from "../../../css/MyStyles";
+import { MyStyles, TextSize, theme } from "../../../css/MyStyles";
 import myBase, { db } from "../../../config/MyBase";
 import { Surface, Text } from "react-native-paper";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
-import { theme } from "../../../App";
 
 export default SelectTrainer = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;

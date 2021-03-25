@@ -1,9 +1,8 @@
 import React from "react";
 import { Text, TouchableOpacity, ScrollView, View } from "react-native";
-import { MyStyles, TextSize } from "../../../css/MyStyles";
+import { MyStyles, TextSize, theme } from "../../../css/MyStyles";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { Surface } from "react-native-paper";
-import { theme } from "../../../App";
 
 export default Info = ({ navigation }) => {
     return (

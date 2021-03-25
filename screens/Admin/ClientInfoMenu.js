@@ -2,10 +2,9 @@ import React, { useContext, useEffect } from "react";
 import { ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { Surface } from "react-native-paper";
 import myBase, { db } from "../../config/MyBase";
-import { MyStyles, TextSize } from "../../css/MyStyles";
+import { MyStyles, TextSize, theme } from "../../css/MyStyles";
 import { AuthContext } from "../Auth";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
-import { theme } from "../../App";
 
 export default ClientInfoMenu = ({ navigation, route }) => {
     const { signOut } = useContext(AuthContext);

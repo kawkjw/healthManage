@@ -12,14 +12,13 @@ import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
 } from "react-native-responsive-screen";
-import { MyStyles, TextSize } from "../../../css/MyStyles";
+import { MyStyles, TextSize, theme } from "../../../css/MyStyles";
 import myBase, { arrayUnion, db } from "../../../config/MyBase";
 import moment from "moment";
 import { getHoliday } from "../../../config/hooks";
 import Modal from "react-native-modal";
 import { ActivityIndicator, Button, Colors, Surface } from "react-native-paper";
 import * as Notifications from "expo-notifications";
-import { theme } from "../../../App";
 
 export default GX = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;

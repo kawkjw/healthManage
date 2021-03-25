@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { db } from "../../../config/MyBase";
 import moment from "moment";
-import { MyStyles, TextSize } from "../../../css/MyStyles";
+import { MyStyles, TextSize, theme } from "../../../css/MyStyles";
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
@@ -12,7 +12,6 @@ import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import { pushNotificationsToPerson } from "../../../config/MyExpo";
 import { DataContext } from "../../Auth";
 import { ActivityIndicator, Surface } from "react-native-paper";
-import { theme } from "../../../App";
 
 export default ShowUser = ({ route }) => {
     const { classNames } = useContext(DataContext);

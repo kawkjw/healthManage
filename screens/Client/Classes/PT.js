@@ -19,13 +19,12 @@ import SegmentedPicker from "react-native-segmented-picker";
 import { MaterialIcons } from "@expo/vector-icons";
 import { pushNotificationsToPerson } from "../../../config/MyExpo";
 import { getHoliday } from "../../../config/hooks";
-import { TextSize } from "../../../css/MyStyles";
+import { TextSize, theme } from "../../../css/MyStyles";
 import Modal from "react-native-modal";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { ActivityIndicator, Button, Colors, Surface } from "react-native-paper";
 import moment from "moment";
 import * as Notifications from "expo-notifications";
-import { theme } from "../../../App";
 
 export default PT = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");

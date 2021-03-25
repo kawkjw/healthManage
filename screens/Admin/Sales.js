@@ -21,10 +21,9 @@ import moment from "moment";
 import { BarChart, XAxis, YAxis, Grid } from "react-native-svg-charts";
 import { Text as SvgText } from "react-native-svg";
 import { db } from "../../config/MyBase";
-import { TextSize } from "../../css/MyStyles";
+import { TextSize, theme } from "../../css/MyStyles";
 import { DataContext } from "../Auth";
 import { ActivityIndicator, Surface } from "react-native-paper";
-import { theme } from "../../App";
 
 export default Sales = ({ navigation, route }) => {
     const today = new Date();

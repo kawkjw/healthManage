@@ -19,11 +19,10 @@ import myBase, { db } from "../../../config/MyBase";
 import TimeTable from "../../../config/TimeTable";
 import { DataContext } from "../../Auth";
 import { getHoliday } from "../../../config/hooks";
-import { TextSize } from "../../../css/MyStyles";
+import { TextSize, theme } from "../../../css/MyStyles";
 import Modal from "react-native-modal";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { ActivityIndicator, Button, Surface } from "react-native-paper";
-import { theme } from "../../../App";
 
 export default ClassInfo = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");

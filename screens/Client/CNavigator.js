@@ -26,10 +26,9 @@ import * as Notifications from "expo-notifications";
 import ExtendDate from "./Menus/ExtendDate";
 import SelectTrainer from "./Infos/SelectTrainer";
 import OT from "./Infos/OT";
-import { TextSize } from "../../css/MyStyles";
+import { TextSize, theme } from "../../css/MyStyles";
 import { displayedAt, checkBatchimEnding } from "../../config/hooks";
 import { Badge, Button, Card, Text } from "react-native-paper";
-import { theme } from "../../App";
 
 const Stack = createStackNavigator();
 const MyStack = () => {

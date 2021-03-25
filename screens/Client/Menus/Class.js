@@ -1,11 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
 import { View, TouchableOpacity, ScrollView, Alert } from "react-native";
-import { MyStyles, TextSize } from "../../../css/MyStyles";
+import { MyStyles, TextSize, theme } from "../../../css/MyStyles";
 import myBase, { db } from "../../../config/MyBase";
 import { DataContext } from "../../Auth";
 import { Surface, Text } from "react-native-paper";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
-import { theme } from "../../../App";
 
 export default Class = ({ navigation }) => {
     const [memberships, setMemberships] = useState([]);

@@ -5,8 +5,7 @@ import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
 } from "react-native-responsive-screen";
-import { theme } from "../../App";
-import { MyStyles, TextSize } from "../../css/MyStyles";
+import { MyStyles, TextSize, theme } from "../../css/MyStyles";
 
 export default Menu = ({ navigation }) => {
     return (

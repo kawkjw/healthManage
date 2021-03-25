@@ -7,11 +7,10 @@ import CNavigator from "./Client/CNavigator";
 import LoadingScreen from "./LoadingScreen";
 import { Alert, StatusBar, Text, View, TouchableOpacity, Platform } from "react-native";
 import { AuthContext } from "./Auth";
-import { AuthStyles, TextSize } from "../css/MyStyles";
+import { TextSize, theme } from "../css/MyStyles";
 import { registerForPushNotificationAsync } from "../config/MyExpo";
 import ANavigator from "./Admin/ANavigator";
 import { Button } from "react-native-paper";
-import { theme } from "../App";
 
 const Stack = createStackNavigator();
 const MyStack = () => {

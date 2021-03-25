@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { TouchableOpacity, View, Keyboard } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
-import { theme } from "../../../App";
+import { theme } from "../../../css/MyStyles";
 
 export default FindUser = ({ navigation, route }) => {
     const [inputName, setInputName] = useState("");

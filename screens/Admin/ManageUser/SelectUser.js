@@ -6,9 +6,8 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { TextSize } from "../../../css/MyStyles";
+import { TextSize, theme } from "../../../css/MyStyles";
 import { ActivityIndicator, Surface } from "react-native-paper";
-import { theme } from "../../../App";
 
 export default SelectUser = ({ navigation, route }) => {
     const [findUsers, setFindUsers] = useState([]);

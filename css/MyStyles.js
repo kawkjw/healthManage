@@ -4,6 +4,12 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import { DefaultTheme } from "react-native-paper";
+
+export const theme = {
+    ...DefaultTheme,
+    colors: { ...DefaultTheme.colors, primary: "#263143", accent: "#374862" },
+};
 
 export const MyStyles = StyleSheet.create({
     container: {

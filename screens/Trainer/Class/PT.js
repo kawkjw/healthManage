@@ -22,7 +22,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { pushNotificationsToPerson } from "../../../config/MyExpo";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { getHoliday } from "../../../config/hooks";
-import { TextSize } from "../../../css/MyStyles";
+import { TextSize, theme } from "../../../css/MyStyles";
 import Modal from "react-native-modal";
 import RadioForm, {
     RadioButton,
@@ -30,7 +30,6 @@ import RadioForm, {
     RadioButtonLabel,
 } from "react-native-simple-radio-button";
 import { ActivityIndicator, Badge, Button, Surface } from "react-native-paper";
-import { theme } from "../../../App";
 
 export default PT = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");

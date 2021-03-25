@@ -21,6 +21,7 @@ import {
     Checkbox,
 } from "react-native-paper";
 import moment from "moment";
+import { theme } from "../../css/MyStyles";
 
 export default SignUp = ({ navigation }) => {
     const appVerifier = useRef(null);
@@ -28,13 +29,13 @@ export default SignUp = ({ navigation }) => {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [verificationId, setVerificationId] = useState("");
     const [verifyCode, setVerifyCode] = useState("");
-    const [email, setEmail] = useState("");
+    const [id, setId] = useState("");
     const [password, setPassword] = useState("");
     const [chkPassword, setChkPassword] = useState("");
     const [selected, setSelected] = useState(false);
     const [adminCode, setAdminCode] = useState("");
     const [checkEmail, setCheckEmail] = useState(false);
-    const [chkUsedEmail, setChkUsedEmail] = useState(false);
+    const [chkUsedId, setChkUsedId] = useState(false);
     const [checkPw, setCheckPw] = useState(false);
     const [correctPw, setCorrectPw] = useState(false);
     const [sexSelected, setSexSelected] = useState(-1);
@@ -104,19 +105,6 @@ export default SignUp = ({ navigation }) => {
         setCorrectPw(chkPwd(password));
     }, [password]);
 
-    const chkEmail = (str) => {
-        const reg_email = /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
-        if (!reg_email.test(str)) {
-            return false;
-        } else {
-            return true;
-        }
-    };
-
-    useEffect(() => {
-        setCheckEmail(chkEmail(email));
-    }, [email]);
-
     useEffect(() => {
         setPhoneNumber(
             phoneNumber
@@ -126,11 +114,11 @@ export default SignUp = ({ navigation }) => {
         );
     }, [phoneNumber]);
 
-    const checkUsedEmail = async () => {
-        if (email && checkEmail) {
+    const checkUsedId = async () => {
+        if (id) {
             await db
-                .collection("emails")
-                .where("email", "==", email)
+                .collection("ids")
+                .where("id", "==", id)
                 .get()
                 .then((snapshot) => {
                     let data = {};
@@ -138,20 +126,20 @@ export default SignUp = ({ navigation }) => {
                         data = doc.data();
                     });
                     if (Object.keys(data).length === 0) {
-                        setChkUsedEmail(true);
+                        setChkUsedId(true);
                         Alert.alert("성공", "사용하셔도 됩니다.", [{ text: "확인" }], {
                             cancelable: false,
                         });
                     } else {
                         Alert.alert(
                             "경고",
-                            "이미 사용된 이메일 주소 입니다.",
+                            "이미 사용된 아이디 입니다.",
                             [
                                 {
                                     text: "확인",
                                     onPress: () => {
-                                        setEmail("");
-                                        setChkUsedEmail(false);
+                                        setId("");
+                                        setChkUsedId(false);
                                     },
                                 },
                             ],
@@ -160,12 +148,8 @@ export default SignUp = ({ navigation }) => {
                     }
                 })
                 .catch((error) => console.log(error));
-        } else if (!email) {
-            Alert.alert("경고", "이메일 주소를 입력해주세요.", [{ text: "확인" }], {
-                cancelable: false,
-            });
         } else {
-            Alert.alert("경고", "잘못된 이메일 주소입니다.", [{ text: "확인" }], {
+            Alert.alert("경고", "아이디를 입력해주세요.", [{ text: "확인" }], {
                 cancelable: false,
             });
         }
@@ -193,7 +177,7 @@ export default SignUp = ({ navigation }) => {
         await signUp({
             name,
             phoneNumber,
-            email,
+            email: id + "@test.com",
             password,
             adminCode,
             verifyCode,
@@ -245,12 +229,15 @@ export default SignUp = ({ navigation }) => {
                         backgroundColor: "white",
                     }}
                 >
-                    <View style={{ height: hp("5%"), backgroundColor: "rgba(0, 0, 0, 0.1)" }}>
+                    <View style={{ height: hp("5%"), backgroundColor: theme.colors.primary }}>
                         <Button
                             onPress={() => setModalAddress(false)}
                             style={{ width: wp("10%") }}
                             mode="text"
-                            labelStyle={Platform.OS === "ios" ? { paddingVertical: 8 } : undefined}
+                            labelStyle={[
+                                Platform.OS === "ios" ? { paddingVertical: 8 } : undefined,
+                                { color: "white" },
+                            ]}
                         >
                             닫기
                         </Button>
@@ -338,35 +325,35 @@ export default SignUp = ({ navigation }) => {
                         </View>
                     </View>
                     <View style={{ marginBottom: 5 }}>
-                        <View style={{ flexDirection: "row" }}>
+                        <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
                             <View style={{ flex: 9 }}>
                                 <TextInput
-                                    label="이메일"
-                                    value={email}
-                                    onChangeText={setEmail}
+                                    label="아이디"
+                                    value={id}
+                                    onChangeText={setId}
                                     mode="outlined"
                                     style={{ marginBottom: 0 }}
                                     dense={true}
-                                    error={!checkEmail && email}
+                                    error={id.length < 8 && id}
                                     keyboardType="email-address"
                                 />
-                                {!checkEmail && email ? (
+                                {id.length < 8 && id ? (
                                     <HelperText type="error" visible={true} padding="none">
-                                        잘못된 이메일 형식입니다.
+                                        아이디는 8자 이상으로 해주시기 바랍니다.
                                     </HelperText>
                                 ) : null}
                             </View>
                             <Button
                                 style={{
                                     flex: 1,
-                                    marginTop: 5,
+                                    marginTop: 8,
                                     marginLeft: 6,
                                     justifyContent: "center",
                                 }}
-                                onPress={checkUsedEmail}
+                                onPress={checkUsedId}
                                 mode="contained"
                                 labelStyle={{ fontWeight: "bold" }}
-                                disabled={!email}
+                                disabled={!id}
                             >
                                 중복확인
                             </Button>
@@ -559,10 +546,10 @@ export default SignUp = ({ navigation }) => {
                             disabled={
                                 !name ||
                                 !phoneNumber ||
-                                !email ||
+                                !id ||
                                 !password ||
                                 !chkPassword ||
-                                !chkUsedEmail ||
+                                !chkUsedId ||
                                 password !== chkPassword ||
                                 !correctPw ||
                                 !verifyCode ||
@@ -600,6 +587,8 @@ export default SignUp = ({ navigation }) => {
                 confirmText="확인"
                 defaultSelections={birthday}
                 options={generateOptions()}
+                toolbarBackgroundColor={theme.colors.primary}
+                confirmTextColor="white"
             />
         </SafeAreaView>
     );

@@ -26,10 +26,9 @@ import * as Notifications from "expo-notifications";
 import myBase, { db } from "../../config/MyBase";
 import InputPassword from "./InputPassword";
 import Sales from "./Sales";
-import { TextSize } from "../../css/MyStyles";
+import { TextSize, theme } from "../../css/MyStyles";
 import { displayedAt, checkBatchimEnding } from "../../config/hooks";
 import { Badge, Button, Card } from "react-native-paper";
-import { theme } from "../../App";
 
 const Stack = createStackNavigator();
 export const WrongNumContext = createContext();

@@ -6,9 +6,8 @@ import {
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { AuthContext } from "../Auth";
-import { TextSize } from "../../css/MyStyles";
+import { TextSize, theme } from "../../css/MyStyles";
 import { Surface, Dialog, TextInput, Button, Portal } from "react-native-paper";
-import { theme } from "../../App";
 
 export default Locker = () => {
     const [data, setData] = useState();

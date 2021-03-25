@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { Alert, Keyboard, TouchableOpacity, View } from "react-native";
 import myBase, { db } from "../../../config/MyBase";
-import { MyStyles, TextSize } from "../../../css/MyStyles";
+import { MyStyles, TextSize, theme } from "../../../css/MyStyles";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { MaterialIcons } from "@expo/vector-icons";
 import moment from "moment";
@@ -11,7 +11,6 @@ import SegmentedPicker from "react-native-segmented-picker";
 import { DataContext } from "../../Auth";
 import { ActivityIndicator, Colors, Surface, Text, TextInput } from "react-native-paper";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
-import { theme } from "../../../App";
 
 export default ExtendDate = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;

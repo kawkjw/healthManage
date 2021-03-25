@@ -5,12 +5,8 @@ import * as Notifications from "expo-notifications";
 import { SafeAreaView, Text, TextInput } from "react-native";
 import * as Updates from "expo-updates";
 import { TextSize } from "./css/MyStyles";
-import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
-
-export const theme = {
-    ...DefaultTheme,
-    colors: { ...DefaultTheme.colors, primary: "#263143", accent: "#374862" },
-};
+import { Provider as PaperProvider } from "react-native-paper";
+import { theme } from "./css/MyStyles";
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
