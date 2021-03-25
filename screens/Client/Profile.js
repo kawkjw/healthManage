@@ -9,11 +9,12 @@ import {
     Keyboard,
     ScrollView,
     AppState,
+    Platform,
 } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import myBase, { db } from "../../config/MyBase";
 import { useInterval } from "../../config/hooks";
-import { MyStyles, AuthStyles, TextSize } from "../../css/MyStyles";
+import { MyStyles, TextSize, theme } from "../../css/MyStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext, DataContext } from "../Auth";
 import firebase from "firebase";
@@ -41,11 +42,6 @@ export default Profile = ({ navigation }) => {
     const [changePhone, setChangePhone] = useState("");
     const { signOut } = useContext(AuthContext);
     const { classNames } = useContext(DataContext);
-    const [modalEmailVisible, setModalEmailVisible] = useState(false);
-    const [changeEmail, setChangeEmail] = useState("");
-    const [password, setPassword] = useState("");
-    const [checkEmail, setCheckEmail] = useState(false);
-    const [chkUsedEmail, setChkUsedEmail] = useState(false);
     const [locker, setLocker] = useState(0);
     const thisuser = db.collection("users").doc(uid);
     const [textWidth, setTextWidth] = useState(0);
@@ -433,125 +429,6 @@ export default Profile = ({ navigation }) => {
         }
     };
 
-    const chkEmail = (str) => {
-        const reg_email = /^([0-9a-zA-Z_\.-]+)@([0-9a-zA-Z_-]+)(\.[0-9a-zA-Z_-]+){1,2}$/;
-        if (!reg_email.test(str)) {
-            return false;
-        } else {
-            return true;
-        }
-    };
-
-    useEffect(() => {
-        setCheckEmail(chkEmail(changeEmail));
-    }, [changeEmail]);
-
-    const checkUsedEmail = async () => {
-        if (changeEmail && checkEmail) {
-            await db
-                .collection("emails")
-                .where("email", "==", changeEmail)
-                .get()
-                .then((snapshot) => {
-                    let data = {};
-                    snapshot.forEach((doc) => {
-                        data = doc.data();
-                    });
-                    if (Object.keys(data).length === 0) {
-                        setChkUsedEmail(true);
-                        alert("Use your email");
-                    } else {
-                        alert("Alreay Used Email!");
-                        setChangeEmail("");
-                        setChkUsedEmail(false);
-                    }
-                })
-                .catch((error) => console.log(error));
-        } else if (!changeEmail) {
-            alert("Input email");
-        } else {
-            alert("Wrong type of email");
-        }
-    };
-
-    const dbChangeEmail = async () => {
-        const storage_uid = await AsyncStorage.getItem("userToken");
-        if (uid === storage_uid) {
-            const credential = firebase.auth.EmailAuthProvider.credential(
-                myBase.auth().currentUser.email,
-                password
-            );
-            await myBase
-                .auth()
-                .currentUser.reauthenticateWithCredential(credential)
-                .then(() => {
-                    myBase.auth().currentUser.updateEmail(changeEmail);
-                })
-                .then(async () => {
-                    const prev_email = db
-                        .collection("emails")
-                        .where("email", "==", myBase.auth().currentUser.email);
-                    await prev_email
-                        .get()
-                        .then(async (snapshot) => {
-                            let email_id = "";
-                            snapshot.forEach((doc) => {
-                                email_id = doc.id;
-                            });
-                            if (email_id === uid) {
-                                await db.collection("emails").doc(uid).delete();
-                            }
-                        })
-                        .then(async () => {
-                            await db.collection("emails").doc(uid).set({ email: changeEmail });
-                            await thisuser.get().then(async (user) => {
-                                if (user.exists) {
-                                    await thisuser.update({
-                                        email: changeEmail,
-                                    });
-                                }
-                            });
-                            Alert.alert(
-                                "성공",
-                                "변경되었습니다.",
-                                [
-                                    {
-                                        text: "확인",
-                                        onPress: () => {
-                                            setChangeEmail("");
-                                            setChkUsedEmail(false);
-                                            signOut();
-                                        },
-                                    },
-                                ],
-                                { cancelable: false }
-                            );
-                        });
-                })
-                .catch((error) => {
-                    console.log(error.code, error.message);
-                    Alert.alert(
-                        "경고",
-                        "비밀번호가 틀립니다.",
-                        [{ text: "확인", onPress: () => setPassword("") }],
-                        { cancelable: false }
-                    );
-                });
-        } else {
-            Alert.alert(
-                "경고",
-                "이 계정은 당신 것이 아닙니다.",
-                [
-                    {
-                        text: "확인",
-                    },
-                ],
-                { cancelable: false }
-            );
-            signOut();
-        }
-    };
-
     return (
         <SafeAreaView style={[MyStyles.container, { justifyContent: "center" }]}>
             <View style={{ justifyContent: "center", alignItems: "center" }}>
@@ -650,29 +527,9 @@ export default Profile = ({ navigation }) => {
                                         </Text>
                                     </TouchableOpacity>
                                 </View>
-                                <View style={{ flexDirection: "row" }}>
-                                    <Text style={[MyStyles.profileText, { flex: 9 }]}>
-                                        이메일 : {myBase.auth().currentUser.email}
-                                    </Text>
-                                    <TouchableOpacity
-                                        style={{ flex: 1 }}
-                                        onPress={() => {
-                                            setModalEmailVisible(true);
-                                        }}
-                                    >
-                                        <Text
-                                            style={[
-                                                MyStyles.profileText,
-                                                {
-                                                    textAlign: "right",
-                                                    color: "#1e90ff",
-                                                },
-                                            ]}
-                                        >
-                                            변경
-                                        </Text>
-                                    </TouchableOpacity>
-                                </View>
+                                <Text style={MyStyles.profileText}>
+                                    아이디 : {myBase.auth().currentUser.email.split("@")[0]}
+                                </Text>
                                 <Text style={MyStyles.profileText}>
                                     보관함 번호 : {locker !== 0 ? locker : "없음"}
                                 </Text>
@@ -945,8 +802,7 @@ export default Profile = ({ navigation }) => {
                         style={{
                             flexDirection: "row",
                             height: hp("5%"),
-                            borderBottomWidth: 1,
-                            borderBottomColor: "grey",
+                            backgroundColor: theme.colors.primary,
                         }}
                     >
                         <Button
@@ -956,6 +812,10 @@ export default Profile = ({ navigation }) => {
                                 setVerifyCode("");
                                 setModalPhoneVisible(!modalPhoneVisible);
                             }}
+                            labelStyle={[
+                                { color: "white" },
+                                Platform.OS === "ios" && { paddingVertical: 8 },
+                            ]}
                         >
                             닫기
                         </Button>
@@ -1061,108 +921,6 @@ export default Profile = ({ navigation }) => {
                             }}
                         >
                             <FirebaseRecaptchaBanner style={{ width: wp("85%") }} />
-                        </View>
-                    </TouchableOpacity>
-                </View>
-            </Modal>
-            <Modal
-                isVisible={modalEmailVisible}
-                style={{ justifyContent: "flex-end", margin: 0 }}
-                onBackdropPress={() => setModalEmailVisible(false)}
-                onBackButtonPress={() => setModalEmailVisible(false)}
-                avoidKeyboard={true}
-            >
-                <View
-                    style={{
-                        height: hp("45%"),
-                        backgroundColor: "white",
-                    }}
-                >
-                    <View
-                        style={{
-                            flexDirection: "row",
-                            borderBottomColor: "grey",
-                            borderBottomWidth: 1,
-                        }}
-                    >
-                        <Button
-                            mode="text"
-                            onPress={() => {
-                                setChangeEmail("");
-                                setChkUsedEmail(false);
-                                setPassword("");
-                                setModalEmailVisible(!modalEmailVisible);
-                            }}
-                        >
-                            <Text style={TextSize.largeSize}>닫기</Text>
-                        </Button>
-                        <View style={{ flex: 7 }} />
-                    </View>
-                    <TouchableOpacity
-                        style={{ height: hp("40%"), marginTop: 10 }}
-                        onPress={Keyboard.dismiss}
-                        accessible={false}
-                        activeOpacity={1}
-                    >
-                        <View
-                            style={{
-                                flex: 8,
-                                paddingHorizontal: 30,
-                            }}
-                        >
-                            <View style={{ marginBottom: 5 }}>
-                                <View
-                                    style={{
-                                        flexDirection: "row",
-                                        marginBottom: 5,
-                                        alignItems: "flex-start",
-                                    }}
-                                >
-                                    <View style={{ flex: 9, marginRight: 7 }}>
-                                        <TextInput
-                                            label="변경할 이메일 주소"
-                                            mode="outlined"
-                                            dense={true}
-                                            placeholder="examples@example.com"
-                                            keyboardType="email-address"
-                                            value={changeEmail}
-                                            onChangeText={setChangeEmail}
-                                            error={changeEmail && !checkEmail}
-                                        />
-                                        {changeEmail && !checkEmail ? (
-                                            <HelperText type="error" visible={true}>
-                                                이메일 형식이 맞지 않습니다.
-                                            </HelperText>
-                                        ) : null}
-                                    </View>
-                                    <Button
-                                        mode="contained"
-                                        style={{ flex: 1, justifyContent: "center", marginTop: 10 }}
-                                        onPress={() => checkUsedEmail()}
-                                        disabled={!changePhone}
-                                    >
-                                        중복확인
-                                    </Button>
-                                </View>
-                            </View>
-                            <View style={AuthStyles.textView}>
-                                <TextInput
-                                    label="비밀번호"
-                                    mode="outlined"
-                                    dense={true}
-                                    placeholder="비밀번호"
-                                    secureTextEntry={true}
-                                    value={password}
-                                    onChangeText={setPassword}
-                                />
-                            </View>
-                            <Button
-                                mode="contained"
-                                onPress={() => dbChangeEmail()}
-                                disabled={!changeEmail || !password || !chkUsedEmail}
-                            >
-                                확인
-                            </Button>
                         </View>
                     </TouchableOpacity>
                 </View>

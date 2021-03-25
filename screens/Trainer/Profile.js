@@ -21,12 +21,12 @@ export default Profile = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser !== null ? myBase.auth().currentUser.uid : null;
     const [userInfo, setUserInfo] = useState({
         name: "",
-        email: "",
+        id: "",
         phoneNumber: "",
         permission: 2,
         className: [],
     });
-    const { name, email, phoneNumber, permission, className } = userInfo;
+    const { name, id, phoneNumber, permission, className } = userInfo;
     const [modalSetClass, setModalSetClass] = useState(false);
     const [radioSelected, setRadioSelected] = useState(-1);
     const [ptStartTime, setPtStartTime] = useState("");
@@ -133,7 +133,7 @@ export default Profile = ({ navigation, route }) => {
                                 ...userInfo,
                                 name: userData.name,
                                 phoneNumber: userData.phoneNumber,
-                                email: userData.email,
+                                id: userData.id,
                                 className: userData.className.split("."),
                                 permission: userData.permission,
                             });
@@ -446,7 +446,7 @@ export default Profile = ({ navigation, route }) => {
             <Surface style={{ elevation: 6, borderRadius: 20, padding: 15 }}>
                 <View style={{ width: wp("85%"), height: hp("80%") }}>
                     <Text style={MyStyles.profileText}>이름 : {name}</Text>
-                    <Text style={MyStyles.profileText}>이메일 : {email}</Text>
+                    <Text style={MyStyles.profileText}>아이디 : {id}</Text>
                     <Text style={MyStyles.profileText}>휴대폰번호 : {phoneNumber}</Text>
                     <View style={{ flexDirection: "row", alignItems: "center" }}>
                         <Text style={MyStyles.profileText}>담당 : </Text>

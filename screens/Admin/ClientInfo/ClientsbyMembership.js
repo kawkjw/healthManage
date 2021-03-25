@@ -245,7 +245,7 @@ export default ClientbyMembership = ({ navigation, route }) => {
                                             이름 : {client.info.name}
                                         </Text>
                                         <Text style={TextSize.normalSize}>
-                                            이메일 : {client.info.email}
+                                            아이디 : {client.info.id}
                                         </Text>
                                         <Text style={TextSize.normalSize}>
                                             휴대폰번호 : {client.info.phoneNumber}

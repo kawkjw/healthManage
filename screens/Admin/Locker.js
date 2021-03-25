@@ -38,7 +38,8 @@ export default Locker = () => {
 
     useEffect(() => {
         const getLockers = async () => {
-            let items = Array.apply(null, Array(63)).map((value, index) => {
+            const { max } = (await db.collection("lockers").doc("maxNumber").get()).data();
+            let items = Array.apply(null, Array(max)).map((value, index) => {
                 return {
                     id: index + 1,
                     occupied: false,
@@ -53,7 +54,8 @@ export default Locker = () => {
                 .then((lockers) => {
                     let uidList = [];
                     lockers.forEach((locker) => {
-                        uidList.push({ uid: locker.data().uid, id: locker.id });
+                        if (locker.id !== "maxNumber")
+                            uidList.push({ uid: locker.data().uid, id: locker.id });
                     });
                     return uidList;
                 })
@@ -218,11 +220,9 @@ export default Locker = () => {
             </Portal>
             <FlatList
                 data={data}
-                windowSize={1}
                 renderItem={({ item }) => (
                     <Surface
                         style={{
-                            flex: 1,
                             flexDirection: "column",
                             margin: 5,
                             elevation: 4,
@@ -296,6 +296,7 @@ export default Locker = () => {
                 )}
                 numColumns={7}
                 keyExtractor={(item, index) => index}
+                showsVerticalScrollIndicator={false}
             />
             <View
                 style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
@@ -308,11 +309,13 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "center",
+        alignItems: "center",
     },
     locker: {
         flex: 1,
         justifyContent: "center",
         alignItems: "center",
+        width: wp("11.8%"),
         height: wp("14%"),
         backgroundColor: "white",
         borderRadius: 10,

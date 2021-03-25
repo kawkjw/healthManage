@@ -347,7 +347,7 @@ const MyStack = () => {
             <Stack.Navigator
                 initialRouteName="HomeScreen"
                 screenOptions={{
-                    headerStyle: { backgroundColor: "#3366cc" },
+                    headerStyle: { backgroundColor: theme.colors.primary },
                     headerTitleStyle: { color: "white" },
                 }}
             >

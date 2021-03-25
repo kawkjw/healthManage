@@ -320,7 +320,7 @@ export default ShowUser = ({ route }) => {
                         <View style={{ marginBottom: 10 }}>
                             <Text style={TextSize.normalSize}>이름 : {user.name}</Text>
                             <Text style={TextSize.normalSize}>성별 : {user.sex}</Text>
-                            <Text style={TextSize.normalSize}>이메일 : {user.email}</Text>
+                            <Text style={TextSize.normalSize}>아이디 : {user.id}</Text>
                             <Text style={TextSize.normalSize}>휴대폰번호 : {user.phoneNumber}</Text>
                             <Text style={TextSize.normalSize}>
                                 생년월일 :{" "}

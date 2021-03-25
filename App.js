@@ -23,16 +23,16 @@ export default function App() {
     TextInput.defaultProps.allowFontScaling = false;
 
     const [showUpdates, setShowUpdates] = useState(false);
-    useEffect(() => {
-        Updates.checkForUpdateAsync().then((update) => {
-            if (update.isAvailable) {
-                setShowUpdates(true);
-                Updates.fetchUpdateAsync().then(async () => {
-                    await Updates.reloadAsync();
-                });
-            }
-        });
-    }, []);
+    // useEffect(() => {
+    //     Updates.checkForUpdateAsync().then((update) => {
+    //         if (update.isAvailable) {
+    //             setShowUpdates(true);
+    //             Updates.fetchUpdateAsync().then(async () => {
+    //                 await Updates.reloadAsync();
+    //             });
+    //         }
+    //     });
+    // }, []);
 
     return (
         <>

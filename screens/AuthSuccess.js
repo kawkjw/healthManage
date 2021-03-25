@@ -5,23 +5,18 @@ import myBase, { arrayUnion, db } from "../config/MyBase";
 import TNavigator from "./Trainer/TNavigator";
 import CNavigator from "./Client/CNavigator";
 import LoadingScreen from "./LoadingScreen";
-import { Alert, StatusBar, Text, View, TouchableOpacity, Platform } from "react-native";
 import { AuthContext } from "./Auth";
-import { TextSize, theme } from "../css/MyStyles";
 import { registerForPushNotificationAsync } from "../config/MyExpo";
 import ANavigator from "./Admin/ANavigator";
-import { Button } from "react-native-paper";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [isAdmin, setIsAdmin] = useState(false);
     const [isTrainer, setIsTrainer] = useState(false);
-    const [isVerified, setIsVerified] = useState(false);
     const { signOut } = useContext(AuthContext);
 
     const getData = async (user) => {
-        setIsVerified(user.emailVerified);
         await db
             .collection("users")
             .doc(user.uid)
@@ -31,10 +26,6 @@ const MyStack = () => {
                     const data = userDoc.data();
                     setIsAdmin(data.permission === 0 ? true : false);
                     setIsTrainer(data.permission === 1 ? true : false);
-                    if (user.email !== data.email) {
-                        await db.collection("emails").doc(user.uid).update({ email: user.email });
-                        await db.collection("users").doc(user.uid).update({ email: user.email });
-                    }
                 } else {
                     signOut();
                 }
@@ -91,57 +82,6 @@ const MyStack = () => {
         return () => unsubscribe();
     }, []);
 
-    const reSendVerification = () => {
-        myBase
-            .auth()
-            .currentUser.sendEmailVerification()
-            .then(() => {
-                console.log("Send Email");
-                Alert.alert("성공", "인증 메일을 확인해주세요.", [{ text: "확인" }], {
-                    cancelable: false,
-                });
-            })
-            .catch((error) => console.log(error));
-    };
-
-    const VerifyEmail = () => {
-        return (
-            <>
-                <StatusBar barStyle="light-content" />
-                <View
-                    style={{
-                        flex: 1,
-                        alignItems: "center",
-                        justifyContent: "center",
-                        paddingHorizontal: 20,
-                    }}
-                >
-                    <View style={{ alignItems: "center", marginBottom: 10 }}>
-                        <Text style={TextSize.normalSize}>이메일 인증 완료되지 않았습니다.</Text>
-                        <Text style={TextSize.normalSize}>
-                            인증 메일이 도착하지 않았다면 재전송을 눌러주세요.
-                        </Text>
-                    </View>
-                    <View style={{ flexDirection: "row" }}>
-                        <Button
-                            mode="contained"
-                            style={{ flex: 1, marginRight: 5 }}
-                            onPress={reSendVerification}
-                        >
-                            재전송
-                        </Button>
-                        <Button
-                            mode="contained"
-                            style={{ flex: 1, marginLeft: 5 }}
-                            onPress={signOut}
-                        >
-                            로그아웃
-                        </Button>
-                    </View>
-                </View>
-            </>
-        );
-    };
     return (
         <Stack.Navigator>
             {isLoading ? (
@@ -149,16 +89,6 @@ const MyStack = () => {
                     name="Loading"
                     component={LoadingScreen}
                     options={{ headerShown: false }}
-                />
-            ) : !isVerified ? (
-                <Stack.Screen
-                    name="Verify"
-                    component={VerifyEmail}
-                    options={{
-                        headerStyle: { backgroundColor: theme.colors.primary },
-                        title: "이메일 인증",
-                        headerTitleStyle: { color: "white" },
-                    }}
                 />
             ) : isAdmin ? (
                 <Stack.Screen

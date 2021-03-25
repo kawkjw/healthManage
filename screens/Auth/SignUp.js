@@ -34,7 +34,6 @@ export default SignUp = ({ navigation }) => {
     const [chkPassword, setChkPassword] = useState("");
     const [selected, setSelected] = useState(false);
     const [adminCode, setAdminCode] = useState("");
-    const [checkEmail, setCheckEmail] = useState(false);
     const [chkUsedId, setChkUsedId] = useState(false);
     const [checkPw, setCheckPw] = useState(false);
     const [correctPw, setCorrectPw] = useState(false);
@@ -104,6 +103,22 @@ export default SignUp = ({ navigation }) => {
     useEffect(() => {
         setCorrectPw(chkPwd(password));
     }, [password]);
+
+    const checkId = (str) => {
+        var reg = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"\s]/gi;
+        //특수문자 검증
+        if (reg.test(str)) {
+            //특수문자 제거후 리턴
+            return str.replace(reg, "");
+        } else {
+            //특수문자가 없으므로 본래 문자 리턴
+            return str;
+        }
+    };
+
+    useEffect(() => {
+        setId(checkId(id));
+    }, [id]);
 
     useEffect(() => {
         setPhoneNumber(
@@ -177,7 +192,7 @@ export default SignUp = ({ navigation }) => {
         await signUp({
             name,
             phoneNumber,
-            email: id + "@test.com",
+            userId: id,
             password,
             adminCode,
             verifyCode,
@@ -335,7 +350,6 @@ export default SignUp = ({ navigation }) => {
                                     style={{ marginBottom: 0 }}
                                     dense={true}
                                     error={id.length < 8 && id}
-                                    keyboardType="email-address"
                                 />
                                 {id.length < 8 && id ? (
                                     <HelperText type="error" visible={true} padding="none">

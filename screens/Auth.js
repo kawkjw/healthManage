@@ -112,7 +112,7 @@ export default Auth = () => {
                                 cancelable: false,
                             });
                         } else if (error.code === "auth/user-not-found") {
-                            Alert.alert("경고", "가입되지 않은 이메일입니다.", [{ text: "확인" }], {
+                            Alert.alert("경고", "가입되지 않은 아이디입니다.", [{ text: "확인" }], {
                                 cancelable: false,
                             });
                         } else {
@@ -137,7 +137,7 @@ export default Auth = () => {
                 const {
                     name,
                     phoneNumber,
-                    email,
+                    userId,
                     password,
                     adminCode,
                     verificationId,
@@ -154,15 +154,14 @@ export default Auth = () => {
                 const isTrainer = adminDigest === TRAINER_CODE ? true : false;
                 await myBase
                     .auth()
-                    .createUserWithEmailAndPassword(email, password)
+                    .createUserWithEmailAndPassword(userId + "@test.com", password)
                     .then(async (userCredential) => {
                         const currentUser = {
                             id: userCredential.user.uid,
-                            email: email,
+                            userId: userId,
                             name: name,
                             phoneNumber: phoneNumber,
                             permission: isAdmin ? 0 : isTrainer ? 1 : 2,
-                            emailVerified: userCredential.user.emailVerified,
                             address: address,
                         };
 
@@ -192,7 +191,7 @@ export default Auth = () => {
                                         uid: currentUser.id,
                                         name: currentUser.name,
                                         phoneNumber: currentUser.phoneNumber,
-                                        email: currentUser.email,
+                                        id: currentUser.userId,
                                         permission: currentUser.permission,
                                         random: " ",
                                         birthday: {
@@ -204,8 +203,8 @@ export default Auth = () => {
                                         address: currentUser.address,
                                     };
                                     db.collection("users").doc(currentUser.id).set(data);
-                                    db.collection("emails").doc(currentUser.id).set({
-                                        email: currentUser.email,
+                                    db.collection("ids").doc(currentUser.id).set({
+                                        id: currentUser.userId,
                                     });
                                     db.collection("notifications")
                                         .doc(currentUser.id)
@@ -299,38 +298,32 @@ export default Auth = () => {
                             .catch((error) => console.log(error.code));
                     })
                     .then(() => {
-                        const user = myBase.auth().currentUser;
-                        user.sendEmailVerification()
-                            .then(() => {
-                                console.log("Send Email");
-                                Alert.alert(
-                                    "성공",
-                                    "회원가입이 완료되었습니다.\n인증 메일을 획인해주세요.",
-                                    [
-                                        {
-                                            text: "확인",
-                                            onPress: () => {
-                                                if (!isAdmin) {
-                                                    pushNotificationsToAdmin(
-                                                        name,
-                                                        "새로운 고객",
-                                                        "회원가입했습니다.",
-                                                        {
-                                                            navigation: "FindUser",
-                                                            datas: {
-                                                                name: name,
-                                                                phoneNumber: phoneNumber,
-                                                            },
-                                                        }
-                                                    );
+                        Alert.alert(
+                            "성공",
+                            "회원가입이 완료되었습니다.",
+                            [
+                                {
+                                    text: "확인",
+                                    onPress: () => {
+                                        if (!isAdmin && !isTrainer) {
+                                            pushNotificationsToAdmin(
+                                                name,
+                                                "새로운 고객",
+                                                "회원가입했습니다.",
+                                                {
+                                                    navigation: "FindUser",
+                                                    datas: {
+                                                        name: name,
+                                                        phoneNumber: phoneNumber,
+                                                    },
                                                 }
-                                            },
-                                        },
-                                    ],
-                                    { cancelable: false }
-                                );
-                            })
-                            .catch((error) => console.log(error));
+                                            );
+                                        }
+                                    },
+                                },
+                            ],
+                            { cancelable: false }
+                        );
                     })
                     .catch((error) => {
                         const errorCode = error.code;

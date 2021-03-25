@@ -972,7 +972,7 @@ export default PT = ({ navigation, route }) => {
                                 >
                                     <View
                                         style={{
-                                            flex: 1,
+                                            flex: 3,
                                             alignItems: "center",
                                             justifyContent: "center",
                                             paddingLeft: 10,
@@ -982,9 +982,8 @@ export default PT = ({ navigation, route }) => {
                                     </View>
                                     <View
                                         style={{
-                                            flex: 3,
+                                            flex: 7,
                                             flexDirection: "row",
-                                            marginLeft: 10,
                                             paddingHorizontal: 10,
                                             marginBottom: 15,
                                             marginTop: 10,
@@ -992,30 +991,52 @@ export default PT = ({ navigation, route }) => {
                                     >
                                         {availTime.submit === false ? (
                                             <>
-                                                <TouchableOpacity
-                                                    style={[
-                                                        styles.availButton,
-                                                        {
-                                                            marginRight: 7,
-                                                            backgroundColor: "#66ccff",
-                                                        },
-                                                    ]}
-                                                    onPress={() => setAvailableTime(availTime.str)}
+                                                <Surface
+                                                    style={{
+                                                        flex: 1,
+                                                        elevation: 6,
+                                                        borderRadius: 20,
+                                                        marginRight: 7,
+                                                    }}
                                                 >
-                                                    <Text style={TextSize.largeSize}>가능</Text>
-                                                </TouchableOpacity>
-                                                <TouchableOpacity
-                                                    style={[
-                                                        styles.availButton,
-                                                        {
-                                                            marginLeft: 7,
-                                                            backgroundColor: "#ff9999",
-                                                        },
-                                                    ]}
-                                                    onPress={() => setUnAvailabeTime(availTime.str)}
+                                                    <TouchableOpacity
+                                                        style={[
+                                                            styles.availButton,
+                                                            {
+                                                                backgroundColor: "#66ccff",
+                                                            },
+                                                        ]}
+                                                        onPress={() =>
+                                                            setAvailableTime(availTime.str)
+                                                        }
+                                                    >
+                                                        <Text style={TextSize.largeSize}>가능</Text>
+                                                    </TouchableOpacity>
+                                                </Surface>
+                                                <Surface
+                                                    style={{
+                                                        flex: 1,
+                                                        elevation: 6,
+                                                        borderRadius: 20,
+                                                        marginLeft: 7,
+                                                    }}
                                                 >
-                                                    <Text style={TextSize.largeSize}>불가능</Text>
-                                                </TouchableOpacity>
+                                                    <TouchableOpacity
+                                                        style={[
+                                                            styles.availButton,
+                                                            {
+                                                                backgroundColor: "#ff9999",
+                                                            },
+                                                        ]}
+                                                        onPress={() =>
+                                                            setUnAvailabeTime(availTime.str)
+                                                        }
+                                                    >
+                                                        <Text style={TextSize.largeSize}>
+                                                            불가능
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                </Surface>
                                             </>
                                         ) : (
                                             <View
@@ -1094,121 +1115,156 @@ export default PT = ({ navigation, route }) => {
                                                 {availTime.hasReserve ? (
                                                     availTime.confirm ? (
                                                         availTime.notEditable ? null : (
-                                                            <TouchableOpacity
-                                                                style={[
-                                                                    styles.availButton,
-                                                                    {
-                                                                        backgroundColor: "white",
-                                                                        height: hp("7%"),
-                                                                    },
-                                                                ]}
-                                                                onPress={() =>
-                                                                    Alert.alert(
-                                                                        "예약취소",
-                                                                        "예약 취소하시겠습니까?",
-                                                                        [
-                                                                            {
-                                                                                text: "취소",
-                                                                            },
-                                                                            {
-                                                                                text: "확인",
-                                                                                onPress: () =>
-                                                                                    cancelClass(
-                                                                                        availTime.clientUid,
-                                                                                        availTime.str
-                                                                                    ),
-                                                                            },
-                                                                        ],
-                                                                        { cancelable: false }
-                                                                    )
-                                                                }
+                                                            <Surface
+                                                                style={{
+                                                                    flex: 1,
+                                                                    elevation: 6,
+                                                                    borderRadius: 20,
+                                                                }}
                                                             >
-                                                                <Text>취소</Text>
-                                                            </TouchableOpacity>
+                                                                <TouchableOpacity
+                                                                    style={[
+                                                                        styles.availButton,
+                                                                        {
+                                                                            backgroundColor:
+                                                                                "white",
+                                                                            height: hp("7%"),
+                                                                        },
+                                                                    ]}
+                                                                    onPress={() =>
+                                                                        Alert.alert(
+                                                                            "예약취소",
+                                                                            "예약 취소하시겠습니까?",
+                                                                            [
+                                                                                {
+                                                                                    text: "취소",
+                                                                                },
+                                                                                {
+                                                                                    text: "확인",
+                                                                                    onPress: () =>
+                                                                                        cancelClass(
+                                                                                            availTime.clientUid,
+                                                                                            availTime.str
+                                                                                        ),
+                                                                                },
+                                                                            ],
+                                                                            { cancelable: false }
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    <Text>취소</Text>
+                                                                </TouchableOpacity>
+                                                            </Surface>
                                                         )
                                                     ) : availTime.notEditable ? null : (
                                                         <>
-                                                            <TouchableOpacity
-                                                                style={[
-                                                                    styles.availButton,
-                                                                    {
-                                                                        backgroundColor: "white",
-                                                                        height: hp("7%"),
-                                                                        marginRight: 3,
-                                                                    },
-                                                                ]}
-                                                                onPress={() =>
-                                                                    Alert.alert(
-                                                                        "예약승인",
-                                                                        "예약 승인하시겠습니까?",
-                                                                        [
-                                                                            {
-                                                                                text: "취소",
-                                                                            },
-                                                                            {
-                                                                                text: "확인",
-                                                                                onPress: () =>
-                                                                                    confirmClass(
-                                                                                        availTime.clientUid,
-                                                                                        availTime.str
-                                                                                    ),
-                                                                            },
-                                                                        ],
-                                                                        { cancelable: false }
-                                                                    )
-                                                                }
+                                                            <Surface
+                                                                style={{
+                                                                    flex: 1,
+                                                                    elevation: 6,
+                                                                    borderRadius: 20,
+                                                                    marginRight: 3,
+                                                                }}
                                                             >
-                                                                <Text>확인</Text>
-                                                            </TouchableOpacity>
-                                                            <TouchableOpacity
-                                                                style={[
-                                                                    styles.availButton,
-                                                                    {
-                                                                        backgroundColor: "white",
-                                                                        height: hp("7%"),
-                                                                        marginLeft: 3,
-                                                                    },
-                                                                ]}
-                                                                onPress={() =>
-                                                                    Alert.alert(
-                                                                        "예약 취소",
-                                                                        "예약 취소하시겠습니까?",
-                                                                        [
-                                                                            {
-                                                                                text: "취소",
-                                                                            },
-                                                                            {
-                                                                                text: "확인",
-                                                                                onPress: () =>
-                                                                                    cancelClass(
-                                                                                        availTime.clientUid,
-                                                                                        availTime.str
-                                                                                    ),
-                                                                            },
-                                                                        ],
-                                                                        { cancelable: false }
-                                                                    )
-                                                                }
+                                                                <TouchableOpacity
+                                                                    style={[
+                                                                        styles.availButton,
+                                                                        {
+                                                                            backgroundColor:
+                                                                                "white",
+                                                                            height: hp("7%"),
+                                                                        },
+                                                                    ]}
+                                                                    onPress={() =>
+                                                                        Alert.alert(
+                                                                            "예약승인",
+                                                                            "예약 승인하시겠습니까?",
+                                                                            [
+                                                                                {
+                                                                                    text: "취소",
+                                                                                },
+                                                                                {
+                                                                                    text: "확인",
+                                                                                    onPress: () =>
+                                                                                        confirmClass(
+                                                                                            availTime.clientUid,
+                                                                                            availTime.str
+                                                                                        ),
+                                                                                },
+                                                                            ],
+                                                                            { cancelable: false }
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    <Text>확인</Text>
+                                                                </TouchableOpacity>
+                                                            </Surface>
+                                                            <Surface
+                                                                style={{
+                                                                    flex: 1,
+                                                                    elevation: 6,
+                                                                    borderRadius: 20,
+                                                                    marginLeft: 3,
+                                                                }}
                                                             >
-                                                                <Text>취소</Text>
-                                                            </TouchableOpacity>
+                                                                <TouchableOpacity
+                                                                    style={[
+                                                                        styles.availButton,
+                                                                        {
+                                                                            backgroundColor:
+                                                                                "white",
+                                                                            height: hp("7%"),
+                                                                        },
+                                                                    ]}
+                                                                    onPress={() =>
+                                                                        Alert.alert(
+                                                                            "예약 취소",
+                                                                            "예약 취소하시겠습니까?",
+                                                                            [
+                                                                                {
+                                                                                    text: "취소",
+                                                                                },
+                                                                                {
+                                                                                    text: "확인",
+                                                                                    onPress: () =>
+                                                                                        cancelClass(
+                                                                                            availTime.clientUid,
+                                                                                            availTime.str
+                                                                                        ),
+                                                                                },
+                                                                            ],
+                                                                            { cancelable: false }
+                                                                        )
+                                                                    }
+                                                                >
+                                                                    <Text>취소</Text>
+                                                                </TouchableOpacity>
+                                                            </Surface>
                                                         </>
                                                     )
                                                 ) : availTime.notEditable ? null : (
-                                                    <TouchableOpacity
-                                                        style={[
-                                                            styles.availButton,
-                                                            {
-                                                                backgroundColor: "white",
-                                                                height: hp("7%"),
-                                                            },
-                                                        ]}
-                                                        onPress={() =>
-                                                            resetAvailTime(availTime.str)
-                                                        }
+                                                    <Surface
+                                                        style={{
+                                                            flex: 1,
+                                                            elevation: 6,
+                                                            borderRadius: 20,
+                                                        }}
                                                     >
-                                                        <Text>리셋</Text>
-                                                    </TouchableOpacity>
+                                                        <TouchableOpacity
+                                                            style={[
+                                                                styles.availButton,
+                                                                {
+                                                                    backgroundColor: "white",
+                                                                    height: hp("7%"),
+                                                                },
+                                                            ]}
+                                                            onPress={() =>
+                                                                resetAvailTime(availTime.str)
+                                                            }
+                                                        >
+                                                            <Text>리셋</Text>
+                                                        </TouchableOpacity>
+                                                    </Surface>
                                                 )}
                                             </View>
                                         )}
@@ -1304,8 +1360,8 @@ export default PT = ({ navigation, route }) => {
                                                 option.func();
                                             }}
                                             buttonSize={15}
-                                            buttonInnerColor="#0099ff"
-                                            buttonOuterColor="#0099ff"
+                                            buttonInnerColor={theme.colors.accent}
+                                            buttonOuterColor={theme.colors.accent}
                                         />
                                         <RadioButtonLabel
                                             obj={option}
@@ -1359,6 +1415,7 @@ export default PT = ({ navigation, route }) => {
                             >
                                 <View
                                     style={{
+                                        flex: 2,
                                         alignItems: "center",
                                         justifyContent: "center",
                                         paddingLeft: 10,
@@ -1368,7 +1425,7 @@ export default PT = ({ navigation, route }) => {
                                 </View>
                                 <View
                                     style={{
-                                        flex: 3,
+                                        flex: 4,
                                         flexDirection: "row",
                                         marginLeft: 10,
                                         paddingHorizontal: 10,
@@ -1376,110 +1433,124 @@ export default PT = ({ navigation, route }) => {
                                         marginTop: 10,
                                     }}
                                 >
-                                    <TouchableOpacity
-                                        style={[
-                                            styles.availButton,
-                                            availList[index] === null || availList[index] === false
-                                                ? settingLoading
-                                                    ? [
-                                                          {
-                                                              backgroundColor:
-                                                                  "rgba(255, 255, 255, 0.3)",
-                                                          },
-                                                          Platform.OS === "android"
-                                                              ? { elevation: 0 }
-                                                              : undefined,
-                                                      ]
-                                                    : { backgroundColor: "white" }
-                                                : settingLoading
-                                                ? [
-                                                      {
-                                                          backgroundColor:
-                                                              "rgba(102, 204, 255, 0.3)",
-                                                      },
-                                                      Platform.OS === "android"
-                                                          ? { elevation: 0 }
-                                                          : undefined,
-                                                  ]
-                                                : {
-                                                      backgroundColor: "#66ccff",
-                                                  },
-                                            {
-                                                marginRight: 7,
-                                            },
-                                        ]}
-                                        onPress={() => {
-                                            let change = availList.slice();
-                                            change[index] = true;
-                                            setAvailList(change);
+                                    <Surface
+                                        style={{
+                                            flex: 1,
+                                            elevation: 6,
+                                            borderRadius: 20,
+                                            marginRight: 7,
                                         }}
                                     >
-                                        <Text
+                                        <TouchableOpacity
                                             style={[
-                                                TextSize.largeSize,
+                                                styles.availButton,
                                                 availList[index] === null ||
                                                 availList[index] === false
                                                     ? settingLoading
-                                                        ? { color: "rgba(0, 0, 255, 0.3)" }
-                                                        : { color: "blue" }
-                                                    : { color: "black" },
-                                            ]}
-                                        >
-                                            가능
-                                        </Text>
-                                    </TouchableOpacity>
-                                    <TouchableOpacity
-                                        style={[
-                                            styles.availButton,
-                                            availList[index] === null || availList[index] === true
-                                                ? settingLoading
+                                                        ? [
+                                                              {
+                                                                  backgroundColor:
+                                                                      "rgba(255, 255, 255, 0.3)",
+                                                              },
+                                                              Platform.OS === "android"
+                                                                  ? { elevation: 0 }
+                                                                  : undefined,
+                                                          ]
+                                                        : { backgroundColor: "white" }
+                                                    : settingLoading
                                                     ? [
                                                           {
                                                               backgroundColor:
-                                                                  "rgba(255, 255, 255, 0.3)",
+                                                                  "rgba(102, 204, 255, 0.3)",
                                                           },
                                                           Platform.OS === "android"
                                                               ? { elevation: 0 }
                                                               : undefined,
                                                       ]
-                                                    : { backgroundColor: "white" }
-                                                : settingLoading
-                                                ? [
-                                                      {
-                                                          backgroundColor:
-                                                              "rgba(255, 153, 153, 0.3)",
+                                                    : {
+                                                          backgroundColor: "#66ccff",
                                                       },
-                                                      Platform.OS === "android"
-                                                          ? { elevation: 0 }
-                                                          : undefined,
-                                                  ]
-                                                : {
-                                                      backgroundColor: "#ff9999",
-                                                  },
-                                            {
-                                                marginLeft: 7,
-                                            },
-                                        ]}
-                                        onPress={() => {
-                                            let change = availList.slice();
-                                            change[index] = false;
-                                            setAvailList(change);
+                                            ]}
+                                            onPress={() => {
+                                                let change = availList.slice();
+                                                change[index] = true;
+                                                setAvailList(change);
+                                            }}
+                                        >
+                                            <Text
+                                                style={[
+                                                    TextSize.largeSize,
+                                                    availList[index] === null ||
+                                                    availList[index] === false
+                                                        ? settingLoading
+                                                            ? { color: "rgba(0, 0, 255, 0.3)" }
+                                                            : { color: "blue" }
+                                                        : { color: "black" },
+                                                ]}
+                                            >
+                                                가능
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </Surface>
+                                    <Surface
+                                        style={{
+                                            flex: 1,
+                                            elevation: 6,
+                                            borderRadius: 20,
+                                            marginLeft: 7,
                                         }}
                                     >
-                                        <Text
+                                        <TouchableOpacity
                                             style={[
-                                                TextSize.largeSize,
+                                                styles.availButton,
                                                 availList[index] === null ||
                                                 availList[index] === true
                                                     ? settingLoading
-                                                        ? { color: "rgba(255, 0, 0, 0.3)" }
-                                                        : { color: "red" }
-                                                    : { color: "black" },
+                                                        ? [
+                                                              {
+                                                                  backgroundColor:
+                                                                      "rgba(255, 255, 255, 0.3)",
+                                                              },
+                                                              Platform.OS === "android"
+                                                                  ? { elevation: 0 }
+                                                                  : undefined,
+                                                          ]
+                                                        : { backgroundColor: "white" }
+                                                    : settingLoading
+                                                    ? [
+                                                          {
+                                                              backgroundColor:
+                                                                  "rgba(255, 153, 153, 0.3)",
+                                                          },
+                                                          Platform.OS === "android"
+                                                              ? { elevation: 0 }
+                                                              : undefined,
+                                                      ]
+                                                    : {
+                                                          backgroundColor: "#ff9999",
+                                                      },
                                             ]}
+                                            onPress={() => {
+                                                let change = availList.slice();
+                                                change[index] = false;
+                                                setAvailList(change);
+                                            }}
                                         >
-                                            불가능
-                                        </Text>
-                                    </TouchableOpacity>
+                                            <Text
+                                                style={[
+                                                    TextSize.largeSize,
+                                                    availList[index] === null ||
+                                                    availList[index] === true
+                                                        ? settingLoading
+                                                            ? { color: "rgba(255, 0, 0, 0.3)" }
+                                                            : { color: "red" }
+                                                        : { color: "black" },
+                                                ]}
+                                            >
+                                                불가능
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </Surface>
                                 </View>
                             </View>
                         ))}
@@ -1503,17 +1574,6 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
-        borderRadius: RFPercentage(2.5),
-        borderColor: "grey",
-        ...Platform.select({
-            ios: {
-                shadowColor: "#c6c6c6",
-                shadowOffset: { width: 5, height: 5 },
-                shadowOpacity: 5,
-            },
-            android: {
-                elevation: 10,
-            },
-        }),
+        borderRadius: 20,
     },
 });

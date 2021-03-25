@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
     View,
     TouchableOpacity,
@@ -18,7 +18,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 import { TextInput, Button } from "react-native-paper";
 
 export default SignIn = ({ navigation }) => {
-    const [email, setEmail] = useState("");
+    const [id, setId] = useState("");
     const [password, setPassword] = useState("");
     const { signIn } = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
@@ -26,12 +26,28 @@ export default SignIn = ({ navigation }) => {
     const login = () => {
         setLoading(true);
         signIn({
-            email,
+            email: id + "@test.com",
             password,
         }).catch(() => {
             setLoading(false);
         });
     };
+
+    const checkId = (str) => {
+        var reg = /[\{\}\[\]\/?.,;:|\)*~`!^\-_+<>@\#$%&\\\=\(\'\"\s]/gi;
+        //특수문자 검증
+        if (reg.test(str)) {
+            //특수문자 제거후 리턴
+            return str.replace(reg, "");
+        } else {
+            //특수문자가 없으므로 본래 문자 리턴
+            return str;
+        }
+    };
+
+    useEffect(() => {
+        setId(checkId(id));
+    }, [id]);
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
@@ -69,7 +85,7 @@ export default SignIn = ({ navigation }) => {
                     />
                     <View style={{ paddingHorizontal: 20 }}>
                         <View style={AuthStyles.textView}>
-                            <TextInput label="아이디" value={email} onChangeText={setEmail} />
+                            <TextInput label="아이디" value={id} onChangeText={setId} />
                         </View>
                         <View style={AuthStyles.textView}>
                             <TextInput
