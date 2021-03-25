@@ -1,0 +1,3 @@
+export const ADMIN_CODE = "ef797c8118f02dfb649607dd5d3f8c7623048c9c063d532cc95c5ed7a898a64f";
+export const TRAINER_CODE = "e24df920078c3dd4e7e8d2442f00e5c9ab2a231bb3918d65cc50906e49ecaef4";
+export const ADMIN_PW = "08bed824361dfdd71ac42f5ff4fcb0c31575d06e313826dbe67580e88f10a50e";

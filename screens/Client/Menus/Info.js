@@ -3,6 +3,7 @@ import { Text, TouchableOpacity, ScrollView, View } from "react-native";
 import { MyStyles, TextSize } from "../../../css/MyStyles";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { Surface } from "react-native-paper";
+import { theme } from "../../../App";
 
 export default Info = ({ navigation }) => {
     return (
@@ -104,7 +105,9 @@ export default Info = ({ navigation }) => {
                     </TouchableOpacity>
                 </Surface>
             </ScrollView>
-            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
         </View>
     );
 };

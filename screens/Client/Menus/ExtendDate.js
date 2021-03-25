@@ -11,6 +11,7 @@ import SegmentedPicker from "react-native-segmented-picker";
 import { DataContext } from "../../Auth";
 import { ActivityIndicator, Colors, Surface, Text, TextInput } from "react-native-paper";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
+import { theme } from "../../../App";
 
 export default ExtendDate = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
@@ -319,7 +320,9 @@ export default ExtendDate = ({ navigation, route }) => {
                     </TouchableOpacity>
                 </KeyboardAwareScrollView>
             )}
-            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
             <SegmentedPicker
                 ref={picker}
                 onCancel={(select) => {

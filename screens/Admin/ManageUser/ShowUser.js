@@ -12,6 +12,7 @@ import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import { pushNotificationsToPerson } from "../../../config/MyExpo";
 import { DataContext } from "../../Auth";
 import { ActivityIndicator, Surface } from "react-native-paper";
+import { theme } from "../../../App";
 
 export default ShowUser = ({ route }) => {
     const { classNames } = useContext(DataContext);
@@ -524,7 +525,9 @@ export default ShowUser = ({ route }) => {
                     </ScrollView>
                 </Surface>
             )}
-            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
         </View>
     );
 };

@@ -4,6 +4,7 @@ import { MyStyles, TextSize } from "../../../css/MyStyles";
 import myBase, { db } from "../../../config/MyBase";
 import { Surface, Text } from "react-native-paper";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
+import { theme } from "../../../App";
 
 export default SelectTrainer = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
@@ -112,7 +113,9 @@ export default SelectTrainer = ({ navigation, route }) => {
                     </Surface>
                 ))}
             </ScrollView>
-            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
         </View>
     );
 };

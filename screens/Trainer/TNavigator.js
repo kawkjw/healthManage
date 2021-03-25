@@ -20,11 +20,12 @@ import SelectSquashKind from "./Class/SelectSquashKind";
 import { TextSize } from "../../css/MyStyles";
 import { displayedAt, checkBatchimEnding } from "../../config/hooks";
 import { Badge, Button, Card } from "react-native-paper";
+import { theme } from "../../App";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
     const { signOut } = useContext(AuthContext);
-    const uid = myBase.auth().currentUser.uid;
+    const uid = myBase.auth().currentUser !== null ? myBase.auth().currentUser.uid : null;
     const [limit, setLimit] = useState([]);
 
     const [loading, setLoading] = useState(true);
@@ -217,7 +218,9 @@ const MyStack = () => {
                             paddingBottom: 60,
                         }}
                     >
-                        <View style={{ flexDirection: "row", backgroundColor: "#3366cc" }}>
+                        <View
+                            style={{ flexDirection: "row", backgroundColor: theme.colors.primary }}
+                        >
                             <Button
                                 mode="text"
                                 compact={true}
@@ -366,7 +369,7 @@ const MyStack = () => {
         <Stack.Navigator
             initialRouteName="HomeScreen"
             screenOptions={{
-                headerStyle: { backgroundColor: "#3366cc" },
+                headerStyle: { backgroundColor: theme.colors.primary },
                 headerTitleStyle: { color: "white" },
             }}
         >

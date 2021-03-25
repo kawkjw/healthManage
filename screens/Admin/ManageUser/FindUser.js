@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { TouchableOpacity, View, Keyboard } from "react-native";
 import { Button, TextInput } from "react-native-paper";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
+import { theme } from "../../../App";
 
 export default FindUser = ({ navigation, route }) => {
     const [inputName, setInputName] = useState("");
@@ -80,7 +81,9 @@ export default FindUser = ({ navigation, route }) => {
                     검색
                 </Button>
             </TouchableOpacity>
-            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
         </View>
     );
 };

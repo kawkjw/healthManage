@@ -1,12 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Alert, Keyboard, TouchableOpacity, View, KeyboardAvoidingView } from "react-native";
 import * as Crypto from "expo-crypto";
-import { ADMIN_PW } from "@env";
-import { AuthStyles, MyStyles, TextSize } from "../../css/MyStyles";
+import { ADMIN_PW } from "../../config/secure";
+import { TextSize } from "../../css/MyStyles";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { AuthContext } from "../Auth";
 import { WrongNumContext } from "./ANavigator";
 import { Button, TextInput } from "react-native-paper";
+import { theme } from "../../App";
 
 export default InputPassword = ({ navigation, route }) => {
     const [password, setPassword] = useState("");
@@ -40,7 +41,7 @@ export default InputPassword = ({ navigation, route }) => {
     }, [num]);
 
     return (
-        <View style={AuthStyles.container}>
+        <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
             <TouchableOpacity
                 style={{ alignSelf: "stretch" }}
                 onPress={Keyboard.dismiss}
@@ -76,7 +77,9 @@ export default InputPassword = ({ navigation, route }) => {
                     </Button>
                 </KeyboardAvoidingView>
             </TouchableOpacity>
-            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
         </View>
     );
 };

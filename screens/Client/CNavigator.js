@@ -29,12 +29,13 @@ import OT from "./Infos/OT";
 import { TextSize } from "../../css/MyStyles";
 import { displayedAt, checkBatchimEnding } from "../../config/hooks";
 import { Badge, Button, Card, Text } from "react-native-paper";
+import { theme } from "../../App";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
     const { signOut } = useContext(AuthContext);
     const { classNames } = useContext(DataContext);
-    const uid = myBase.auth().currentUser.uid;
+    const uid = myBase.auth().currentUser !== null ? myBase.auth().currentUser.uid : null;
     const [loading, setLoading] = useState(true);
     const [membershipString, setMembershipString] = useState("");
     const [notificationAvail, setNotificationAvail] = useState(false);
@@ -425,7 +426,9 @@ const MyStack = () => {
                             paddingBottom: 60,
                         }}
                     >
-                        <View style={{ flexDirection: "row", backgroundColor: "#3366cc" }}>
+                        <View
+                            style={{ flexDirection: "row", backgroundColor: theme.colors.primary }}
+                        >
                             <Button
                                 onPress={() => setModalNotification(false)}
                                 mode="text"
@@ -544,7 +547,7 @@ const MyStack = () => {
         <Stack.Navigator
             initialRouteName="HomeScreen"
             screenOptions={{
-                headerStyle: { backgroundColor: "#3366cc" },
+                headerStyle: { backgroundColor: theme.colors.primary },
                 headerTitleStyle: { color: "white" },
             }}
         >

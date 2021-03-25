@@ -8,6 +8,7 @@ import {
 import { AuthContext } from "../Auth";
 import { TextSize } from "../../css/MyStyles";
 import { Surface, Dialog, TextInput, Button, Portal } from "react-native-paper";
+import { theme } from "../../App";
 
 export default Locker = () => {
     const [data, setData] = useState();
@@ -297,7 +298,9 @@ export default Locker = () => {
                 numColumns={7}
                 keyExtractor={(item, index) => index}
             />
-            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
         </View>
     );
 };

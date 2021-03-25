@@ -11,7 +11,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import SignIn from "./Auth/SignIn";
 import SignUp from "./Auth/SignUp";
 import ResetPw from "./Auth/ResetPw";
-import { ADMIN_CODE, TRAINER_CODE } from "@env";
+import { ADMIN_CODE, TRAINER_CODE } from "../config/secure";
 import { pushNotificationsToAdmin } from "../config/MyExpo";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import * as Crypto from "expo-crypto";

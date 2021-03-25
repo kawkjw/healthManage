@@ -24,6 +24,7 @@ import { db } from "../../config/MyBase";
 import { TextSize } from "../../css/MyStyles";
 import { DataContext } from "../Auth";
 import { ActivityIndicator, Surface } from "react-native-paper";
+import { theme } from "../../App";
 
 export default Sales = ({ navigation, route }) => {
     const today = new Date();
@@ -1235,7 +1236,9 @@ export default Sales = ({ navigation, route }) => {
                     </>
                 )}
             </View>
-            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
         </View>
     );
 };

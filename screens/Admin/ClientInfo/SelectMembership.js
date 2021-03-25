@@ -3,6 +3,7 @@ import { View, ScrollView, Text, TouchableOpacity } from "react-native";
 import { Surface } from "react-native-paper";
 import { MyStyles, TextSize } from "../../../css/MyStyles";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
+import { theme } from "../../../App";
 
 export default SelectMembership = ({ navigation, route }) => {
     const goClientsbyMembership = (name) => {
@@ -65,7 +66,9 @@ export default SelectMembership = ({ navigation, route }) => {
                     </TouchableOpacity>
                 </Surface>
             </ScrollView>
-            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
         </View>
     );
 };

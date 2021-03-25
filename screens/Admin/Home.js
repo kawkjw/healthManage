@@ -13,7 +13,7 @@ import myBase, { db } from "../../config/MyBase";
 import { Surface } from "react-native-paper";
 
 export default Home = ({ navigation, route }) => {
-    const uid = myBase.auth().currentUser.uid;
+    const uid = myBase.auth().currentUser !== null ? myBase.auth().currentUser.uid : null;
 
     useEffect(() => {
         const notificationSubscription = Notifications.addNotificationReceivedListener(

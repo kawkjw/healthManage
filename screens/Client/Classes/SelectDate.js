@@ -3,6 +3,7 @@ import { View, Text, TouchableOpacity, ScrollView } from "react-native";
 import { MyStyles, TextSize } from "../../../css/MyStyles";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { Surface } from "react-native-paper";
+import { theme } from "../../../App";
 
 export default SelectDate = ({ navigation, route }) => {
     const { classname } = route.params;
@@ -64,7 +65,9 @@ export default SelectDate = ({ navigation, route }) => {
                     );
                 })}
             </ScrollView>
-            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
         </View>
     );
 };

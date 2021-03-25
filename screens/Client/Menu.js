@@ -5,6 +5,7 @@ import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
 } from "react-native-responsive-screen";
+import { theme } from "../../App";
 import { MyStyles, TextSize } from "../../css/MyStyles";
 
 export default Menu = ({ navigation }) => {
@@ -54,7 +55,9 @@ export default Menu = ({ navigation }) => {
                     </TouchableOpacity>
                 </Surface>
             </ScrollView>
-            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
         </View>
     );
 };

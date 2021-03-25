@@ -25,6 +25,7 @@ import { RFPercentage } from "react-native-responsive-fontsize";
 import { ActivityIndicator, Button, Colors, Surface } from "react-native-paper";
 import moment from "moment";
 import * as Notifications from "expo-notifications";
+import { theme } from "../../../App";
 
 export default PT = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -539,7 +540,7 @@ export default PT = ({ navigation, route }) => {
                         backgroundColor: "white",
                     }}
                 >
-                    <View style={{ flexDirection: "row", backgroundColor: "#3366cc" }}>
+                    <View style={{ flexDirection: "row", backgroundColor: theme.colors.primary }}>
                         <Button
                             onPress={() => {
                                 setModalTimeTable(false);
@@ -744,7 +745,9 @@ export default PT = ({ navigation, route }) => {
                     )}
                 </View>
             </Modal>
-            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
         </View>
     );
 };

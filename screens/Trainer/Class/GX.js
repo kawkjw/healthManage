@@ -14,6 +14,7 @@ import { TextSize } from "../../../css/MyStyles";
 import Modal from "react-native-modal";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { ActivityIndicator, Button, Surface } from "react-native-paper";
+import { theme } from "../../../App";
 
 export default GX = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
@@ -328,7 +329,9 @@ export default GX = ({ navigation, route }) => {
                 keyExtractor={(item, index) => index}
                 scrollEnabled={false}
             />
-            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
             <SegmentedPicker
                 ref={picker}
                 onConfirm={(select) => {
@@ -362,7 +365,7 @@ export default GX = ({ navigation, route }) => {
                         backgroundColor: "white",
                     }}
                 >
-                    <View style={{ flexDirection: "row", backgroundColor: "#3366cc" }}>
+                    <View style={{ flexDirection: "row", backgroundColor: theme.colors.primary }}>
                         <Button
                             onPress={() => {
                                 setModalClassInfo(false);
@@ -449,7 +452,9 @@ export default GX = ({ navigation, route }) => {
                             backgroundColor: "white",
                         }}
                     >
-                        <View style={{ flexDirection: "row", backgroundColor: "#3366cc" }}>
+                        <View
+                            style={{ flexDirection: "row", backgroundColor: theme.colors.primary }}
+                        >
                             <Button
                                 onPress={() => {
                                     setModalClientInfo(false);

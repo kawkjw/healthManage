@@ -19,6 +19,7 @@ import { getHoliday } from "../../../config/hooks";
 import Modal from "react-native-modal";
 import { ActivityIndicator, Button, Colors, Surface } from "react-native-paper";
 import * as Notifications from "expo-notifications";
+import { theme } from "../../../App";
 
 export default GX = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
@@ -369,7 +370,9 @@ export default GX = ({ navigation, route }) => {
                     keyExtractor={(item, index) => index}
                 />
             )}
-            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
             <Modal
                 isVisible={modalClass}
                 style={{ justifyContent: "flex-end", margin: 0 }}
@@ -382,7 +385,7 @@ export default GX = ({ navigation, route }) => {
                         backgroundColor: "rgb(250, 250, 250)",
                     }}
                 >
-                    <View style={{ flexDirection: "row", backgroundColor: "#3366cc" }}>
+                    <View style={{ flexDirection: "row", backgroundColor: theme.colors.primary }}>
                         <Button
                             onPress={() => {
                                 setModalClass(false);

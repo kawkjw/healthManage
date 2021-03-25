@@ -8,6 +8,7 @@ import {
 } from "react-native-responsive-screen";
 import { TextSize } from "../../../css/MyStyles";
 import { ActivityIndicator, Surface } from "react-native-paper";
+import { theme } from "../../../App";
 
 export default SelectUser = ({ navigation, route }) => {
     const [findUsers, setFindUsers] = useState([]);
@@ -105,7 +106,9 @@ export default SelectUser = ({ navigation, route }) => {
                 <Text style={TextSize.largeSize}>검색 결과가 없습니다.</Text>
             )}
 
-            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
         </View>
     );
 };

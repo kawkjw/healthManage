@@ -30,6 +30,7 @@ import RadioForm, {
     RadioButtonLabel,
 } from "react-native-simple-radio-button";
 import { ActivityIndicator, Badge, Button, Surface } from "react-native-paper";
+import { theme } from "../../../App";
 
 export default PT = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -887,7 +888,9 @@ export default PT = ({ navigation, route }) => {
                 keyExtractor={(item, index) => index}
                 scrollEnabled={false}
             />
-            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
             <SegmentedPicker
                 ref={picker}
                 onConfirm={(select) => {
@@ -921,7 +924,7 @@ export default PT = ({ navigation, route }) => {
                         backgroundColor: "white",
                     }}
                 >
-                    <View style={{ flexDirection: "row", backgroundColor: "#3366cc" }}>
+                    <View style={{ flexDirection: "row", backgroundColor: theme.colors.primary }}>
                         <Button
                             onPress={() => alertWhenTableClose()}
                             labelStyle={{ color: "white", fontSize: RFPercentage(2.2) }}
@@ -1248,7 +1251,7 @@ export default PT = ({ navigation, route }) => {
                     <View
                         style={{
                             flexDirection: "row",
-                            backgroundColor: "#3366cc",
+                            backgroundColor: theme.colors.primary,
                         }}
                     >
                         <Button

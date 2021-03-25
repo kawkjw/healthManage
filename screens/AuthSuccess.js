@@ -11,6 +11,7 @@ import { AuthStyles, TextSize } from "../css/MyStyles";
 import { registerForPushNotificationAsync } from "../config/MyExpo";
 import ANavigator from "./Admin/ANavigator";
 import { Button } from "react-native-paper";
+import { theme } from "../App";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
@@ -155,7 +156,7 @@ const MyStack = () => {
                     name="Verify"
                     component={VerifyEmail}
                     options={{
-                        headerStyle: { backgroundColor: "#3366cc" },
+                        headerStyle: { backgroundColor: theme.colors.primary },
                         title: "이메일 인증",
                         headerTitleStyle: { color: "white" },
                     }}

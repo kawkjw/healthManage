@@ -7,9 +7,9 @@ import * as Updates from "expo-updates";
 import { TextSize } from "./css/MyStyles";
 import { DefaultTheme, Provider as PaperProvider } from "react-native-paper";
 
-const theme = {
+export const theme = {
     ...DefaultTheme,
-    colors: { ...DefaultTheme.colors, primary: "#3366cc", accent: "#0066cc" },
+    colors: { ...DefaultTheme.colors, primary: "#263143", accent: "#374862" },
 };
 
 Notifications.setNotificationHandler({

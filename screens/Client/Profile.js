@@ -36,7 +36,7 @@ export default Profile = ({ navigation }) => {
     const [count, setCount] = useState(15);
     const [phoneNumber, setPhoneNumber] = useState("");
     const [name, setName] = useState("");
-    const uid = myBase.auth().currentUser.uid;
+    const uid = myBase.auth().currentUser !== null ? myBase.auth().currentUser.uid : null;
     const [modalPhoneVisible, setModalPhoneVisible] = useState(false);
     const [changePhone, setChangePhone] = useState("");
     const { signOut } = useContext(AuthContext);

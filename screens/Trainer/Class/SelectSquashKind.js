@@ -3,6 +3,7 @@ import { Text, TouchableOpacity, View } from "react-native";
 import { Surface } from "react-native-paper";
 import { MyStyles, TextSize } from "../../../css/MyStyles";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
+import { theme } from "../../../App";
 
 export default SelectSquashKind = ({ navigation, route }) => {
     return (
@@ -34,7 +35,9 @@ export default SelectSquashKind = ({ navigation, route }) => {
                     </TouchableOpacity>
                 </Surface>
             </View>
-            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
         </View>
     );
 };

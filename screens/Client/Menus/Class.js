@@ -5,6 +5,7 @@ import myBase, { db } from "../../../config/MyBase";
 import { DataContext } from "../../Auth";
 import { Surface, Text } from "react-native-paper";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
+import { theme } from "../../../App";
 
 export default Class = ({ navigation }) => {
     const [memberships, setMemberships] = useState([]);
@@ -300,7 +301,9 @@ export default Class = ({ navigation }) => {
                     </TouchableOpacity>
                 </Surface>
             </ScrollView>
-            <View style={{ backgroundColor: "#3366cc", height: hp("6%"), width: "100%" }} />
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
         </View>
     );
 };

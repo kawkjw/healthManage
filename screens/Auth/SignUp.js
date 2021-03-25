@@ -307,7 +307,7 @@ export default SignUp = ({ navigation }) => {
                                             alignItems: "center",
                                         }}
                                     >
-                                        <RadioButton value={0} color="#0099ff" />
+                                        <RadioButton value={0} color="#374862" />
                                         <Button
                                             mode="text"
                                             onPress={() => setSexSelected(0)}
@@ -323,7 +323,7 @@ export default SignUp = ({ navigation }) => {
                                             alignItems: "center",
                                         }}
                                     >
-                                        <RadioButton value={1} color="#0099ff" />
+                                        <RadioButton value={1} color="#374862" />
                                         <Button
                                             mode="text"
                                             onPress={() => setSexSelected(1)}
@@ -437,7 +437,7 @@ export default SignUp = ({ navigation }) => {
                             <IconButton
                                 icon="calendar"
                                 size={28}
-                                color="#3366cc"
+                                color="#263143"
                                 onPress={() => picker.current.show()}
                                 style={{ marginBottom: 0 }}
                             />
@@ -457,7 +457,7 @@ export default SignUp = ({ navigation }) => {
                             <IconButton
                                 icon="map-search-outline"
                                 size={28}
-                                color="#3366cc"
+                                color="#263143"
                                 onPress={() => setModalAddress(true)}
                                 style={{ marginBottom: 0 }}
                             />

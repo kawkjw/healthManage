@@ -18,7 +18,7 @@ export default Profile = ({ navigation, route }) => {
 
     const { signOut } = useContext(AuthContext);
     const { classNames } = useContext(DataContext);
-    const uid = myBase.auth().currentUser.uid;
+    const uid = myBase.auth().currentUser !== null ? myBase.auth().currentUser.uid : null;
     const [userInfo, setUserInfo] = useState({
         name: "",
         email: "",
