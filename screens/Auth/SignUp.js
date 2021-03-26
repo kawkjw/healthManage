@@ -22,6 +22,7 @@ import {
 } from "react-native-paper";
 import moment from "moment";
 import { theme } from "../../css/MyStyles";
+import Constants from "expo-constants";
 
 export default SignUp = ({ navigation }) => {
     const appVerifier = useRef(null);
@@ -238,12 +239,20 @@ export default SignUp = ({ navigation }) => {
                 onBackdropPress={() => setModalAddress(false)}
                 onBackButtonPress={() => setModalAddress(false)}
             >
-                <SafeAreaView
+                <View
                     style={{
                         flex: 1,
                         backgroundColor: "white",
                     }}
                 >
+                    {Platform.OS === "ios" && (
+                        <View
+                            style={{
+                                height: Constants.statusBarHeight,
+                                backgroundColor: theme.colors.primary,
+                            }}
+                        />
+                    )}
                     <View style={{ height: hp("5%"), backgroundColor: theme.colors.primary }}>
                         <Button
                             onPress={() => setModalAddress(false)}
@@ -269,14 +278,14 @@ export default SignUp = ({ navigation }) => {
                             setModalAddress(false);
                         }}
                     />
-                </SafeAreaView>
+                </View>
             </Modal>
             <View style={{ height: hp("2%") }}></View>
             <KeyboardAwareScrollView
                 contentContainerStyle={{ paddingHorizontal: -30 }}
                 keyboardShouldPersistTaps="always"
                 showsVerticalScrollIndicator={false}
-                scrollEnabled={true}
+                scrollEnabled={false}
                 extraHeight={Platform.select({ android: 150 })}
                 enableOnAndroid={true}
                 enableAutomaticScroll
@@ -439,7 +448,10 @@ export default SignUp = ({ navigation }) => {
                                 icon="calendar"
                                 size={28}
                                 color="#263143"
-                                onPress={() => picker.current.show()}
+                                onPress={() => {
+                                    Keyboard.dismiss();
+                                    picker.current.show();
+                                }}
                                 style={{ marginBottom: 0 }}
                             />
                         </View>
@@ -459,7 +471,10 @@ export default SignUp = ({ navigation }) => {
                                 icon="map-search-outline"
                                 size={28}
                                 color="#263143"
-                                onPress={() => setModalAddress(true)}
+                                onPress={() => {
+                                    Keyboard.dismiss();
+                                    setModalAddress(true);
+                                }}
                                 style={{ marginBottom: 0 }}
                             />
                         </View>

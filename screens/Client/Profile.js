@@ -42,7 +42,7 @@ export default Profile = ({ navigation }) => {
     const [changePhone, setChangePhone] = useState("");
     const { signOut } = useContext(AuthContext);
     const { classNames } = useContext(DataContext);
-    const [locker, setLocker] = useState(0);
+    const [locker, setLocker] = useState(-1);
     const thisuser = db.collection("users").doc(uid);
     const [textWidth, setTextWidth] = useState(0);
     const [membershipInfo, setMembershipInfo] = useState("");
@@ -118,11 +118,15 @@ export default Profile = ({ navigation }) => {
                     phoneNumber.slice(9, phoneNumber.length);
             }
             setPhoneNumber(phoneNumber);
+            const { locker } = (await db.collection("users").doc(uid).get()).data();
             await db
                 .collection("lockers")
                 .where("uid", "==", uid)
                 .get()
                 .then((docs) => {
+                    if (locker && docs.size === 0) {
+                        setLocker(0);
+                    }
                     docs.forEach((doc) => {
                         setLocker(doc.id);
                     });
@@ -531,7 +535,8 @@ export default Profile = ({ navigation }) => {
                                     아이디 : {myBase.auth().currentUser.email.split("@")[0]}
                                 </Text>
                                 <Text style={MyStyles.profileText}>
-                                    보관함 번호 : {locker !== 0 ? locker : "없음"}
+                                    보관함 번호 :{" "}
+                                    {locker === -1 ? "없음" : locker === 0 ? "결제 완료" : locker}
                                 </Text>
                                 <Text
                                     style={[

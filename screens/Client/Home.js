@@ -18,11 +18,6 @@ import { Surface } from "react-native-paper";
 
 export default Home = ({ navigation, route }) => {
     useEffect(() => {
-        (async () => {
-            await Notifications.getAllScheduledNotificationsAsync().then((notis) => {
-                console.log(notis);
-            });
-        })();
         const notificationSubscription = Notifications.addNotificationReceivedListener(
             async (notification) => {
                 let badge = await Notifications.getBadgeCountAsync();

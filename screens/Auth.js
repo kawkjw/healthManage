@@ -11,11 +11,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import SignIn from "./Auth/SignIn";
 import SignUp from "./Auth/SignUp";
 import ResetPw from "./Auth/ResetPw";
-import { ADMIN_CODE, TRAINER_CODE } from "../config/secure";
 import { pushNotificationsToAdmin } from "../config/MyExpo";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import * as Crypto from "expo-crypto";
-import { Appbar } from "react-native-paper";
+import { theme } from "../css/MyStyles";
 
 const Stack = createStackNavigator();
 
@@ -53,6 +52,7 @@ export default Auth = () => {
         }
     );
     const [classNames, setClassNames] = useState({});
+    const [keys, setKeys] = useState({});
 
     const restoreToken = async () => {
         let userToken;
@@ -66,8 +66,10 @@ export default Auth = () => {
 
     const getter = async () => {
         await getClassNames().then(async () => {
-            await restoreToken().then((token) => {
-                dispatch({ type: "RESTORE_TOKEN", token: token });
+            await getKeys().then(async () => {
+                await restoreToken().then((token) => {
+                    dispatch({ type: "RESTORE_TOKEN", token: token });
+                });
             });
         });
     };
@@ -89,7 +91,20 @@ export default Auth = () => {
             });
     };
 
-    const dataContext = useMemo(() => ({ classNames: classNames }), [classNames]);
+    const getKeys = async () => {
+        let obj = {};
+        await db
+            .collection("keys")
+            .get()
+            .then((docs) => {
+                docs.forEach((doc) => {
+                    obj[doc.id] = doc.data().key;
+                });
+                setKeys(obj);
+            });
+    };
+
+    const dataContext = useMemo(() => ({ classNames: classNames, keys: keys }), [classNames, keys]);
 
     const authContext = useMemo(
         () => ({
@@ -150,8 +165,8 @@ export default Auth = () => {
                     Crypto.CryptoDigestAlgorithm.SHA256,
                     adminCode
                 );
-                const isAdmin = adminDigest === ADMIN_CODE ? true : false;
-                const isTrainer = adminDigest === TRAINER_CODE ? true : false;
+                const isAdmin = adminDigest === keys.admin ? true : false;
+                const isTrainer = adminDigest === keys.trainer ? true : false;
                 await myBase
                     .auth()
                     .createUserWithEmailAndPassword(userId + "@test.com", password)
@@ -229,6 +244,10 @@ export default Auth = () => {
                                             .split("-")
                                             .slice(1)
                                             .join("");
+                                        await db
+                                            .collection("users")
+                                            .doc(currentUser.id)
+                                            .set({ locker: false }, { merge: true });
                                         await db
                                             .collection("users")
                                             .doc(currentUser.id)
@@ -369,34 +388,19 @@ export default Auth = () => {
             }}
             onPress={() => navigation.goBack()}
         >
-            <MaterialIcons name="arrow-back-ios" size={RFPercentage(2.5)} color="black" />
+            <MaterialIcons name="arrow-back-ios" size={RFPercentage(2.5)} color="white" />
         </TouchableOpacity>
     );
-
-    const CustomNavBar = (props) => {
-        const {
-            navigation,
-            previous,
-            scene: {
-                descriptor: {
-                    options: { title },
-                },
-            },
-        } = props;
-        return (
-            <Appbar.Header style={{ marginTop: 0 }}>
-                {previous ? <Appbar.BackAction onPress={navigation.goBack} /> : null}
-                <Appbar.Content title={title ? title : "My App"} />
-            </Appbar.Header>
-        );
-    };
 
     return (
         <AuthContext.Provider value={authContext}>
             <DataContext.Provider value={dataContext}>
                 <NavigationContainer>
                     <Stack.Navigator
-                        screenOptions={{ header: (props) => <CustomNavBar {...props} /> }}
+                        screenOptions={{
+                            headerStyle: { backgroundColor: theme.colors.primary },
+                            headerTitleStyle: { color: "white" },
+                        }}
                     >
                         {state.isLoading ? (
                             <Stack.Screen
@@ -417,20 +421,22 @@ export default Auth = () => {
                                 <Stack.Screen
                                     name="resetpw"
                                     component={ResetPw}
-                                    options={{
+                                    options={({ navigation }) => ({
                                         title: "비밀번호 초기화",
                                         gestureEnabled: false,
                                         animationTypeForReplace: state.isSignout ? "pop" : "push",
-                                    }}
+                                        headerLeft: () => renderGoBackButton(navigation),
+                                    })}
                                 />
                                 <Stack.Screen
                                     name="signup"
                                     component={SignUp}
-                                    options={{
+                                    options={({ navigation }) => ({
                                         title: "회원가입",
                                         gestureEnabled: false,
                                         animationTypeForReplace: state.isSignout ? "pop" : "push",
-                                    }}
+                                        headerLeft: () => renderGoBackButton(navigation),
+                                    })}
                                 />
                             </>
                         ) : (

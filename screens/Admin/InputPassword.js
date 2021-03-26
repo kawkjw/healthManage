@@ -1,10 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Alert, Keyboard, TouchableOpacity, View, KeyboardAvoidingView } from "react-native";
 import * as Crypto from "expo-crypto";
-import { ADMIN_PW } from "../../config/secure";
 import { TextSize, theme } from "../../css/MyStyles";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
-import { AuthContext } from "../Auth";
+import { AuthContext, DataContext } from "../Auth";
 import { WrongNumContext } from "./ANavigator";
 import { Button, TextInput } from "react-native-paper";
 
@@ -12,13 +11,14 @@ export default InputPassword = ({ navigation, route }) => {
     const [password, setPassword] = useState("");
     const { signOut } = useContext(AuthContext);
     const { num, setNum } = useContext(WrongNumContext);
+    const { keys } = useContext(DataContext);
 
     const checkPassword = async () => {
         const digest = await Crypto.digestStringAsync(
             Crypto.CryptoDigestAlgorithm.SHA256,
             password
         );
-        if (ADMIN_PW === digest) {
+        if (keys.pw === digest) {
             setNum(0);
             navigation.replace("Sales");
         } else {
