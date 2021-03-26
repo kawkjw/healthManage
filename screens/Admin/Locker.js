@@ -97,6 +97,7 @@ export default Locker = () => {
     }, [phoneNumber]);
 
     useEffect(() => {
+        setMonth(month.replace(/[^0-9]/g, ""));
         if (Number(month) <= 0) {
             setMonth("");
         }
@@ -214,7 +215,7 @@ export default Locker = () => {
                                         lockerNumber: selectedLocker,
                                         start: addDate,
                                         end: moment(addDate)
-                                            .add(month, "M")
+                                            .add(Number(month), "M")
                                             .subtract(1, "d")
                                             .toDate(),
                                     },
