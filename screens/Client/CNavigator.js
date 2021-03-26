@@ -34,7 +34,7 @@ const Stack = createStackNavigator();
 const MyStack = () => {
     const { signOut } = useContext(AuthContext);
     const { classNames } = useContext(DataContext);
-    const uid = myBase.auth().currentUser !== null ? myBase.auth().currentUser.uid : null;
+    const uid = myBase.auth().currentUser !== null ? myBase.auth().currentUser.uid : "null";
     const [loading, setLoading] = useState(true);
     const [membershipString, setMembershipString] = useState("");
     const [notificationAvail, setNotificationAvail] = useState(false);
@@ -44,6 +44,22 @@ const MyStack = () => {
     const [notificationNum, setNotificationNum] = useState(0);
     const [notificationUnsubscribe, setNotificationUnsubscribe] = useState(() => {});
     const [membershipUnsubscribe, setMembershipUnsubsribe] = useState(() => {});
+
+    const getLocker = async () => {
+        await db
+            .collection("users")
+            .doc(uid)
+            .get()
+            .then((doc) => {
+                const today = new Date();
+                const { locker } = doc.data();
+                if (locker.end !== undefined) {
+                    if (today > locker.end.toDate()) {
+                        Alert.alert("경고", "락커 사용기간이 끝났습니다.", [{ text: "확인" }]);
+                    }
+                }
+            });
+    };
 
     const getMemberships = async () => {
         const today = new Date();
@@ -317,11 +333,13 @@ const MyStack = () => {
         if (status === "granted") {
             setNotificationAvail(true);
         }
-        await getMemberships().then(async (ret) => {
-            setMembershipUnsubsribe(ret === undefined ? () => console.log : () => ret);
-            await getNotifications().then((func) => {
-                setNotificationUnsubscribe(func === undefined ? () => console.log : () => func);
-                setLoading(false);
+        await getLocker().then(async () => {
+            await getMemberships().then(async (ret) => {
+                setMembershipUnsubsribe(ret === undefined ? () => console.log : () => ret);
+                await getNotifications().then((func) => {
+                    setNotificationUnsubscribe(func === undefined ? () => console.log : () => func);
+                    setLoading(false);
+                });
             });
         });
     };
@@ -338,6 +356,7 @@ const MyStack = () => {
                     setUnread(true);
                 }
             }
+            await getLocker();
             await getMemberships().then((ret) => {
                 setMembershipUnsubsribe(ret === undefined ? () => console.log : () => ret);
             });

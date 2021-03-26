@@ -35,7 +35,7 @@ export const WrongNumContext = createContext();
 const MyStack = () => {
     const { signOut } = useContext(AuthContext);
     const { classNames } = useContext(DataContext);
-    const uid = myBase.auth().currentUser !== null ? myBase.auth().currentUser.uid : null;
+    const uid = myBase.auth().currentUser !== null ? myBase.auth().currentUser.uid : "null";
 
     const [loading, setLoading] = useState(true);
     const [notificationAvail, setNotificationAvail] = useState(false);

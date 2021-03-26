@@ -22,7 +22,7 @@ import {
 } from "react-native-paper";
 import moment from "moment";
 import { theme } from "../../css/MyStyles";
-import Constants from "expo-constants";
+//import Constants from "expo-constants";
 
 export default SignUp = ({ navigation }) => {
     const appVerifier = useRef(null);
@@ -248,7 +248,7 @@ export default SignUp = ({ navigation }) => {
                     {Platform.OS === "ios" && (
                         <View
                             style={{
-                                height: Constants.statusBarHeight,
+                                //height: Constants.statusBarHeight,
                                 backgroundColor: theme.colors.primary,
                             }}
                         />

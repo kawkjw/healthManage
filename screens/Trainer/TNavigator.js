@@ -24,7 +24,7 @@ import { Badge, Button, Card } from "react-native-paper";
 const Stack = createStackNavigator();
 const MyStack = () => {
     const { signOut } = useContext(AuthContext);
-    const uid = myBase.auth().currentUser !== null ? myBase.auth().currentUser.uid : null;
+    const uid = myBase.auth().currentUser !== null ? myBase.auth().currentUser.uid : "null";
     const [limit, setLimit] = useState([]);
 
     const [loading, setLoading] = useState(true);
