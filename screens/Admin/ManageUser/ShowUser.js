@@ -20,7 +20,6 @@ export default ShowUser = ({ route }) => {
     const [isLoading, setIsLoading] = useState(true);
     const [membership, setMembership] = useState({});
     const [membershipKinds, setMembershipKinds] = useState([]);
-    const [locker, setLocker] = useState(0);
     const [extendList, setExtendList] = useState([]);
     const [change, setChange] = useState(false);
     const [textWidth, setTextWidth] = useState(0);
@@ -66,18 +65,6 @@ export default ShowUser = ({ route }) => {
             });
     };
 
-    const getLocker = async () => {
-        await db
-            .collection("lockers")
-            .where("uid", "==", user.uid)
-            .get()
-            .then((lockers) => {
-                lockers.forEach((locker) => {
-                    setLocker(Number(locker.id));
-                });
-            });
-    };
-
     const getExtends = async () => {
         await db
             .collection("users")
@@ -97,10 +84,8 @@ export default ShowUser = ({ route }) => {
     const getter = async () => {
         setIsLoading(true);
         await getMembership().then(async () => {
-            await getExtends().then(async () => {
-                await getLocker().then(() => {
-                    setIsLoading(false);
-                });
+            await getExtends().then(() => {
+                setIsLoading(false);
             });
         });
     };
@@ -335,7 +320,14 @@ export default ShowUser = ({ route }) => {
                             </Text>
                             <Text style={TextSize.normalSize}>주소 : {user.address}</Text>
                             <Text style={TextSize.normalSize}>
-                                보관함 번호 : {locker === 0 ? "없음" : locker}
+                                보관함 번호 :{" "}
+                                {user.locker.exist
+                                    ? `${user.locker.lockerNumber}번 (${moment(
+                                          user.locker.start.toDate()
+                                      ).format("YY. MM. DD.")}~${moment(
+                                          user.locker.end.toDate()
+                                      ).format("YY. MM. DD.")})`
+                                    : "없음"}
                             </Text>
                         </View>
 
