@@ -645,7 +645,8 @@ export default PT = ({ navigation, route }) => {
                 myBase.auth().currentUser.displayName,
                 clientUid,
                 "예약 취소되었습니다.",
-                `${selectedDate}일 ${availTime}`
+                `${selectedDate}일 ${availTime}`,
+                { cancel: true, identifier: route.params.identifier }
             );
             Alert.alert(
                 "취소됨",

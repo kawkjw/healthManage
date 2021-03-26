@@ -7,7 +7,6 @@ import {
     TouchableOpacity,
     Linking,
     StatusBar,
-    Platform,
 } from "react-native";
 import { MyStyles, TextSize } from "../../css/MyStyles";
 import * as Notifications from "expo-notifications";
@@ -19,6 +18,11 @@ import { Surface } from "react-native-paper";
 
 export default Home = ({ navigation, route }) => {
     useEffect(() => {
+        (async () => {
+            await Notifications.getAllScheduledNotificationsAsync().then((notis) => {
+                console.log(notis);
+            });
+        })();
         const notificationSubscription = Notifications.addNotificationReceivedListener(
             async (notification) => {
                 let badge = await Notifications.getBadgeCountAsync();

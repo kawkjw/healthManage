@@ -247,7 +247,17 @@ const MyStack = () => {
                             num = num + 1;
                             setUnread(true);
                         }
+                        if (obj.cancel) {
+                        }
                     });
+                    const promises = list.map(async (message) => {
+                        if (message.data.cancel) {
+                            await Notifications.cancelScheduledNotificationAsync(
+                                message.data.identifier
+                            );
+                        }
+                    });
+                    await Promise.all(promises);
                     if (num === 0) {
                         setUnread(false);
                     }
@@ -475,13 +485,18 @@ const MyStack = () => {
                                                     elevation: 5,
                                                 },
                                             ]}
-                                            onPress={() => {
+                                            onPress={async () => {
                                                 setModalNotification(false);
                                                 if (!message.isRead) {
-                                                    checkNotification(message.id);
+                                                    await checkNotification(message.id);
                                                 }
                                                 if (message.data.navigation) {
                                                     navigation.navigate(message.data.navigation);
+                                                }
+                                                if (message.data.cancel) {
+                                                    await Notifications.cancelScheduledNotificationAsync(
+                                                        message.data.identifier
+                                                    );
                                                 }
                                             }}
                                         >
