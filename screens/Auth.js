@@ -247,10 +247,6 @@ export default Auth = () => {
                                         await db
                                             .collection("users")
                                             .doc(currentUser.id)
-                                            .set({ locker: { exist: false } }, { merge: true });
-                                        await db
-                                            .collection("users")
-                                            .doc(currentUser.id)
                                             .collection("memberships")
                                             .doc("list")
                                             .set({

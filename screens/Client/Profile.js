@@ -42,7 +42,8 @@ export default Profile = ({ navigation }) => {
     const [changePhone, setChangePhone] = useState("");
     const { signOut } = useContext(AuthContext);
     const { classNames } = useContext(DataContext);
-    const [locker, setLocker] = useState({});
+    const [locker, setLocker] = useState(undefined);
+    const [clothes, setClothes] = useState(undefined);
     const thisuser = db.collection("users").doc(uid);
     const [textWidth, setTextWidth] = useState(0);
     const [membershipInfo, setMembershipInfo] = useState("");
@@ -118,8 +119,38 @@ export default Profile = ({ navigation }) => {
                     phoneNumber.slice(9, phoneNumber.length);
             }
             setPhoneNumber(phoneNumber);
-            const { locker } = (await db.collection("users").doc(uid).get()).data();
-            setLocker(locker);
+            await thisuser
+                .collection("locker")
+                .orderBy("payDay", "desc")
+                .limit(1)
+                .get()
+                .then((docs) => {
+                    docs.forEach((doc) => {
+                        if (doc.data().lockerNumber !== 0) {
+                            let expired = true;
+                            if (doc.data().end.toDate() > today) {
+                                expired = false;
+                            }
+                            setLocker({ ...doc.data(), expired });
+                        } else {
+                            setLocker({ lockerNumber: 0 });
+                        }
+                    });
+                });
+            await thisuser
+                .collection("clothes")
+                .orderBy("payDay", "desc")
+                .limit(1)
+                .get()
+                .then((docs) => {
+                    docs.forEach((doc) => {
+                        let expired = true;
+                        if (doc.data().end.toDate() > today) {
+                            expired = false;
+                        }
+                        setClothes({ ...doc.data(), expired });
+                    });
+                });
             await thisuser
                 .collection("memberships")
                 .doc("list")
@@ -525,11 +556,26 @@ export default Profile = ({ navigation }) => {
                                 </Text>
                                 <Text style={MyStyles.profileText}>
                                     보관함 번호 :{" "}
-                                    {locker.exist
-                                        ? `${locker.lockerNumber}번 (${moment(
-                                              locker.end.toDate()
-                                          ).format("YY. MM. DD.")} 까지)`
+                                    {locker !== undefined
+                                        ? locker.lockerNumber === 0
+                                            ? "결제 완료"
+                                            : `${locker.lockerNumber}번` +
+                                              (locker.expired
+                                                  ? "만료됨"
+                                                  : `(${moment(locker.end.toDate()).format(
+                                                        "YY. MM. DD."
+                                                    )} 까지)`)
                                         : "없음"}
+                                </Text>
+                                <Text style={MyStyles.profileText}>
+                                    운동복 이용 :{" "}
+                                    {clothes !== undefined
+                                        ? clothes.expired
+                                            ? "만료됨"
+                                            : `${moment(clothes.end.toDate()).format(
+                                                  "YY. MM. DD."
+                                              )} 까지`
+                                        : "안함"}
                                 </Text>
                                 <Text
                                     style={[

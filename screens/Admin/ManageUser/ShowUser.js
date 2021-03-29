@@ -23,6 +23,8 @@ export default ShowUser = ({ route }) => {
     const [extendList, setExtendList] = useState([]);
     const [change, setChange] = useState(false);
     const [textWidth, setTextWidth] = useState(0);
+    const [lockerInfo, setLockerInfo] = useState({ exist: false });
+    const [clothInfo, setClothInfo] = useState({ exist: false });
 
     const getMembership = async () => {
         await db
@@ -65,6 +67,59 @@ export default ShowUser = ({ route }) => {
             });
     };
 
+    const getLocker = async () => {
+        await db
+            .collection("users")
+            .doc(user.uid)
+            .collection("locker")
+            .orderBy("payDay", "desc")
+            .limit(1)
+            .get()
+            .then(async (docs) => {
+                let num = 0;
+                let obj = {};
+                docs.forEach((doc) => {
+                    if (doc.data().lockerNumber !== undefined && doc.data().lockerNumber !== 0) {
+                        const { end } = doc.data();
+                        num = doc.data().lockerNumber;
+                        obj = { ...doc.data(), exist: true, expired: end.toDate() < today };
+                    } else {
+                        setLockerInfo({ lockerNumber: 0, exist: true });
+                    }
+                });
+                await db
+                    .collection("lockers")
+                    .doc(num.toString())
+                    .get()
+                    .then((doc) => {
+                        if (doc.exists) {
+                            if (doc.data().uid === user.uid) {
+                                setLockerInfo(obj);
+                            }
+                        }
+                    });
+            });
+    };
+
+    const getClothes = async () => {
+        await db
+            .collection("users")
+            .doc(user.uid)
+            .collection("clothes")
+            .orderBy("payDay", "desc")
+            .limit(1)
+            .get()
+            .then((docs) => {
+                docs.forEach((doc) => {
+                    let expired = true;
+                    if (doc.data().end.toDate() > today) {
+                        expired = false;
+                    }
+                    setClothInfo({ ...doc.data(), exist: true, expired });
+                });
+            });
+    };
+
     const getExtends = async () => {
         await db
             .collection("users")
@@ -83,6 +138,8 @@ export default ShowUser = ({ route }) => {
 
     const getter = async () => {
         setIsLoading(true);
+        await getLocker();
+        await getClothes();
         await getMembership().then(async () => {
             await getExtends().then(() => {
                 setIsLoading(false);
@@ -321,13 +378,30 @@ export default ShowUser = ({ route }) => {
                             <Text style={TextSize.normalSize}>주소 : {user.address}</Text>
                             <Text style={TextSize.normalSize}>
                                 보관함 번호 :{" "}
-                                {user.locker.exist
-                                    ? `${user.locker.lockerNumber}번 (${moment(
-                                          user.locker.start.toDate()
-                                      ).format("YY. MM. DD.")}~${moment(
-                                          user.locker.end.toDate()
-                                      ).format("YY. MM. DD.")})`
+                                {lockerInfo.exist
+                                    ? lockerInfo.lockerNumber === 0
+                                        ? "결제 완료"
+                                        : `${lockerInfo.lockerNumber}번` +
+                                          (lockerInfo.expired
+                                              ? "만료됨"
+                                              : `(${moment(lockerInfo.start.toDate()).format(
+                                                    "YY. MM. DD."
+                                                )}~${moment(lockerInfo.end.toDate()).format(
+                                                    "YY. MM. DD."
+                                                )})`)
                                     : "없음"}
+                            </Text>
+                            <Text style={TextSize.normalSize}>
+                                운동복 이용 :{" "}
+                                {clothInfo.exist
+                                    ? clothInfo.expired
+                                        ? "만료됨"
+                                        : `${moment(clothInfo.start.toDate()).format(
+                                              "YY. MM. DD."
+                                          )}~${moment(clothInfo.end.toDate()).format(
+                                              "YY. MM. DD."
+                                          )}`
+                                    : "안함"}
                             </Text>
                         </View>
 

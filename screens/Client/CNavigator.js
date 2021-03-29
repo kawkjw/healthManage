@@ -49,15 +49,55 @@ const MyStack = () => {
         await db
             .collection("users")
             .doc(uid)
+            .collection("locker")
+            .orderBy("payDay", "desc")
+            .limit(1)
             .get()
-            .then((doc) => {
+            .then((docs) => {
                 const today = new Date();
-                const { locker } = doc.data();
-                if (locker.end !== undefined) {
-                    if (today > locker.end.toDate()) {
-                        Alert.alert("경고", "락커 사용기간이 끝났습니다.", [{ text: "확인" }]);
+                docs.forEach((doc) => {
+                    if (doc.data().end !== undefined) {
+                        if (today > doc.data().end.toDate()) {
+                            Alert.alert("경고", "보관함 사용기간이 끝났습니다.", [
+                                { text: "확인" },
+                            ]);
+                        }
+                    } else {
+                        Alert.alert(
+                            "경고",
+                            "보관함 등록이 완료되지 않았습니다.\n관리자에게 문의해주세요.",
+                            [{ text: "확인" }]
+                        );
                     }
-                }
+                });
+            });
+    };
+
+    const getClothes = async () => {
+        await db
+            .collection("users")
+            .doc(uid)
+            .collection("clothes")
+            .orderBy("payDay", "desc")
+            .limit(1)
+            .get()
+            .then((docs) => {
+                const today = new Date();
+                docs.forEach((doc) => {
+                    if (doc.data().end !== undefined) {
+                        if (today > doc.data().end.toDate()) {
+                            Alert.alert("경고", "운동복 사용기간이 끝났습니다.", [
+                                { text: "확인" },
+                            ]);
+                        }
+                    } else {
+                        Alert.alert(
+                            "경고",
+                            "운동복 시작일 설정이 완료되지 않았습니다.\n관리자에게 문의해주세요.",
+                            [{ text: "확인" }]
+                        );
+                    }
+                });
             });
     };
 
@@ -334,11 +374,15 @@ const MyStack = () => {
             setNotificationAvail(true);
         }
         await getLocker().then(async () => {
-            await getMemberships().then(async (ret) => {
-                setMembershipUnsubsribe(ret === undefined ? () => console.log : () => ret);
-                await getNotifications().then((func) => {
-                    setNotificationUnsubscribe(func === undefined ? () => console.log : () => func);
-                    setLoading(false);
+            await getClothes().then(async () => {
+                await getMemberships().then(async (ret) => {
+                    setMembershipUnsubsribe(ret === undefined ? () => console.log : () => ret);
+                    await getNotifications().then((func) => {
+                        setNotificationUnsubscribe(
+                            func === undefined ? () => console.log : () => func
+                        );
+                        setLoading(false);
+                    });
                 });
             });
         });
@@ -357,6 +401,7 @@ const MyStack = () => {
                 }
             }
             await getLocker();
+            await getClothes();
             await getMemberships().then((ret) => {
                 setMembershipUnsubsribe(ret === undefined ? () => console.log : () => ret);
             });

@@ -1283,22 +1283,21 @@ export default PT = ({ navigation, route }) => {
                 onBackButtonPress={() => alertWhenClose()}
             >
                 <View
-                    style={[
-                        {
-                            height: hp("95%"),
-                        },
-                        settingLoading ? { backgroundColor: "grey" } : { backgroundColor: "white" },
-                    ]}
+                    style={{
+                        height: hp("95%"),
+                        backgroundColor: "white",
+                    }}
                 >
                     {settingLoading && (
                         <View
                             style={{
+                                backgroundColor: "rgba(153, 153, 153, 0.5)",
+                                width: wp("100%"),
+                                height: hp("95%"),
+                                position: "absolute",
+                                zIndex: 1,
                                 alignItems: "center",
                                 justifyContent: "center",
-                                position: "absolute",
-                                top: hp("40%"),
-                                left: wp("45%"),
-                                zIndex: 1,
                             }}
                         >
                             <ActivityIndicator color="black" size={60} />
@@ -1447,27 +1446,7 @@ export default PT = ({ navigation, route }) => {
                                                 styles.availButton,
                                                 availList[index] === null ||
                                                 availList[index] === false
-                                                    ? settingLoading
-                                                        ? [
-                                                              {
-                                                                  backgroundColor:
-                                                                      "rgba(255, 255, 255, 0.3)",
-                                                              },
-                                                              Platform.OS === "android"
-                                                                  ? { elevation: 0 }
-                                                                  : undefined,
-                                                          ]
-                                                        : { backgroundColor: "white" }
-                                                    : settingLoading
-                                                    ? [
-                                                          {
-                                                              backgroundColor:
-                                                                  "rgba(102, 204, 255, 0.3)",
-                                                          },
-                                                          Platform.OS === "android"
-                                                              ? { elevation: 0 }
-                                                              : undefined,
-                                                      ]
+                                                    ? { backgroundColor: "white" }
                                                     : {
                                                           backgroundColor: "#66ccff",
                                                       },
@@ -1483,9 +1462,7 @@ export default PT = ({ navigation, route }) => {
                                                     TextSize.largeSize,
                                                     availList[index] === null ||
                                                     availList[index] === false
-                                                        ? settingLoading
-                                                            ? { color: "rgba(0, 0, 255, 0.3)" }
-                                                            : { color: "blue" }
+                                                        ? { color: "blue" }
                                                         : { color: "black" },
                                                 ]}
                                             >
@@ -1506,27 +1483,7 @@ export default PT = ({ navigation, route }) => {
                                                 styles.availButton,
                                                 availList[index] === null ||
                                                 availList[index] === true
-                                                    ? settingLoading
-                                                        ? [
-                                                              {
-                                                                  backgroundColor:
-                                                                      "rgba(255, 255, 255, 0.3)",
-                                                              },
-                                                              Platform.OS === "android"
-                                                                  ? { elevation: 0 }
-                                                                  : undefined,
-                                                          ]
-                                                        : { backgroundColor: "white" }
-                                                    : settingLoading
-                                                    ? [
-                                                          {
-                                                              backgroundColor:
-                                                                  "rgba(255, 153, 153, 0.3)",
-                                                          },
-                                                          Platform.OS === "android"
-                                                              ? { elevation: 0 }
-                                                              : undefined,
-                                                      ]
+                                                    ? { backgroundColor: "white" }
                                                     : {
                                                           backgroundColor: "#ff9999",
                                                       },
@@ -1542,9 +1499,7 @@ export default PT = ({ navigation, route }) => {
                                                     TextSize.largeSize,
                                                     availList[index] === null ||
                                                     availList[index] === true
-                                                        ? settingLoading
-                                                            ? { color: "rgba(255, 0, 0, 0.3)" }
-                                                            : { color: "red" }
+                                                        ? { color: "red" }
                                                         : { color: "black" },
                                                 ]}
                                             >

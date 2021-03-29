@@ -15,9 +15,6 @@ export default Locker = () => {
     const [selectedLocker, setSelectedLocker] = useState(0);
     const [phoneNumber, setPhoneNumber] = useState("");
     const [searchVisible, setSearchVisible] = useState(false);
-    const [monthVisible, setMonthVisible] = useState(false);
-    const [month, setMonth] = useState("");
-    const [clientUid, setClientUid] = useState("");
     const [changed, setChanged] = useState(true);
     const { signOut } = useContext(AuthContext);
 
@@ -42,6 +39,7 @@ export default Locker = () => {
 
     useEffect(() => {
         const getLockers = async () => {
+            const today = new Date();
             const { max } = (await db.collection("lockers").doc("maxNumber").get()).data();
             let items = Array.apply(null, Array(max)).map((value, index) => {
                 return {
@@ -50,6 +48,7 @@ export default Locker = () => {
                     name: "none",
                     phoneNumber: "none",
                     uid: "none",
+                    color: "grey",
                 };
             });
             await db
@@ -65,14 +64,29 @@ export default Locker = () => {
                 })
                 .then(async (list) => {
                     const promise = list.map(async (info) => {
-                        const { name, phoneNumber, locker } = (
+                        const { name, phoneNumber } = (
                             await db.collection("users").doc(info.uid).get()
                         ).data();
+                        let locker = undefined;
+                        await db
+                            .collection("users")
+                            .doc(info.uid)
+                            .collection("locker")
+                            .orderBy("payDay", "desc")
+                            .limit(1)
+                            .get()
+                            .then((docs) => {
+                                docs.forEach((doc) => {
+                                    locker = doc.data();
+                                });
+                            });
                         items[Number(info.id) - 1]["name"] = name;
                         items[Number(info.id) - 1]["phoneNumber"] = phoneNumber;
                         items[Number(info.id) - 1]["uid"] = info.uid;
                         items[Number(info.id) - 1]["occupied"] = true;
-                        if (locker.exist) {
+                        if (locker !== undefined) {
+                            items[Number(info.id) - 1]["color"] =
+                                locker.end.toDate() < today ? "red" : "blue";
                             items[Number(info.id) - 1]["start"] = locker.start.toDate();
                             items[Number(info.id) - 1]["end"] = locker.end.toDate();
                             items[Number(info.id) - 1]["month"] = locker.month;
@@ -96,16 +110,6 @@ export default Locker = () => {
         );
     }, [phoneNumber]);
 
-    useEffect(() => {
-        setMonth(month.replace(/[^0-9]/g, ""));
-        if (Number(month) <= 0) {
-            setMonth("");
-        }
-        if (Number(month) > 12) {
-            setMonth("12");
-        }
-    }, [month]);
-
     const removeLocker = async (id) => {
         await db
             .collection("lockers")
@@ -116,7 +120,16 @@ export default Locker = () => {
                 await db
                     .collection("users")
                     .doc(uid)
-                    .update({ locker: { exist: false } });
+                    .collection("locker")
+                    .orderBy("payDay", "desc")
+                    .get()
+                    .then(async (docs) => {
+                        let ref = undefined;
+                        docs.forEach((doc) => {
+                            ref = doc.ref;
+                        });
+                        await ref.update({ lockerNumber: 0 });
+                    });
                 await doc.ref.delete();
             })
             .then(() => {
@@ -135,11 +148,6 @@ export default Locker = () => {
     const handleSearchCancel = () => {
         setPhoneNumber("");
         setSearchVisible(false);
-    };
-
-    const handleMonthCancel = () => {
-        setMonth("");
-        setMonthVisible(false);
     };
 
     const searchUser = async () => {
@@ -164,8 +172,7 @@ export default Locker = () => {
                                 text: "확인",
                                 onPress: () => {
                                     handleSearchCancel();
-                                    setClientUid(uid);
-                                    setMonthVisible(true);
+                                    addLocker(uid);
                                 },
                             },
                             { text: "취소" },
@@ -179,11 +186,11 @@ export default Locker = () => {
             });
     };
 
-    const addLocker = async () => {
+    const addLocker = async (uid) => {
         const addDate = new Date();
         await db
             .collection("lockers")
-            .where("uid", "==", clientUid)
+            .where("uid", "==", uid)
             .get()
             .then(async (lockers) => {
                 if (lockers.size > 0) {
@@ -194,52 +201,78 @@ export default Locker = () => {
                     throw Error(`이미 보관함을 가지고 있음: ${lockerNum}`);
                 } else {
                     await db
-                        .collection("lockers")
-                        .doc(selectedLocker.toString())
+                        .collection("users")
+                        .doc(uid)
+                        .collection("locker")
+                        .where("lockerNumber", "==", 0)
+                        .orderBy("payDay", "desc")
+                        .limit(1)
                         .get()
-                        .then((doc) => {
-                            if (!doc.exists) {
-                                db.collection("lockers").doc(selectedLocker.toString()).set({
-                                    uid: clientUid,
+                        .then(async (docs) => {
+                            if (docs.size === 1) {
+                                let data;
+                                docs.forEach((doc) => {
+                                    data = { ...doc.data(), id: doc.id };
                                 });
+
+                                await db
+                                    .collection("lockers")
+                                    .doc(selectedLocker.toString())
+                                    .get()
+                                    .then((doc) => {
+                                        if (!doc.exists) {
+                                            db.collection("lockers")
+                                                .doc(selectedLocker.toString())
+                                                .set({
+                                                    uid: uid,
+                                                });
+                                        } else {
+                                            throw Error("이미 배정된 보관함입니다.");
+                                        }
+                                    })
+                                    .then(async () => {
+                                        await db
+                                            .collection("users")
+                                            .doc(uid)
+                                            .collection("locker")
+                                            .doc(data.id)
+                                            .update({
+                                                lockerNumber: selectedLocker,
+                                                start: addDate,
+                                                end: moment(addDate)
+                                                    .add(data.month, "M")
+                                                    .subtract(1, "d")
+                                                    .toDate(),
+                                            });
+                                    })
+                                    .then(() => {
+                                        Alert.alert(
+                                            "성공",
+                                            "성공적으로 추가되었습니다.",
+                                            [
+                                                {
+                                                    text: "확인",
+                                                    onPress: () => {
+                                                        setChanged(!changed);
+                                                    },
+                                                },
+                                            ],
+                                            { cancelable: false }
+                                        );
+                                    });
+                            } else {
+                                Alert.alert(
+                                    "경고",
+                                    "관리자 웹페이지에서 결제정보를 먼저 입력해주세요.",
+                                    [{ text: "확인" }],
+                                    { cancelable: false }
+                                );
                             }
-                        })
-                        .then(async () => {
-                            await db
-                                .collection("users")
-                                .doc(clientUid)
-                                .update({
-                                    locker: {
-                                        exist: true,
-                                        month: Number(month),
-                                        lockerNumber: selectedLocker,
-                                        start: addDate,
-                                        end: moment(addDate)
-                                            .add(Number(month), "M")
-                                            .subtract(1, "d")
-                                            .toDate(),
-                                    },
-                                });
-                        })
-                        .then(() => {
-                            Alert.alert(
-                                "성공",
-                                "성공적으로 추가되었습니다.",
-                                [
-                                    {
-                                        text: "확인",
-                                        onPress: () => {
-                                            handleMonthCancel();
-                                            setChanged(!changed);
-                                        },
-                                    },
-                                ],
-                                { cancelable: false }
-                            );
                         });
                 }
             })
             .catch((error) => {
+                console.log(error);
                 Alert.alert("실패", error.message, [{ text: "확인" }], {
                     cancelable: false,
                 });
@@ -265,27 +298,6 @@ export default Locker = () => {
                     <Dialog.Actions>
                         <Button onPress={handleSearchCancel}>취소</Button>
                         <Button onPress={searchUser}>확인</Button>
-                    </Dialog.Actions>
-                </Dialog>
-            </Portal>
-            <Portal>
-                <Dialog visible={monthVisible} dismissable={false}>
-                    <Dialog.Title>사용 기간 설정</Dialog.Title>
-                    <Dialog.Content>
-                        <TextInput
-                            label="1 ~ 12개월"
-                            mode="outlined"
-                            dense={true}
-                            value={month}
-                            onChangeText={setMonth}
-                            keyboardType="phone-pad"
-                            maxLength={2}
-                            right={<TextInput.Affix text="개월" />}
-                        />
-                    </Dialog.Content>
-                    <Dialog.Actions>
-                        <Button onPress={handleMonthCancel}>취소</Button>
-                        <Button onPress={addLocker}>확인</Button>
                     </Dialog.Actions>
                 </Dialog>
             </Portal>
@@ -356,14 +368,7 @@ export default Locker = () => {
                                 }
                             }}
                         >
-                            <Text
-                                style={[
-                                    TextSize.largeSize,
-                                    {
-                                        color: item.occupied ? "red" : "blue",
-                                    },
-                                ]}
-                            >
+                            <Text style={[TextSize.largeSize, { color: item.color }]}>
                                 {item.id}
                             </Text>
                         </TouchableOpacity>

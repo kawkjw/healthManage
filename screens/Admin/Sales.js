@@ -170,6 +170,10 @@ export default Sales = ({ navigation, route }) => {
             min = { month: month - 1, date: 1 };
             max = { month: month, date: 1 };
         }
+        const minDate = new Date(year, min.month, min.date);
+        const maxDate = new Date(year, max.month, max.date);
+        let cash = 0;
+        let card = 0;
         setLoading(true);
         await db
             .collectionGroup("memberships")
@@ -187,12 +191,8 @@ export default Sales = ({ navigation, route }) => {
                 return list;
             })
             .then(async (list) => {
-                let cash = 0;
-                let card = 0;
                 const rootPromises = list.map(async (obj) => {
                     const promises = obj.classes.map(async (name) => {
-                        const minDate = new Date(year, min.month, min.date);
-                        const maxDate = new Date(year, max.month, max.date);
                         await db
                             .doc(obj.path)
                             .collection(name)
@@ -218,6 +218,52 @@ export default Sales = ({ navigation, route }) => {
                     await Promise.all(promises);
                 });
                 await Promise.all(rootPromises);
+            })
+            .then(async () => {
+                await db
+                    .collectionGroup("locker")
+                    .where("payDay", ">", minDate)
+                    .where("payDay", "<", maxDate)
+                    .get()
+                    .then((docs) => {
+                        docs.forEach((doc) => {
+                            if (
+                                doc.data().payKind !== undefined &&
+                                doc.data().price !== undefined
+                            ) {
+                                const { payKind, price } = doc.data();
+                                if (payKind === "cash") {
+                                    cash = cash + Number(price);
+                                } else if (payKind === "card") {
+                                    card = card + Number(price);
+                                }
+                            }
+                        });
+                    });
+            })
+            .then(async () => {
+                await db
+                    .collectionGroup("clothes")
+                    .where("payDay", ">", minDate)
+                    .where("payDay", "<", maxDate)
+                    .get()
+                    .then((docs) => {
+                        docs.forEach((doc) => {
+                            if (
+                                doc.data().payKind !== undefined &&
+                                doc.data().price !== undefined
+                            ) {
+                                const { payKind, price } = doc.data();
+                                if (payKind === "cash") {
+                                    cash = cash + Number(price);
+                                } else if (payKind === "card") {
+                                    card = card + Number(price);
+                                }
+                            }
+                        });
+                    });
+            })
+            .then(() => {
                 if (kind === "day") {
                     setDayCash(cash);
                     setDayCard(card);
