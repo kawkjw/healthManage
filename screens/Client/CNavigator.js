@@ -674,10 +674,11 @@ const MyStack = () => {
                                 justifyContent: "center",
                             }}
                             onPress={() => {
-                                resetRandom();
                                 membershipUnsubscribe();
                                 notificationUnsubscribe();
-                                signOut();
+                                resetRandom().then(() => {
+                                    signOut();
+                                });
                             }}
                         >
                             <Text style={[TextSize.normalSize, { color: "white" }]}>로그아웃</Text>

@@ -37,7 +37,7 @@ export default Profile = ({ navigation }) => {
     const [count, setCount] = useState(15);
     const [phoneNumber, setPhoneNumber] = useState("");
     const [name, setName] = useState("");
-    const uid = myBase.auth().currentUser !== null ? myBase.auth().currentUser.uid : null;
+    const uid = myBase.auth().currentUser !== null ? myBase.auth().currentUser.uid : "null";
     const [modalPhoneVisible, setModalPhoneVisible] = useState(false);
     const [changePhone, setChangePhone] = useState("");
     const { signOut } = useContext(AuthContext);
@@ -353,7 +353,9 @@ export default Profile = ({ navigation }) => {
 
     useEffect(() => {
         AppState.addEventListener("change", changeAppState);
-        getUserData();
+        getUserData().catch((error) => {
+            console.log("client user data", error);
+        });
         return () => {
             AppState.removeEventListener("change", changeAppState);
         };
