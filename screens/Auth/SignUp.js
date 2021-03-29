@@ -609,14 +609,11 @@ export default SignUp = ({ navigation }) => {
             <SegmentedPicker
                 ref={picker}
                 onCancel={(select) => {
-                    setBirthday({ ...birthday, day: select.day });
+                    setBirthday({ year: select.year, month: select.month, day: select.day });
                 }}
                 onConfirm={(select) => {
-                    setBirthday({ ...birthday, day: select.day });
+                    setBirthday({ year: select.year, month: select.month, day: select.day });
                 }}
-                onValueChange={(select) =>
-                    setBirthday({ ...birthday, [select.column]: select.value })
-                }
                 confirmText="확인"
                 defaultSelections={birthday}
                 options={generateOptions()}
