@@ -868,6 +868,7 @@ export default Profile = ({ navigation }) => {
                     <FirebaseRecaptchaVerifierModal
                         ref={appVerifier}
                         firebaseConfig={myBase.options}
+                        cancelLabel="취소"
                     />
                     <TouchableOpacity
                         style={{

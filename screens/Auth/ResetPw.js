@@ -157,7 +157,11 @@ export default ResetPw = ({ navigation }) => {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <FirebaseRecaptchaVerifierModal ref={appVerifier} firebaseConfig={myBase.options} />
+            <FirebaseRecaptchaVerifierModal
+                ref={appVerifier}
+                firebaseConfig={myBase.options}
+                cancelLabel="취소"
+            />
             <TouchableOpacity
                 style={{ alignItems: "center", justifyContent: "center", paddingHorizontal: 30 }}
                 onPress={Keyboard.dismiss}

@@ -232,7 +232,11 @@ export default SignUp = ({ navigation }) => {
 
     return (
         <SafeAreaView style={{ flex: 1 }}>
-            <FirebaseRecaptchaVerifierModal ref={appVerifier} firebaseConfig={myBase.options} />
+            <FirebaseRecaptchaVerifierModal
+                ref={appVerifier}
+                firebaseConfig={myBase.options}
+                cancelLabel="취소"
+            />
             <Modal
                 isVisible={modalAddress}
                 style={{ justifyContent: "flex-end", margin: 0 }}
