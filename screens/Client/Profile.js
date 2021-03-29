@@ -15,7 +15,6 @@ import QRCode from "react-native-qrcode-svg";
 import myBase, { db } from "../../config/MyBase";
 import { useInterval } from "../../config/hooks";
 import { MyStyles, TextSize, theme } from "../../css/MyStyles";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AuthContext, DataContext } from "../Auth";
 import firebase from "firebase";
 import moment from "moment";
@@ -28,6 +27,7 @@ import {
 } from "react-native-responsive-screen";
 import Modal from "react-native-modal";
 import { ActivityIndicator, Button, HelperText, Surface, TextInput } from "react-native-paper";
+import * as SecureStore from "expo-secure-store";
 
 export default Profile = ({ navigation }) => {
     const [data, setData] = useState("");
@@ -99,7 +99,7 @@ export default Profile = ({ navigation }) => {
     const getUserData = async () => {
         const today = new Date();
         if (uid !== null) {
-            const storage_uid = await AsyncStorage.getItem("userToken");
+            const storage_uid = await SecureStore.getItemAsync("userToken");
             if (uid !== storage_uid) {
                 signOut();
                 return;
@@ -408,7 +408,7 @@ export default Profile = ({ navigation }) => {
     };
 
     const dbChangePhone = async () => {
-        const storage_uid = await AsyncStorage.getItem("userToken");
+        const storage_uid = await SecureStore.getItemAsync("userToken");
         if (uid === storage_uid) {
             const phoneCredential = firebase.auth.PhoneAuthProvider.credential(
                 verificationId,

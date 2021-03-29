@@ -3,7 +3,7 @@ import * as Notifications from "expo-notifications";
 import { db } from "./MyBase";
 import * as Permissions from "expo-permissions";
 import { Alert, Linking, Platform } from "react-native";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SecureStore from "expo-secure-store";
 
 const MyExpo = new Expo();
 
@@ -25,8 +25,8 @@ export const registerForPushNotificationAsync = async () => {
         return null;
     }
     token = (await Notifications.getExpoPushTokenAsync()).data;
-    await AsyncStorage.setItem("notificationToken", token);
-    console.log(await AsyncStorage.getItem("notificationToken"));
+    await SecureStore.setItemAsync("notificationToken", token);
+    console.log(await SecureStore.getItemAsync("notificationToken"));
 
     if (Platform.OS === "android") {
         Notifications.setNotificationChannelAsync("default", {

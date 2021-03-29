@@ -7,7 +7,6 @@ import myBase, { arrayDelete, arrayUnion, db } from "../config/MyBase";
 import firebase from "firebase";
 import LoadingScreen from "./LoadingScreen";
 import AuthSuccess from "./AuthSuccess";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import SignIn from "./Auth/SignIn";
 import SignUp from "./Auth/SignUp";
 import ResetPw from "./Auth/ResetPw";
@@ -15,6 +14,7 @@ import { pushNotificationsToAdmin } from "../config/MyExpo";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import * as Crypto from "expo-crypto";
 import { theme } from "../css/MyStyles";
+import * as SecureStore from "expo-secure-store";
 
 const Stack = createStackNavigator();
 
@@ -57,7 +57,7 @@ export default Auth = () => {
     const restoreToken = async () => {
         let userToken;
         try {
-            userToken = await AsyncStorage.getItem("userToken");
+            userToken = await SecureStore.getItemAsync("userToken");
             return userToken;
         } catch (error) {
             console.log(error);
@@ -113,8 +113,8 @@ export default Auth = () => {
                 await myBase
                     .auth()
                     .signInWithEmailAndPassword(email, password)
-                    .then((response) => {
-                        AsyncStorage.setItem("userToken", response.user.uid);
+                    .then(async (response) => {
+                        await SecureStore.setItemAsync("userToken", response.user.uid);
                         dispatch({ type: "SIGN_IN", token: response.user.uid });
                     })
                     .catch((error) => {
@@ -139,13 +139,14 @@ export default Auth = () => {
                     });
             },
             signOut: async () => {
-                const token = await AsyncStorage.getItem("notificationToken");
+                const token = await SecureStore.getItemAsync("notificationToken");
                 await db
                     .collection("notifications")
                     .doc(myBase.auth().currentUser.uid)
                     .update({ expoToken: arrayDelete(token) });
                 myBase.auth().signOut();
-                await AsyncStorage.multiRemove(["userToken", "notificationToken"]);
+                await SecureStore.deleteItemAsync("userToken");
+                await SecureStore.deleteItemAsync("notificationToken");
                 dispatch({ type: "SIGN_OUT" });
             },
             signUp: async (data) => {
