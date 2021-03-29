@@ -1,15 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
-import {
-    View,
-    TouchableOpacity,
-    SafeAreaView,
-    StatusBar,
-    Keyboard,
-    Platform,
-    Image,
-} from "react-native";
+import { View, TouchableOpacity, SafeAreaView, StatusBar, Keyboard, Image } from "react-native";
 import { AuthContext } from "../Auth";
-import { AuthStyles } from "../../css/MyStyles";
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
@@ -84,10 +75,10 @@ export default SignIn = ({ navigation }) => {
                         }}
                     />
                     <View style={{ paddingHorizontal: 20 }}>
-                        <View style={AuthStyles.textView}>
+                        <View style={{ marginBottom: 10 }}>
                             <TextInput label="아이디" value={id} onChangeText={setId} />
                         </View>
-                        <View style={AuthStyles.textView}>
+                        <View style={{ marginBottom: 10 }}>
                             <TextInput
                                 label="비밀번호"
                                 secureTextEntry={true}

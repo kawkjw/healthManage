@@ -1,4 +1,4 @@
-import { StyleSheet, Platform } from "react-native";
+import { StyleSheet } from "react-native";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import {
     widthPercentageToDP as wp,
@@ -16,44 +16,8 @@ export const MyStyles = StyleSheet.create({
         flex: 1,
         alignItems: "center",
     },
-    buttonShadow: {
-        backgroundColor: "white",
-        borderRadius: 20,
-        borderWidth: 1,
-        borderColor: "grey",
-        ...Platform.select({
-            ios: {
-                shadowColor: "#c6c6c6",
-                shadowOffset: { width: 5, height: 5 },
-                shadowOpacity: 5,
-            },
-            android: {
-                elevation: 10,
-            },
-        }),
-    },
-    profileButton: {
-        alignItems: "center",
-        padding: 20,
-    },
     image: {
         resizeMode: "stretch",
-    },
-    backButton: {
-        width: "50%",
-        alignItems: "center",
-        justifyContent: "center",
-        paddingHorizontal: 20,
-        paddingVertical: 10,
-    },
-    button: {
-        aspectRatio: 1,
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    userinfo: {
-        height: "36%",
-        padding: 15,
     },
     profileText: {
         marginBottom: 3,
@@ -76,55 +40,6 @@ export const MyStyles = StyleSheet.create({
         aspectRatio: 1,
         alignItems: "center",
         justifyContent: "center",
-    },
-});
-
-export const AuthStyles = StyleSheet.create({
-    container: {
-        flex: 1,
-        alignItems: "center",
-        justifyContent: "center",
-    },
-    touchScreen: {
-        alignSelf: "stretch",
-        justifyContent: "center",
-        paddingHorizontal: 30,
-    },
-    textInput: {
-        borderWidth: 1,
-        padding: 5,
-        fontSize: RFPercentage(2.2),
-    },
-    text: {
-        fontSize: RFPercentage(1.9),
-        marginBottom: 5,
-    },
-    textView: {
-        marginBottom: 10,
-    },
-    authButton: {
-        flex: 1,
-        height: 35,
-        alignItems: "center",
-        justifyContent: "center",
-        backgroundColor: "white",
-        borderRadius: 10,
-        borderWidth: 1,
-        borderColor: "grey",
-        ...Platform.select({
-            ios: {
-                shadowColor: "#c6c6c6",
-                shadowOffset: { width: 5, height: 5 },
-                shadowOpacity: 5,
-            },
-            android: {
-                elevation: 10,
-            },
-        }),
-    },
-    authText: {
-        fontSize: RFPercentage(1.9),
-        color: "#1e90ff",
     },
 });
 

@@ -495,69 +495,73 @@ export default ShowUser = ({ route }) => {
                                         </Text>
                                     ) : (
                                         <>
-                                            <TouchableOpacity
-                                                style={[
-                                                    MyStyles.buttonShadow,
-                                                    MyStyles.flexCenter,
-                                                    {
-                                                        borderRadius: 10,
-                                                        height: hp("3%"),
-                                                        marginRight: 5,
-                                                    },
-                                                ]}
-                                                onPress={() =>
-                                                    Alert.alert(
-                                                        "경고",
-                                                        "승인하시겠습니까?",
-                                                        [
-                                                            { text: "취소", style: "cancel" },
-                                                            {
-                                                                text: "확인",
-                                                                onPress: () => onConfirm(obj),
-                                                            },
-                                                        ],
-                                                        { cancelable: false }
-                                                    )
-                                                }
+                                            <Surface
+                                                style={{
+                                                    flex: 1,
+                                                    elevation: 6,
+                                                    borderRadius: 10,
+                                                    height: hp("3%"),
+                                                    marginRight: 5,
+                                                }}
                                             >
-                                                <Text style={TextSize.normalSize}>승인</Text>
-                                            </TouchableOpacity>
-                                            <TouchableOpacity
-                                                style={[
-                                                    MyStyles.buttonShadow,
-                                                    MyStyles.flexCenter,
-                                                    {
-                                                        borderRadius: 10,
-                                                        height: hp("3%"),
-                                                        marginLeft: 5,
-                                                    },
-                                                ]}
-                                                onPress={() =>
-                                                    Alert.alert(
-                                                        "경고",
-                                                        "신청 취소하시겠습니까",
-                                                        [
-                                                            { text: "취소", style: "cancel" },
-                                                            {
-                                                                text: "확인",
-                                                                onPress: () => onCancel(obj),
-                                                            },
-                                                        ],
-                                                        { cancelable: false }
-                                                    )
-                                                }
-                                            >
-                                                <Text
-                                                    style={[
-                                                        TextSize.normalSize,
-                                                        {
-                                                            color: "red",
-                                                        },
-                                                    ]}
+                                                <TouchableOpacity
+                                                    style={MyStyles.flexCenter}
+                                                    onPress={() =>
+                                                        Alert.alert(
+                                                            "경고",
+                                                            "승인하시겠습니까?",
+                                                            [
+                                                                { text: "취소", style: "cancel" },
+                                                                {
+                                                                    text: "확인",
+                                                                    onPress: () => onConfirm(obj),
+                                                                },
+                                                            ],
+                                                            { cancelable: false }
+                                                        )
+                                                    }
                                                 >
-                                                    취소
-                                                </Text>
-                                            </TouchableOpacity>
+                                                    <Text style={TextSize.normalSize}>승인</Text>
+                                                </TouchableOpacity>
+                                            </Surface>
+                                            <Surface
+                                                style={{
+                                                    flex: 1,
+                                                    elevation: 6,
+                                                    borderRadius: 10,
+                                                    height: hp("3%"),
+                                                    marginHorizontal: 5,
+                                                }}
+                                            >
+                                                <TouchableOpacity
+                                                    style={MyStyles.flexCenter}
+                                                    onPress={() =>
+                                                        Alert.alert(
+                                                            "경고",
+                                                            "신청 취소하시겠습니까",
+                                                            [
+                                                                { text: "취소", style: "cancel" },
+                                                                {
+                                                                    text: "확인",
+                                                                    onPress: () => onCancel(obj),
+                                                                },
+                                                            ],
+                                                            { cancelable: false }
+                                                        )
+                                                    }
+                                                >
+                                                    <Text
+                                                        style={[
+                                                            TextSize.normalSize,
+                                                            {
+                                                                color: "red",
+                                                            },
+                                                        ]}
+                                                    >
+                                                        취소
+                                                    </Text>
+                                                </TouchableOpacity>
+                                            </Surface>
                                         </>
                                     )}
                                 </View>
