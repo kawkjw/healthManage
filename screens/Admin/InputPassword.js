@@ -11,14 +11,14 @@ export default InputPassword = ({ navigation, route }) => {
     const [password, setPassword] = useState("");
     const { signOut } = useContext(AuthContext);
     const { num, setNum } = useContext(WrongNumContext);
-    const { keys } = useContext(DataContext);
+    const { key } = useContext(DataContext);
 
     const checkPassword = async () => {
         const digest = await Crypto.digestStringAsync(
             Crypto.CryptoDigestAlgorithm.SHA256,
             password
         );
-        if (keys.pw === digest) {
+        if (key === digest) {
             setNum(0);
             navigation.replace("Sales");
         } else {
