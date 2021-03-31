@@ -14,7 +14,7 @@ import { pushNotificationsToAdmin } from "../config/MyExpo";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import * as Crypto from "expo-crypto";
 import { theme } from "../css/MyStyles";
-import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createStackNavigator();
 
@@ -52,12 +52,12 @@ export default Auth = () => {
         }
     );
     const [classNames, setClassNames] = useState({});
-    const [keys, setKeys] = useState({});
+    const [pw, setPw] = useState("");
 
     const restoreToken = async () => {
         let userToken;
         try {
-            userToken = await SecureStore.getItemAsync("userToken");
+            userToken = await AsyncStorage.getItem("userToken");
             return userToken;
         } catch (error) {
             console.log(error);
@@ -66,7 +66,7 @@ export default Auth = () => {
 
     const getter = async () => {
         await getClassNames().then(async () => {
-            await getKeys().then(async () => {
+            await getAdminPw().then(async () => {
                 await restoreToken().then((token) => {
                     dispatch({ type: "RESTORE_TOKEN", token: token });
                 });
@@ -91,20 +91,17 @@ export default Auth = () => {
             });
     };
 
-    const getKeys = async () => {
-        let obj = {};
+    const getAdminPw = async () => {
         await db
             .collection("keys")
+            .doc("pw")
             .get()
-            .then((docs) => {
-                docs.forEach((doc) => {
-                    obj[doc.id] = doc.data().key;
-                });
-                setKeys(obj);
+            .then((doc) => {
+                setPw(doc.data().key);
             });
     };
 
-    const dataContext = useMemo(() => ({ classNames: classNames, keys: keys }), [classNames, keys]);
+    const dataContext = useMemo(() => ({ classNames: classNames, key: pw }), [classNames, pw]);
 
     const authContext = useMemo(
         () => ({
@@ -114,7 +111,7 @@ export default Auth = () => {
                     .auth()
                     .signInWithEmailAndPassword(email, password)
                     .then(async (response) => {
-                        await SecureStore.setItemAsync("userToken", response.user.uid);
+                        await AsyncStorage.setItem("userToken", response.user.uid);
                         dispatch({ type: "SIGN_IN", token: response.user.uid });
                     })
                     .catch((error) => {
@@ -139,14 +136,13 @@ export default Auth = () => {
                     });
             },
             signOut: async () => {
-                const token = await SecureStore.getItemAsync("notificationToken");
+                const token = await AsyncStorage.getItem("notificationToken");
                 await db
                     .collection("notifications")
                     .doc(myBase.auth().currentUser.uid)
                     .update({ expoToken: arrayDelete(token) });
                 myBase.auth().signOut();
-                await SecureStore.deleteItemAsync("userToken");
-                await SecureStore.deleteItemAsync("notificationToken");
+                await AsyncStorage.multiRemove(["userToken", "notificationToken"]);
                 dispatch({ type: "SIGN_OUT" });
             },
             signUp: async (data) => {
@@ -166,6 +162,21 @@ export default Auth = () => {
                     Crypto.CryptoDigestAlgorithm.SHA256,
                     adminCode
                 );
+                const keys = {};
+                await db
+                    .collection("keys")
+                    .doc("admin")
+                    .get()
+                    .then((doc) => {
+                        keys["admin"] = doc.data().key;
+                    });
+                await db
+                    .collection("keys")
+                    .doc("trainer")
+                    .get()
+                    .then((doc) => {
+                        keys["trainer"] = doc.data().key;
+                    });
                 const isAdmin = adminDigest === keys.admin ? true : false;
                 const isTrainer = adminDigest === keys.trainer ? true : false;
                 await myBase

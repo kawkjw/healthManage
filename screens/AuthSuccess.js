@@ -7,7 +7,7 @@ import LoadingScreen from "./LoadingScreen";
 import { AuthContext } from "./Auth";
 import { registerForPushNotificationAsync } from "../config/MyExpo";
 import ANavigator from "./Admin/ANavigator";
-import * as SecureStore from "expo-secure-store";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
@@ -42,7 +42,7 @@ const MyStack = () => {
         let num = 0;
         while (notificationToken === null) {
             num = num + 1;
-            notificationToken = await SecureStore.getItemAsync("notificationToken");
+            notificationToken = await AsyncStorage.getItem("notificationToken");
             if (num === 100) {
                 break;
             }
@@ -71,7 +71,7 @@ const MyStack = () => {
     useEffect(() => {
         const unsubscribe = myBase.auth().onAuthStateChanged(async (user) => {
             if (user) {
-                const tempUid = await SecureStore.getItemAsync("userToken");
+                const tempUid = await AsyncStorage.getItem("userToken");
                 if (tempUid === user.uid) {
                     await execPromise(user);
                 } else {

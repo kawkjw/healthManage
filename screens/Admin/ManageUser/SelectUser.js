@@ -102,9 +102,10 @@ export default SelectUser = ({ navigation, route }) => {
                     keyExtractor={(item, index) => index}
                 />
             ) : (
-                <Text style={TextSize.largeSize}>검색 결과가 없습니다.</Text>
+                <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
+                    <Text style={TextSize.largeSize}>검색 결과가 없습니다.</Text>
+                </View>
             )}
-
             <View
                 style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
             />
