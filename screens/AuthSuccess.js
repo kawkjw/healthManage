@@ -14,7 +14,7 @@ const MyStack = () => {
     const [isLoading, setIsLoading] = useState(true);
     const [isAdmin, setIsAdmin] = useState(false);
     const [isTrainer, setIsTrainer] = useState(false);
-    const { signOut } = useContext(AuthContext);
+    const { signOut, errorHandle } = useContext(AuthContext);
 
     const getData = async (user) => {
         await db
@@ -77,6 +77,8 @@ const MyStack = () => {
                 } else {
                     signOut();
                 }
+            } else {
+                errorHandle();
             }
         });
         return () => unsubscribe();

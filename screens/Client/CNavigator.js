@@ -303,8 +303,6 @@ const MyStack = () => {
                             num = num + 1;
                             setUnread(true);
                         }
-                        if (obj.cancel) {
-                        }
                     });
                     const promises = list.map(async (message) => {
                         if (message.data.cancel) {

@@ -353,7 +353,7 @@ export default SignUp = ({ navigation }) => {
                         </View>
                     </View>
                     <View style={{ marginBottom: 5 }}>
-                        <View style={{ flexDirection: "row", alignItems: "flex-start" }}>
+                        <View style={{ flexDirection: "row" }}>
                             <View style={{ flex: 9 }}>
                                 <TextInput
                                     label="아이디"
@@ -364,16 +364,11 @@ export default SignUp = ({ navigation }) => {
                                     dense={true}
                                     error={id.length < 8 && id}
                                 />
-                                {id.length < 8 && id ? (
-                                    <HelperText type="error" visible={true} padding="none">
-                                        아이디는 8자 이상으로 해주시기 바랍니다.
-                                    </HelperText>
-                                ) : null}
                             </View>
                             <Button
                                 style={{
                                     flex: 1,
-                                    marginTop: 8,
+                                    marginTop: 5,
                                     marginLeft: 6,
                                     justifyContent: "center",
                                 }}
@@ -385,6 +380,11 @@ export default SignUp = ({ navigation }) => {
                                 중복확인
                             </Button>
                         </View>
+                        {id.length < 8 && id ? (
+                            <HelperText type="error" visible={true} padding="none">
+                                아이디는 8자 이상으로 해주시기 바랍니다.
+                            </HelperText>
+                        ) : null}
                     </View>
                     <View style={{ marginBottom: 5 }}>
                         <TextInput

@@ -380,6 +380,11 @@ export default Auth = () => {
                         throw Error(errorMessage);
                     });
             },
+            errorHandle: async () => {
+                const keys = await AsyncStorage.getAllKeys();
+                await AsyncStorage.multiRemove(keys);
+                dispatch({ type: "SIGN_OUT" });
+            },
         }),
         []
     );
