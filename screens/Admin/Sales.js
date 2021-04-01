@@ -1230,7 +1230,7 @@ export default Sales = ({ navigation, route }) => {
                                                     <BarChart
                                                         data={chart}
                                                         style={{ flex: 1, marginLeft: 10 }}
-                                                        svg={{ fill: "#1e99ff" }}
+                                                        svg={{ fill: theme.colors.accent }}
                                                         contentInset={{ top: 13, bottom: 13 }}
                                                         gridMin={0}
                                                     >
