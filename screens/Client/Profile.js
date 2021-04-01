@@ -343,7 +343,8 @@ export default Profile = ({ navigation }) => {
     }, [isRun]);
 
     const changeAppState = (state) => {
-        if (state === "inactive") {
+        console.log(state);
+        if (state === "inactive" || state === "background") {
             setIsRun(false);
             resetRandom();
         } else if (state === "active") {
