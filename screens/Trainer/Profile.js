@@ -247,8 +247,8 @@ export default Profile = ({ navigation, route }) => {
                     cancelable: false,
                 });
                 return;
-            } else if (Number(ptStartTime) < 8 || Number(ptEndTime) > 22) {
-                Alert.alert("경고", "최소 : 8, 최대 : 22", [{ text: "확인" }], {
+            } else if (Number(ptStartTime) < 0 || Number(ptEndTime) > 24) {
+                Alert.alert("경고", "최소 : 0, 최대 : 24", [{ text: "확인" }], {
                     cancelable: false,
                 });
                 return;
@@ -278,8 +278,8 @@ export default Profile = ({ navigation, route }) => {
                         cancelable: false,
                     });
                     return;
-                } else if (Number(ptStartTime) < 8 || Number(ptEndTime) > 22) {
-                    Alert.alert("경고", "최소 : 8, 최대 : 22", [{ text: "확인" }], {
+                } else if (Number(ptStartTime) < 0 || Number(ptEndTime) > 24) {
+                    Alert.alert("경고", "최소 : 0, 최대 : 24", [{ text: "확인" }], {
                         cancelable: false,
                     });
                     return;

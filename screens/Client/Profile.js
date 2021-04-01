@@ -554,7 +554,9 @@ export default Profile = ({ navigation }) => {
                                     </TouchableOpacity>
                                 </View>
                                 <Text style={MyStyles.profileText}>
-                                    아이디 : {myBase.auth().currentUser.email.split("@")[0]}
+                                    아이디 :{" "}
+                                    {myBase.auth().currentUser !== null &&
+                                        myBase.auth().currentUser.email.split("@")[0]}
                                 </Text>
                                 <Text style={MyStyles.profileText}>
                                     보관함 번호 :{" "}

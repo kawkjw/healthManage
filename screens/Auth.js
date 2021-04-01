@@ -382,7 +382,7 @@ export default Auth = () => {
             },
             errorHandle: async () => {
                 const keys = await AsyncStorage.getAllKeys();
-                await AsyncStorage.multiRemove(keys);
+                if (keys.length > 0) await AsyncStorage.multiRemove(keys);
                 dispatch({ type: "SIGN_OUT" });
             },
         }),

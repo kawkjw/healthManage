@@ -383,7 +383,7 @@ export default ShowUser = ({ route }) => {
                                         ? "결제 완료"
                                         : `${lockerInfo.lockerNumber}번` +
                                           (lockerInfo.expired
-                                              ? "만료됨"
+                                              ? "(만료됨)"
                                               : `(${moment(lockerInfo.start.toDate()).format(
                                                     "YY. MM. DD."
                                                 )}~${moment(lockerInfo.end.toDate()).format(
