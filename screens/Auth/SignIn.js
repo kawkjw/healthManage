@@ -1,5 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, TouchableOpacity, SafeAreaView, StatusBar, Keyboard, Image } from "react-native";
+import {
+    View,
+    TouchableOpacity,
+    SafeAreaView,
+    StatusBar,
+    Keyboard,
+    Image,
+    Platform,
+} from "react-native";
 import { AuthContext } from "../Auth";
 import {
     widthPercentageToDP as wp,
@@ -7,6 +15,8 @@ import {
 } from "react-native-responsive-screen";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { TextInput, Button } from "react-native-paper";
+import { theme } from "../../css/MyStyles";
+import Constants from "expo-constants";
 
 export default SignIn = ({ navigation }) => {
     const [id, setId] = useState("");
@@ -41,17 +51,16 @@ export default SignIn = ({ navigation }) => {
     }, [id]);
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
             <StatusBar barStyle="light-content" />
             <KeyboardAwareScrollView
                 contentContainerStyle={{
-                    marginTop: 30,
                     paddingHorizontal: -30,
                 }}
                 keyboardShouldPersistTaps="always"
                 showsVerticalScrollIndicator={false}
                 scrollEnabled={false}
-                extraScrollHeight={hp("17%")}
+                extraScrollHeight={Platform.select({ ios: 10, android: hp("10%") })}
                 enableOnAndroid={true}
                 enableAutomaticScroll
             >
@@ -61,19 +70,28 @@ export default SignIn = ({ navigation }) => {
                     accessible={false}
                     activeOpacity={1}
                 >
-                    <Image
-                        style={[
-                            {
-                                width: wp("80%"),
-                                aspectRatio: 1,
-                                alignSelf: "center",
-                                marginBottom: 20,
-                            },
-                        ]}
-                        source={{
-                            uri: "https://reactnative.dev/img/tiny_logo.png",
+                    <View
+                        style={{
+                            backgroundColor: theme.colors.primary,
+                            marginBottom: 20,
+                            paddingTop: Platform.select({
+                                ios: Constants.statusBarHeight,
+                                android: 0,
+                            }),
                         }}
-                    />
+                    >
+                        <Image
+                            style={[
+                                {
+                                    width: wp("100%"),
+                                    height: hp("40%"),
+                                    alignSelf: "center",
+                                    marginBottom: 20,
+                                },
+                            ]}
+                            source={require("../../assets/login.png")}
+                        />
+                    </View>
                     <View style={{ paddingHorizontal: 20 }}>
                         <View style={{ marginBottom: 10 }}>
                             <TextInput label="아이디" value={id} onChangeText={setId} />
@@ -91,6 +109,7 @@ export default SignIn = ({ navigation }) => {
                                 style={{ flex: 1, marginRight: 5 }}
                                 mode="contained"
                                 loading={loading}
+                                disabled={!id || !password}
                                 onPress={() => {
                                     login();
                                 }}
@@ -111,6 +130,6 @@ export default SignIn = ({ navigation }) => {
                     </View>
                 </TouchableOpacity>
             </KeyboardAwareScrollView>
-        </SafeAreaView>
+        </View>
     );
 };

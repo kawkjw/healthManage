@@ -3,15 +3,15 @@ import { Alert, Keyboard, TouchableOpacity, View, KeyboardAvoidingView } from "r
 import * as Crypto from "expo-crypto";
 import { TextSize, theme } from "../../css/MyStyles";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
-import { AuthContext, DataContext } from "../Auth";
-import { WrongNumContext } from "./ANavigator";
+import { AuthContext } from "../Auth";
+import { WrongNumContext, AdminContext } from "./ANavigator";
 import { Button, TextInput } from "react-native-paper";
 
 export default InputPassword = ({ navigation, route }) => {
     const [password, setPassword] = useState("");
     const { signOut } = useContext(AuthContext);
     const { num, setNum } = useContext(WrongNumContext);
-    const { key } = useContext(DataContext);
+    const { key } = useContext(AdminContext);
 
     const checkPassword = async () => {
         const digest = await Crypto.digestStringAsync(

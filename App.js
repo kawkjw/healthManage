@@ -7,6 +7,11 @@ import * as Updates from "expo-updates";
 import { TextSize } from "./css/MyStyles";
 import { Provider as PaperProvider } from "react-native-paper";
 import { theme } from "./css/MyStyles";
+import * as SplashScreen from "expo-splash-screen";
+
+SplashScreen.preventAutoHideAsync().catch((error) => {
+    console.log(error);
+});
 
 Notifications.setNotificationHandler({
     handleNotification: async () => ({
@@ -27,8 +32,11 @@ export default function App() {
         Updates.checkForUpdateAsync().then((update) => {
             if (update.isAvailable) {
                 setShowUpdates(true);
-                Updates.fetchUpdateAsync().then(async () => {
-                    await Updates.reloadAsync();
+                SplashScreen.hideAsync().then((value) => {
+                    console.log(value);
+                    Updates.fetchUpdateAsync().then(async () => {
+                        await Updates.reloadAsync();
+                    });
                 });
             }
         });

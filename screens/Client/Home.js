@@ -69,10 +69,11 @@ export default Home = ({ navigation, route }) => {
                         onPress={() => navigation.navigate("Profile")}
                     >
                         <Image
-                            style={[MyStyles.image, { width: wp("80%"), aspectRatio: 1 }]}
-                            source={{
-                                uri: "https://reactnative.dev/img/tiny_logo.png",
-                            }}
+                            style={[
+                                MyStyles.image,
+                                { width: wp("90%"), height: wp("90%"), borderRadius: 20 },
+                            ]}
+                            source={require("../../assets/profile.png")}
                         />
                     </TouchableOpacity>
                 </Surface>

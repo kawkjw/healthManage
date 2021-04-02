@@ -563,10 +563,10 @@ export default Profile = ({ navigation }) => {
                                     보관함 번호 :{" "}
                                     {locker !== undefined
                                         ? locker.lockerNumber === 0
-                                            ? "결제 완료"
+                                            ? "결제 완료(미배정)"
                                             : `${locker.lockerNumber}번` +
                                               (locker.expired
-                                                  ? "만료됨"
+                                                  ? "(만료됨)"
                                                   : `(${moment(locker.end.toDate()).format(
                                                         "YY. MM. DD."
                                                     )} 까지)`)

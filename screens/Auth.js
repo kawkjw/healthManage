@@ -5,7 +5,6 @@ import { Alert, TouchableOpacity } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import myBase, { arrayDelete, arrayUnion, db } from "../config/MyBase";
 import firebase from "firebase";
-import LoadingScreen from "./LoadingScreen";
 import AuthSuccess from "./AuthSuccess";
 import SignIn from "./Auth/SignIn";
 import SignUp from "./Auth/SignUp";
@@ -15,6 +14,9 @@ import { RFPercentage } from "react-native-responsive-fontsize";
 import * as Crypto from "expo-crypto";
 import { theme } from "../css/MyStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as SplashScreen from "expo-splash-screen";
+import moment from "moment";
+import LoadingScreen from "./LoadingScreen";
 
 const Stack = createStackNavigator();
 
@@ -52,7 +54,6 @@ export default Auth = () => {
         }
     );
     const [classNames, setClassNames] = useState({});
-    const [pw, setPw] = useState("");
 
     const restoreToken = async () => {
         let userToken;
@@ -66,10 +67,8 @@ export default Auth = () => {
 
     const getter = async () => {
         await getClassNames().then(async () => {
-            await getAdminPw().then(async () => {
-                await restoreToken().then((token) => {
-                    dispatch({ type: "RESTORE_TOKEN", token: token });
-                });
+            await restoreToken().then((token) => {
+                dispatch({ type: "RESTORE_TOKEN", token: token });
             });
         });
     };
@@ -77,6 +76,14 @@ export default Auth = () => {
     useEffect(() => {
         getter();
     }, []);
+
+    useEffect(() => {
+        (async () => {
+            if (!state.isLoading) {
+                await SplashScreen.hideAsync().catch(console.warn);
+            }
+        })();
+    }, [state.isLoading]);
 
     const getClassNames = async () => {
         let obj = {};
@@ -91,17 +98,7 @@ export default Auth = () => {
             });
     };
 
-    const getAdminPw = async () => {
-        await db
-            .collection("keys")
-            .doc("pw")
-            .get()
-            .then((doc) => {
-                setPw(doc.data().key);
-            });
-    };
-
-    const dataContext = useMemo(() => ({ classNames: classNames, key: pw }), [classNames, pw]);
+    const dataContext = useMemo(() => ({ classNames: classNames }), [classNames]);
 
     const authContext = useMemo(
         () => ({
@@ -417,7 +414,7 @@ export default Auth = () => {
                     >
                         {state.isLoading ? (
                             <Stack.Screen
-                                name="Loading"
+                                name="loading"
                                 component={LoadingScreen}
                                 options={{ headerShown: false }}
                             />
@@ -427,7 +424,7 @@ export default Auth = () => {
                                     name="signin"
                                     component={SignIn}
                                     options={{
-                                        title: "더끌림 피트니스",
+                                        headerShown: false,
                                         animationTypeForReplace: state.isSignout ? "pop" : "push",
                                     }}
                                 />
