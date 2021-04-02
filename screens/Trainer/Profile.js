@@ -536,14 +536,14 @@ export default Profile = ({ navigation, route }) => {
                                                     gxStr =
                                                         gxStr +
                                                         (classNames[
-                                                            radioGxOptions[radioGxSelected].value
+                                                            radioGxOptions[radioGxSelected].str
                                                         ] !== undefined
                                                             ? classNames[
                                                                   radioGxOptions[radioGxSelected]
-                                                                      .value
+                                                                      .str
                                                               ].ko
                                                             : radioGxOptions[radioGxSelected]
-                                                                  .value === "yoga.zoomba"
+                                                                  .str === "yoga.zoomba"
                                                             ? "(요가, 줌바)"
                                                             : "Error");
                                                     if (radioGxSelected === 1) {
