@@ -110,7 +110,7 @@ export default TimeTable = ({ classData, kind = "pt", nameList = {}, style, ...p
                         <ScrollView
                             horizontal={true}
                             showsHorizontalScrollIndicator={false}
-                            scrollEnabled={data.length > 3}
+                            scrollEnabled={data.length >= 3}
                         >
                             {data.map((d, index) => (
                                 <View
