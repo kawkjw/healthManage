@@ -1,13 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import {
-    View,
-    TouchableOpacity,
-    SafeAreaView,
-    StatusBar,
-    Keyboard,
-    Image,
-    Platform,
-} from "react-native";
+import { View, TouchableOpacity, StatusBar, Keyboard, Image, Platform } from "react-native";
 import { AuthContext } from "../Auth";
 import {
     widthPercentageToDP as wp,
@@ -56,6 +48,7 @@ export default SignIn = ({ navigation }) => {
             <KeyboardAwareScrollView
                 contentContainerStyle={{
                     paddingHorizontal: -30,
+                    height: hp("100%"),
                 }}
                 keyboardShouldPersistTaps="always"
                 showsVerticalScrollIndicator={false}
@@ -70,63 +63,65 @@ export default SignIn = ({ navigation }) => {
                     accessible={false}
                     activeOpacity={1}
                 >
-                    <View
-                        style={{
-                            backgroundColor: theme.colors.primary,
-                            marginBottom: 20,
-                            paddingTop: Platform.select({
-                                ios: Constants.statusBarHeight,
-                                android: 0,
-                            }),
-                        }}
-                    >
-                        <Image
-                            style={[
-                                {
-                                    width: wp("100%"),
-                                    height: hp("40%"),
-                                    alignSelf: "center",
-                                    marginBottom: 20,
-                                },
-                            ]}
-                            source={require("../../assets/login.png")}
-                        />
-                    </View>
-                    <View style={{ paddingHorizontal: 20 }}>
-                        <View style={{ marginBottom: 10 }}>
-                            <TextInput label="아이디" value={id} onChangeText={setId} />
-                        </View>
-                        <View style={{ marginBottom: 10 }}>
-                            <TextInput
-                                label="비밀번호"
-                                secureTextEntry={true}
-                                value={password}
-                                onChangeText={setPassword}
+                    <View style={{ flex: 1, marginBottom: 34 }}>
+                        <View
+                            style={{
+                                backgroundColor: theme.colors.primary,
+                                marginBottom: 20,
+                                paddingTop: Platform.select({
+                                    ios: Constants.statusBarHeight,
+                                    android: 0,
+                                }),
+                            }}
+                        >
+                            <Image
+                                style={[
+                                    {
+                                        width: wp("100%"),
+                                        height: hp("40%"),
+                                        alignSelf: "center",
+                                        marginBottom: 20,
+                                    },
+                                ]}
+                                source={require("../../assets/login.png")}
                             />
                         </View>
-                        <View style={{ flexDirection: "row", marginBottom: 10 }}>
-                            <Button
-                                style={{ flex: 1, marginRight: 5 }}
-                                mode="contained"
-                                loading={loading}
-                                disabled={!id || !password}
-                                onPress={() => {
-                                    login();
-                                }}
-                            >
-                                로그인
-                            </Button>
-                            <Button
-                                style={{ flex: 1, marginLeft: 5 }}
-                                mode="contained"
-                                onPress={() => navigation.navigate("resetpw")}
-                            >
-                                비밀번호 초기화
+                        <View style={{ paddingHorizontal: 20 }}>
+                            <View style={{ marginBottom: 10 }}>
+                                <TextInput label="아이디" value={id} onChangeText={setId} />
+                            </View>
+                            <View style={{ marginBottom: 10 }}>
+                                <TextInput
+                                    label="비밀번호"
+                                    secureTextEntry={true}
+                                    value={password}
+                                    onChangeText={setPassword}
+                                />
+                            </View>
+                            <View style={{ flexDirection: "row", marginBottom: 10 }}>
+                                <Button
+                                    style={{ flex: 1, marginRight: 5 }}
+                                    mode="contained"
+                                    loading={loading}
+                                    disabled={!id || !password}
+                                    onPress={() => {
+                                        login();
+                                    }}
+                                >
+                                    로그인
+                                </Button>
+                                <Button
+                                    style={{ flex: 1, marginLeft: 5 }}
+                                    mode="contained"
+                                    onPress={() => navigation.navigate("resetpw")}
+                                >
+                                    비밀번호 초기화
+                                </Button>
+                            </View>
+                            <Button mode="contained" onPress={() => navigation.navigate("signup")}>
+                                회원가입
                             </Button>
                         </View>
-                        <Button mode="contained" onPress={() => navigation.navigate("signup")}>
-                            회원가입
-                        </Button>
                     </View>
                 </TouchableOpacity>
             </KeyboardAwareScrollView>

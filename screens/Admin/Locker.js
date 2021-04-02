@@ -153,6 +153,7 @@ export default Locker = () => {
     const searchUser = async () => {
         await db
             .collection("users")
+            .where("permission", "==", 2)
             .where("phoneNumber", "==", phoneNumber)
             .get()
             .then((snapshots) => {
