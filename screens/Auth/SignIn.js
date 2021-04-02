@@ -48,7 +48,6 @@ export default SignIn = ({ navigation }) => {
             <KeyboardAwareScrollView
                 contentContainerStyle={{
                     paddingHorizontal: -30,
-                    height: hp("100%"),
                 }}
                 keyboardShouldPersistTaps="always"
                 showsVerticalScrollIndicator={false}
@@ -58,7 +57,7 @@ export default SignIn = ({ navigation }) => {
                 enableAutomaticScroll
             >
                 <TouchableOpacity
-                    style={{ flex: 1, alignSelf: "stretch" }}
+                    style={{ flex: 1, alignSelf: "stretch", height: hp("100%") }}
                     onPress={Keyboard.dismiss}
                     accessible={false}
                     activeOpacity={1}

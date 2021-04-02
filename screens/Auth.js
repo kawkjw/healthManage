@@ -1,7 +1,7 @@
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import React, { createContext, useEffect, useMemo, useReducer, useState } from "react";
-import { Alert, TouchableOpacity } from "react-native";
+import { Alert, Image, TouchableOpacity, View } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
 import myBase, { arrayDelete, arrayUnion, db } from "../config/MyBase";
 import firebase from "firebase";
@@ -16,7 +16,10 @@ import { theme } from "../css/MyStyles";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SplashScreen from "expo-splash-screen";
 import moment from "moment";
-import LoadingScreen from "./LoadingScreen";
+import {
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
+} from "react-native-responsive-screen";
 
 const Stack = createStackNavigator();
 
@@ -402,6 +405,20 @@ export default Auth = () => {
         </TouchableOpacity>
     );
 
+    const showSplash = () => {
+        return (
+            <View style={{ flex: 1 }}>
+                <Image
+                    source={require("../assets/splash.png")}
+                    style={{
+                        width: wp("100%"),
+                        height: hp("100%"),
+                    }}
+                />
+            </View>
+        );
+    };
+
     return (
         <AuthContext.Provider value={authContext}>
             <DataContext.Provider value={dataContext}>
@@ -415,7 +432,7 @@ export default Auth = () => {
                         {state.isLoading ? (
                             <Stack.Screen
                                 name="loading"
-                                component={LoadingScreen}
+                                component={showSplash}
                                 options={{ headerShown: false }}
                             />
                         ) : state.userToken === null ? (
