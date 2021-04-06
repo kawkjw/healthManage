@@ -296,7 +296,7 @@ export default SignUp = ({ navigation }) => {
                 extraScrollHeight={120}
             >
                 <TouchableOpacity
-                    style={{ height: hp("90%"), paddingHorizontal: 30 }}
+                    style={{ height: hp("88%"), paddingHorizontal: 30 }}
                     onPress={Keyboard.dismiss}
                     accessible={false}
                     activeOpacity={1}
