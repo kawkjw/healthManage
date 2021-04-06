@@ -43,9 +43,11 @@ const MyStack = () => {
     const [unread, setUnread] = useState(false);
     const [notificationNum, setNotificationNum] = useState(0);
     const [notificationUnsubscribe, setNotificationUnsubscribe] = useState(() => {});
-    const [membershipUnsubscribe, setMembershipUnsubsribe] = useState(() => {});
+
+    const [expiredList, setExpiredList] = useState([]);
 
     const getLocker = async () => {
+        let expired = false;
         await db
             .collection("users")
             .doc(uid)
@@ -58,9 +60,7 @@ const MyStack = () => {
                 docs.forEach((doc) => {
                     if (doc.data().end !== undefined) {
                         if (today > doc.data().end.toDate()) {
-                            Alert.alert("경고", "보관함 사용기간이 끝났습니다.", [
-                                { text: "확인" },
-                            ]);
+                            expired = true;
                         }
                     } else {
                         Alert.alert(
@@ -71,9 +71,11 @@ const MyStack = () => {
                     }
                 });
             });
+        return expired;
     };
 
     const getClothes = async () => {
+        let expired = false;
         await db
             .collection("users")
             .doc(uid)
@@ -86,9 +88,7 @@ const MyStack = () => {
                 docs.forEach((doc) => {
                     if (doc.data().end !== undefined) {
                         if (today > doc.data().end.toDate()) {
-                            Alert.alert("경고", "운동복 사용기간이 끝났습니다.", [
-                                { text: "확인" },
-                            ]);
+                            expired = true;
                         }
                     } else {
                         Alert.alert(
@@ -99,11 +99,13 @@ const MyStack = () => {
                     }
                 });
             });
+        return expired;
     };
 
     const getMemberships = async () => {
         const today = new Date();
         let kinds = [];
+        let tempExpired = [];
         await db
             .collection("users")
             .doc(uid)
@@ -149,6 +151,11 @@ const MyStack = () => {
                                     );
                                 }
                                 if (end.toDate() < today) {
+                                    tempExpired.push(
+                                        classNames[name] !== undefined
+                                            ? classNames[name].miniKo
+                                            : "Error"
+                                    );
                                     const i = kindsWithoutPt.indexOf(name);
                                     if (i > -1) kindsWithoutPt.splice(i, 1);
                                     if (doc.data().check === undefined) {
@@ -219,6 +226,9 @@ const MyStack = () => {
                         docs.forEach((doc) => {
                             const { count } = doc.data();
                             if (count === 0) {
+                                if (count <= 0) {
+                                    tempExpired.push("스쿼시 PT");
+                                }
                                 Alert.alert(
                                     "경고",
                                     "남은 스쿼시 PT 횟수가 없습니다.",
@@ -255,6 +265,9 @@ const MyStack = () => {
                         docs.forEach((doc) => {
                             const { count } = doc.data();
                             if (count === 0) {
+                                if (count <= 0) {
+                                    tempExpired.push("PT");
+                                }
                                 Alert.alert(
                                     "경고",
                                     "남은 PT 횟수가 없습니다.",
@@ -275,9 +288,8 @@ const MyStack = () => {
                         func();
                     }
                 );
-            return func;
         }
-        return console.log;
+        return tempExpired;
     };
 
     const getNotifications = async () => {
@@ -371,10 +383,14 @@ const MyStack = () => {
         if (status === "granted") {
             setNotificationAvail(true);
         }
-        await getLocker().then(async () => {
-            await getClothes().then(async () => {
-                await getMemberships().then(async (ret) => {
-                    setMembershipUnsubsribe(ret === undefined ? () => console.log : () => ret);
+        let list = [];
+        await getLocker().then(async (lockerIsExpired) => {
+            if (lockerIsExpired) list.push("locker");
+            await getClothes().then(async (clothesIsExpired) => {
+                if (clothesIsExpired) list.push("clothes");
+                await getMemberships().then(async (tempExpired) => {
+                    list = [...list, ...tempExpired];
+                    setExpiredList(list);
                     await getNotifications().then((func) => {
                         setNotificationUnsubscribe(
                             func === undefined ? () => console.log : () => func
@@ -398,11 +414,17 @@ const MyStack = () => {
                     setUnread(true);
                 }
             }
-            await getLocker();
-            await getClothes();
-            await getMemberships().then((ret) => {
-                setMembershipUnsubsribe(ret === undefined ? () => console.log : () => ret);
+            let list = [];
+            await getLocker().then((lockerIsExpired) => {
+                if (lockerIsExpired) list.push("locker");
             });
+            await getClothes().then((clothesIsExpired) => {
+                if (clothesIsExpired) list.push("clothes");
+            });
+            await getMemberships().then((tempExpired) => {
+                list = [...list, ...tempExpired];
+            });
+            setExpiredList(list);
         }
     };
 
@@ -647,11 +669,34 @@ const MyStack = () => {
                             <Text
                                 style={[TextSize.normalSize, { marginBottom: 3, color: "white" }]}
                             >
-                                회원권
-                            </Text>
-                            <Text style={[TextSize.normalSize, { color: "white" }]}>
                                 {loading ? undefined : membershipString}
                             </Text>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    const expiredKoList = expiredList.map((elem) => {
+                                        if (elem === "locker") return "보관함";
+                                        else if (elem === "clothes") return "운동복";
+                                        else return elem;
+                                    });
+                                    Alert.alert(
+                                        `${expiredKoList.length}개 만료됨`,
+                                        expiredKoList.join(", "),
+                                        [{ text: "확인" }],
+                                        { cancelable: false }
+                                    );
+                                }}
+                            >
+                                <Text
+                                    style={[
+                                        TextSize.normalSize,
+                                        expiredList.length > 0
+                                            ? { color: "#ff6666" }
+                                            : { color: "white" },
+                                    ]}
+                                >
+                                    {"(만료됨 : " + expiredList.length + ")"}
+                                </Text>
+                            </TouchableOpacity>
                         </View>
                     ),
                 })}
@@ -672,7 +717,6 @@ const MyStack = () => {
                                 justifyContent: "center",
                             }}
                             onPress={() => {
-                                membershipUnsubscribe();
                                 notificationUnsubscribe();
                                 resetRandom().then(() => {
                                     signOut();
