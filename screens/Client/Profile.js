@@ -10,6 +10,7 @@ import {
     ScrollView,
     AppState,
     Platform,
+    Dimensions,
 } from "react-native";
 import QRCode from "react-native-qrcode-svg";
 import myBase, { db } from "../../config/MyBase";
@@ -30,6 +31,7 @@ import { ActivityIndicator, Button, HelperText, Surface, TextInput } from "react
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default Profile = ({ navigation }) => {
+    const { width } = Dimensions.get("screen");
     const [data, setData] = useState("");
     const delay = 15000;
     const [isRun, setIsRun] = useState(false);
@@ -461,13 +463,19 @@ export default Profile = ({ navigation }) => {
             <View style={{ justifyContent: "center", alignItems: "center" }}>
                 <Surface style={{ elevation: 6, borderRadius: 20, marginBottom: 15 }}>
                     <TouchableOpacity
-                        style={{
-                            width: wp("85%"),
-                            //aspectRatio: 1,
-                            alignItems: "center",
-                            justifyContent: "center",
-                            paddingVertical: 20,
-                        }}
+                        style={[
+                            {
+                                aspectRatio: 1,
+                                alignItems: "center",
+                                justifyContent: "center",
+                                paddingVertical: 20,
+                            },
+                            width >= 800
+                                ? { width: wp("54%") }
+                                : width >= 550
+                                ? { width: wp("64%") }
+                                : { width: wp("85%") },
+                        ]}
                         onPress={() => {
                             if (canGenQR) {
                                 setIsRun(!isRun);
@@ -489,7 +497,13 @@ export default Profile = ({ navigation }) => {
                                     {data.length > 0 ? (
                                         <QRCode
                                             value={data}
-                                            size={wp("60%")}
+                                            size={
+                                                width >= 800
+                                                    ? wp("44%")
+                                                    : width >= 550
+                                                    ? wp("52%")
+                                                    : wp("60%")
+                                            }
                                             bgColor="#000000"
                                             fgColor="#FFFFFF"
                                         />
@@ -512,7 +526,14 @@ export default Profile = ({ navigation }) => {
                     </TouchableOpacity>
                 </Surface>
                 <Surface
-                    style={{ width: wp("85%"), height: hp("35%"), borderRadius: 20, elevation: 6 }}
+                    style={[
+                        { borderRadius: 20, elevation: 6 },
+                        width >= 800
+                            ? { width: wp("54%"), height: hp("34%") }
+                            : width >= 550
+                            ? { width: wp("64%"), height: hp("34%") }
+                            : { width: wp("85%"), height: hp("35%") },
+                    ]}
                 >
                     {loading ? (
                         <View

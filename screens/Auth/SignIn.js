@@ -1,5 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, TouchableOpacity, StatusBar, Keyboard, Image, Platform } from "react-native";
+import {
+    View,
+    TouchableOpacity,
+    StatusBar,
+    Keyboard,
+    Image,
+    Platform,
+    Dimensions,
+} from "react-native";
 import { AuthContext } from "../Auth";
 import {
     widthPercentageToDP as wp,
@@ -11,6 +19,7 @@ import { theme } from "../../css/MyStyles";
 import Constants from "expo-constants";
 
 export default SignIn = ({ navigation }) => {
+    const { width } = Dimensions.get("screen");
     const [id, setId] = useState("");
     const [password, setPassword] = useState("");
     const { signIn } = useContext(AuthContext);
@@ -52,7 +61,10 @@ export default SignIn = ({ navigation }) => {
                 keyboardShouldPersistTaps="always"
                 showsVerticalScrollIndicator={false}
                 scrollEnabled={false}
-                extraScrollHeight={Platform.select({ ios: 10, android: hp("10%") })}
+                extraScrollHeight={Platform.select({
+                    ios: 10,
+                    android: width >= 800 ? hp("18%") : hp("10%"),
+                })}
                 enableOnAndroid={true}
                 enableAutomaticScroll
             >
@@ -77,10 +89,14 @@ export default SignIn = ({ navigation }) => {
                                 style={[
                                     {
                                         width: wp("100%"),
-                                        height: hp("40%"),
                                         alignSelf: "center",
                                         marginBottom: 20,
                                     },
+                                    width >= 800
+                                        ? { height: hp("60%") }
+                                        : width >= 550
+                                        ? { height: hp("47%") }
+                                        : { height: hp("40%") },
                                 ]}
                                 source={require("../../assets/login.png")}
                             />

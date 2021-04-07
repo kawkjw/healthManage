@@ -7,6 +7,7 @@ import {
     TouchableOpacity,
     Linking,
     StatusBar,
+    Dimensions,
 } from "react-native";
 import { MyStyles, TextSize } from "../../css/MyStyles";
 import * as Notifications from "expo-notifications";
@@ -17,6 +18,8 @@ import {
 import { Surface } from "react-native-paper";
 
 export default Home = ({ navigation, route }) => {
+    const { width } = Dimensions.get("screen");
+    console.log(width);
     useEffect(() => {
         const notificationSubscription = Notifications.addNotificationReceivedListener(
             async (notification) => {
@@ -71,7 +74,12 @@ export default Home = ({ navigation, route }) => {
                         <Image
                             style={[
                                 MyStyles.image,
-                                { width: wp("90%"), height: wp("90%"), borderRadius: 20 },
+                                width >= 800
+                                    ? { width: wp("65%"), height: wp("65%") }
+                                    : width >= 550
+                                    ? { width: wp("70%"), height: wp("70%") }
+                                    : { width: wp("90%"), height: wp("90%") },
+                                { borderRadius: 20 },
                             ]}
                             source={require("../../assets/profile.png")}
                         />
@@ -79,7 +87,10 @@ export default Home = ({ navigation, route }) => {
                 </Surface>
                 <Surface style={MyStyles.surface}>
                     <TouchableOpacity
-                        style={MyStyles.menu}
+                        style={[
+                            MyStyles.menu,
+                            width >= 800 ? { width: wp("65%") } : { width: wp("70%") },
+                        ]}
                         onPress={() => navigation.navigate("Menu")}
                     >
                         <Text style={TextSize.largeSize}>메뉴</Text>
@@ -88,7 +99,10 @@ export default Home = ({ navigation, route }) => {
 
                 <Surface style={MyStyles.surface}>
                     <TouchableOpacity
-                        style={MyStyles.menu}
+                        style={[
+                            MyStyles.menu,
+                            width >= 800 ? { width: wp("65%") } : { width: wp("70%") },
+                        ]}
                         onPress={() => {
                             Linking.openURL("tel:12345678");
                         }}

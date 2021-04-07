@@ -1,10 +1,12 @@
-import { StyleSheet } from "react-native";
+import { Dimensions, StyleSheet } from "react-native";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { DefaultTheme } from "react-native-paper";
+
+const { width } = Dimensions.get("screen");
 
 export const theme = {
     ...DefaultTheme,
@@ -36,7 +38,7 @@ export const MyStyles = StyleSheet.create({
         justifyContent: "center",
     },
     menuRatio1: {
-        width: wp("90%"),
+        width: width >= 800 ? wp("65%") : width >= 550 ? wp("70%") : wp("90%"),
         aspectRatio: 1,
         alignItems: "center",
         justifyContent: "center",
