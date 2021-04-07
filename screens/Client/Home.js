@@ -89,7 +89,11 @@ export default Home = ({ navigation, route }) => {
                     <TouchableOpacity
                         style={[
                             MyStyles.menu,
-                            width >= 800 ? { width: wp("65%") } : { width: wp("70%") },
+                            width >= 800
+                                ? { width: wp("65%") }
+                                : width >= 550
+                                ? { width: wp("70%") }
+                                : undefined,
                         ]}
                         onPress={() => navigation.navigate("Menu")}
                     >
@@ -101,7 +105,11 @@ export default Home = ({ navigation, route }) => {
                     <TouchableOpacity
                         style={[
                             MyStyles.menu,
-                            width >= 800 ? { width: wp("65%") } : { width: wp("70%") },
+                            width >= 800
+                                ? { width: wp("65%") }
+                                : width >= 550
+                                ? { width: wp("70%") }
+                                : undefined,
                         ]}
                         onPress={() => {
                             Linking.openURL("tel:12345678");
