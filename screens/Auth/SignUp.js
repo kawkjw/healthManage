@@ -608,6 +608,15 @@ export default SignUp = ({ navigation }) => {
             </KeyboardAwareScrollView>
             <SegmentedPicker
                 ref={picker}
+                onValueChange={({ column, value }) => {
+                    if (column === "year") {
+                        setBirthday({ ...birthday, year: value });
+                    } else if (column === "month") {
+                        setBirthday({ ...birthday, month: value });
+                    } else {
+                        setBirthday({ ...birthday, day: value });
+                    }
+                }}
                 onCancel={(select) => {
                     setBirthday({ year: select.year, month: select.month, day: select.day });
                 }}
