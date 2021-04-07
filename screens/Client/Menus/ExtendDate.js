@@ -69,6 +69,7 @@ export default ExtendDate = ({ navigation, route }) => {
                                         { cancelable: false }
                                     );
                                     navigation.goBack();
+                                    return;
                                 }
                                 let temp = [];
                                 const promises = list.map(async (kind) => {
