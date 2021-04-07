@@ -826,7 +826,7 @@ export default Profile = ({ navigation, route }) => {
                                                                 }}
                                                                 compact={true}
                                                             >
-                                                                GX
+                                                                요가, 줌바
                                                             </Button>
                                                         </View>
                                                     </View>
