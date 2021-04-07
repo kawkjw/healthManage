@@ -19,7 +19,6 @@ import { Surface } from "react-native-paper";
 
 export default Home = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
-    console.log(width);
     useEffect(() => {
         const notificationSubscription = Notifications.addNotificationReceivedListener(
             async (notification) => {

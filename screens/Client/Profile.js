@@ -345,7 +345,6 @@ export default Profile = ({ navigation }) => {
     }, [isRun]);
 
     const changeAppState = (state) => {
-        console.log(state);
         if (state === "inactive" || state === "background") {
             setIsRun(false);
             resetRandom();
@@ -474,7 +473,7 @@ export default Profile = ({ navigation }) => {
                                 ? { width: wp("54%") }
                                 : width >= 550
                                 ? { width: wp("64%") }
-                                : { width: wp("85%") },
+                                : { width: wp("90%") },
                         ]}
                         onPress={() => {
                             if (canGenQR) {
@@ -502,7 +501,7 @@ export default Profile = ({ navigation }) => {
                                                     ? wp("44%")
                                                     : width >= 550
                                                     ? wp("52%")
-                                                    : wp("60%")
+                                                    : wp("70%")
                                             }
                                             bgColor="#000000"
                                             fgColor="#FFFFFF"
@@ -532,7 +531,7 @@ export default Profile = ({ navigation }) => {
                             ? { width: wp("54%"), height: hp("34%") }
                             : width >= 550
                             ? { width: wp("64%"), height: hp("34%") }
-                            : { width: wp("85%"), height: hp("35%") },
+                            : { width: wp("90%"), height: hp("35%") },
                     ]}
                 >
                     {loading ? (
