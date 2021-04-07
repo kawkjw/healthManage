@@ -103,6 +103,7 @@ export default Info = ({ navigation }) => {
                         <Text style={TextSize.largeSize}>Test 9</Text>
                     </TouchableOpacity>
                 </Surface>
+                <View style={{ height: hp("2%") }} />
             </ScrollView>
             <View
                 style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
