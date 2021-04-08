@@ -228,6 +228,7 @@ export default Auth = () => {
                                         },
                                         sex: sexSelected === 0 ? "남성" : "여성",
                                         address: currentUser.address,
+                                        memo: "",
                                     };
                                     db.collection("users").doc(currentUser.id).set(data);
                                     db.collection("ids").doc(currentUser.id).set({

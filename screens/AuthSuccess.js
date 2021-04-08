@@ -8,6 +8,7 @@ import { AuthContext } from "./Auth";
 import { registerForPushNotificationAsync } from "../config/MyExpo";
 import ANavigator from "./Admin/ANavigator";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { Alert } from "react-native";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
@@ -59,13 +60,18 @@ const MyStack = () => {
     };
 
     const execPromise = async (user) => {
-        await registerForPushNotificationAsync().then(async () => {
-            await getData(user).then(async () => {
-                await storeNotificationToken(user).then(() => {
-                    setIsLoading(false);
+        await registerForPushNotificationAsync()
+            .then(async () => {
+                await getData(user).then(async () => {
+                    await storeNotificationToken(user).then(() => {
+                        setIsLoading(false);
+                    });
                 });
+            })
+            .catch((error) => {
+                Alert.alert(error.code, error.message.split(":")[0]);
+                errorHandle();
             });
-        });
     };
 
     useEffect(() => {
