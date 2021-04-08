@@ -1,13 +1,12 @@
-import React, { useContext, useEffect, useState } from "react";
-import { StyleSheet, View, FlatList, Text, TouchableOpacity, Alert, Platform } from "react-native";
-import myBase, { db } from "../../config/MyBase";
+import React, { useEffect, useState } from "react";
+import { StyleSheet, View, FlatList, Text, TouchableOpacity, Alert } from "react-native";
+import { db, fieldDelete } from "../../config/MyBase";
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { AuthContext } from "../Auth";
 import { TextSize, theme } from "../../css/MyStyles";
-import { Surface, Dialog, TextInput, Button, Portal } from "react-native-paper";
+import { Surface, Dialog, TextInput, Button, Portal, ActivityIndicator } from "react-native-paper";
 import moment from "moment";
 
 export default Locker = () => {
@@ -16,29 +15,11 @@ export default Locker = () => {
     const [phoneNumber, setPhoneNumber] = useState("");
     const [searchVisible, setSearchVisible] = useState(false);
     const [changed, setChanged] = useState(true);
-    const { signOut } = useContext(AuthContext);
-
-    useEffect(() => {
-        const checkAdmin = async () => {
-            await db
-                .collection("users")
-                .doc(myBase.auth().currentUser.uid)
-                .get()
-                .then((user) => {
-                    if (!user.exists) {
-                        navigation.goBack();
-                    } else {
-                        if (user.data().permission !== 0) {
-                            signOut();
-                        }
-                    }
-                });
-        };
-        checkAdmin();
-    }, []);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const getLockers = async () => {
+            setLoading(true);
             const today = new Date();
             const { max } = (await db.collection("lockers").doc("maxNumber").get()).data();
             let items = Array.apply(null, Array(max)).map((value, index) => {
@@ -49,6 +30,7 @@ export default Locker = () => {
                     phoneNumber: "none",
                     uid: "none",
                     color: "grey",
+                    pw: "-1",
                 };
             });
             await db
@@ -57,8 +39,14 @@ export default Locker = () => {
                 .then((lockers) => {
                     let uidList = [];
                     lockers.forEach((locker) => {
-                        if (locker.id !== "maxNumber")
-                            uidList.push({ uid: locker.data().uid, id: locker.id });
+                        if (locker.id !== "maxNumber") {
+                            if (locker.data().pw !== undefined) {
+                                items[Number(locker.id) - 1]["pw"] = locker.data().pw;
+                            }
+                            if (locker.data().uid !== undefined) {
+                                uidList.push({ uid: locker.data().uid, id: locker.id });
+                            }
+                        }
                     });
                     return uidList;
                 })
@@ -96,6 +84,7 @@ export default Locker = () => {
                 })
                 .then(() => {
                     setData(items);
+                    setLoading(false);
                 });
         };
         getLockers();
@@ -130,7 +119,7 @@ export default Locker = () => {
                         });
                         await ref.update({ lockerNumber: 0 });
                     });
-                await doc.ref.delete();
+                await doc.ref.update({ uid: fieldDelete() });
             })
             .then(() => {
                 Alert.alert("성공", "성공적으로 제거되었습니다.", [{ text: "확인" }], {
@@ -302,83 +291,95 @@ export default Locker = () => {
                     </Dialog.Actions>
                 </Dialog>
             </Portal>
-            <FlatList
-                data={data}
-                renderItem={({ item }) => (
-                    <Surface
-                        style={{
-                            flexDirection: "column",
-                            margin: 5,
-                            elevation: 4,
-                            borderRadius: 10,
-                        }}
-                    >
-                        <TouchableOpacity
-                            style={styles.locker}
-                            onPress={() => {
-                                if (item.occupied) {
-                                    Alert.alert(
-                                        item.id.toString() + "번",
-                                        `${item.name}\n${item.phoneNumber}\n${
-                                            item.month
-                                        }개월(${moment(item.start).format("YY. MM. DD.")}~${moment(
-                                            item.end
-                                        ).format("YY. MM. DD.")})`,
-                                        [
-                                            {
-                                                text: "삭제",
-                                                onPress: () => {
-                                                    Alert.alert(
-                                                        "확실합니까?",
-                                                        "",
-                                                        [
-                                                            { text: "취소" },
-                                                            {
-                                                                text: "삭제",
-                                                                onPress: () => {
-                                                                    removeLocker(item.id);
-                                                                },
-                                                                style: "destructive",
-                                                            },
-                                                        ],
-                                                        { cancelable: false }
-                                                    );
-                                                },
-                                                style: "destructive",
-                                            },
-                                            { text: "확인" },
-                                        ],
-                                        { cancelable: false }
-                                    );
-                                } else {
-                                    Alert.alert(
-                                        item.id.toString() + "번",
-                                        "비어있음",
-                                        [
-                                            {
-                                                text: "추가",
-                                                onPress: () => {
-                                                    setSelectedLocker(item.id);
-                                                    setSearchVisible(true);
-                                                },
-                                            },
-                                            { text: "확인" },
-                                        ],
-                                        { cancelable: false }
-                                    );
-                                }
+            {loading ? (
+                <View style={{ flex: 1, justifyContent: "center" }}>
+                    <ActivityIndicator size="large" color="black" animating={true} />
+                </View>
+            ) : (
+                <FlatList
+                    data={data}
+                    renderItem={({ item }) => (
+                        <Surface
+                            style={{
+                                flexDirection: "column",
+                                margin: 5,
+                                elevation: 4,
+                                borderRadius: 10,
                             }}
                         >
-                            <Text style={[TextSize.largeSize, { color: item.color }]}>
-                                {item.id}
-                            </Text>
-                        </TouchableOpacity>
-                    </Surface>
-                )}
-                numColumns={7}
-                keyExtractor={(item, index) => index}
-                showsVerticalScrollIndicator={false}
-            />
+                            <TouchableOpacity
+                                style={styles.locker}
+                                onPress={() => {
+                                    if (item.occupied) {
+                                        Alert.alert(
+                                            item.id.toString() + "번",
+                                            `${item.name}\n${item.phoneNumber}\n${
+                                                item.month
+                                            }개월(${moment(item.start).format(
+                                                "YY. MM. DD."
+                                            )}~${moment(item.end).format(
+                                                "YY. MM. DD."
+                                            )})\n비밀번호 : ${
+                                                item.pw === "-1" ? "설정 필요" : item.pw
+                                            }`,
+                                            [
+                                                {
+                                                    text: "삭제",
+                                                    onPress: () => {
+                                                        Alert.alert(
+                                                            "확실합니까?",
+                                                            "",
+                                                            [
+                                                                { text: "취소" },
+                                                                {
+                                                                    text: "삭제",
+                                                                    onPress: () => {
+                                                                        removeLocker(item.id);
+                                                                    },
+                                                                    style: "destructive",
+                                                                },
+                                                            ],
+                                                            { cancelable: false }
+                                                        );
+                                                    },
+                                                    style: "destructive",
+                                                },
+                                                { text: "확인" },
+                                            ],
+                                            { cancelable: false }
+                                        );
+                                    } else {
+                                        Alert.alert(
+                                            item.id.toString() + "번",
+                                            `비어있음\n비밀번호 : ${
+                                                item.pw === "-1" ? "설정 필요" : item.pw
+                                            }`,
+                                            [
+                                                {
+                                                    text: "추가",
+                                                    onPress: () => {
+                                                        setSelectedLocker(item.id);
+                                                        setSearchVisible(true);
+                                                    },
+                                                },
+                                                { text: "확인" },
+                                            ],
+                                            { cancelable: false }
+                                        );
+                                    }
+                                }}
+                            >
+                                <Text style={[TextSize.largeSize, { color: item.color }]}>
+                                    {item.id}
+                                </Text>
+                            </TouchableOpacity>
+                        </Surface>
+                    )}
+                    numColumns={7}
+                    keyExtractor={(item, index) => index}
+                    showsVerticalScrollIndicator={false}
+                />
+            )}
             <View
                 style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
             />
