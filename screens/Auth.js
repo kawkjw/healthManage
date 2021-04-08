@@ -286,12 +286,24 @@ export default Auth = () => {
                                                         .doc("list")
                                                         .collection(name)
                                                         .get()
-                                                        .then((docs) => {
+                                                        .then(async (docs) => {
                                                             let list = [];
+                                                            let refs = [];
                                                             docs.forEach((doc) => {
                                                                 let obj = doc.data();
                                                                 list.push(obj);
+                                                                refs.push(doc.ref);
                                                             });
+                                                            const deletePromises = refs.map(
+                                                                async (ref) => {
+                                                                    await ref.delete();
+                                                                }
+                                                            );
+                                                            await Promise.all(deletePromises);
+                                                            await temp.ref
+                                                                .collection("memberships")
+                                                                .doc("list")
+                                                                .delete();
                                                             return list;
                                                         })
                                                         .then(async (list) => {
