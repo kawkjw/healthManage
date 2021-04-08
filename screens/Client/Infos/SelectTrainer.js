@@ -21,6 +21,13 @@ export default SelectTrainer = ({ navigation, route }) => {
             .then(async (docs) => {
                 if (docs.size === 1) {
                     docs.forEach((doc) => {
+                        if (doc.data().start === undefined) {
+                            Alert.alert("경고", "헬스 이용권 시작일 설정이 되지 않았습니다.", [
+                                { text: "확인" },
+                            ]);
+                            num = -100;
+                            return;
+                        }
                         num = 2;
                         if (doc.data().otCount !== undefined) {
                             num = doc.data().otCount;
@@ -74,6 +81,8 @@ export default SelectTrainer = ({ navigation, route }) => {
                 await Promise.all(promises);
                 setTrainers(temp);
             });
+        } else if (num === -100) {
+            navigation.goBack();
         } else {
             Alert.alert("경고", "남은 OT 횟수가 없습니다.", [{ text: "확인" }], {
                 cancelable: false,
