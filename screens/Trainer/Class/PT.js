@@ -7,9 +7,7 @@ import {
     StyleSheet,
     Dimensions,
     ScrollView,
-    Platform,
     Alert,
-    Image,
     Linking,
 } from "react-native";
 import myBase, { arrayDelete, arrayUnion, db, fieldDelete } from "../../../config/MyBase";
@@ -201,7 +199,7 @@ export default PT = ({ navigation, route }) => {
             const endDate = new Date(selectedYear, selectedMonth, 0);
             const holidayList = await getHoliday(selectedYear, selectedMonth);
             for (let i = 1; i <= endDate.getDate(); i++) {
-                const d = new Date(yearMonthStr + "-" + (i < 10 ? "0" + i : i) + "T00:00");
+                const d = new Date(selectedYear, selectedMonth - 1, i + 1);
                 let item = {
                     id: i.toString(),
                     pressable: d > today,
@@ -708,6 +706,12 @@ export default PT = ({ navigation, route }) => {
     };
 
     const setAllDays = async () => {
+        if (availList.includes(null)) {
+            Alert.alert("경고", "모든 시간 설정 해주시기 바랍니다.", [{ text: "확인" }], {
+                cancelable: false,
+            });
+            return;
+        }
         setSettingLoading(true);
         const yearMonthStr =
             selectedYear + "-" + (selectedMonth < 10 ? "0" + selectedMonth : selectedMonth);

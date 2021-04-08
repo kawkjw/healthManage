@@ -580,7 +580,7 @@ export default OT = ({ navigation, route }) => {
                                 >
                                     <View
                                         style={{
-                                            flex: 1,
+                                            flex: 2,
                                             alignItems: "center",
                                             justifyContent: "center",
                                             paddingLeft: 10,
@@ -590,7 +590,7 @@ export default OT = ({ navigation, route }) => {
                                     </View>
                                     <View
                                         style={{
-                                            flex: 3,
+                                            flex: 4,
                                             flexDirection: "row",
                                             marginLeft: 10,
                                             paddingHorizontal: 10,
@@ -632,14 +632,61 @@ export default OT = ({ navigation, route }) => {
                                                 (availTime.date.getTime() - today.getTime()) /
                                                     60000 <=
                                                 180 ? null : (
-                                                    <TouchableOpacity
-                                                        style={[
-                                                            styles.availButton,
-                                                            {
-                                                                backgroundColor: "white",
+                                                    <Surface
+                                                        style={{
+                                                            flex: 1,
+                                                            borderRadius: 15,
+                                                            elevation: 6,
+                                                        }}
+                                                    >
+                                                        <TouchableOpacity
+                                                            style={{
                                                                 height: hp("7%"),
-                                                            },
-                                                        ]}
+                                                                alignItems: "center",
+                                                                justifyContent: "center",
+                                                            }}
+                                                            onPress={() => {
+                                                                Alert.alert(
+                                                                    selectedDate.toString() +
+                                                                        "일 " +
+                                                                        availTime.timeStr,
+                                                                    "확실합니까?",
+                                                                    [
+                                                                        {
+                                                                            text: "취소",
+                                                                        },
+                                                                        {
+                                                                            text: "확인",
+                                                                            onPress: () =>
+                                                                                reservePTClass(
+                                                                                    availTime.timeStr
+                                                                                ),
+                                                                        },
+                                                                    ],
+                                                                    { cancelable: false }
+                                                                );
+                                                            }}
+                                                        >
+                                                            <Text style={TextSize.normalSize}>
+                                                                예약
+                                                            </Text>
+                                                        </TouchableOpacity>
+                                                    </Surface>
+                                                )
+                                            ) : (
+                                                <Surface
+                                                    style={{
+                                                        flex: 1,
+                                                        borderRadius: 15,
+                                                        elevation: 6,
+                                                    }}
+                                                >
+                                                    <TouchableOpacity
+                                                        style={{
+                                                            height: hp("7%"),
+                                                            alignItems: "center",
+                                                            justifyContent: "center",
+                                                        }}
                                                         onPress={() => {
                                                             Alert.alert(
                                                                 selectedDate.toString() +
@@ -666,40 +713,7 @@ export default OT = ({ navigation, route }) => {
                                                             예약
                                                         </Text>
                                                     </TouchableOpacity>
-                                                )
-                                            ) : (
-                                                <TouchableOpacity
-                                                    style={[
-                                                        styles.availButton,
-                                                        {
-                                                            backgroundColor: "white",
-                                                            height: hp("7%"),
-                                                        },
-                                                    ]}
-                                                    onPress={() => {
-                                                        Alert.alert(
-                                                            selectedDate.toString() +
-                                                                "일 " +
-                                                                availTime.timeStr,
-                                                            "확실합니까?",
-                                                            [
-                                                                {
-                                                                    text: "취소",
-                                                                },
-                                                                {
-                                                                    text: "확인",
-                                                                    onPress: () =>
-                                                                        reservePTClass(
-                                                                            availTime.timeStr
-                                                                        ),
-                                                                },
-                                                            ],
-                                                            { cancelable: false }
-                                                        );
-                                                    }}
-                                                >
-                                                    <Text style={TextSize.normalSize}>예약</Text>
-                                                </TouchableOpacity>
+                                                </Surface>
                                             )
                                         ) : availTime.isToday ? null : (
                                             <View style={{ flex: 1 }} />
