@@ -6,7 +6,15 @@ import {
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { TextSize, theme } from "../../css/MyStyles";
-import { Surface, Dialog, TextInput, Button, Portal, ActivityIndicator } from "react-native-paper";
+import {
+    Surface,
+    Dialog,
+    TextInput,
+    Button,
+    Portal,
+    ActivityIndicator,
+    Badge,
+} from "react-native-paper";
 import moment from "moment";
 
 export default Locker = () => {
@@ -371,6 +379,17 @@ export default Locker = () => {
                                     }
                                 }}
                             >
+                                {item.pw === "-1" && (
+                                    <Badge
+                                        visible={true}
+                                        size={10}
+                                        style={{
+                                            position: "absolute",
+                                            top: 5,
+                                            right: 5,
+                                        }}
+                                    />
+                                )}
                                 <Text style={[TextSize.largeSize, { color: item.color }]}>
                                     {item.id}
                                 </Text>
