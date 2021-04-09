@@ -8,7 +8,7 @@ import Menu from "./Menu";
 import Info from "./Menus/Info";
 import QRScan from "./Infos/QRScan";
 import Test from "./Infos/Test";
-import myBase, { db } from "../../config/MyBase";
+import myBase, { arrayDelete, db } from "../../config/MyBase";
 import Class from "./Menus/Class";
 import PT from "./Classes/PT";
 import SelectDate from "./Classes/SelectDate";
@@ -135,7 +135,17 @@ const MyStack = () => {
                         .orderBy("payDay", "desc")
                         .limit(1)
                         .get()
-                        .then((docs) => {
+                        .then(async (docs) => {
+                            if (docs.size === 0) {
+                                await db
+                                    .collection("users")
+                                    .doc(uid)
+                                    .collection("memberships")
+                                    .doc("list")
+                                    .update({ classes: arrayDelete(name) });
+                                const idx = kindsWithoutPt.indexOf(name);
+                                if (idx > -1) kindsWithoutPt.splice(idx, 1);
+                            }
                             docs.forEach((doc) => {
                                 const { end } = doc.data();
                                 if (doc.data().start === undefined) {

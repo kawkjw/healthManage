@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { db } from "../../../config/MyBase";
+import { arrayDelete, db } from "../../../config/MyBase";
 import moment from "moment";
 import { MyStyles, TextSize, theme } from "../../../css/MyStyles";
 import {
@@ -42,6 +42,7 @@ export default ShowUser = ({ route }) => {
             })
             .then(async (kinds) => {
                 let temp = {};
+                let correctKinds = kinds.slice();
                 const promises = kinds.map(async (kind) => {
                     await db
                         .collection("users")
@@ -52,14 +53,24 @@ export default ShowUser = ({ route }) => {
                         .orderBy("payDay", "desc")
                         .limit(1)
                         .get()
-                        .then((docs) => {
+                        .then(async (docs) => {
+                            if (docs.size === 0) {
+                                await db
+                                    .collection("users")
+                                    .doc(user.uid)
+                                    .collection("memberships")
+                                    .doc("list")
+                                    .update({ classes: arrayDelete(kind) });
+                                const idx = correctKinds.indexOf(kind);
+                                if (idx > -1) correctKinds.splice(idx, 1);
+                            }
                             docs.forEach((doc) => {
                                 temp[kind] = doc.data();
                             });
                         });
                 });
                 await Promise.all(promises);
-                setMembershipKinds(kinds);
+                setMembershipKinds(correctKinds);
                 setMembership(temp);
             })
             .catch((error) => {
@@ -403,6 +414,14 @@ export default ShowUser = ({ route }) => {
                                           )}`
                                     : "안함"}
                             </Text>
+                            {user.lastVerify !== undefined ? (
+                                <Text style={TextSize.normalSize}>
+                                    마지막 방문일 :{" "}
+                                    {moment(user.lastVerify.toDate()).format(
+                                        "YYYY. MM. DD. H시 m분"
+                                    )}
+                                </Text>
+                            ) : null}
                         </View>
 
                         <View style={{ marginBottom: 5 }}>
