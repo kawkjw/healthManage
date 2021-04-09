@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-    SafeAreaView,
-    Text,
-    TouchableOpacity,
-    StatusBar,
-    Platform,
-    View,
-    Alert,
-} from "react-native";
+import { SafeAreaView, Text, TouchableOpacity, StatusBar, View, Alert } from "react-native";
 import { MyStyles, TextSize } from "../../css/MyStyles";
 import * as Notifications from "expo-notifications";
 import myBase, { db } from "../../config/MyBase";

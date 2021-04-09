@@ -35,6 +35,8 @@ export default Locker = () => {
             });
             await db
                 .collection("lockers")
+                .orderBy("number", "asc")
+                .limit(max)
                 .get()
                 .then((lockers) => {
                     let uidList = [];

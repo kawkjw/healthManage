@@ -1,14 +1,5 @@
-import React, { useCallback, useContext, useEffect, useRef, useState } from "react";
-import {
-    Animated,
-    FlatList,
-    Image,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from "react-native";
+import React, { useContext, useEffect, useRef, useState } from "react";
+import { Animated, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import {
     widthPercentageToDP as wp,

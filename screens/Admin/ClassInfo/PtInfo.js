@@ -1,21 +1,12 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import {
-    Dimensions,
-    FlatList,
-    Image,
-    SafeAreaView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from "react-native";
+import { FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import SegmentedPicker from "react-native-segmented-picker";
 import { MaterialIcons } from "@expo/vector-icons";
-import myBase, { db } from "../../../config/MyBase";
+import { db } from "../../../config/MyBase";
 import TimeTable from "../../../config/TimeTable";
 import { DataContext } from "../../Auth";
 import { getHoliday } from "../../../config/hooks";
@@ -25,8 +16,6 @@ import { RFPercentage } from "react-native-responsive-fontsize";
 import { ActivityIndicator, Button, Surface } from "react-native-paper";
 
 export default ClassInfo = ({ navigation, route }) => {
-    const { width } = Dimensions.get("screen");
-    const uid = myBase.auth().currentUser.uid;
     const { classNames } = useContext(DataContext);
     const { ptName } = route.params;
     const today = new Date();

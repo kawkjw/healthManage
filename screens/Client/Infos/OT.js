@@ -3,7 +3,6 @@ import {
     Alert,
     Dimensions,
     FlatList,
-    Image,
     Platform,
     ScrollView,
     StyleSheet,

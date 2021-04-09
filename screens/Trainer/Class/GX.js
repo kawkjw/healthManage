@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Text, FlatList, View, TouchableOpacity, StyleSheet, Image, Linking } from "react-native";
+import { Text, FlatList, View, TouchableOpacity, StyleSheet, Linking } from "react-native";
 import myBase, { db } from "../../../config/MyBase";
 import {
     heightPercentageToDP as hp,

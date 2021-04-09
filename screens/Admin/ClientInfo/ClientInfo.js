@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Image, SafeAreaView, Text, View, TouchableOpacity, ScrollView } from "react-native";
+import { SafeAreaView, Text, View, TouchableOpacity, ScrollView } from "react-native";
 import { db } from "../../../config/MyBase";
 import { MyStyles, TextSize } from "../../../css/MyStyles";
 import {
