@@ -10,7 +10,6 @@ import {
 } from "react-native-responsive-screen";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import SegmentedPicker from "react-native-segmented-picker";
-import Postcode from "react-native-daum-postcode";
 import Modal from "react-native-modal";
 import {
     TextInput,
@@ -23,6 +22,7 @@ import {
 import moment from "moment";
 import { theme } from "../../css/MyStyles";
 import Constants from "expo-constants";
+import PostCode from "../../config/PostCode";
 
 export default SignUp = ({ navigation }) => {
     const appVerifier = useRef(null);
@@ -270,7 +270,7 @@ export default SignUp = ({ navigation }) => {
                             닫기
                         </Button>
                     </View>
-                    <Postcode
+                    <PostCode
                         style={{ flex: 1 }}
                         jsOptions={{ animation: true }}
                         onSelected={(data) => {

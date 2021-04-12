@@ -4385,6 +4385,11 @@ expo-permissions@~10.0.0:
   resolved "https://registry.yarnpkg.com/expo-permissions/-/expo-permissions-10.0.0.tgz#5b31c54d561d00c7e46cd02321bc3704c51c584b"
   integrity sha512-b6oitd4JmFdQ7DxczZ2WRS9aDyqgVM7lEhy3JyKZ2dbU19C6NyHyLCcwssZgfzOfGnp2owoaWn3KU4zdrF5MIA==
 
+expo-secure-store@~9.3.0:
+  version "9.3.0"
+  resolved "https://registry.yarnpkg.com/expo-secure-store/-/expo-secure-store-9.3.0.tgz#b716d5d115cc50a34037d1afef84fe4b8ea0745c"
+  integrity sha512-dNhKcoUUn+1kmEfFVxSU7h+YsqODqlExZQJcQgxgeiuCeeDvJWkE10t3jjrO6aNfrdM5i/X2l3oh401EDslWsQ==
+
 expo-server-sdk@^3.6.0:
   version "3.6.0"
   resolved "https://registry.yarnpkg.com/expo-server-sdk/-/expo-server-sdk-3.6.0.tgz#b13e5e77f622d11009bdd533df857b08225a4d00"
@@ -7067,11 +7072,6 @@ react-native-animatable@1.3.3, react-native-animatable@^1.3.0:
   integrity sha512-2ckIxZQAsvWn25Ho+DK3d1mXIgj7tITkrS4pYDvx96WyOttSvzzFeQnM2od0+FUMzILbdHDsDEqZvnz1DYNQ1w==
   dependencies:
     prop-types "^15.7.2"
-
-react-native-daum-postcode@^1.0.9:
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/react-native-daum-postcode/-/react-native-daum-postcode-1.0.9.tgz#957053c142434cbf8b2f3b0f1842153fc8e8ed2c"
-  integrity sha512-xrlYmbyn6geCRz4M2O7AQTUpRvrVnbIvpXzL0tPj9+k2c18YnRmTWWUT6L2FVMuFDM5kHt/egLLQm7+04sOsGw==
 
 react-native-dotenv@^2.4.3:
   version "2.4.3"
