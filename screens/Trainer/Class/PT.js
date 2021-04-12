@@ -199,7 +199,7 @@ export default PT = ({ navigation, route }) => {
             const endDate = new Date(selectedYear, selectedMonth, 0);
             const holidayList = await getHoliday(selectedYear, selectedMonth);
             for (let i = 1; i <= endDate.getDate(); i++) {
-                const d = new Date(selectedYear, selectedMonth - 1, i + 1);
+                const d = new Date(selectedYear, selectedMonth - 1, i);
                 let item = {
                     id: i.toString(),
                     pressable: d > today,
@@ -216,6 +216,9 @@ export default PT = ({ navigation, route }) => {
                     item["color"] = "blue";
                 } else {
                     item["color"] = "black";
+                }
+                if (item["isToday"]) {
+                    item["pressable"] = true;
                 }
                 if (i === Number(setClass[index])) {
                     item["setFinish"] = true;
@@ -335,6 +338,9 @@ export default PT = ({ navigation, route }) => {
                     } else {
                         obj["submit"] = false;
                         finishSetUp = false;
+                        obj["notEditable"] =
+                            today >
+                            new Date(selectedYear, selectedMonth - 1, selectedDate, i - 3, 0);
                     }
                 })
                 .catch((error) => console.log(error.message));
