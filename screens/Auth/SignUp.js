@@ -485,8 +485,8 @@ export default SignUp = ({ navigation }) => {
                     </View>
                     <View>
                         <View style={{ flexDirection: "row", alignItems: "center" }}>
-                            <Checkbox
-                                status={selected ? "checked" : "indeterminate"}
+                            <Checkbox.Android
+                                status={selected ? "checked" : "unchecked"}
                                 onPress={() => setSelected(!selected)}
                             />
                             <Button
