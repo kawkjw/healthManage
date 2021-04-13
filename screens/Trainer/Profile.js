@@ -602,7 +602,10 @@ export default Profile = ({ navigation, route }) => {
                                                         alignItems: "center",
                                                     }}
                                                 >
-                                                    <RadioButton value={0} color="#0099ff" />
+                                                    <RadioButton.Android
+                                                        value={0}
+                                                        color="#0099ff"
+                                                    />
                                                     <Button
                                                         mode="text"
                                                         onPress={() => {
@@ -626,7 +629,10 @@ export default Profile = ({ navigation, route }) => {
                                                         alignItems: "center",
                                                     }}
                                                 >
-                                                    <RadioButton value={1} color="#0099ff" />
+                                                    <RadioButton.Android
+                                                        value={1}
+                                                        color="#0099ff"
+                                                    />
                                                     <Button
                                                         mode="text"
                                                         onPress={() => {
@@ -725,7 +731,7 @@ export default Profile = ({ navigation, route }) => {
                                                                 alignItems: "center",
                                                             }}
                                                         >
-                                                            <RadioButton
+                                                            <RadioButton.Android
                                                                 value={0}
                                                                 color="#0099ff"
                                                             />
@@ -751,7 +757,7 @@ export default Profile = ({ navigation, route }) => {
                                                                 alignItems: "center",
                                                             }}
                                                         >
-                                                            <RadioButton
+                                                            <RadioButton.Android
                                                                 value={1}
                                                                 color="#0099ff"
                                                             />
@@ -784,7 +790,7 @@ export default Profile = ({ navigation, route }) => {
                                                                 alignItems: "center",
                                                             }}
                                                         >
-                                                            <RadioButton
+                                                            <RadioButton.Android
                                                                 value={2}
                                                                 color="#0099ff"
                                                             />
@@ -810,7 +816,7 @@ export default Profile = ({ navigation, route }) => {
                                                                 alignItems: "center",
                                                             }}
                                                         >
-                                                            <RadioButton
+                                                            <RadioButton.Android
                                                                 value={3}
                                                                 color="#0099ff"
                                                             />

@@ -322,7 +322,7 @@ export default SignUp = ({ navigation }) => {
                                             alignItems: "center",
                                         }}
                                     >
-                                        <RadioButton value={0} color="#374862" />
+                                        <RadioButton.Android value={0} color="#374862" />
                                         <Button
                                             mode="text"
                                             onPress={() => setSexSelected(0)}
@@ -338,7 +338,7 @@ export default SignUp = ({ navigation }) => {
                                             alignItems: "center",
                                         }}
                                     >
-                                        <RadioButton value={1} color="#374862" />
+                                        <RadioButton.Android value={1} color="#374862" />
                                         <Button
                                             mode="text"
                                             onPress={() => setSexSelected(1)}
