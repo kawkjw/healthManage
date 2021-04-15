@@ -122,6 +122,10 @@ export default SignUp = ({ navigation }) => {
     }, [id]);
 
     useEffect(() => {
+        setName(checkId(name));
+    }, [name]);
+
+    useEffect(() => {
         setPhoneNumber(
             phoneNumber
                 .replace(/[^0-9]/g, "")
