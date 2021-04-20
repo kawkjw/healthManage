@@ -53,6 +53,14 @@ export default Menu = ({ navigation }) => {
                         <Text style={TextSize.largeSize}>회원권 연장 신청</Text>
                     </TouchableOpacity>
                 </Surface>
+                <Surface style={MyStyles.surface}>
+                    <TouchableOpacity
+                        style={MyStyles.menu}
+                        onPress={() => navigation.navigate("Calculator")}
+                    >
+                        <Text style={TextSize.largeSize}>비만도 계산기</Text>
+                    </TouchableOpacity>
+                </Surface>
             </ScrollView>
             <View
                 style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}

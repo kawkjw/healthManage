@@ -29,6 +29,7 @@ import OT from "./Infos/OT";
 import { TextSize, theme } from "../../css/MyStyles";
 import { displayedAt, checkBatchimEnding } from "../../config/hooks";
 import { Badge, Button, Card, Text } from "react-native-paper";
+import Calculator from "./Menus/Calculator";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
@@ -831,6 +832,14 @@ const MyStack = () => {
                 component={ExtendDate}
                 options={({ navigation }) => ({
                     title: "이용권 연장",
+                    headerLeft: () => renderGoBackButton(navigation),
+                })}
+            />
+            <Stack.Screen
+                name="Calculator"
+                component={Calculator}
+                options={({ navigation }) => ({
+                    title: "비만도 계산기",
                     headerLeft: () => renderGoBackButton(navigation),
                 })}
             />
