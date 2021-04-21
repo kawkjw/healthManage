@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Keyboard, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
 import { Button, RadioButton, Surface, TextInput } from "react-native-paper";
-import { MyStyles, TextSize } from "../../../css/MyStyles";
+import { MyStyles, TextSize, theme } from "../../../css/MyStyles";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 export default Calculator = ({ navigation, route }) => {
@@ -70,372 +70,413 @@ export default Calculator = ({ navigation, route }) => {
     }, [sexSelected, clientHeights, clientWeights, clientAge]);
 
     return (
-        <ScrollView>
-            <TouchableOpacity
-                style={{ height: hp("90%"), paddingHorizontal: 10 }}
-                onPress={Keyboard.dismiss}
-                accessible={false}
-                activeOpacity={1}
-            >
-                <Surface style={[MyStyles.surface, { marginTop: 10 }]}>
-                    <View style={{ padding: 10, paddingRight: 20, paddingBottom: 20 }}>
-                        <View style={{ flexDirection: "row", height: hp("5.5%") }}>
-                            <View
-                                style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-                            >
-                                <Text style={[TextSize.normalSize, { fontWeight: "bold" }]}>
-                                    성별
-                                </Text>
-                            </View>
-                            <View style={{ flex: 2 }}>
-                                <RadioButton.Group
-                                    onValueChange={(value) => setSexSelected(value)}
-                                    value={sexSelected}
+        <View style={{ flex: 1 }}>
+            <ScrollView>
+                <TouchableOpacity
+                    style={{ height: hp("90%"), paddingHorizontal: 10 }}
+                    onPress={Keyboard.dismiss}
+                    accessible={false}
+                    activeOpacity={1}
+                >
+                    <Surface style={[MyStyles.surface, { marginTop: 10 }]}>
+                        <View style={{ padding: 10, paddingRight: 20, paddingBottom: 20 }}>
+                            <View style={{ flexDirection: "row", height: hp("5.5%") }}>
+                                <View
+                                    style={{
+                                        flex: 1,
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                    }}
                                 >
-                                    <View style={{ flexDirection: "row", alignItems: "center" }}>
+                                    <Text style={[TextSize.normalSize, { fontWeight: "bold" }]}>
+                                        성별
+                                    </Text>
+                                </View>
+                                <View style={{ flex: 2 }}>
+                                    <RadioButton.Group
+                                        onValueChange={(value) => setSexSelected(value)}
+                                        value={sexSelected}
+                                    >
                                         <View
-                                            style={{
-                                                flexDirection: "row",
-                                                alignItems: "center",
-                                            }}
+                                            style={{ flexDirection: "row", alignItems: "center" }}
                                         >
-                                            <RadioButton.Android value={0} color="#374862" />
-                                            <Button
-                                                mode="text"
-                                                onPress={() => setSexSelected(0)}
-                                                labelStyle={{
-                                                    marginHorizontal: 5,
-                                                    marginVertical: 5,
+                                            <View
+                                                style={{
+                                                    flexDirection: "row",
+                                                    alignItems: "center",
                                                 }}
-                                                compact={true}
                                             >
-                                                남
-                                            </Button>
-                                        </View>
-                                        <View
-                                            style={{
-                                                flexDirection: "row",
-                                                alignItems: "center",
-                                            }}
-                                        >
-                                            <RadioButton.Android value={1} color="#374862" />
-                                            <Button
-                                                mode="text"
-                                                onPress={() => setSexSelected(1)}
-                                                labelStyle={{
-                                                    marginHorizontal: 5,
-                                                    marginVertical: 5,
+                                                <RadioButton.Android value={0} color="#374862" />
+                                                <Button
+                                                    mode="text"
+                                                    onPress={() => setSexSelected(0)}
+                                                    labelStyle={{
+                                                        marginHorizontal: 5,
+                                                        marginVertical: 5,
+                                                    }}
+                                                    compact={true}
+                                                >
+                                                    남
+                                                </Button>
+                                            </View>
+                                            <View
+                                                style={{
+                                                    flexDirection: "row",
+                                                    alignItems: "center",
                                                 }}
-                                                compact={true}
                                             >
-                                                여
-                                            </Button>
+                                                <RadioButton.Android value={1} color="#374862" />
+                                                <Button
+                                                    mode="text"
+                                                    onPress={() => setSexSelected(1)}
+                                                    labelStyle={{
+                                                        marginHorizontal: 5,
+                                                        marginVertical: 5,
+                                                    }}
+                                                    compact={true}
+                                                >
+                                                    여
+                                                </Button>
+                                            </View>
                                         </View>
-                                    </View>
-                                </RadioButton.Group>
+                                    </RadioButton.Group>
+                                </View>
                             </View>
-                        </View>
-                        <View style={{ flexDirection: "row" }}>
-                            <View
-                                style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-                            >
-                                <Text style={[TextSize.normalSize, { fontWeight: "bold" }]}>
-                                    키
-                                </Text>
-                            </View>
-                            <View style={{ flex: 2 }}>
-                                <TextInput
-                                    label="키(cm)"
-                                    mode="outlined"
-                                    placeholder="000.0"
-                                    dense={true}
-                                    keyboardType="phone-pad"
-                                    value={clientHeights}
-                                    maxLength={5}
-                                    onChangeText={setClientHeights}
-                                    right={<TextInput.Affix text="cm" />}
-                                />
-                            </View>
-                        </View>
-                        <View style={{ flexDirection: "row" }}>
-                            <View
-                                style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-                            >
-                                <Text style={[TextSize.normalSize, { fontWeight: "bold" }]}>
-                                    몸무게
-                                </Text>
-                            </View>
-                            <View style={{ flex: 2 }}>
-                                <TextInput
-                                    label="몸무게(kg)"
-                                    mode="outlined"
-                                    placeholder="0.00"
-                                    dense={true}
-                                    keyboardType="phone-pad"
-                                    value={clientWeights}
-                                    maxLength={6}
-                                    onChangeText={setClientWeights}
-                                    right={<TextInput.Affix text="kg" />}
-                                />
-                            </View>
-                        </View>
-                        <View style={{ flexDirection: "row" }}>
-                            <View
-                                style={{ flex: 1, alignItems: "center", justifyContent: "center" }}
-                            >
-                                <Text style={[TextSize.normalSize, { fontWeight: "bold" }]}>
-                                    나이
-                                </Text>
-                            </View>
-                            <View style={{ flex: 2 }}>
-                                <TextInput
-                                    label="나이"
-                                    mode="outlined"
-                                    placeholder="00"
-                                    dense={true}
-                                    keyboardType="phone-pad"
-                                    value={clientAge}
-                                    maxLength={3}
-                                    onChangeText={setClientAge}
-                                    right={<TextInput.Affix text="세" />}
-                                />
-                            </View>
-                        </View>
-                    </View>
-                </Surface>
-                <Surface style={MyStyles.surface}>
-                    <View style={{ padding: 10 }}>
-                        <View
-                            style={{ flexDirection: "row", height: hp("3%"), alignItems: "center" }}
-                        >
-                            <View style={{ flex: 1, alignItems: "flex-end" }}>
-                                <Text
-                                    style={[
-                                        TextSize.normalSize,
-                                        { fontWeight: "bold", paddingRight: 10 },
-                                    ]}
+                            <View style={{ flexDirection: "row" }}>
+                                <View
+                                    style={{
+                                        flex: 1,
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                    }}
                                 >
-                                    표준체중
-                                </Text>
+                                    <Text style={[TextSize.normalSize, { fontWeight: "bold" }]}>
+                                        키
+                                    </Text>
+                                </View>
+                                <View style={{ flex: 2 }}>
+                                    <TextInput
+                                        label="키(cm)"
+                                        mode="outlined"
+                                        placeholder="000.0"
+                                        dense={true}
+                                        keyboardType="phone-pad"
+                                        value={clientHeights}
+                                        maxLength={5}
+                                        onChangeText={setClientHeights}
+                                        right={<TextInput.Affix text="cm" />}
+                                    />
+                                </View>
                             </View>
-                            <View style={{ flex: 2 }}>
-                                <Text style={TextSize.normalSize}>{result.standardWeights} kg</Text>
+                            <View style={{ flexDirection: "row" }}>
+                                <View
+                                    style={{
+                                        flex: 1,
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                    }}
+                                >
+                                    <Text style={[TextSize.normalSize, { fontWeight: "bold" }]}>
+                                        몸무게
+                                    </Text>
+                                </View>
+                                <View style={{ flex: 2 }}>
+                                    <TextInput
+                                        label="몸무게(kg)"
+                                        mode="outlined"
+                                        placeholder="0.00"
+                                        dense={true}
+                                        keyboardType="phone-pad"
+                                        value={clientWeights}
+                                        maxLength={6}
+                                        onChangeText={setClientWeights}
+                                        right={<TextInput.Affix text="kg" />}
+                                    />
+                                </View>
+                            </View>
+                            <View style={{ flexDirection: "row" }}>
+                                <View
+                                    style={{
+                                        flex: 1,
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                    }}
+                                >
+                                    <Text style={[TextSize.normalSize, { fontWeight: "bold" }]}>
+                                        나이
+                                    </Text>
+                                </View>
+                                <View style={{ flex: 2 }}>
+                                    <TextInput
+                                        label="나이"
+                                        mode="outlined"
+                                        placeholder="00"
+                                        dense={true}
+                                        keyboardType="phone-pad"
+                                        value={clientAge}
+                                        maxLength={3}
+                                        onChangeText={setClientAge}
+                                        right={<TextInput.Affix text="세" />}
+                                    />
+                                </View>
                             </View>
                         </View>
-                        <View
-                            style={{ flexDirection: "row", height: hp("3%"), alignItems: "center" }}
-                        >
-                            <View style={{ flex: 1, alignItems: "flex-end" }}>
-                                <Text
-                                    style={[
-                                        TextSize.normalSize,
-                                        { fontWeight: "bold", paddingRight: 10 },
-                                    ]}
-                                >
-                                    비만도(%)
-                                </Text>
-                            </View>
-                            <View style={{ flex: 1 }}>
-                                <Text style={TextSize.normalSize}>{result.obesity} %</Text>
-                            </View>
-                            <View style={{ flex: 1 }}>
-                                {result.obesity !== 0 ? (
+                    </Surface>
+                    <Surface style={MyStyles.surface}>
+                        <View style={{ padding: 10 }}>
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                    height: hp("3%"),
+                                    alignItems: "center",
+                                }}
+                            >
+                                <View style={{ flex: 1, alignItems: "flex-end" }}>
                                     <Text
                                         style={[
-                                            TextSize.largeSize,
-                                            result.obesity >= 140
-                                                ? { color: "red" }
+                                            TextSize.normalSize,
+                                            { fontWeight: "bold", paddingRight: 10 },
+                                        ]}
+                                    >
+                                        표준체중
+                                    </Text>
+                                </View>
+                                <View style={{ flex: 2 }}>
+                                    <Text style={TextSize.normalSize}>
+                                        {result.standardWeights} kg
+                                    </Text>
+                                </View>
+                            </View>
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                    height: hp("3%"),
+                                    alignItems: "center",
+                                }}
+                            >
+                                <View style={{ flex: 1, alignItems: "flex-end" }}>
+                                    <Text
+                                        style={[
+                                            TextSize.normalSize,
+                                            { fontWeight: "bold", paddingRight: 10 },
+                                        ]}
+                                    >
+                                        비만도(%)
+                                    </Text>
+                                </View>
+                                <View style={{ flex: 1 }}>
+                                    <Text style={TextSize.normalSize}>{result.obesity} %</Text>
+                                </View>
+                                <View style={{ flex: 1 }}>
+                                    {result.obesity !== 0 ? (
+                                        <Text
+                                            style={[
+                                                TextSize.largeSize,
+                                                result.obesity >= 140
+                                                    ? { color: "red" }
+                                                    : result.obesity >= 120
+                                                    ? { color: "deeppink" }
+                                                    : result.obesity >= 110
+                                                    ? { color: "orange" }
+                                                    : result.obesity >= 90
+                                                    ? { color: "green" }
+                                                    : { color: "deepskyblue" },
+                                            ]}
+                                        >
+                                            {result.obesity >= 140
+                                                ? "고도비만"
                                                 : result.obesity >= 120
-                                                ? { color: "deeppink" }
+                                                ? "비만"
                                                 : result.obesity >= 110
-                                                ? { color: "orange" }
+                                                ? "과체중"
                                                 : result.obesity >= 90
-                                                ? { color: "green" }
-                                                : { color: "deepskyblue" },
-                                        ]}
-                                    >
-                                        {result.obesity >= 140
-                                            ? "고도비만"
-                                            : result.obesity >= 120
-                                            ? "비만"
-                                            : result.obesity >= 110
-                                            ? "과체중"
-                                            : result.obesity >= 90
-                                            ? "정상체중"
-                                            : "저체중"}
-                                    </Text>
-                                ) : undefined}
+                                                ? "정상체중"
+                                                : "저체중"}
+                                        </Text>
+                                    ) : undefined}
+                                </View>
                             </View>
-                        </View>
-                        <View
-                            style={{ flexDirection: "row", height: hp("3%"), alignItems: "center" }}
-                        >
-                            <View style={{ flex: 1, alignItems: "flex-end" }}>
-                                <Text
-                                    style={[
-                                        TextSize.normalSize,
-                                        { fontWeight: "bold", paddingRight: 10 },
-                                    ]}
-                                >
-                                    BMI(신체질량지수)
-                                </Text>
-                            </View>
-                            <View style={{ flex: 1 }}>
-                                <Text style={TextSize.normalSize}>
-                                    {result.bmi} kg/m{"\xB2"}
-                                </Text>
-                            </View>
-                            <View style={{ flex: 1 }}>
-                                {result.bmi !== 0 ? (
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                    height: hp("3%"),
+                                    alignItems: "center",
+                                }}
+                            >
+                                <View style={{ flex: 1, alignItems: "flex-end" }}>
                                     <Text
                                         style={[
-                                            TextSize.largeSize,
-                                            result.bmi >= 30
-                                                ? { color: "red" }
-                                                : result.bmi >= 25
-                                                ? { color: "deeppink" }
-                                                : result.bmi >= 23
-                                                ? { color: "orange" }
-                                                : result.bmi >= 18.5
-                                                ? { color: "green" }
-                                                : { color: "deepskyblue" },
+                                            TextSize.normalSize,
+                                            { fontWeight: "bold", paddingRight: 10 },
                                         ]}
                                     >
-                                        {result.bmi >= 30
-                                            ? "고도비만"
-                                            : result.bmi >= 25
-                                            ? "비만"
-                                            : result.bmi >= 23
-                                            ? "과체중"
-                                            : result.bmi >= 18.5
-                                            ? "정상체중"
-                                            : "저체중"}
-                                    </Text>
-                                ) : undefined}
-                            </View>
-                        </View>
-                        <View
-                            style={{ flexDirection: "row", height: hp("3%"), alignItems: "center" }}
-                        >
-                            <View style={{ flex: 1, alignItems: "flex-end" }}>
-                                <Text
-                                    style={[
-                                        TextSize.normalSize,
-                                        { fontWeight: "bold", paddingRight: 10 },
-                                    ]}
-                                >
-                                    기초대사량
-                                </Text>
-                            </View>
-                            <View style={{ flex: 2 }}>
-                                <Text style={TextSize.normalSize}>{result.bmr} kcal</Text>
-                            </View>
-                        </View>
-                    </View>
-                </Surface>
-                <Surface style={MyStyles.surface}>
-                    <View style={{ padding: 10 }}>
-                        <View style={{ flexDirection: "row" }}>
-                            <View style={{ flex: 1 }}>
-                                <View style={[styles.marginBottom5, { alignItems: "center" }]}>
-                                    <Text style={[TextSize.normalSize, { fontWeight: "bold" }]}>
-                                        브로카지수 구분
+                                        BMI(신체질량지수)
                                     </Text>
                                 </View>
-                                <View style={[styles.marginBottom5, { flexDirection: "row" }]}>
-                                    <View style={{ flex: 1, alignItems: "center" }}>
-                                        <Text style={[TextSize.normalSize]}>저체중</Text>
-                                    </View>
-                                    <View style={{ flex: 1, alignItems: "center" }}>
-                                        <Text style={[TextSize.normalSize]}>90 이하</Text>
-                                    </View>
-                                </View>
-                                <View style={[styles.marginBottom5, { flexDirection: "row" }]}>
-                                    <View style={{ flex: 1, alignItems: "center" }}>
-                                        <Text style={[TextSize.normalSize]}>정상체중</Text>
-                                    </View>
-                                    <View style={{ flex: 1, alignItems: "center" }}>
-                                        <Text style={[TextSize.normalSize]}>90 ~ 110</Text>
-                                    </View>
-                                </View>
-                                <View style={[styles.marginBottom5, { flexDirection: "row" }]}>
-                                    <View style={{ flex: 1, alignItems: "center" }}>
-                                        <Text style={[TextSize.normalSize]}>과체중</Text>
-                                    </View>
-                                    <View style={{ flex: 1, alignItems: "center" }}>
-                                        <Text style={[TextSize.normalSize]}>110 ~ 120</Text>
-                                    </View>
-                                </View>
-                                <View style={[styles.marginBottom5, { flexDirection: "row" }]}>
-                                    <View style={{ flex: 1, alignItems: "center" }}>
-                                        <Text style={[TextSize.normalSize]}>비만</Text>
-                                    </View>
-                                    <View style={{ flex: 1, alignItems: "center" }}>
-                                        <Text style={[TextSize.normalSize]}>120 ~ 140</Text>
-                                    </View>
-                                </View>
-                                <View style={[styles.marginBottom5, { flexDirection: "row" }]}>
-                                    <View style={{ flex: 1, alignItems: "center" }}>
-                                        <Text style={[TextSize.normalSize]}>고도비만</Text>
-                                    </View>
-                                    <View style={{ flex: 1, alignItems: "center" }}>
-                                        <Text style={[TextSize.normalSize]}>140 이상</Text>
-                                    </View>
-                                </View>
-                            </View>
-                            <View style={{ borderRightWidth: 1, borderRightColor: "grey" }} />
-                            <View style={{ flex: 1 }}>
-                                <View style={[styles.marginBottom5, { alignItems: "center" }]}>
-                                    <Text style={[TextSize.normalSize, { fontWeight: "bold" }]}>
-                                        BMI 지수 구분
+                                <View style={{ flex: 1 }}>
+                                    <Text style={TextSize.normalSize}>
+                                        {result.bmi} kg/m{"\xB2"}
                                     </Text>
                                 </View>
-                                <View style={[styles.marginBottom5, { flexDirection: "row" }]}>
-                                    <View style={{ flex: 1, alignItems: "center" }}>
-                                        <Text style={[TextSize.normalSize]}>저체중</Text>
-                                    </View>
-                                    <View style={{ flex: 1, alignItems: "center" }}>
-                                        <Text style={[TextSize.normalSize]}>18.5 이하</Text>
-                                    </View>
+                                <View style={{ flex: 1 }}>
+                                    {result.bmi !== 0 ? (
+                                        <Text
+                                            style={[
+                                                TextSize.largeSize,
+                                                result.bmi >= 30
+                                                    ? { color: "red" }
+                                                    : result.bmi >= 25
+                                                    ? { color: "deeppink" }
+                                                    : result.bmi >= 23
+                                                    ? { color: "orange" }
+                                                    : result.bmi >= 18.5
+                                                    ? { color: "green" }
+                                                    : { color: "deepskyblue" },
+                                            ]}
+                                        >
+                                            {result.bmi >= 30
+                                                ? "고도비만"
+                                                : result.bmi >= 25
+                                                ? "비만"
+                                                : result.bmi >= 23
+                                                ? "과체중"
+                                                : result.bmi >= 18.5
+                                                ? "정상체중"
+                                                : "저체중"}
+                                        </Text>
+                                    ) : undefined}
                                 </View>
-                                <View style={[styles.marginBottom5, { flexDirection: "row" }]}>
-                                    <View style={{ flex: 1, alignItems: "center" }}>
-                                        <Text style={[TextSize.normalSize]}>정상체중</Text>
-                                    </View>
-                                    <View style={{ flex: 1, alignItems: "center" }}>
-                                        <Text style={[TextSize.normalSize]}>18.5 ~ 22.9</Text>
-                                    </View>
+                            </View>
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                    height: hp("3%"),
+                                    alignItems: "center",
+                                }}
+                            >
+                                <View style={{ flex: 1, alignItems: "flex-end" }}>
+                                    <Text
+                                        style={[
+                                            TextSize.normalSize,
+                                            { fontWeight: "bold", paddingRight: 10 },
+                                        ]}
+                                    >
+                                        기초대사량
+                                    </Text>
                                 </View>
-                                <View style={[styles.marginBottom5, { flexDirection: "row" }]}>
-                                    <View style={{ flex: 1, alignItems: "center" }}>
-                                        <Text style={[TextSize.normalSize]}>과체중</Text>
-                                    </View>
-                                    <View style={{ flex: 1, alignItems: "center" }}>
-                                        <Text style={[TextSize.normalSize]}>23 ~ 24.9</Text>
-                                    </View>
-                                </View>
-                                <View style={[styles.marginBottom5, { flexDirection: "row" }]}>
-                                    <View style={{ flex: 1, alignItems: "center" }}>
-                                        <Text style={[TextSize.normalSize]}>비만</Text>
-                                    </View>
-                                    <View style={{ flex: 1, alignItems: "center" }}>
-                                        <Text style={[TextSize.normalSize]}>25 ~ 29.9</Text>
-                                    </View>
-                                </View>
-                                <View style={[styles.marginBottom5, { flexDirection: "row" }]}>
-                                    <View style={{ flex: 1, alignItems: "center" }}>
-                                        <Text style={[TextSize.normalSize]}>고도비만</Text>
-                                    </View>
-                                    <View style={{ flex: 1, alignItems: "center" }}>
-                                        <Text style={[TextSize.normalSize]}>30 ~ 39.9</Text>
-                                    </View>
+                                <View style={{ flex: 2 }}>
+                                    <Text style={TextSize.normalSize}>{result.bmr} kcal</Text>
                                 </View>
                             </View>
                         </View>
-                    </View>
-                </Surface>
-            </TouchableOpacity>
-        </ScrollView>
+                    </Surface>
+                    <Surface style={MyStyles.surface}>
+                        <View style={{ padding: 10 }}>
+                            <View style={{ flexDirection: "row" }}>
+                                <View style={{ flex: 1 }}>
+                                    <View style={[styles.marginBottom5, { alignItems: "center" }]}>
+                                        <Text style={[TextSize.normalSize, { fontWeight: "bold" }]}>
+                                            브로카지수 구분
+                                        </Text>
+                                    </View>
+                                    <View style={[styles.marginBottom5, { flexDirection: "row" }]}>
+                                        <View style={{ flex: 1, alignItems: "center" }}>
+                                            <Text style={[TextSize.normalSize]}>저체중</Text>
+                                        </View>
+                                        <View style={{ flex: 1, alignItems: "center" }}>
+                                            <Text style={[TextSize.normalSize]}>90 이하</Text>
+                                        </View>
+                                    </View>
+                                    <View style={[styles.marginBottom5, { flexDirection: "row" }]}>
+                                        <View style={{ flex: 1, alignItems: "center" }}>
+                                            <Text style={[TextSize.normalSize]}>정상체중</Text>
+                                        </View>
+                                        <View style={{ flex: 1, alignItems: "center" }}>
+                                            <Text style={[TextSize.normalSize]}>90 ~ 110</Text>
+                                        </View>
+                                    </View>
+                                    <View style={[styles.marginBottom5, { flexDirection: "row" }]}>
+                                        <View style={{ flex: 1, alignItems: "center" }}>
+                                            <Text style={[TextSize.normalSize]}>과체중</Text>
+                                        </View>
+                                        <View style={{ flex: 1, alignItems: "center" }}>
+                                            <Text style={[TextSize.normalSize]}>110 ~ 120</Text>
+                                        </View>
+                                    </View>
+                                    <View style={[styles.marginBottom5, { flexDirection: "row" }]}>
+                                        <View style={{ flex: 1, alignItems: "center" }}>
+                                            <Text style={[TextSize.normalSize]}>비만</Text>
+                                        </View>
+                                        <View style={{ flex: 1, alignItems: "center" }}>
+                                            <Text style={[TextSize.normalSize]}>120 ~ 140</Text>
+                                        </View>
+                                    </View>
+                                    <View style={[styles.marginBottom5, { flexDirection: "row" }]}>
+                                        <View style={{ flex: 1, alignItems: "center" }}>
+                                            <Text style={[TextSize.normalSize]}>고도비만</Text>
+                                        </View>
+                                        <View style={{ flex: 1, alignItems: "center" }}>
+                                            <Text style={[TextSize.normalSize]}>140 이상</Text>
+                                        </View>
+                                    </View>
+                                </View>
+                                <View style={{ borderRightWidth: 1, borderRightColor: "grey" }} />
+                                <View style={{ flex: 1 }}>
+                                    <View style={[styles.marginBottom5, { alignItems: "center" }]}>
+                                        <Text style={[TextSize.normalSize, { fontWeight: "bold" }]}>
+                                            BMI 지수 구분
+                                        </Text>
+                                    </View>
+                                    <View style={[styles.marginBottom5, { flexDirection: "row" }]}>
+                                        <View style={{ flex: 1, alignItems: "center" }}>
+                                            <Text style={[TextSize.normalSize]}>저체중</Text>
+                                        </View>
+                                        <View style={{ flex: 1, alignItems: "center" }}>
+                                            <Text style={[TextSize.normalSize]}>18.5 이하</Text>
+                                        </View>
+                                    </View>
+                                    <View style={[styles.marginBottom5, { flexDirection: "row" }]}>
+                                        <View style={{ flex: 1, alignItems: "center" }}>
+                                            <Text style={[TextSize.normalSize]}>정상체중</Text>
+                                        </View>
+                                        <View style={{ flex: 1, alignItems: "center" }}>
+                                            <Text style={[TextSize.normalSize]}>18.5 ~ 22.9</Text>
+                                        </View>
+                                    </View>
+                                    <View style={[styles.marginBottom5, { flexDirection: "row" }]}>
+                                        <View style={{ flex: 1, alignItems: "center" }}>
+                                            <Text style={[TextSize.normalSize]}>과체중</Text>
+                                        </View>
+                                        <View style={{ flex: 1, alignItems: "center" }}>
+                                            <Text style={[TextSize.normalSize]}>23 ~ 24.9</Text>
+                                        </View>
+                                    </View>
+                                    <View style={[styles.marginBottom5, { flexDirection: "row" }]}>
+                                        <View style={{ flex: 1, alignItems: "center" }}>
+                                            <Text style={[TextSize.normalSize]}>비만</Text>
+                                        </View>
+                                        <View style={{ flex: 1, alignItems: "center" }}>
+                                            <Text style={[TextSize.normalSize]}>25 ~ 29.9</Text>
+                                        </View>
+                                    </View>
+                                    <View style={[styles.marginBottom5, { flexDirection: "row" }]}>
+                                        <View style={{ flex: 1, alignItems: "center" }}>
+                                            <Text style={[TextSize.normalSize]}>고도비만</Text>
+                                        </View>
+                                        <View style={{ flex: 1, alignItems: "center" }}>
+                                            <Text style={[TextSize.normalSize]}>30 ~ 39.9</Text>
+                                        </View>
+                                    </View>
+                                </View>
+                            </View>
+                        </View>
+                    </Surface>
+                </TouchableOpacity>
+            </ScrollView>
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
+        </View>
     );
 };
 

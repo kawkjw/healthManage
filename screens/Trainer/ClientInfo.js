@@ -3,7 +3,8 @@ import { Linking, ScrollView, Text, TouchableOpacity, View } from "react-native"
 import { Surface } from "react-native-paper";
 import { priceToString } from "../../config/hooks";
 import myBase, { db } from "../../config/MyBase";
-import { MyStyles, TextSize } from "../../css/MyStyles";
+import { MyStyles, TextSize, theme } from "../../css/MyStyles";
+import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 export default ClientInfo = ({ navigation, route }) => {
     if (!route.params) {
@@ -70,7 +71,7 @@ export default ClientInfo = ({ navigation, route }) => {
     }, []);
 
     return (
-        <View style={{ paddingTop: 10 }}>
+        <View style={{ flex: 1, paddingTop: 10 }}>
             <ScrollView>
                 {clientsInfo.length === 0 ? (
                     <Text>No clients</Text>
@@ -78,9 +79,11 @@ export default ClientInfo = ({ navigation, route }) => {
                     clientsInfo.map((client, idx) => (
                         <Surface style={[MyStyles.surface, { marginHorizontal: 20 }]} key={idx}>
                             <View style={{ padding: 10 }}>
-                                <Text>이름 : {client.userInfo.name}</Text>
+                                <Text style={TextSize.normalSize}>
+                                    이름 : {client.userInfo.name}
+                                </Text>
                                 <View style={{ flexDirection: "row" }}>
-                                    <Text>휴대폰번호 : </Text>
+                                    <Text style={TextSize.normalSize}>휴대폰번호 : </Text>
                                     <TouchableOpacity
                                         onPress={() =>
                                             Linking.openURL(`tel:${client.userInfo.phoneNumber}`)
@@ -93,14 +96,23 @@ export default ClientInfo = ({ navigation, route }) => {
                                         </Text>
                                     </TouchableOpacity>
                                 </View>
-                                <Text>그룹 PT : {client.ptInfo.group ? "O" : "X"}</Text>
-                                <Text>남은 횟수 : {client.ptInfo.count}</Text>
-                                <Text>결제 금액 : {priceToString(client.ptInfo.price)}원</Text>
+                                <Text style={TextSize.normalSize}>
+                                    그룹 PT : {client.ptInfo.group ? "O" : "X"}
+                                </Text>
+                                <Text style={TextSize.normalSize}>
+                                    남은 횟수 : {client.ptInfo.count}
+                                </Text>
+                                <Text style={TextSize.normalSize}>
+                                    결제 금액 : {priceToString(client.ptInfo.price)}원
+                                </Text>
                             </View>
                         </Surface>
                     ))
                 )}
             </ScrollView>
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
         </View>
     );
 };
