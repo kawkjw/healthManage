@@ -12,7 +12,6 @@ import {
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { MaterialIcons } from "@expo/vector-icons";
-import * as Permissions from "expo-permissions";
 import Modal from "react-native-modal";
 import * as Notifications from "expo-notifications";
 import myBase, { db } from "../../config/MyBase";
@@ -126,7 +125,7 @@ const MyStack = () => {
     };
 
     const execPromise = async () => {
-        const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+        const { status } = await Notifications.getPermissionsAsync();
         if (status === "granted") {
             setNotificationAvail(true);
         }
@@ -139,7 +138,7 @@ const MyStack = () => {
 
     const setPermissionNotification = async (state) => {
         if (state === "active") {
-            const { status } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+            const { status } = await Notifications.getPermissionsAsync();
             if (status !== "granted") {
                 setUnread(false);
                 setNotificationAvail(false);

@@ -1,7 +1,6 @@
 import { Expo } from "expo-server-sdk";
 import * as Notifications from "expo-notifications";
 import { db } from "./MyBase";
-import * as Permissions from "expo-permissions";
 import { Alert, Linking, Platform } from "react-native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -9,10 +8,10 @@ const MyExpo = new Expo();
 
 export const registerForPushNotificationAsync = async () => {
     let token = null;
-    const { status: existingStatus } = await Permissions.getAsync(Permissions.NOTIFICATIONS);
+    const { status: existingStatus } = await Notifications.getPermissionsAsync();
     let finalStatus = existingStatus;
     if (existingStatus !== "granted") {
-        const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
+        const { status } = await Notifications.requestPermissionsAsync();
         finalStatus = status;
     }
     if (finalStatus !== "granted") {
