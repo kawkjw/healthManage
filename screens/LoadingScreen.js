@@ -1,11 +1,11 @@
 import React from "react";
-import { View, StyleSheet, StatusBar } from "react-native";
+import { View, StyleSheet, StatusBar, Platform } from "react-native";
 import { ActivityIndicator, Colors } from "react-native-paper";
 
 export default LoadingScreen = () => {
     return (
         <View style={styles.container}>
-            <StatusBar barStyle="light-content" />
+            <StatusBar barStyle={Platform.select({ ios: "dark-content", android: "default" })} />
             <View
                 style={{
                     flex: 1,
