@@ -5,7 +5,7 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { getHoliday } from "../../config/hooks";
+import { getHoliday, priceToString } from "../../config/hooks";
 import SegmentedPicker from "react-native-segmented-picker";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import moment from "moment";
@@ -549,10 +549,6 @@ export default Sales = ({ navigation, route }) => {
                     : 0}
             </SvgText>
         ));
-
-    const priceToString = (price) => {
-        return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-    };
 
     const renderStats = () => {
         let render = [];

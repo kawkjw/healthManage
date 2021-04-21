@@ -93,3 +93,7 @@ export const checkBatchimEnding = (word) => {
 
     return (uni - 44032) % 28 != 0;
 };
+
+export const priceToString = (price) => {
+    return price.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+};

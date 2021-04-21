@@ -147,6 +147,18 @@ export default Home = ({ navigation, route }) => {
                         <Text style={TextSize.largeSize}>수업 정보</Text>
                     </TouchableOpacity>
                 </Surface>
+                {myClass.split(".")[0] === "pt" || myClass.split(".")[1] === "squash" ? (
+                    <Surface style={MyStyles.surface}>
+                        <TouchableOpacity
+                            style={MyStyles.menu}
+                            onPress={() =>
+                                navigation.navigate("ClientInfo", { className: myClass })
+                            }
+                        >
+                            <Text style={TextSize.largeSize}>고객 정보</Text>
+                        </TouchableOpacity>
+                    </Surface>
+                ) : null}
             </View>
         </SafeAreaView>
     );

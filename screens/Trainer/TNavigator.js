@@ -20,6 +20,7 @@ import SelectSquashKind from "./Class/SelectSquashKind";
 import { TextSize, theme } from "../../css/MyStyles";
 import { displayedAt, checkBatchimEnding } from "../../config/hooks";
 import { Badge, Button, Card } from "react-native-paper";
+import ClientInfo from "./ClientInfo";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
@@ -420,6 +421,14 @@ const MyStack = () => {
                 component={SelectSquashKind}
                 options={({ navigation }) => ({
                     title: "스쿼시",
+                    headerLeft: () => renderGoBackButton(navigation),
+                })}
+            />
+            <Stack.Screen
+                name="ClientInfo"
+                component={ClientInfo}
+                options={({ navigation }) => ({
+                    title: "고객 정보",
                     headerLeft: () => renderGoBackButton(navigation),
                 })}
             />
