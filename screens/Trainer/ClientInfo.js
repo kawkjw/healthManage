@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Linking, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Alert, Linking, ScrollView, Text, TouchableOpacity, View } from "react-native";
 import { ActivityIndicator, Surface } from "react-native-paper";
 import { priceToString } from "../../config/hooks";
 import myBase, { db } from "../../config/MyBase";
@@ -11,6 +11,7 @@ export default ClientInfo = ({ navigation, route }) => {
     if (!route.params) {
         navigation.goBack();
     }
+    const uid = myBase.auth().currentUser.uid;
     const ptName = route.params.className.split(".")[0] === "pt" ? "pt" : "squashpt";
     const [clientsInfo, setClientsInfo] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -58,6 +59,56 @@ export default ClientInfo = ({ navigation, route }) => {
                         .then((doc) => {
                             infos[idx]["userInfo"] = doc.data();
                         });
+                    const today = new Date();
+                    const checkDates = [
+                        moment(today).format("YYYY-MM"),
+                        moment(today).subtract(1, "M").format("YYYY-MM"),
+                    ];
+                    const checkPromises = checkDates.map(async (date) => {
+                        await db
+                            .collection("users")
+                            .doc(uid)
+                            .collection("classes")
+                            .doc(date)
+                            .get()
+                            .then((doc) => {
+                                let dates = [];
+                                if (doc.exists) {
+                                    dates = doc.data().ptDate;
+                                    return dates.reverse();
+                                }
+                                return dates;
+                            })
+                            .then(async (dates) => {
+                                if (dates.length == 0) {
+                                    return -1;
+                                } else {
+                                    const classPromises = dates.map(async (d) => {
+                                        await db
+                                            .collection("users")
+                                            .doc(uid)
+                                            .collection("classes")
+                                            .doc(date)
+                                            .collection(d)
+                                            .where("clientUid", "==", info.uid)
+                                            .get()
+                                            .then((docs) => {
+                                                if (docs.size > 0) {
+                                                    infos[idx]["lastClassDate"] = new Date(
+                                                        date.split("-")[0],
+                                                        Number(date.split("-")[1]) - 1,
+                                                        Number(d),
+                                                        0,
+                                                        0
+                                                    );
+                                                }
+                                            });
+                                    });
+                                    await Promise.all(classPromises);
+                                }
+                            });
+                    });
+                    await Promise.all(checkPromises);
                 });
                 await Promise.all(clientPromises);
                 infos.sort((a, b) => {
@@ -70,16 +121,21 @@ export default ClientInfo = ({ navigation, route }) => {
     };
 
     useEffect(() => {
-        getMyClients().then(() => {
-            setLoading(false);
-        });
+        getMyClients()
+            .then(() => {
+                setLoading(false);
+            })
+            .catch((error) => Alert.alert("Error", error.message));
     }, []);
 
     return (
         <View style={{ flex: 1, paddingTop: 10 }}>
             {loading ? (
-                <View style={{ flex: 1, justifyContent: "center" }}>
+                <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
                     <ActivityIndicator size="large" color="black" animating={true} />
+                    <Text style={[TextSize.normalSize, { marginTop: 10 }]}>
+                        고객이 많을수록 로딩이 깁니다.
+                    </Text>
                 </View>
             ) : (
                 <ScrollView>
@@ -118,6 +174,14 @@ export default ClientInfo = ({ navigation, route }) => {
                                         {moment(client.ptInfo.start.toDate()).format(
                                             "YYYY년 M월 D일"
                                         )}
+                                    </Text>
+                                    <Text style={TextSize.normalSize}>
+                                        마지막 수업 날짜 :{" "}
+                                        {client.lastClassDate === undefined
+                                            ? "2개월 이상 됨"
+                                            : moment(client.lastClassDate).format(
+                                                  "YYYY년 M월 D일에 수업함"
+                                              )}
                                     </Text>
                                     <Text style={TextSize.normalSize}>
                                         그룹 PT : {client.ptInfo.group ? "O" : "X"}
