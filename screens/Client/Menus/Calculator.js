@@ -80,7 +80,13 @@ export default Calculator = ({ navigation, route }) => {
                 >
                     <Surface style={[MyStyles.surface, { marginTop: 10 }]}>
                         <View style={{ padding: 10, paddingRight: 20, paddingBottom: 20 }}>
-                            <View style={{ flexDirection: "row", height: hp("5.5%") }}>
+                            <View
+                                style={{
+                                    flexDirection: "row",
+                                    height: hp("5.5%"),
+                                    alignItems: "center",
+                                }}
+                            >
                                 <View
                                     style={{
                                         flex: 1,
