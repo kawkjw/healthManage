@@ -1,5 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { Alert, Linking, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import {
+    Alert,
+    Linking,
+    RefreshControl,
+    ScrollView,
+    Text,
+    TouchableOpacity,
+    View,
+} from "react-native";
 import { ActivityIndicator, Surface } from "react-native-paper";
 import { priceToString } from "../../config/hooks";
 import myBase, { db } from "../../config/MyBase";
@@ -120,12 +128,16 @@ export default ClientInfo = ({ navigation, route }) => {
             });
     };
 
-    useEffect(() => {
+    const onRefresh = () => {
         getMyClients()
             .then(() => {
                 setLoading(false);
             })
             .catch((error) => Alert.alert("Error", error.message));
+    };
+
+    useEffect(() => {
+        onRefresh();
     }, []);
 
     return (
@@ -138,7 +150,9 @@ export default ClientInfo = ({ navigation, route }) => {
                     </Text>
                 </View>
             ) : (
-                <ScrollView>
+                <ScrollView
+                    refreshControl={<RefreshControl refreshing={loading} onRefresh={onRefresh} />}
+                >
                     {clientsInfo.length === 0 ? (
                         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
                             <Text style={TextSize.largeSize}>담당 고객이 없습니다.</Text>
