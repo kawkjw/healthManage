@@ -166,7 +166,7 @@ export default Calculator = ({ navigation, route }) => {
                                         mode="outlined"
                                         placeholder="000.0"
                                         dense={true}
-                                        keyboardType="phone-pad"
+                                        keyboardType="decimal-pad"
                                         value={clientHeights}
                                         maxLength={5}
                                         onChangeText={setClientHeights}
@@ -192,7 +192,7 @@ export default Calculator = ({ navigation, route }) => {
                                         mode="outlined"
                                         placeholder="0.00"
                                         dense={true}
-                                        keyboardType="phone-pad"
+                                        keyboardType="decimal-pad"
                                         value={clientWeights}
                                         maxLength={6}
                                         onChangeText={setClientWeights}
@@ -218,7 +218,7 @@ export default Calculator = ({ navigation, route }) => {
                                         mode="outlined"
                                         placeholder="00"
                                         dense={true}
-                                        keyboardType="phone-pad"
+                                        keyboardType="decimal-pad"
                                         value={clientAge}
                                         maxLength={3}
                                         onChangeText={setClientAge}
