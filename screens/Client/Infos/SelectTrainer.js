@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Alert, View, ScrollView, TouchableOpacity } from "react-native";
 import { MyStyles, TextSize, theme } from "../../../css/MyStyles";
 import myBase, { db } from "../../../config/MyBase";
 import { Surface, Text } from "react-native-paper";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
+import { useFocusEffect } from "@react-navigation/core";
 
 export default SelectTrainer = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
@@ -62,18 +63,33 @@ export default SelectTrainer = ({ navigation, route }) => {
         return name;
     };
 
-    const getter = async () => {
-        const num = await getOtNum();
-        if (num > 0) {
-            let temp = [];
-            navigation.setOptions({
-                headerRight: () => (
-                    <View style={{ margin: 10 }}>
-                        <Text style={{ color: "white" }}>{num}회 남음</Text>
-                    </View>
-                ),
+    useFocusEffect(
+        useCallback(() => {
+            getOtNum().then((num) => {
+                if (num > 0) {
+                    navigation.setOptions({
+                        headerRight: () => (
+                            <View style={{ margin: 10 }}>
+                                <Text style={{ color: "white" }}>{num}회 남음</Text>
+                            </View>
+                        ),
+                    });
+                } else if (num === -100) {
+                    navigation.goBack();
+                } else {
+                    Alert.alert("경고", "남은 OT 횟수가 없습니다.", [{ text: "확인" }], {
+                        cancelable: false,
+                    });
+                    navigation.goBack();
+                }
             });
+        }, [])
+    );
+
+    useEffect(() => {
+        (async () => {
             await getPtTrainerUid().then(async (list) => {
+                let temp = [];
                 const promises = list.map(async (uid) => {
                     const name = await getPtTrainerName(uid);
                     temp.push({ name: name, uid: uid });
@@ -81,19 +97,8 @@ export default SelectTrainer = ({ navigation, route }) => {
                 await Promise.all(promises);
                 setTrainers(temp);
             });
-        } else if (num === -100) {
-            navigation.goBack();
-        } else {
-            Alert.alert("경고", "남은 OT 횟수가 없습니다.", [{ text: "확인" }], {
-                cancelable: false,
-            });
-            navigation.goBack();
-        }
-    };
-
-    useEffect(() => {
-        getter();
-    }, []);
+        })();
+    });
 
     return (
         <View style={MyStyles.container}>
