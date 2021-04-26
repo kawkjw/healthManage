@@ -529,6 +529,26 @@ export default PT = ({ navigation, route }) => {
                 .collection(selectedDate.toString())
                 .doc(availTime)
                 .update({ confirm: true });
+            await db
+                .collection("users")
+                .doc(clientUid)
+                .collection("memberships")
+                .doc("list")
+                .collection(ptName === "pt" ? ptName : ptName + "pt")
+                .orderBy("payDay", "desc")
+                .limit(1)
+                .get()
+                .then(async (docs) => {
+                    let docRef;
+                    let count = 0;
+                    docs.forEach((doc) => {
+                        count = doc.data().count;
+                        docRef = doc.ref;
+                    });
+                    if (count === 0) {
+                        await docRef.set({ expiredStatus: true }, { merge: true });
+                    }
+                });
             await pushNotificationsToPerson(
                 myBase.auth().currentUser.displayName,
                 clientUid,
