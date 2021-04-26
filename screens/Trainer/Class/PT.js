@@ -681,7 +681,7 @@ export default PT = ({ navigation, route }) => {
                                 });
                                 if (count === 1) {
                                     await docRef.update({ otCount: fieldDelete() });
-                                } else if (count === 2) {
+                                } else if (count === 0) {
                                     await docRef.update({ otCount: 1 });
                                 }
                             });
