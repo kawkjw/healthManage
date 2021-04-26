@@ -327,7 +327,7 @@ const MyStack = () => {
                         }
                     });
                     const promises = list.map(async (message) => {
-                        if (message.data.cancel) {
+                        if (message.data.cancel && message.data.identifier) {
                             await Notifications.cancelScheduledNotificationAsync(
                                 message.data.identifier
                             );
@@ -587,7 +587,10 @@ const MyStack = () => {
                                                 if (message.data.navigation) {
                                                     navigation.navigate(message.data.navigation);
                                                 }
-                                                if (message.data.cancel) {
+                                                if (
+                                                    message.data.cancel &&
+                                                    message.data.identifier
+                                                ) {
                                                     await Notifications.cancelScheduledNotificationAsync(
                                                         message.data.identifier
                                                     );
