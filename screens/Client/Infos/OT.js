@@ -273,6 +273,12 @@ export default OT = ({ navigation, route }) => {
                         clientUid: uid,
                         ot: true,
                     });
+                    await db
+                        .collection("classes")
+                        .doc("pt")
+                        .collection(trainerUid)
+                        .doc(yearMonthStr)
+                        .update({ waitConfirm: arrayUnion(selectedDate.toString()) });
                     const startDate = new Date(
                         selectedYear,
                         selectedMonth - 1,

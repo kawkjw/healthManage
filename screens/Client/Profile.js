@@ -281,7 +281,11 @@ export default Profile = ({ navigation }) => {
                                     c["trainer"] = data.trainer;
                                     c["startTime"] = moment(start).format("HH:mm");
                                     c["endTime"] = moment(end).format("HH:mm");
-                                    if (data.className === "pt" || data.className === "squashpt") {
+                                    if (
+                                        data.className === "pt" ||
+                                        data.className === "squashpt" ||
+                                        data.className === "ot"
+                                    ) {
                                         c["confirm"] = data.confirm;
                                     }
                                     reserved.push(c);
@@ -321,7 +325,11 @@ export default Profile = ({ navigation }) => {
                                 c["trainer"] = data.trainer;
                                 c["startTime"] = moment(start).format("HH:mm");
                                 c["endTime"] = moment(end).format("HH:mm");
-                                if (data.className === "pt" || data.className === "squashpt") {
+                                if (
+                                    data.className === "pt" ||
+                                    data.className === "squashpt" ||
+                                    data.className === "ot"
+                                ) {
                                     c["confirm"] = data.confirm;
                                 }
                                 reserved.push(c);
@@ -757,7 +765,8 @@ export default Profile = ({ navigation }) => {
                                                         "~" +
                                                         reservedClass.endTime}
                                                     {reservedClass.className === "pt" ||
-                                                    reservedClass.className === "squashpt"
+                                                    reservedClass.className === "squashpt" ||
+                                                    reservedClass.className === "ot"
                                                         ? reservedClass.confirm
                                                             ? " (승인O)"
                                                             : " (승인X)"
@@ -838,7 +847,8 @@ export default Profile = ({ navigation }) => {
                                                         "~" +
                                                         reservedClass.endTime}
                                                     {reservedClass.className === "pt" ||
-                                                    reservedClass.className === "squashpt"
+                                                    reservedClass.className === "squashpt" ||
+                                                    reservedClass.className === "ot"
                                                         ? reservedClass.confirm
                                                             ? " (승인O)"
                                                             : " (승인X)"

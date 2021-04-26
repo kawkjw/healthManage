@@ -573,100 +573,161 @@ export default PT = ({ navigation, route }) => {
                 .doc(ptName)
                 .collection(uid)
                 .doc(yearMonthStr)
-                .update({ waitConfirm: arrayDelete(selectedDate.toString()) });
-            await db
-                .collection("classes")
-                .doc(ptName)
-                .collection(uid)
-                .doc(yearMonthStr)
                 .collection(selectedDate.toString())
                 .doc(availTime)
-                .update({
-                    clientUid: fieldDelete(),
-                    confirm: fieldDelete(),
-                    hasReservation: false,
-                });
-            await db
-                .collection("users")
-                .doc(uid)
-                .collection("classes")
-                .doc(yearMonthStr)
-                .update({ ptDate: arrayDelete(selectedDate.toString()) });
-            await db
-                .collection("users")
-                .doc(uid)
-                .collection("classes")
-                .doc(yearMonthStr)
-                .collection(selectedDate.toString())
-                .doc(availTime)
-                .delete();
-            await db
-                .collection("users")
-                .doc(clientUid)
-                .collection("reservation")
-                .doc(yearMonthStr)
-                .collection(selectedDate.toString())
-                .doc(availTime)
-                .delete();
-            await db
-                .collection("users")
-                .doc(clientUid)
-                .collection("reservation")
-                .doc(yearMonthStr)
-                .collection(selectedDate.toString())
                 .get()
-                .then(async (snapshots) => {
-                    if (snapshots.size === 0) {
+                .then((doc) => {
+                    if (doc.data().ot !== undefined) {
+                        return doc.data().ot;
+                    }
+                    return false;
+                })
+                .then(async (bool) => {
+                    await db
+                        .collection("classes")
+                        .doc(ptName)
+                        .collection(uid)
+                        .doc(yearMonthStr)
+                        .update({ waitConfirm: arrayDelete(selectedDate.toString()) });
+                    await db
+                        .collection("classes")
+                        .doc(ptName)
+                        .collection(uid)
+                        .doc(yearMonthStr)
+                        .collection(selectedDate.toString())
+                        .doc(availTime)
+                        .update({
+                            clientUid: fieldDelete(),
+                            confirm: fieldDelete(),
+                            hasReservation: false,
+                        });
+                    await db
+                        .collection("users")
+                        .doc(uid)
+                        .collection("classes")
+                        .doc(yearMonthStr)
+                        .update({ ptDate: arrayDelete(selectedDate.toString()) })
+                        .catch((error) => {
+                            console.log("trainer cancel class", error.message);
+                        });
+                    await db
+                        .collection("users")
+                        .doc(uid)
+                        .collection("classes")
+                        .doc(yearMonthStr)
+                        .collection(selectedDate.toString())
+                        .doc(availTime)
+                        .delete()
+                        .catch((error) => {
+                            console.log("trainer cancel class", error.message);
+                        });
+                    await db
+                        .collection("users")
+                        .doc(clientUid)
+                        .collection("reservation")
+                        .doc(yearMonthStr)
+                        .collection(selectedDate.toString())
+                        .doc(availTime)
+                        .delete();
+                    await db
+                        .collection("users")
+                        .doc(clientUid)
+                        .collection("reservation")
+                        .doc(yearMonthStr)
+                        .collection(selectedDate.toString())
+                        .get()
+                        .then(async (snapshots) => {
+                            if (snapshots.size === 0) {
+                                await db
+                                    .collection("users")
+                                    .doc(clientUid)
+                                    .collection("reservation")
+                                    .doc(yearMonthStr)
+                                    .update({
+                                        date: arrayDelete(selectedDate.toString()),
+                                    });
+                            }
+                        });
+                    if (bool) {
+                        await db
+                            .collection("classes")
+                            .doc(ptName)
+                            .collection(uid)
+                            .doc(yearMonthStr)
+                            .collection(selectedDate.toString())
+                            .doc(availTime)
+                            .update({
+                                ot: fieldDelete(),
+                            });
                         await db
                             .collection("users")
                             .doc(clientUid)
-                            .collection("reservation")
-                            .doc(yearMonthStr)
-                            .update({
-                                date: arrayDelete(selectedDate.toString()),
+                            .collection("memberships")
+                            .doc("list")
+                            .collection("health")
+                            .orderBy("payDay", "desc")
+                            .limit(1)
+                            .get()
+                            .then(async (docs) => {
+                                let docRef;
+                                let count = 0;
+                                docs.forEach((doc) => {
+                                    docRef = doc.ref;
+                                    count = doc.data().otCount;
+                                });
+                                if (count === 1) {
+                                    await docRef.update({ otCount: fieldDelete() });
+                                } else if (count === 2) {
+                                    await docRef.update({ otCount: 1 });
+                                }
+                            });
+                    } else {
+                        await db
+                            .collection("users")
+                            .doc(clientUid)
+                            .collection("memberships")
+                            .doc("list")
+                            .collection(ptName === "pt" ? ptName : ptName + "pt")
+                            .orderBy("payDay", "desc")
+                            .limit(1)
+                            .get()
+                            .then(async (docs) => {
+                                let docRef;
+                                let count = 0;
+                                docs.forEach((doc) => {
+                                    count = doc.data().count;
+                                    docRef = doc.ref;
+                                });
+                                await docRef.update({ count: count + 1 });
                             });
                     }
+                    let data = { cancel: true };
+                    if (route.params.identifier) {
+                        data["identifier"] = route.params.identifier;
+                    }
+                    await pushNotificationsToPerson(
+                        myBase.auth().currentUser.displayName,
+                        clientUid,
+                        "예약 취소되었습니다.",
+                        `${selectedDate}일 ${availTime}`,
+                        data
+                    );
+                    Alert.alert(
+                        "취소됨",
+                        "예약이 취소되었습니다.",
+                        [
+                            {
+                                text: "확인",
+                                onPress: () => {
+                                    const backup = selectedDate;
+                                    setSelectedDate(0);
+                                    setSelectedDate(backup);
+                                },
+                            },
+                        ],
+                        { cancelable: false }
+                    );
                 });
-            await db
-                .collection("users")
-                .doc(clientUid)
-                .collection("memberships")
-                .doc("list")
-                .collection(ptName === "pt" ? ptName : ptName + "pt")
-                .orderBy("payDay", "desc")
-                .limit(1)
-                .get()
-                .then(async (docs) => {
-                    let docRef;
-                    let count = 0;
-                    docs.forEach((doc) => {
-                        count = doc.data().count;
-                        docRef = doc.ref;
-                    });
-                    await docRef.update({ count: count + 1 });
-                });
-            await pushNotificationsToPerson(
-                myBase.auth().currentUser.displayName,
-                clientUid,
-                "예약 취소되었습니다.",
-                `${selectedDate}일 ${availTime}`,
-                { cancel: true, identifier: route.params.identifier }
-            );
-            Alert.alert(
-                "취소됨",
-                "예약이 취소되었습니다.",
-                [
-                    {
-                        text: "확인",
-                        onPress: () => {
-                            const backup = selectedDate;
-                            setSelectedDate(0);
-                            setSelectedDate(backup);
-                        },
-                    },
-                ],
-                { cancelable: false }
-            );
         }
     };
 
