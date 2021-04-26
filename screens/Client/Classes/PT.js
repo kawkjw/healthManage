@@ -268,11 +268,27 @@ export default PT = ({ navigation, route }) => {
                 .doc(timeStr);
             await classDBInTimeStr.get().then(async (snapshot) => {
                 if (!snapshot.data().hasReservation) {
+                    const identifier = await Notifications.scheduleNotificationAsync({
+                        content: {
+                            title: "수업 예약 미리 알림",
+                            body: "예약하신 PT 수업이 시작까지 2시간 남았습니다.",
+                            sound: "default",
+                            badge: 1,
+                        },
+                        trigger: new Date(
+                            selectedYear,
+                            selectedMonth - 1,
+                            selectedDate,
+                            Number(timeStr.split(":")[0]) - 2,
+                            0
+                        ),
+                    });
                     await classDBInTimeStr.update({
                         hasReservation: true,
                         confirm: false,
                         clientUid: uid,
                         isGroup: isGroup,
+                        notiIdentifier: identifier,
                     });
                     await db
                         .collection("classes")
@@ -329,21 +345,6 @@ export default PT = ({ navigation, route }) => {
                         .collection(ptName === "pt" ? ptName : ptName + "pt")
                         .doc(ptId)
                         .update({ count: count - 1 });
-                    const identifier = await Notifications.scheduleNotificationAsync({
-                        content: {
-                            title: "수업 예약 미리 알림",
-                            body: "예약하신 PT 수업이 시작까지 2시간 남았습니다.",
-                            sound: "default",
-                            badge: 1,
-                        },
-                        trigger: new Date(
-                            selectedYear,
-                            selectedMonth - 1,
-                            selectedDate,
-                            Number(timeStr.split(":")[0]) - 2,
-                            0
-                        ),
-                    });
                     await pushNotificationsToPerson(
                         myBase.auth().currentUser.displayName,
                         trainerUid,

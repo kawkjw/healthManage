@@ -577,12 +577,16 @@ export default PT = ({ navigation, route }) => {
                 .doc(availTime)
                 .get()
                 .then((doc) => {
+                    let dataList = [false];
                     if (doc.data().ot !== undefined) {
-                        return doc.data().ot;
+                        dataList[0] = doc.data().ot;
                     }
-                    return false;
+                    if (doc.data().notiIdentifier !== undefined) {
+                        dataList.push(doc.data().notiIdentifier);
+                    }
+                    return dataList;
                 })
-                .then(async (bool) => {
+                .then(async (dataList) => {
                     await db
                         .collection("classes")
                         .doc(ptName)
@@ -648,7 +652,7 @@ export default PT = ({ navigation, route }) => {
                                     });
                             }
                         });
-                    if (bool) {
+                    if (dataList) {
                         await db
                             .collection("classes")
                             .doc(ptName)
@@ -704,6 +708,8 @@ export default PT = ({ navigation, route }) => {
                     let data = { cancel: true };
                     if (route.params.identifier) {
                         data["identifier"] = route.params.identifier;
+                    } else {
+                        data["identifier"] = dataList[1];
                     }
                     await pushNotificationsToPerson(
                         myBase.auth().currentUser.displayName,
