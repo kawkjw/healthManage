@@ -220,12 +220,15 @@ export default Locker = () => {
                                     .doc(selectedLocker.toString())
                                     .get()
                                     .then((doc) => {
-                                        if (!doc.exists) {
+                                        if (doc.data().uid === undefined) {
                                             db.collection("lockers")
                                                 .doc(selectedLocker.toString())
-                                                .set({
-                                                    uid: uid,
-                                                });
+                                                .set(
+                                                    {
+                                                        uid: uid,
+                                                    },
+                                                    { merge: true }
+                                                );
                                         } else {
                                             throw Error("이미 배정된 보관함입니다.");
                                         }
@@ -236,13 +239,26 @@ export default Locker = () => {
                                             .doc(uid)
                                             .collection("locker")
                                             .doc(data.id)
-                                            .update({
-                                                lockerNumber: selectedLocker,
-                                                start: addDate,
-                                                end: moment(addDate)
-                                                    .add(data.month, "M")
-                                                    .subtract(1, "d")
-                                                    .toDate(),
+                                            .get()
+                                            .then(async (doc) => {
+                                                const check = new Date("9999-12-01");
+                                                let change = { lockerNumber: selectedLocker };
+                                                if (doc.data().end.toDate() > check) {
+                                                    change["start"] = addDate;
+                                                    change["end"] = moment(addDate)
+                                                        .add(data.month, "M")
+                                                        .subtract(1, "d")
+                                                        .toDate();
+                                                }
+                                                return change;
+                                            })
+                                            .then(async (change) => {
+                                                await db
+                                                    .collection("users")
+                                                    .doc(uid)
+                                                    .collection("locker")
+                                                    .doc(data.id)
+                                                    .update(change);
                                             });
                                     })
                                     .then(() => {
