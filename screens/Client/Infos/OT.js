@@ -24,6 +24,7 @@ import Modal from "react-native-modal";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { ActivityIndicator, Button, Colors, Surface } from "react-native-paper";
 import moment from "moment";
+import * as Notifications from "expo-notifications";
 
 export default OT = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -328,6 +329,21 @@ export default OT = ({ navigation, route }) => {
                         .collection("health")
                         .doc(healthId)
                         .set({ otCount: count - 1 }, { merge: true });
+                    const identifier = await Notifications.scheduleNotificationAsync({
+                        content: {
+                            title: "수업 예약 미리 알림",
+                            body: "예약하신 OT 수업이 시작까지 2시간 남았습니다.",
+                            sound: "default",
+                            badge: 1,
+                        },
+                        trigger: new Date(
+                            selectedYear,
+                            selectedMonth - 1,
+                            selectedDate,
+                            Number(timeStr.split(":")[0]) - 2,
+                            0
+                        ),
+                    });
                     await pushNotificationsToPerson(
                         myBase.auth().currentUser.displayName,
                         trainerUid,
@@ -339,6 +355,7 @@ export default OT = ({ navigation, route }) => {
                                 year: selectedYear,
                                 month: selectedMonth,
                                 date: selectedDate,
+                                identifier: identifier,
                             },
                         }
                     );
