@@ -201,10 +201,18 @@ export default ClientInfo = ({ navigation, route }) => {
                                         그룹 PT : {client.ptInfo.group ? "O" : "X"}
                                     </Text>
                                     <Text style={TextSize.normalSize}>
-                                        남은 횟수 : {client.ptInfo.count}
+                                        남은 횟수 :{" "}
+                                        {client.ptInfo.count + " / " + client.ptInfo.initialCount}
                                     </Text>
                                     <Text style={TextSize.normalSize}>
                                         결제 금액 : {priceToString(client.ptInfo.price)}원
+                                    </Text>
+                                    <Text style={TextSize.normalSize}>
+                                        횟수 당 금액 :{" "}
+                                        {priceToString(
+                                            client.ptInfo.price / client.ptInfo.initialCount
+                                        )}
+                                        원
                                     </Text>
                                 </View>
                             </Surface>
