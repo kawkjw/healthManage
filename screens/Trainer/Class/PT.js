@@ -624,6 +624,9 @@ export default PT = ({ navigation, route }) => {
                             clientUid: fieldDelete(),
                             confirm: fieldDelete(),
                             hasReservation: false,
+                            notiIdentifier: fieldDelete(),
+                            isGroup: fieldDelete(),
+                            ot: fieldDelete(),
                         });
                     await db
                         .collection("users")
@@ -672,17 +675,7 @@ export default PT = ({ navigation, route }) => {
                                     });
                             }
                         });
-                    if (dataList) {
-                        await db
-                            .collection("classes")
-                            .doc(ptName)
-                            .collection(uid)
-                            .doc(yearMonthStr)
-                            .collection(selectedDate.toString())
-                            .doc(availTime)
-                            .update({
-                                ot: fieldDelete(),
-                            });
+                    if (dataList[0]) {
                         await db
                             .collection("users")
                             .doc(clientUid)

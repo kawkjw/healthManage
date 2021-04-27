@@ -266,133 +266,155 @@ export default PT = ({ navigation, route }) => {
                 .doc(yearMonthStr)
                 .collection(selectedDate.toString())
                 .doc(timeStr);
-            await classDBInTimeStr.get().then(async (snapshot) => {
-                if (!snapshot.data().hasReservation) {
-                    const identifier = await Notifications.scheduleNotificationAsync({
-                        content: {
-                            title: "수업 예약 미리 알림",
-                            body: "예약하신 PT 수업이 시작까지 2시간 남았습니다.",
-                            sound: "default",
-                            badge: 1,
-                        },
-                        trigger: new Date(
+            await db
+                .collection("users")
+                .doc(uid)
+                .collection("reservation")
+                .doc(yearMonthStr)
+                .get()
+                .then(async (doc) => {
+                    if (!doc.exists) {
+                        await doc.ref.set({ date: [] });
+                    }
+                });
+            db.runTransaction(async (transaction) => {
+                return await transaction.get(classDBInTimeStr).then(async (doc) => {
+                    if (!doc.data().hasReservation) {
+                        const identifier = await Notifications.scheduleNotificationAsync({
+                            content: {
+                                title: "수업 예약 미리 알림",
+                                body: "예약하신 PT 수업이 시작까지 2시간 남았습니다.",
+                                sound: "default",
+                                badge: 1,
+                            },
+                            trigger: new Date(
+                                selectedYear,
+                                selectedMonth - 1,
+                                selectedDate,
+                                Number(timeStr.split(":")[0]) - 2,
+                                0
+                            ),
+                        });
+                        transaction.update(classDBInTimeStr, {
+                            hasReservation: true,
+                            confirm: false,
+                            clientUid: uid,
+                            isGroup: isGroup,
+                            notiIdentifier: identifier,
+                        });
+                        transaction.update(
+                            db
+                                .collection("classes")
+                                .doc(ptName)
+                                .collection(trainerUid)
+                                .doc(yearMonthStr),
+                            { waitConfirm: arrayUnion(selectedDate.toString()) }
+                        );
+                        const startDate = new Date(
                             selectedYear,
                             selectedMonth - 1,
                             selectedDate,
-                            Number(timeStr.split(":")[0]) - 2,
-                            0
-                        ),
-                    });
-                    await classDBInTimeStr.update({
-                        hasReservation: true,
-                        confirm: false,
-                        clientUid: uid,
-                        isGroup: isGroup,
-                        notiIdentifier: identifier,
-                    });
-                    await db
-                        .collection("classes")
-                        .doc(ptName)
-                        .collection(trainerUid)
-                        .doc(yearMonthStr)
-                        .update({ waitConfirm: arrayUnion(selectedDate.toString()) });
-                    const startDate = new Date(
-                        selectedYear,
-                        selectedMonth - 1,
-                        selectedDate,
-                        timeStr.substr(0, 2)
-                    );
-                    const endDate = new Date(
-                        selectedYear,
-                        selectedMonth - 1,
-                        selectedDate,
-                        timeStr.substr(8, 2)
-                    );
-                    await db
-                        .collection("users")
-                        .doc(uid)
-                        .collection("reservation")
-                        .doc(yearMonthStr)
-                        .collection(selectedDate.toString())
-                        .doc(timeStr)
-                        .set({
-                            classId: ptName === "pt" ? ptName : ptName + "pt",
-                            className: ptName === "pt" ? ptName : ptName + "pt",
-                            start: startDate,
-                            end: endDate,
-                            trainer: trainerName,
-                            confirm: false,
-                        });
-                    await db
-                        .collection("users")
-                        .doc(uid)
-                        .collection("reservation")
-                        .doc(yearMonthStr)
-                        .update({ date: arrayUnion(selectedDate.toString()) })
-                        .catch(async (error) => {
-                            await db
+                            timeStr.substr(0, 2)
+                        );
+                        const endDate = new Date(
+                            selectedYear,
+                            selectedMonth - 1,
+                            selectedDate,
+                            timeStr.substr(8, 2)
+                        );
+                        transaction.set(
+                            db
                                 .collection("users")
                                 .doc(uid)
                                 .collection("reservation")
                                 .doc(yearMonthStr)
-                                .set({ date: [selectedDate.toString()] });
-                        });
-                    await db
-                        .collection("users")
-                        .doc(uid)
-                        .collection("memberships")
-                        .doc("list")
-                        .collection(ptName === "pt" ? ptName : ptName + "pt")
-                        .doc(ptId)
-                        .update({ count: count - 1 });
-                    await pushNotificationsToPerson(
-                        myBase.auth().currentUser.displayName,
-                        trainerUid,
-                        "새 PT 예약",
-                        `${selectedDate}일 ${timeStr}`,
-                        {
-                            navigation: "PT",
-                            datas: {
-                                year: selectedYear,
-                                month: selectedMonth,
-                                date: selectedDate,
-                                identifier: identifier,
-                            },
-                        }
-                    );
-                    Alert.alert(
-                        "성공",
-                        "수업이 예약되었습니다.",
-                        [
+                                .collection(selectedDate.toString())
+                                .doc(timeStr),
                             {
-                                text: "확인",
-                                onPress: () => {
-                                    const backup = selectedDate;
-                                    setSelectedDate(0);
-                                    setSelectedDate(backup);
-                                },
-                            },
-                        ],
-                        { cancelable: false }
-                    );
-                } else {
-                    Alert.alert(
-                        "실패",
-                        "이미 예약되어 있습니다.",
-                        [
+                                classId: ptName === "pt" ? ptName : ptName + "pt",
+                                className: ptName === "pt" ? ptName : ptName + "pt",
+                                start: startDate,
+                                end: endDate,
+                                trainer: trainerName,
+                                confirm: false,
+                            }
+                        );
+                        transaction.update(
+                            db
+                                .collection("users")
+                                .doc(uid)
+                                .collection("reservation")
+                                .doc(yearMonthStr),
+                            { date: arrayUnion(selectedDate.toString()) }
+                        );
+                        transaction.update(
+                            db
+                                .collection("users")
+                                .doc(uid)
+                                .collection("memberships")
+                                .doc("list")
+                                .collection(ptName === "pt" ? ptName : ptName + "pt")
+                                .doc(ptId),
+                            { count: count - 1 }
+                        );
+                        return [true, identifier];
+                    } else {
+                        return Promise.reject("Already Reserved");
+                    }
+                });
+            })
+                .then(async (datas) => {
+                    if (datas[0]) {
+                        await pushNotificationsToPerson(
+                            myBase.auth().currentUser.displayName,
+                            trainerUid,
+                            "새 PT 예약",
+                            `${selectedDate}일 ${timeStr}`,
                             {
-                                text: "확인",
-                                onPress: () => {
-                                    const backup = selectedDate;
-                                    setSelectedDate(0);
-                                    setSelectedDate(backup);
+                                navigation: "PT",
+                                datas: {
+                                    year: selectedYear,
+                                    month: selectedMonth,
+                                    date: selectedDate,
+                                    identifier: datas[1],
                                 },
-                            },
-                        ],
-                        { cancelable: false }
-                    );
-                }
-            });
+                            }
+                        );
+                        Alert.alert(
+                            "성공",
+                            "수업이 예약되었습니다.",
+                            [
+                                {
+                                    text: "확인",
+                                    onPress: () => {
+                                        const backup = selectedDate;
+                                        setSelectedDate(0);
+                                        setSelectedDate(backup);
+                                    },
+                                },
+                            ],
+                            { cancelable: false }
+                        );
+                    }
+                })
+                .catch((error) => {
+                    if (error === "Already Reserved")
+                        Alert.alert(
+                            "실패",
+                            "이미 예약되어 있습니다.",
+                            [
+                                {
+                                    text: "확인",
+                                    onPress: () => {
+                                        const backup = selectedDate;
+                                        setSelectedDate(0);
+                                        setSelectedDate(backup);
+                                    },
+                                },
+                            ],
+                            { cancelable: false }
+                        );
+                });
         }
     };
 
