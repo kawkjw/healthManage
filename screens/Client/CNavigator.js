@@ -29,6 +29,7 @@ import { TextSize, theme } from "../../css/MyStyles";
 import { displayedAt, checkBatchimEnding } from "../../config/hooks";
 import { Badge, Button, Card, Text } from "react-native-paper";
 import Calculator from "./Menus/Calculator";
+import moment from "moment";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
@@ -47,8 +48,7 @@ const MyStack = () => {
     const [expiredList, setExpiredList] = useState([]);
 
     const getLocker = async () => {
-        let expired = false;
-        await db
+        return await db
             .collection("users")
             .doc(uid)
             .collection("locker")
@@ -56,10 +56,11 @@ const MyStack = () => {
             .limit(1)
             .get()
             .then((docs) => {
+                let expired = false;
                 const today = new Date();
                 docs.forEach((doc) => {
                     if (doc.data().end !== undefined) {
-                        if (today > doc.data().end.toDate()) {
+                        if (today > doc.data().end.toDate() && doc.data().lockerNumber !== 0) {
                             expired = true;
                         }
                     } else {
@@ -70,13 +71,12 @@ const MyStack = () => {
                         );
                     }
                 });
+                return expired;
             });
-        return expired;
     };
 
     const getClothes = async () => {
-        let expired = false;
-        await db
+        return await db
             .collection("users")
             .doc(uid)
             .collection("clothes")
@@ -84,6 +84,7 @@ const MyStack = () => {
             .limit(1)
             .get()
             .then((docs) => {
+                let expired = false;
                 const today = new Date();
                 docs.forEach((doc) => {
                     if (doc.data().end !== undefined) {
@@ -98,8 +99,8 @@ const MyStack = () => {
                         );
                     }
                 });
+                return expired;
             });
-        return expired;
     };
 
     const getMemberships = async () => {
