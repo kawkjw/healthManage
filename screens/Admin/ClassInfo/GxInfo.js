@@ -106,7 +106,9 @@ export default ClassInfo = ({ navigation }) => {
                     });
             });
             await Promise.all(gxPromises);
-            classDate.sort();
+            classDate.sort((a, b) => {
+                return Number(a) - Number(b);
+            });
             classDate.push("-1");
             let index = 0;
             const endDate = new Date(selectedYear, selectedMonth, 0);
