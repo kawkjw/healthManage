@@ -135,7 +135,13 @@ export default Profile = ({ navigation }) => {
                             }
                             setLocker({ ...doc.data(), expired });
                         } else {
-                            setLocker({ lockerNumber: 0 });
+                            setLocker({
+                                lockerNumber: 0,
+                                expired:
+                                    moment
+                                        .duration(moment(doc.data().end.toDate()).diff(today))
+                                        .asDays() < 0,
+                            });
                         }
                     });
                 });
@@ -591,7 +597,9 @@ export default Profile = ({ navigation }) => {
                                     보관함 번호 :{" "}
                                     {locker !== undefined
                                         ? locker.lockerNumber === 0
-                                            ? "결제 완료(미배정)"
+                                            ? locker.expired
+                                                ? "없음"
+                                                : "결제 완료(미배정)"
                                             : `${locker.lockerNumber}번` +
                                               (locker.expired
                                                   ? "(만료됨)"
