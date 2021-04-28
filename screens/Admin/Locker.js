@@ -249,6 +249,8 @@ export default Locker = () => {
                                                         .add(data.month, "M")
                                                         .subtract(1, "d")
                                                         .toDate();
+                                                } else if (doc.data().end.toDate() < addDate) {
+                                                    throw Error("이미 만료된 결제정보입니다.");
                                                 }
                                                 return change;
                                             })
