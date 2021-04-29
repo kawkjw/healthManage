@@ -8,6 +8,10 @@ import { WrongNumContext, AdminContext } from "./ANavigator";
 import { Button, TextInput } from "react-native-paper";
 
 export default InputPassword = ({ navigation, route }) => {
+    if (!route.params) {
+        navigation.goBack();
+    }
+
     const [password, setPassword] = useState("");
     const { signOut } = useContext(AuthContext);
     const { num, setNum } = useContext(WrongNumContext);
@@ -20,7 +24,7 @@ export default InputPassword = ({ navigation, route }) => {
         );
         if (key === digest) {
             setNum(0);
-            navigation.replace("Sales");
+            navigation.replace(route.params.to);
         } else {
             setNum(num + 1);
             setPassword("");

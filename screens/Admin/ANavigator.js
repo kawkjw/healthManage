@@ -28,6 +28,7 @@ import Sales from "./Sales";
 import { TextSize, theme } from "../../css/MyStyles";
 import { displayedAt, checkBatchimEnding } from "../../config/hooks";
 import { Badge, Button, Card } from "react-native-paper";
+import Calculate from "./Calculate";
 
 const Stack = createStackNavigator();
 export const WrongNumContext = createContext();
@@ -500,6 +501,14 @@ const MyStack = () => {
                         component={Sales}
                         options={({ navigation }) => ({
                             headerTitle: "결산",
+                            headerLeft: () => renderGoBackButton(navigation),
+                        })}
+                    />
+                    <Stack.Screen
+                        name="Calculate"
+                        component={Calculate}
+                        options={({ navigation }) => ({
+                            headerTitle: "PT 정산",
                             headerLeft: () => renderGoBackButton(navigation),
                         })}
                     />

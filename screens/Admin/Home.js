@@ -102,9 +102,17 @@ export default Home = ({ navigation, route }) => {
                 <Surface style={MyStyles.surface}>
                     <TouchableOpacity
                         style={MyStyles.menu}
-                        onPress={() => navigation.navigate("InputPassword")}
+                        onPress={() => navigation.navigate("InputPassword", { to: "Sales" })}
                     >
                         <Text style={TextSize.largeSize}>결산</Text>
+                    </TouchableOpacity>
+                </Surface>
+                <Surface style={MyStyles.surface}>
+                    <TouchableOpacity
+                        style={MyStyles.menu}
+                        onPress={() => navigation.navigate("InputPassword", { to: "Calculate" })}
+                    >
+                        <Text style={TextSize.largeSize}>PT 정산</Text>
                     </TouchableOpacity>
                 </Surface>
             </ScrollView>
