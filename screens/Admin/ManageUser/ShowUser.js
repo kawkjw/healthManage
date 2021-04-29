@@ -90,12 +90,19 @@ export default ShowUser = ({ route }) => {
                 let num = 0;
                 let obj = {};
                 docs.forEach((doc) => {
+                    const { end } = doc.data();
                     if (doc.data().lockerNumber !== undefined && doc.data().lockerNumber !== 0) {
-                        const { end } = doc.data();
                         num = doc.data().lockerNumber;
                         obj = { ...doc.data(), exist: true, expired: end.toDate() < today };
                     } else {
-                        setLockerInfo({ lockerNumber: 0, exist: true });
+                        setLockerInfo({
+                            lockerNumber: 0,
+                            exist: true,
+                            expired:
+                                moment
+                                    .duration(moment(doc.data().end.toDate()).diff(today))
+                                    .asDays() < 0,
+                        });
                     }
                 });
                 await db
@@ -391,7 +398,9 @@ export default ShowUser = ({ route }) => {
                                 보관함 번호 :{" "}
                                 {lockerInfo.exist
                                     ? lockerInfo.lockerNumber === 0
-                                        ? "결제 완료"
+                                        ? lockerInfo.expired
+                                            ? "없음"
+                                            : "결제 완료(미배정)"
                                         : `${lockerInfo.lockerNumber}번` +
                                           (lockerInfo.expired
                                               ? "(만료됨)"
