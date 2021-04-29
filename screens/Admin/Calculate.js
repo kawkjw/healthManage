@@ -104,6 +104,7 @@ export default Calculate = ({ navigation, route }) => {
                                             await reserve.ref
                                                 .collection(date)
                                                 .where("className", "==", "pt")
+                                                .where("confirm", "==", true)
                                                 .get()
                                                 .then((reserves) => {
                                                     classCount = classCount + reserves.size;
