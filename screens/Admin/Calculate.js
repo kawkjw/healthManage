@@ -1,10 +1,13 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { RefreshControl, ScrollView, Text, View } from "react-native";
+import { FlatList, RefreshControl, ScrollView, Text, View } from "react-native";
 import { ActivityIndicator, Surface } from "react-native-paper";
 import { db } from "../../config/MyBase";
-import { MyStyles, theme } from "../../css/MyStyles";
-import { heightPercentageToDP as hp } from "react-native-responsive-screen";
+import { MyStyles, TextSize, theme } from "../../css/MyStyles";
+import {
+    heightPercentageToDP as hp,
+    widthPercentageToDP as wp,
+} from "react-native-responsive-screen";
 import { priceToString } from "../../config/hooks";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { RFPercentage } from "react-native-responsive-fontsize";
@@ -45,7 +48,7 @@ export default Calculate = ({ navigation, route }) => {
 
     const getClientsByTrainer = async (trainerList) => {
         let tmp = new Array(trainerList.length).fill({}).map((v) => ({ clients: [] }));
-        await db
+        return await db
             .collectionGroup("memberships")
             .where("classes", "array-contains", "pt")
             .get()
@@ -140,15 +143,46 @@ export default Calculate = ({ navigation, route }) => {
                         infos[idx]["list"].push(result);
                     });
                 });
-                setInfo(infos);
+                return infos;
+            });
+    };
+
+    const getOtClassCount = async (uid) => {
+        return await db
+            .collection("classes")
+            .doc("pt")
+            .collection(uid)
+            .doc(moment().format("YYYY-MM"))
+            .get()
+            .then(async (doc) => {
+                const hasClass = doc.data().hasClass;
+                let count = 0;
+                const promises = hasClass.map(async (date) => {
+                    await doc.ref
+                        .collection(date)
+                        .where("ot", "==", true)
+                        .get()
+                        .then((docs) => {
+                            count = count + docs.size;
+                        });
+                });
+                await Promise.all(promises);
+                return count;
             });
     };
 
     const onRefresh = () => {
         setLoading(true);
-        getTrainersUid().then(async (list) => {
-            await getClientsByTrainer(list).then(() => setLoading(false));
-        });
+        getTrainersUid()
+            .then(async (list) => {
+                let infos = await getClientsByTrainer(list);
+                const promsies = infos.map(async (v, i) => {
+                    infos[i]["trainer"]["otDoneCount"] = await getOtClassCount(v.trainer.uid);
+                });
+                await Promise.all(promsies);
+                setInfo(infos);
+            })
+            .then(() => setLoading(false));
     };
 
     useEffect(() => {
@@ -163,46 +197,57 @@ export default Calculate = ({ navigation, route }) => {
                         <ActivityIndicator size="large" color="black" />
                     </View>
                 ) : info !== undefined ? (
-                    <>
-                        <ScrollView
-                            refreshControl={
-                                <RefreshControl refreshing={loading} onRefresh={onRefresh} />
-                            }
-                        >
-                            {info.map((elem, idx) => (
-                                <Surface
-                                    key={idx}
-                                    style={[MyStyles.surface, { marginHorizontal: 10 }]}
-                                >
-                                    <View style={{ padding: 15 }}>
-                                        <Text>{elem.trainer.name}</Text>
-                                        <View style={{ paddingLeft: 15 }}>
-                                            {elem.list.length === 0 && (
-                                                <Text>담당 고객이 없습니다.</Text>
-                                            )}
-                                            {elem.list.map((client, i) => (
-                                                <View key={i}>
-                                                    <Text>
-                                                        {client.name} :{" "}
-                                                        {priceToString(client.price)}원
-                                                    </Text>
-                                                </View>
-                                            ))}
-                                            {elem.list.length !== 0 && (
-                                                <Text>
-                                                    합계 :{" "}
-                                                    {priceToString(
-                                                        elem.list.reduce((sum, value) => {
-                                                            return sum + value.price;
-                                                        }, 0)
-                                                    )}
-                                                    원
+                    <FlatList
+                        data={info}
+                        windowSize={1}
+                        renderItem={({ item }) => (
+                            <Surface
+                                style={[
+                                    MyStyles.surface,
+                                    {
+                                        marginBottom: 10,
+                                        width: wp("45%"),
+                                        height: hp("25%"),
+                                        margin: 10,
+                                    },
+                                ]}
+                            >
+                                <View style={{ padding: 13 }}>
+                                    <Text style={TextSize.normalSize}>
+                                        {item.trainer.name +
+                                            `(OT 수업 진행: ${item.trainer.otDoneCount}번)`}
+                                    </Text>
+                                    <View style={{ paddingLeft: 15 }}>
+                                        {item.list.length === 0 && (
+                                            <Text style={TextSize.normalSize}>
+                                                담당 고객이 없습니다.
+                                            </Text>
+                                        )}
+                                        {item.list.map((client, i) => (
+                                            <View key={i}>
+                                                <Text style={TextSize.normalSize}>
+                                                    {client.name} : {priceToString(client.price)}원
                                                 </Text>
-                                            )}
-                                        </View>
+                                            </View>
+                                        ))}
+                                        {item.list.length !== 0 && (
+                                            <Text style={TextSize.normalSize}>
+                                                합계 :{" "}
+                                                {priceToString(
+                                                    item.list.reduce((sum, value) => {
+                                                        return sum + value.price;
+                                                    }, 0)
+                                                )}
+                                                원
+                                            </Text>
+                                        )}
                                     </View>
-                                </Surface>
-                            ))}
+                                </View>
+                            </Surface>
+                        )}
+                        numColumns={2}
+                        keyExtractor={(item, index) => index}
+                        ListHeaderComponent={
                             <View
                                 style={{
                                     alignItems: "center",
@@ -218,8 +263,11 @@ export default Calculate = ({ navigation, route }) => {
                                 />
                                 <Text>이번 달의 경우에만 표시됩니다.</Text>
                             </View>
-                        </ScrollView>
-                    </>
+                        }
+                        refreshControl={
+                            <RefreshControl refreshing={loading} onRefresh={onRefresh} />
+                        }
+                    />
                 ) : (
                     <Text>Error</Text>
                 )}
