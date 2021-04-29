@@ -34,6 +34,7 @@ export default TimeTable = ({ classData, kind = "pt", nameList = {}, style, ...p
                                 kind: kind,
                                 hasClass: true,
                                 classInfo: {
+                                    isOT: c.isOT,
                                     clientName: c.clientName,
                                     remainCount: c.remainCount,
                                 },
@@ -166,9 +167,13 @@ export default TimeTable = ({ classData, kind = "pt", nameList = {}, style, ...p
                                                     ? c.kind === "pt"
                                                         ? c.classInfo.remainCount === -1
                                                             ? c.classInfo.clientName +
-                                                              " PT(회원권 없음)"
+                                                              ` ${
+                                                                  c.classInfo.isOT ? "OT" : "PT"
+                                                              }(회원권 없음)`
                                                             : c.classInfo.clientName +
-                                                              " PT (" +
+                                                              ` ${
+                                                                  c.classInfo.isOT ? "OT" : "PT"
+                                                              } (` +
                                                               c.classInfo.remainCount +
                                                               "회 남음)"
                                                         : (nameList[c.classInfo.className] !==

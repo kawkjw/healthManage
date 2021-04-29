@@ -150,6 +150,10 @@ export default ClassInfo = ({ navigation, route }) => {
                             let obj = {};
                             obj["start"] = Number(snapshot.id.split(":")[0]);
                             obj["clientUid"] = snapshot.data().clientUid;
+                            obj["isOT"] = false;
+                            if (snapshot.data().ot !== undefined) {
+                                obj["isOT"] = snapshot.data().ot;
+                            }
                             list.push(obj);
                         });
                         list.push(-1);
@@ -362,7 +366,6 @@ export default ClassInfo = ({ navigation, route }) => {
                     keyExtractor={(item, index) => index}
                 />
             )}
-
             <View
                 style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
             />
