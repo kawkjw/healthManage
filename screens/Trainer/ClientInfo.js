@@ -106,8 +106,10 @@ export default ClientInfo = ({ navigation, route }) => {
                             .then((doc) => {
                                 let dates = [];
                                 if (doc.exists) {
-                                    dates = doc.data().ptDate;
-                                    return dates.reverse();
+                                    if (doc.data().ptDate !== undefined) {
+                                        dates = doc.data().ptDate;
+                                        return dates.reverse();
+                                    }
                                 }
                                 return dates;
                             })
