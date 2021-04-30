@@ -59,7 +59,13 @@ export default Calculate = ({ navigation, route }) => {
                 if (ret[0]) {
                     let doneClasses = [];
                     const promises = ret[1].map(async (date) => {
-                        if (Number(date) <= chkDate.getDate()) {
+                        const tmpDate = new Date(
+                            chkDate.getFullYear(),
+                            chkDate.getMonth(),
+                            Number(date)
+                        );
+                        const lastDate = new Date(chkDate.getFullYear(), chkDate.getMonth() + 1, 0);
+                        if (tmpDate <= lastDate) {
                             await ret[2]
                                 .collection(date)
                                 .where("confirm", "==", true)
