@@ -1,6 +1,6 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { FlatList, RefreshControl, ScrollView, Text, View } from "react-native";
+import { FlatList, RefreshControl, Text, TouchableOpacity, View } from "react-native";
 import { ActivityIndicator, Surface } from "react-native-paper";
 import { db } from "../../config/MyBase";
 import { MyStyles, TextSize, theme } from "../../css/MyStyles";
@@ -15,6 +15,7 @@ import { RFPercentage } from "react-native-responsive-fontsize";
 export default Calculate = ({ navigation, route }) => {
     const [info, setInfo] = useState(undefined);
     const [loading, setLoading] = useState(true);
+    const [checkDate, setCheckDate] = useState(new Date());
 
     const getTrainersUid = async () => {
         return await db
@@ -37,17 +38,89 @@ export default Calculate = ({ navigation, route }) => {
                         });
                 });
                 await Promise.all(promises);
-                list.sort((a, b) => {
-                    if (a.name > b.name) return 1;
-                    if (a.name < b.name) return -1;
-                    return 0;
-                });
                 return list;
             });
     };
 
-    const getClientsByTrainer = async (trainerList) => {
-        let tmp = new Array(trainerList.length).fill({}).map((v) => ({ clients: [] }));
+    const getPTClass = async (chkDate, trainerUid) => {
+        return await db
+            .collection("classes")
+            .doc("pt")
+            .collection(trainerUid)
+            .doc(moment(chkDate).format("YYYY-MM"))
+            .get()
+            .then((classes) => {
+                if (classes.exists) {
+                    return [true, classes.data().hasClass, classes.ref];
+                }
+                return [false];
+            })
+            .then(async (ret) => {
+                if (ret[0]) {
+                    let doneClasses = [];
+                    const promises = ret[1].map(async (date) => {
+                        if (Number(date) <= chkDate.getDate()) {
+                            await ret[2]
+                                .collection(date)
+                                .where("confirm", "==", true)
+                                .get()
+                                .then((docs) => {
+                                    docs.forEach((doc) => {
+                                        const { clientUid } = doc.data();
+                                        const idx = doneClasses.findIndex(
+                                            (doneClass) => doneClass.clientUid === clientUid
+                                        );
+                                        if (idx < 0) {
+                                            doneClasses.push({
+                                                clientUid: clientUid,
+                                                classes: [doc.data()],
+                                            });
+                                        } else {
+                                            doneClasses[idx]["classes"].push(doc.data());
+                                        }
+                                    });
+                                });
+                        }
+                    });
+                    await Promise.all(promises);
+                    const clientPromises = doneClasses.map(async (doneClass, idx) => {
+                        await db
+                            .collection("users")
+                            .doc(doneClass.clientUid)
+                            .get()
+                            .then((doc) => {
+                                doneClasses[idx]["name"] = doc.data().name;
+                            });
+                    });
+                    await Promise.all(clientPromises);
+                    doneClasses.sort((a, b) => {
+                        if (a.name > b.name) return 1;
+                        if (a.name < b.name) return -1;
+                        return 0;
+                    });
+                    return doneClasses;
+                }
+                return [];
+            })
+            .then((classes) => {
+                let infos = [];
+                let otCount = 0;
+                classes.forEach((c) => {
+                    let obj = {};
+                    obj["name"] = c.name;
+                    obj["price"] = c.classes
+                        .filter((c) => c.ot === undefined)
+                        .reduce((sum, currentValue) => {
+                            return sum + currentValue.priceByMembership;
+                        }, 0);
+                    otCount = otCount + c.classes.filter((c) => c.ot !== undefined).length;
+                    if (obj["price"] !== 0) infos.push(obj);
+                });
+                return { otCount, infos };
+            });
+    };
+
+    const getClientsByTrainer = async (trainerName) => {
         return await db
             .collectionGroup("memberships")
             .where("classes", "array-contains", "pt")
@@ -62,133 +135,86 @@ export default Calculate = ({ navigation, route }) => {
                 return clientsRef;
             })
             .then(async (refs) => {
+                let clients = [];
                 const ptPromises = refs.map(async (ref) => {
-                    let info = {};
+                    let tmp = {};
                     await ref
                         .collection("pt")
                         .orderBy("payDay", "desc")
                         .limit(1)
                         .get()
-                        .then((docs) => {
+                        .then(async (docs) => {
+                            let name = "";
                             docs.forEach((doc) => {
-                                const idx = trainerList.findIndex(
-                                    (elem) => elem.name === doc.data().trainer
-                                );
-                                if (idx !== -1) {
-                                    info["ptInfo"] = doc.data();
-                                    info["uid"] = ref.path.split("/")[1];
-                                }
-
-                                if (info.uid) tmp[idx]["clients"].push(info);
+                                name = doc.data().trainer;
                             });
+                            if (name === trainerName) {
+                                tmp["uid"] = ref.path.split("/")[1];
+                                await ref.parent.parent.get().then((doc) => {
+                                    tmp["name"] = doc.data().name;
+                                });
+                            }
                         });
+                    if (tmp.uid) clients.push(tmp);
                 });
                 await Promise.all(ptPromises);
-                const trainerPromises = tmp.map(async (trainer, idx) => {
-                    const clientPromises = trainer.clients.map(async (client, i) => {
-                        const today = new Date();
-                        await db
-                            .collection("users")
-                            .doc(client.uid)
-                            .get()
-                            .then(async (doc) => {
-                                tmp[idx]["clients"][i]["userInfo"] = doc.data();
-                                const count = await doc.ref
-                                    .collection("reservation")
-                                    .doc(moment(today).format("YYYY-MM"))
-                                    .get()
-                                    .then(async (reserve) => {
-                                        const dates = reserve.data().date;
-                                        let classCount = 0;
-                                        const reservePromises = dates.map(async (date) => {
-                                            await reserve.ref
-                                                .collection(date)
-                                                .where("className", "==", "pt")
-                                                .where("confirm", "==", true)
-                                                .get()
-                                                .then((reserves) => {
-                                                    classCount = classCount + reserves.size;
-                                                });
-                                        });
-                                        await Promise.all(reservePromises);
-                                        return classCount;
-                                    })
-                                    .catch((error) => {
-                                        console.log(error);
-                                        return 0;
-                                    });
-                                tmp[idx]["clients"][i]["count"] = count;
-                            });
-                    });
-                    await Promise.all(clientPromises);
-                    tmp[idx]["clients"].sort((a, b) => {
-                        if (a.userInfo.name > b.userInfo.name) return 1;
-                        if (a.userInfo.name < b.userInfo.name) return -1;
-                        return 0;
-                    });
+                clients.sort((a, b) => {
+                    if (a.name > b.name) return 1;
+                    if (a.name < b.name) return -1;
+                    return 0;
                 });
-                await Promise.all(trainerPromises);
-            })
-            .then(() => {
-                let infos = new Array(trainerList.length)
-                    .fill({})
-                    .map((v, i) => ({ trainer: trainerList[i], list: [] }));
-                tmp.forEach((obj, idx) => {
-                    const clients = obj.clients;
-                    clients.forEach((client) => {
-                        let result = {};
-                        result["name"] = client.userInfo.name;
-                        result["price"] =
-                            Math.floor(client.ptInfo.price / client.ptInfo.initialCount) *
-                            client.count;
-                        infos[idx]["list"].push(result);
-                    });
-                });
-                return infos;
+                return clients;
             });
     };
 
-    const getOtClassCount = async (uid) => {
-        return await db
-            .collection("classes")
-            .doc("pt")
-            .collection(uid)
-            .doc(moment().format("YYYY-MM"))
-            .get()
-            .then(async (doc) => {
-                const hasClass = doc.data().hasClass;
-                let count = 0;
-                const promises = hasClass.map(async (date) => {
-                    await doc.ref
-                        .collection(date)
-                        .where("ot", "==", true)
-                        .get()
-                        .then((docs) => {
-                            count = count + docs.size;
-                        });
-                });
-                await Promise.all(promises);
-                return count;
-            });
-    };
-
-    const onRefresh = () => {
+    const onRefresh = (date) => {
         setLoading(true);
         getTrainersUid()
             .then(async (list) => {
-                let infos = await getClientsByTrainer(list);
-                const promsies = infos.map(async (v, i) => {
-                    infos[i]["trainer"]["otDoneCount"] = await getOtClassCount(v.trainer.uid);
+                let tmp = [];
+                const test = list.map(async (v) => {
+                    let obj = { trainer: v };
+                    const { otCount, infos } = await getPTClass(date, v.uid);
+                    obj["clients"] = await getClientsByTrainer(v.name);
+                    obj["trainer"]["otDoneCount"] = otCount;
+                    obj["list"] = infos;
+                    tmp.push(obj);
                 });
-                await Promise.all(promsies);
-                setInfo(infos);
+                await Promise.all(test);
+                tmp.sort((a, b) => {
+                    if (a.trainer.name > b.trainer.name) return 1;
+                    if (a.trainer.name < b.trainer.name) return -1;
+                    return 0;
+                });
+                setInfo(tmp);
             })
             .then(() => setLoading(false));
     };
 
     useEffect(() => {
-        onRefresh();
-    }, []);
+        onRefresh(checkDate);
+        navigation.setOptions({
+            headerRight: () => (
+                <TouchableOpacity
+                    style={{ margin: 7, padding: 3 }}
+                    onPress={() => {
+                        const today = new Date();
+                        if (checkDate.getMonth() === today.getMonth()) {
+                            setCheckDate(moment(today).subtract(1, "M").toDate());
+                        } else {
+                            setCheckDate(today);
+                        }
+                    }}
+                >
+                    <Text style={[TextSize.largeSize, { color: "white" }]}>
+                        {checkDate.getMonth() === new Date().getMonth()
+                            ? "이전 달 조회"
+                            : "이번 달 조회"}
+                    </Text>
+                </TouchableOpacity>
+            ),
+        });
+    }, [checkDate]);
 
     return (
         <View style={{ flex: 1 }}>
@@ -208,20 +234,20 @@ export default Calculate = ({ navigation, route }) => {
                                     {
                                         marginBottom: 10,
                                         width: wp("45%"),
-                                        height: hp("25%"),
+                                        height: hp("30%"),
                                         margin: 10,
                                     },
                                 ]}
                             >
-                                <View style={{ padding: 13 }}>
+                                <View style={{ flex: 1, padding: 13 }}>
                                     <Text style={TextSize.normalSize}>
-                                        {item.trainer.name +
-                                            `(OT 수업 진행: ${item.trainer.otDoneCount}번)`}
+                                        {item.trainer.name + ``}
                                     </Text>
-                                    <View style={{ paddingLeft: 15 }}>
+
+                                    <View style={{ flex: 1, paddingLeft: 10 }}>
                                         {item.list.length === 0 && (
                                             <Text style={TextSize.normalSize}>
-                                                담당 고객이 없습니다.
+                                                진행한 수업이 없습니다.
                                             </Text>
                                         )}
                                         {item.list.map((client, i) => (
@@ -243,6 +269,19 @@ export default Calculate = ({ navigation, route }) => {
                                             </Text>
                                         )}
                                     </View>
+                                    <Text style={TextSize.normalSize}>현재 담당 고객</Text>
+                                    <Text style={[TextSize.normalSize, { paddingLeft: 7 }]}>
+                                        {item.clients.length === 0
+                                            ? "담당 고객이 없습니다."
+                                            : item.clients.map((client, idx) =>
+                                                  idx === item.clients.length - 1
+                                                      ? client.name
+                                                      : client.name + ", "
+                                              )}
+                                    </Text>
+                                    <Text style={TextSize.normalSize}>
+                                        OT 수업 진행: {item.trainer.otDoneCount}번
+                                    </Text>
                                 </View>
                             </Surface>
                         )}
@@ -262,11 +301,20 @@ export default Calculate = ({ navigation, route }) => {
                                     color="black"
                                     style={{ marginRight: 7 }}
                                 />
-                                <Text>이번 달의 경우에만 표시됩니다.</Text>
+                                <Text>
+                                    {checkDate.getMonth() === new Date().getMonth()
+                                        ? `${
+                                              checkDate.getMonth() + 1
+                                          }월 1일부터 오늘까지의 경우에만 표시됩니다.`
+                                        : `${checkDate.getMonth() + 1}월달만 표시됩니다.`}
+                                </Text>
                             </View>
                         }
                         refreshControl={
-                            <RefreshControl refreshing={loading} onRefresh={onRefresh} />
+                            <RefreshControl
+                                refreshing={loading}
+                                onRefresh={() => onRefresh(checkDate)}
+                            />
                         }
                     />
                 ) : (

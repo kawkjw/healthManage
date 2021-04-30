@@ -627,6 +627,7 @@ export default PT = ({ navigation, route }) => {
                             notiIdentifier: fieldDelete(),
                             isGroup: fieldDelete(),
                             ot: fieldDelete(),
+                            priceByMembership: fieldDelete(),
                         });
                     await db
                         .collection("users")

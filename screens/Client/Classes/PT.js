@@ -220,6 +220,8 @@ export default PT = ({ navigation, route }) => {
         let count = 0;
         let ptId = "";
         let isGroup = false;
+        let price = 0;
+        let initialCount = 0;
         await db
             .collection("users")
             .doc(uid)
@@ -232,6 +234,8 @@ export default PT = ({ navigation, route }) => {
             .then((docs) => {
                 docs.forEach((doc) => {
                     count = doc.data().count;
+                    initialCount = doc.data().initialCount;
+                    price = doc.data().price;
                     ptId = doc.id;
                     if (ptName === "pt") {
                         isGroup = doc.data().group;
@@ -301,6 +305,7 @@ export default PT = ({ navigation, route }) => {
                             clientUid: uid,
                             isGroup: isGroup,
                             notiIdentifier: identifier,
+                            priceByMembership: Math.floor(price / initialCount),
                         });
                         transaction.update(
                             db
