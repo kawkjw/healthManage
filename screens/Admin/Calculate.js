@@ -126,53 +126,6 @@ export default Calculate = ({ navigation, route }) => {
             });
     };
 
-    const getClientsByTrainer = async (trainerName) => {
-        return await db
-            .collectionGroup("memberships")
-            .where("classes", "array-contains", "pt")
-            .get()
-            .then((docs) => {
-                let clientsRef = [];
-                docs.forEach((doc) => {
-                    if (!doc.ref.path.includes("temporary")) {
-                        clientsRef.push(doc.ref);
-                    }
-                });
-                return clientsRef;
-            })
-            .then(async (refs) => {
-                let clients = [];
-                const ptPromises = refs.map(async (ref) => {
-                    let tmp = {};
-                    await ref
-                        .collection("pt")
-                        .orderBy("payDay", "desc")
-                        .limit(1)
-                        .get()
-                        .then(async (docs) => {
-                            let name = "";
-                            docs.forEach((doc) => {
-                                name = doc.data().trainer;
-                            });
-                            if (name === trainerName) {
-                                tmp["uid"] = ref.path.split("/")[1];
-                                await ref.parent.parent.get().then((doc) => {
-                                    tmp["name"] = doc.data().name;
-                                });
-                            }
-                        });
-                    if (tmp.uid) clients.push(tmp);
-                });
-                await Promise.all(ptPromises);
-                clients.sort((a, b) => {
-                    if (a.name > b.name) return 1;
-                    if (a.name < b.name) return -1;
-                    return 0;
-                });
-                return clients;
-            });
-    };
-
     const onRefresh = (date) => {
         setLoading(true);
         getTrainersUid()
@@ -181,7 +134,6 @@ export default Calculate = ({ navigation, route }) => {
                 const test = list.map(async (v) => {
                     let obj = { trainer: v };
                     const { otCount, infos } = await getPTClass(date, v.uid);
-                    obj["clients"] = await getClientsByTrainer(v.name);
                     obj["trainer"]["otDoneCount"] = otCount;
                     obj["list"] = infos;
                     tmp.push(obj);
@@ -240,7 +192,6 @@ export default Calculate = ({ navigation, route }) => {
                                     {
                                         marginBottom: 10,
                                         width: wp("45%"),
-                                        height: hp("30%"),
                                         margin: 10,
                                     },
                                 ]}
@@ -256,13 +207,6 @@ export default Calculate = ({ navigation, route }) => {
                                                 진행한 수업이 없습니다.
                                             </Text>
                                         )}
-                                        {item.list.map((client, i) => (
-                                            <View key={i}>
-                                                <Text style={TextSize.normalSize}>
-                                                    {client.name} : {priceToString(client.price)}원
-                                                </Text>
-                                            </View>
-                                        ))}
                                         {item.list.length !== 0 && (
                                             <Text style={TextSize.normalSize}>
                                                 합계 :{" "}
@@ -274,20 +218,10 @@ export default Calculate = ({ navigation, route }) => {
                                                 원
                                             </Text>
                                         )}
+                                        <Text style={TextSize.normalSize}>
+                                            OT 수업 진행: {item.trainer.otDoneCount}번
+                                        </Text>
                                     </View>
-                                    <Text style={TextSize.normalSize}>현재 담당 고객</Text>
-                                    <Text style={[TextSize.normalSize, { paddingLeft: 7 }]}>
-                                        {item.clients.length === 0
-                                            ? "담당 고객이 없습니다."
-                                            : item.clients.map((client, idx) =>
-                                                  idx === item.clients.length - 1
-                                                      ? client.name
-                                                      : client.name + ", "
-                                              )}
-                                    </Text>
-                                    <Text style={TextSize.normalSize}>
-                                        OT 수업 진행: {item.trainer.otDoneCount}번
-                                    </Text>
                                 </View>
                             </Surface>
                         )}
