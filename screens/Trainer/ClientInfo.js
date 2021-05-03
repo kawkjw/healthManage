@@ -114,7 +114,7 @@ export default ClientInfo = ({ navigation, route }) => {
                                 return dates;
                             })
                             .then(async (dates) => {
-                                if (dates.length == 0) {
+                                if (dates.length === 0) {
                                     return -1;
                                 } else {
                                     const classPromises = dates.map(async (d) => {
@@ -184,88 +184,114 @@ export default ClientInfo = ({ navigation, route }) => {
                             <Text style={TextSize.largeSize}>담당 고객이 없습니다.</Text>
                         </View>
                     ) : (
-                        clientsInfo.map(
-                            (client, idx) =>
-                                client.ptInfo.count !== 0 && (
-                                    <Surface
-                                        style={[MyStyles.surface, { marginHorizontal: 20 }]}
-                                        key={idx}
-                                    >
-                                        <View style={{ padding: 10 }}>
-                                            <Text style={TextSize.normalSize}>
-                                                이름 : {client.userInfo.name}
-                                            </Text>
-                                            <View style={{ flexDirection: "row" }}>
+                        <>
+                            <Surface
+                                style={[
+                                    MyStyles.surface,
+                                    { marginHorizontal: 20, borderRadius: 15 },
+                                ]}
+                            >
+                                <View style={{ padding: 10 }}>
+                                    <Text style={TextSize.normalSize}>
+                                        이번 달 수업료 합계 :{" "}
+                                        {clientsInfo.reduce((sum, currentValue) => {
+                                            return (
+                                                sum +
+                                                Math.floor(
+                                                    currentValue.ptInfo.price /
+                                                        currentValue.ptInfo.initialCount
+                                                ) *
+                                                    currentValue.count
+                                            );
+                                        }, 0)}
+                                        원
+                                    </Text>
+                                </View>
+                            </Surface>
+                            {clientsInfo.map(
+                                (client, idx) =>
+                                    client.ptInfo.count !== 0 && (
+                                        <Surface
+                                            style={[MyStyles.surface, { marginHorizontal: 20 }]}
+                                            key={idx}
+                                        >
+                                            <View style={{ padding: 10 }}>
                                                 <Text style={TextSize.normalSize}>
-                                                    휴대폰번호 :{" "}
+                                                    이름 : {client.userInfo.name}
                                                 </Text>
-                                                <TouchableOpacity
-                                                    onPress={() =>
-                                                        Linking.openURL(
-                                                            `tel:${client.userInfo.phoneNumber}`
-                                                        )
-                                                    }
-                                                >
-                                                    <Text
-                                                        style={[
-                                                            TextSize.normalSize,
-                                                            { color: "dodgerblue" },
-                                                        ]}
-                                                    >
-                                                        {client.userInfo.phoneNumber}
+                                                <View style={{ flexDirection: "row" }}>
+                                                    <Text style={TextSize.normalSize}>
+                                                        휴대폰번호 :{" "}
                                                     </Text>
-                                                </TouchableOpacity>
+                                                    <TouchableOpacity
+                                                        onPress={() =>
+                                                            Linking.openURL(
+                                                                `tel:${client.userInfo.phoneNumber}`
+                                                            )
+                                                        }
+                                                    >
+                                                        <Text
+                                                            style={[
+                                                                TextSize.normalSize,
+                                                                { color: "dodgerblue" },
+                                                            ]}
+                                                        >
+                                                            {client.userInfo.phoneNumber}
+                                                        </Text>
+                                                    </TouchableOpacity>
+                                                </View>
+                                                <Text style={TextSize.normalSize}>
+                                                    등록일 :{" "}
+                                                    {moment(client.ptInfo.start.toDate()).format(
+                                                        "YYYY년 M월 D일"
+                                                    )}
+                                                </Text>
+                                                <Text style={TextSize.normalSize}>
+                                                    마지막 수업 날짜 :{" "}
+                                                    {client.lastClassDate === undefined
+                                                        ? "2개월 이상 됨"
+                                                        : moment(client.lastClassDate).format(
+                                                              "YYYY년 M월 D일에 수업함"
+                                                          )}
+                                                </Text>
+                                                <Text style={TextSize.normalSize}>
+                                                    그룹 PT : {client.ptInfo.group ? "O" : "X"}
+                                                </Text>
+                                                <Text style={TextSize.normalSize}>
+                                                    남은 횟수 :{" "}
+                                                    {client.ptInfo.count +
+                                                        " / " +
+                                                        client.ptInfo.initialCount}
+                                                </Text>
+                                                <Text style={TextSize.normalSize}>
+                                                    결제 금액 : {priceToString(client.ptInfo.price)}
+                                                    원
+                                                </Text>
+                                                <Text style={TextSize.normalSize}>
+                                                    횟수 당 금액 :{" "}
+                                                    {priceToString(
+                                                        Math.floor(
+                                                            client.ptInfo.price /
+                                                                client.ptInfo.initialCount
+                                                        )
+                                                    )}
+                                                    원
+                                                </Text>
+                                                <Text style={TextSize.normalSize}>
+                                                    이번 달 수업료 :{" "}
+                                                    {priceToString(
+                                                        Math.floor(
+                                                            client.ptInfo.price /
+                                                                client.ptInfo.initialCount
+                                                        ) * client.count
+                                                    )}
+                                                    원
+                                                </Text>
                                             </View>
-                                            <Text style={TextSize.normalSize}>
-                                                등록일 :{" "}
-                                                {moment(client.ptInfo.start.toDate()).format(
-                                                    "YYYY년 M월 D일"
-                                                )}
-                                            </Text>
-                                            <Text style={TextSize.normalSize}>
-                                                마지막 수업 날짜 :{" "}
-                                                {client.lastClassDate === undefined
-                                                    ? "2개월 이상 됨"
-                                                    : moment(client.lastClassDate).format(
-                                                          "YYYY년 M월 D일에 수업함"
-                                                      )}
-                                            </Text>
-                                            <Text style={TextSize.normalSize}>
-                                                그룹 PT : {client.ptInfo.group ? "O" : "X"}
-                                            </Text>
-                                            <Text style={TextSize.normalSize}>
-                                                남은 횟수 :{" "}
-                                                {client.ptInfo.count +
-                                                    " / " +
-                                                    client.ptInfo.initialCount}
-                                            </Text>
-                                            <Text style={TextSize.normalSize}>
-                                                결제 금액 : {priceToString(client.ptInfo.price)}원
-                                            </Text>
-                                            <Text style={TextSize.normalSize}>
-                                                횟수 당 금액 :{" "}
-                                                {priceToString(
-                                                    Math.floor(
-                                                        client.ptInfo.price /
-                                                            client.ptInfo.initialCount
-                                                    )
-                                                )}
-                                                원
-                                            </Text>
-                                            <Text style={TextSize.normalSize}>
-                                                이번 달 수업료 :{" "}
-                                                {priceToString(
-                                                    Math.floor(
-                                                        client.ptInfo.price /
-                                                            client.ptInfo.initialCount
-                                                    ) * client.count
-                                                )}
-                                                원
-                                            </Text>
-                                        </View>
-                                    </Surface>
-                                )
-                        )
+                                        </Surface>
+                                    )
+                            )}
+                        </>
                     )}
                 </ScrollView>
             )}
