@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Animated, FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
+import { FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import {
     widthPercentageToDP as wp,
@@ -15,6 +15,7 @@ import { db } from "../../config/MyBase";
 import { TextSize, theme } from "../../css/MyStyles";
 import { DataContext } from "../Auth";
 import { Text, ActivityIndicator, Surface } from "react-native-paper";
+import Animated, { EasingNode } from "react-native-reanimated";
 
 export default Sales = ({ navigation, route }) => {
     const today = new Date();
@@ -384,151 +385,181 @@ export default Sales = ({ navigation, route }) => {
     const onSelectDay = () => {
         const hideCalendar = Animated.timing(dayAnimation, {
             toValue: 0,
-            duration: 500,
-            useNativeDriver: false,
+            duration: 400,
+            easing: EasingNode.ease,
         });
         const showInfo = Animated.timing(dayInfoAnimation, {
             toValue: 1,
-            duration: 600,
-            useNativeDriver: false,
+            duration: 400,
+            easing: EasingNode.ease,
         });
         const showBack = Animated.timing(dayBackAnimation, {
             toValue: 1,
-            duration: 1000,
-            useNativeDriver: false,
+            duration: 800,
+            easing: EasingNode.ease,
         });
         const moveBack = Animated.timing(dayMoveAnimation, {
             toValue: 0,
-            duration: 550,
-            useNativeDriver: false,
+            duration: 450,
+            easing: EasingNode.ease,
         });
 
-        Animated.parallel([hideCalendar, showInfo, showBack, moveBack]).start();
+        Animated.block([
+            hideCalendar.start(),
+            showInfo.start(),
+            showBack.start(),
+            moveBack.start(),
+        ]);
     };
 
     const onSelectDayMenu = () => {
         const showCalendar = Animated.timing(dayAnimation, {
             toValue: hp("70%"),
             duration: 500,
-            useNativeDriver: false,
+            easing: EasingNode.ease,
         });
         const hideInfo = Animated.timing(dayInfoAnimation, {
             toValue: 0,
             duration: 500,
-            useNativeDriver: false,
+            easing: EasingNode.ease,
         });
         const hideBack = Animated.timing(dayBackAnimation, {
             toValue: 0,
             duration: 400,
-            useNativeDriver: false,
+            easing: EasingNode.ease,
         });
         const moveBack = Animated.timing(dayMoveAnimation, {
             toValue: 100,
             duration: 500,
-            useNativeDriver: false,
+            easing: EasingNode.ease,
         });
 
-        Animated.parallel([showCalendar, hideInfo, hideBack, moveBack]).start();
+        Animated.block([
+            showCalendar.start(),
+            hideInfo.start(),
+            hideBack.start(),
+            moveBack.start(),
+        ]);
     };
 
     const onSelectMonth = () => {
         const hideCalendar = Animated.timing(monthAnimation, {
             toValue: 0,
             duration: 400,
-            useNativeDriver: false,
+            easing: EasingNode.ease,
         });
         const showInfo = Animated.timing(monthInfoAnimation, {
             toValue: 1,
             duration: 400,
-            useNativeDriver: false,
+            easing: EasingNode.ease,
         });
         const showBack = Animated.timing(monthBackAnimation, {
             toValue: 1,
-            duration: 1000,
-            useNativeDriver: false,
+            duration: 800,
+            easing: EasingNode.ease,
         });
         const moveBack = Animated.timing(monthMoveAnimation, {
             toValue: 0,
             duration: 450,
-            useNativeDriver: false,
+            easing: EasingNode.ease,
         });
 
-        Animated.parallel([hideCalendar, showInfo, showBack, moveBack]).start();
+        Animated.block([
+            hideCalendar.start(),
+            showInfo.start(),
+            showBack.start(),
+            moveBack.start(),
+        ]);
     };
 
     const onSelectMonthMenu = () => {
         const showCalendar = Animated.timing(monthAnimation, {
             toValue: hp("32%"),
             duration: 400,
-            useNativeDriver: false,
+            easing: EasingNode.ease,
         });
         const hideInfo = Animated.timing(monthInfoAnimation, {
             toValue: 0,
             duration: 400,
-            useNativeDriver: false,
+            easing: EasingNode.ease,
         });
         const hideBack = Animated.timing(monthBackAnimation, {
             toValue: 0,
             duration: 400,
-            useNativeDriver: false,
+            easing: EasingNode.ease,
         });
         const moveBack = Animated.timing(monthMoveAnimation, {
             toValue: 100,
             duration: 500,
-            useNativeDriver: false,
+            easing: EasingNode.ease,
         });
 
-        Animated.parallel([showCalendar, hideInfo, hideBack, moveBack]).start();
+        Animated.block([
+            showCalendar.start(),
+            hideInfo.start(),
+            hideBack.start(),
+            moveBack.start(),
+        ]);
     };
 
     const onSelectStats = () => {
         const hideCalendar = Animated.timing(statsAnimation, {
             toValue: 0,
             duration: 400,
-            useNativeDriver: false,
+            easing: EasingNode.ease,
         });
         const showInfo = Animated.timing(statsInfoAnimation, {
             toValue: 1,
             duration: 400,
-            useNativeDriver: false,
+            easing: EasingNode.ease,
         });
         const showBack = Animated.timing(statsBackAnimation, {
             toValue: 1,
-            duration: 1000,
-            useNativeDriver: false,
+            duration: 800,
+            easing: EasingNode.ease,
         });
         const moveBack = Animated.timing(statsMoveAnimation, {
             toValue: 0,
             duration: 450,
-            useNativeDriver: false,
+            easing: EasingNode.ease,
         });
 
-        Animated.parallel([hideCalendar, showInfo, showBack, moveBack]).start();
+        Animated.block([
+            hideCalendar.start(),
+            showInfo.start(),
+            showBack.start(),
+            moveBack.start(),
+        ]);
     };
 
     const onSelectStatsMenu = () => {
         const showCalendar = Animated.timing(statsAnimation, {
             toValue: hp("32%"),
             duration: 400,
-            useNativeDriver: false,
+            easing: EasingNode.ease,
         });
         const hideInfo = Animated.timing(statsInfoAnimation, {
             toValue: 0,
             duration: 400,
-            useNativeDriver: false,
+            easing: EasingNode.ease,
         });
         const hideBack = Animated.timing(statsBackAnimation, {
             toValue: 0,
             duration: 400,
-            useNativeDriver: false,
+            easing: EasingNode.ease,
         });
         const moveBack = Animated.timing(statsMoveAnimation, {
             toValue: 100,
             duration: 500,
-            useNativeDriver: false,
+            easing: EasingNode.ease,
         });
 
-        Animated.parallel([showCalendar, hideInfo, hideBack, moveBack]).start();
+        Animated.block([
+            showCalendar.start(),
+            hideInfo.start(),
+            hideBack.start(),
+            moveBack.start(),
+        ]);
     };
 
     const Labels = ({ x, y, bandwidth, data }) =>
