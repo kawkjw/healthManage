@@ -1,7 +1,7 @@
 import moment from "moment";
 import React, { useEffect, useState } from "react";
-import { FlatList, RefreshControl, Text, TouchableOpacity, View } from "react-native";
-import { ActivityIndicator, Surface } from "react-native-paper";
+import { FlatList, RefreshControl, TouchableOpacity, View } from "react-native";
+import { Text, ActivityIndicator, Surface } from "react-native-paper";
 import { db } from "../../config/MyBase";
 import { MyStyles, TextSize, theme } from "../../css/MyStyles";
 import {
@@ -201,7 +201,7 @@ export default Calculate = ({ navigation, route }) => {
                                         {item.trainer.name + ``}
                                     </Text>
 
-                                    <View style={{ flex: 1, paddingLeft: 10 }}>
+                                    <View style={{ flex: 1, paddingLeft: 7 }}>
                                         {item.list.length === 0 && (
                                             <Text style={TextSize.normalSize}>
                                                 진행한 수업이 없습니다.

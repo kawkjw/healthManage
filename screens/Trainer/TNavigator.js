@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { AppState, Linking, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { AppState, Linking, ScrollView, TouchableOpacity, View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./Home";
 import Profile from "./Profile";
@@ -16,9 +16,9 @@ import Modal from "react-native-modal";
 import * as Notifications from "expo-notifications";
 import myBase, { db } from "../../config/MyBase";
 import SelectSquashKind from "./Class/SelectSquashKind";
-import { TextSize, theme } from "../../css/MyStyles";
+import { TextFamily, TextSize, theme } from "../../css/MyStyles";
 import { displayedAt, checkBatchimEnding } from "../../config/hooks";
-import { Badge, Button, Card } from "react-native-paper";
+import { Badge, Button, Card, Text } from "react-native-paper";
 import ClientInfo from "./ClientInfo";
 
 const Stack = createStackNavigator();
@@ -223,7 +223,7 @@ const MyStack = () => {
                             <Button
                                 mode="text"
                                 compact={true}
-                                labelStyle={{ padding: 4, color: "white", fontWeight: "bold" }}
+                                labelStyle={[TextFamily.NanumBold, { padding: 4, color: "white" }]}
                                 onPress={() => setModalNotification(false)}
                             >
                                 닫기
@@ -238,7 +238,7 @@ const MyStack = () => {
                                     setModalNotification(false);
                                 }}
                                 compact={true}
-                                labelStyle={{ padding: 4, color: "white", fontWeight: "bold" }}
+                                labelStyle={[TextFamily.NanumBold, { padding: 4, color: "white" }]}
                             >
                                 모두 읽음
                             </Button>
@@ -339,7 +339,7 @@ const MyStack = () => {
                                                     <Text
                                                         style={[
                                                             message.isRead && { color: "grey" },
-                                                            { fontWeight: "bold" },
+                                                            TextFamily.NanumBold,
                                                         ]}
                                                     >
                                                         {message.title}
@@ -369,7 +369,7 @@ const MyStack = () => {
             initialRouteName="HomeScreen"
             screenOptions={{
                 headerStyle: { backgroundColor: theme.colors.primary },
-                headerTitleStyle: { color: "white" },
+                headerTitleStyle: [TextFamily.NanumRegular, { color: "white" }],
             }}
         >
             <Stack.Screen

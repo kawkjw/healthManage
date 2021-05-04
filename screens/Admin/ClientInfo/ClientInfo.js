@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, Text, View, TouchableOpacity, ScrollView } from "react-native";
+import { SafeAreaView, View, TouchableOpacity, ScrollView } from "react-native";
 import { db } from "../../../config/MyBase";
 import { MyStyles, TextSize } from "../../../css/MyStyles";
 import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
 } from "react-native-responsive-screen";
-import { ActivityIndicator, Surface } from "react-native-paper";
+import { Text, ActivityIndicator, Surface } from "react-native-paper";
 
 export default ClientInfo = ({ navigation, route }) => {
     const [clientsInfo, setClientsInfo] = useState([]);

@@ -1,6 +1,6 @@
 import React from "react";
-import { View, ScrollView, Text, TouchableOpacity } from "react-native";
-import { Surface } from "react-native-paper";
+import { View, ScrollView, TouchableOpacity } from "react-native";
+import { Text, Surface } from "react-native-paper";
 import { MyStyles, TextSize, theme } from "../../../css/MyStyles";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 

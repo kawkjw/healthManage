@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
-import { Text, TouchableOpacity, View, ScrollView, AppState, Linking } from "react-native";
+import { TouchableOpacity, View, ScrollView, AppState, Linking } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from "./Home";
 import { AuthContext, DataContext } from "../Auth";
@@ -25,9 +25,9 @@ import * as Notifications from "expo-notifications";
 import myBase, { db } from "../../config/MyBase";
 import InputPassword from "./InputPassword";
 import Sales from "./Sales";
-import { TextSize, theme } from "../../css/MyStyles";
+import { TextFamily, TextSize, theme } from "../../css/MyStyles";
 import { displayedAt, checkBatchimEnding } from "../../config/hooks";
-import { Badge, Button, Card } from "react-native-paper";
+import { Text, Badge, Button, Card } from "react-native-paper";
 import Calculate from "./Calculate";
 
 const Stack = createStackNavigator();
@@ -248,7 +248,7 @@ const MyStack = () => {
                                 onPress={() => setModalNotification(false)}
                                 mode="text"
                                 compact={true}
-                                labelStyle={{ padding: 4, color: "white", fontWeight: "bold" }}
+                                labelStyle={[TextFamily.NanumBold, { padding: 4, color: "white" }]}
                             >
                                 닫기
                             </Button>
@@ -262,7 +262,7 @@ const MyStack = () => {
                                     setModalNotification(false);
                                 }}
                                 compact={true}
-                                labelStyle={{ padding: 4, color: "white", fontWeight: "bold" }}
+                                labelStyle={[TextFamily.NanumBold, { padding: 4, color: "white" }]}
                             >
                                 모두 읽음
                             </Button>
@@ -335,7 +335,7 @@ const MyStack = () => {
                                                     <Text
                                                         style={[
                                                             message.isRead && { color: "grey" },
-                                                            { fontWeight: "bold" },
+                                                            TextFamily.NanumBold,
                                                         ]}
                                                     >
                                                         {message.title}
@@ -367,7 +367,7 @@ const MyStack = () => {
                     initialRouteName="HomeScreen"
                     screenOptions={{
                         headerStyle: { backgroundColor: theme.colors.primary },
-                        headerTitleStyle: { color: "white" },
+                        headerTitleStyle: [TextFamily.NanumRegular, { color: "white" }],
                     }}
                 >
                     <Stack.Screen

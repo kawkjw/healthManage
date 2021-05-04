@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Image, SafeAreaView, ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { ActivityIndicator, Surface } from "react-native-paper";
+import { SafeAreaView, ScrollView, TouchableOpacity, View } from "react-native";
+import { Text, ActivityIndicator, Surface } from "react-native-paper";
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,

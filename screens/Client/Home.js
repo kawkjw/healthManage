@@ -3,7 +3,6 @@ import {
     Image,
     SafeAreaView,
     View,
-    Text,
     TouchableOpacity,
     Linking,
     StatusBar,
@@ -15,7 +14,7 @@ import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
 } from "react-native-responsive-screen";
-import { Surface } from "react-native-paper";
+import { Surface, Text } from "react-native-paper";
 
 export default Home = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");

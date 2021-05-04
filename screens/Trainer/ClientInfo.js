@@ -1,14 +1,6 @@
 import React, { useEffect, useState } from "react";
-import {
-    Alert,
-    Linking,
-    RefreshControl,
-    ScrollView,
-    Text,
-    TouchableOpacity,
-    View,
-} from "react-native";
-import { ActivityIndicator, Surface } from "react-native-paper";
+import { Alert, Linking, RefreshControl, ScrollView, TouchableOpacity, View } from "react-native";
+import { Text, ActivityIndicator, Surface } from "react-native-paper";
 import { priceToString } from "../../config/hooks";
 import myBase, { db } from "../../config/MyBase";
 import { MyStyles, TextSize, theme } from "../../css/MyStyles";

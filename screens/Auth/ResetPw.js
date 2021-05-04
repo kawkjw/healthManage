@@ -13,7 +13,7 @@ import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { Button, HelperText, TextInput, Text } from "react-native-paper";
 import { FirebaseRecaptchaVerifierModal, FirebaseRecaptchaBanner } from "expo-firebase-recaptcha";
 import Modal from "react-native-modal";
-import { TextSize, theme } from "../../css/MyStyles";
+import { TextFamily, TextSize, theme } from "../../css/MyStyles";
 
 export default ResetPw = ({ navigation }) => {
     const appVerifier = useRef(null);
@@ -200,7 +200,7 @@ export default ResetPw = ({ navigation }) => {
                                     marginLeft: 6,
                                     justifyContent: "center",
                                 }}
-                                labelStyle={{ fontWeight: "bold" }}
+                                labelStyle={TextFamily.NanumBold}
                                 onPress={() => {
                                     Keyboard.dismiss();
                                     sendCode();

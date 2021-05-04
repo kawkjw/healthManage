@@ -20,7 +20,7 @@ import {
     Checkbox,
 } from "react-native-paper";
 import moment from "moment";
-import { theme } from "../../css/MyStyles";
+import { TextFamily, theme } from "../../css/MyStyles";
 import Constants from "expo-constants";
 import PostCode from "../../config/PostCode";
 
@@ -378,7 +378,7 @@ export default SignUp = ({ navigation }) => {
                                 }}
                                 onPress={checkUsedId}
                                 mode="contained"
-                                labelStyle={{ fontWeight: "bold" }}
+                                labelStyle={TextFamily.NanumBold}
                                 disabled={!id}
                             >
                                 중복확인
@@ -541,7 +541,7 @@ export default SignUp = ({ navigation }) => {
                                     marginLeft: 6,
                                     justifyContent: "center",
                                 }}
-                                labelStyle={{ fontWeight: "bold" }}
+                                labelStyle={TextFamily.NanumBold}
                                 onPress={() => {
                                     Keyboard.dismiss();
                                     sendCode();

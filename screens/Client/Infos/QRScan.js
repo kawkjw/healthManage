@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { View, Button, Text, StyleSheet, Linking } from "react-native";
+import { View, Button, Text, StyleSheet, Linking, Alert } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import base64 from "base-64";
 
 export default QRScan = ({ navigation }) => {
     const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
+    const routes = ["Test"];
 
     useEffect(() => {
         const requestPermission = async () => {
@@ -17,12 +18,29 @@ export default QRScan = ({ navigation }) => {
 
     const handleCodeScanned = ({ type, data }) => {
         setScanned(true);
-        alert(`type: ${type}\ndata: ${data}`);
-        let toGo = data;
-        for (let i = 0; i < 3; i++) {
-            toGo = base64.decode(toGo);
+        if (type === "org.iso.QRCode") {
+            let toGo = data;
+            for (let i = 0; i < 3; i++) {
+                toGo = base64.decode(toGo);
+            }
+            if (routes.includes(toGo)) {
+                navigation.replace(toGo);
+            } else {
+                Alert.alert(
+                    "경고",
+                    "잘못된 QR코드 입니다.",
+                    [{ text: "확인", onPress: () => setScanned(false) }],
+                    { cancelable: false }
+                );
+            }
+        } else {
+            Alert.alert(
+                "경고",
+                "QR코드만 스캔해주시기 바랍니다.",
+                [{ text: "확인", onPress: () => setScanned(false) }],
+                { cancelable: false }
+            );
         }
-        navigation.replace(toGo);
     };
 
     if (hasPermission === null) {

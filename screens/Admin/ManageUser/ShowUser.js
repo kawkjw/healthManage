@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Alert, ScrollView, Text, TouchableOpacity, View } from "react-native";
+import { Alert, ScrollView, TouchableOpacity, View } from "react-native";
 import { arrayDelete, db } from "../../../config/MyBase";
 import moment from "moment";
 import { MyStyles, TextSize, theme } from "../../../css/MyStyles";
@@ -11,7 +11,7 @@ import { RFPercentage } from "react-native-responsive-fontsize";
 import { MaterialCommunityIcons, Ionicons } from "@expo/vector-icons";
 import { pushNotificationsToPerson } from "../../../config/MyExpo";
 import { DataContext } from "../../Auth";
-import { ActivityIndicator, Surface } from "react-native-paper";
+import { Text, ActivityIndicator, Surface } from "react-native-paper";
 
 export default ShowUser = ({ route }) => {
     const { classNames } = useContext(DataContext);

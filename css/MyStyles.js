@@ -4,13 +4,35 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { DefaultTheme } from "react-native-paper";
+import { DefaultTheme, configureFonts } from "react-native-paper";
 
 const { width } = Dimensions.get("screen");
+
+const fontConfig = {
+    web: {
+        regular: {
+            fontFamily: "NanumFontR",
+            fontWeight: "normal",
+        },
+    },
+    ios: {
+        regular: {
+            fontFamily: "NanumFontR",
+            fontWeight: "normal",
+        },
+    },
+    default: {
+        regular: {
+            fontFamily: "NanumFontR",
+            fontWeight: "normal",
+        },
+    },
+};
 
 export const theme = {
     ...DefaultTheme,
     colors: { ...DefaultTheme.colors, primary: "#263143", accent: "#374862" },
+    fonts: configureFonts(fontConfig),
 };
 
 export const MyStyles = StyleSheet.create({
@@ -49,4 +71,9 @@ export const TextSize = StyleSheet.create({
     normalSize: { fontSize: RFPercentage(1.9) },
     largeSize: { fontSize: RFPercentage(2.2) },
     largerSize: { fontSize: RFPercentage(2.5) },
+});
+
+export const TextFamily = StyleSheet.create({
+    NanumRegular: { fontFamily: "NanumFontR" },
+    NanumBold: { fontFamily: "NanumFontB" },
 });

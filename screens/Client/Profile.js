@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import {
     SafeAreaView,
-    Text,
     TouchableOpacity,
     View,
     Image,
@@ -15,7 +14,7 @@ import {
 import QRCode from "react-native-qrcode-svg";
 import myBase, { db } from "../../config/MyBase";
 import { useInterval } from "../../config/hooks";
-import { MyStyles, TextSize, theme } from "../../css/MyStyles";
+import { MyStyles, TextFamily, TextSize, theme } from "../../css/MyStyles";
 import { AuthContext, DataContext } from "../Auth";
 import firebase from "firebase";
 import moment from "moment";
@@ -27,7 +26,14 @@ import {
     widthPercentageToDP as wp,
 } from "react-native-responsive-screen";
 import Modal from "react-native-modal";
-import { ActivityIndicator, Button, HelperText, Surface, TextInput } from "react-native-paper";
+import {
+    ActivityIndicator,
+    Button,
+    HelperText,
+    Surface,
+    TextInput,
+    Text,
+} from "react-native-paper";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default Profile = ({ navigation }) => {
@@ -622,9 +628,7 @@ export default Profile = ({ navigation }) => {
                                     style={[
                                         MyStyles.profileText,
                                         TextSize.largeSize,
-                                        {
-                                            fontWeight: "bold",
-                                        },
+                                        TextFamily.NanumBold,
                                     ]}
                                 >
                                     회원권 정보
@@ -707,9 +711,7 @@ export default Profile = ({ navigation }) => {
                                         style={[
                                             MyStyles.profileText,
                                             TextSize.largeSize,
-                                            {
-                                                fontWeight: "bold",
-                                            },
+                                            TextFamily.NanumBold,
                                         ]}
                                     >
                                         이번 달 수업 예약 정보
@@ -789,9 +791,7 @@ export default Profile = ({ navigation }) => {
                                         style={[
                                             MyStyles.profileText,
                                             TextSize.largeSize,
-                                            {
-                                                fontWeight: "bold",
-                                            },
+                                            TextFamily.NanumBold,
                                         ]}
                                     >
                                         다음 달 수업 예약 정보

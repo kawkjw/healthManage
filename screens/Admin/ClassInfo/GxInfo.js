@@ -5,7 +5,6 @@ import {
     Linking,
     ScrollView,
     StyleSheet,
-    Text,
     TouchableOpacity,
     View,
 } from "react-native";
@@ -22,7 +21,7 @@ import { getHoliday } from "../../../config/hooks";
 import { TextSize, theme } from "../../../css/MyStyles";
 import Modal from "react-native-modal";
 import { RFPercentage } from "react-native-responsive-fontsize";
-import { ActivityIndicator, Button, Surface } from "react-native-paper";
+import { Text, ActivityIndicator, Button, Surface } from "react-native-paper";
 
 export default ClassInfo = ({ navigation }) => {
     const { width } = Dimensions.get("screen");

@@ -1,19 +1,9 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Alert, AppState, Linking, ScrollView, TouchableOpacity, View } from "react-native";
 import { createStackNavigator } from "@react-navigation/stack";
-import Home from "./Home";
-import Profile from "./Profile";
-import { AuthContext, DataContext } from "../Auth";
-import Menu from "./Menu";
-import Info from "./Menus/Info";
-import QRScan from "./Infos/QRScan";
-import Test from "./Infos/Test";
-import myBase, { arrayDelete, db } from "../../config/MyBase";
-import Class from "./Menus/Class";
-import PT from "./Classes/PT";
-import SelectDate from "./Classes/SelectDate";
-import GX from "./Classes/GX";
-import SelectSquashKind from "./Classes/SelectSquashKind";
+import { TextFamily, TextSize, theme } from "../../css/MyStyles";
+import { displayedAt, checkBatchimEnding } from "../../config/hooks";
+import { Badge, Button, Card, Text } from "react-native-paper";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import {
     widthPercentageToDP as wp,
@@ -22,14 +12,23 @@ import {
 import { MaterialIcons } from "@expo/vector-icons";
 import Modal from "react-native-modal";
 import * as Notifications from "expo-notifications";
+import { AuthContext, DataContext } from "../Auth";
+import myBase, { arrayDelete, db } from "../../config/MyBase";
+import Home from "./Home";
+import Profile from "./Profile";
+import Menu from "./Menu";
+import Info from "./Menus/Info";
+import QRScan from "./Infos/QRScan";
+import Test from "./Infos/InfoPages/Test";
+import Class from "./Menus/Class";
+import PT from "./Classes/PT";
+import SelectDate from "./Classes/SelectDate";
+import GX from "./Classes/GX";
+import SelectSquashKind from "./Classes/SelectSquashKind";
 import ExtendDate from "./Menus/ExtendDate";
 import SelectTrainer from "./Infos/SelectTrainer";
 import OT from "./Infos/OT";
-import { TextSize, theme } from "../../css/MyStyles";
-import { displayedAt, checkBatchimEnding } from "../../config/hooks";
-import { Badge, Button, Card, Text } from "react-native-paper";
 import Calculator from "./Menus/Calculator";
-import moment from "moment";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
@@ -537,7 +536,13 @@ const MyStack = () => {
                                 onPress={() => setModalNotification(false)}
                                 mode="text"
                                 compact={true}
-                                labelStyle={{ padding: 4, color: "white", fontWeight: "bold" }}
+                                labelStyle={[
+                                    TextFamily.NanumBold,
+                                    {
+                                        padding: 4,
+                                        color: "white",
+                                    },
+                                ]}
                             >
                                 닫기
                             </Button>
@@ -551,7 +556,13 @@ const MyStack = () => {
                                     setModalNotification(false);
                                 }}
                                 compact={true}
-                                labelStyle={{ padding: 4, color: "white", fontWeight: "bold" }}
+                                labelStyle={[
+                                    TextFamily.NanumBold,
+                                    {
+                                        padding: 4,
+                                        color: "white",
+                                    },
+                                ]}
                             >
                                 모두 읽음
                             </Button>
@@ -630,7 +641,7 @@ const MyStack = () => {
                                                     <Text
                                                         style={[
                                                             message.isRead && { color: "grey" },
-                                                            { fontWeight: "bold" },
+                                                            TextFamily.NanumBold,
                                                         ]}
                                                     >
                                                         {message.title}
@@ -660,7 +671,7 @@ const MyStack = () => {
             initialRouteName="HomeScreen"
             screenOptions={{
                 headerStyle: { backgroundColor: theme.colors.primary },
-                headerTitleStyle: { color: "white" },
+                headerTitleStyle: [TextFamily.NanumRegular, { color: "white" }],
             }}
         >
             <Stack.Screen

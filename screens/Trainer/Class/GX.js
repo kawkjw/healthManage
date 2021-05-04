@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Text, FlatList, View, TouchableOpacity, StyleSheet, Linking } from "react-native";
+import { FlatList, View, TouchableOpacity, StyleSheet, Linking } from "react-native";
 import myBase, { db } from "../../../config/MyBase";
 import {
     heightPercentageToDP as hp,
@@ -13,7 +13,7 @@ import { getHoliday } from "../../../config/hooks";
 import { TextSize, theme } from "../../../css/MyStyles";
 import Modal from "react-native-modal";
 import { RFPercentage } from "react-native-responsive-fontsize";
-import { ActivityIndicator, Button, Surface } from "react-native-paper";
+import { Text, ActivityIndicator, Button, Surface } from "react-native-paper";
 
 export default GX = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;

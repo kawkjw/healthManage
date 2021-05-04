@@ -1,9 +1,9 @@
 import React, { useEffect } from "react";
-import { SafeAreaView, Text, TouchableOpacity, StatusBar, ScrollView } from "react-native";
+import { SafeAreaView, TouchableOpacity, StatusBar, ScrollView } from "react-native";
 import { MyStyles, TextSize } from "../../css/MyStyles";
 import * as Notifications from "expo-notifications";
 import myBase, { db } from "../../config/MyBase";
-import { Surface } from "react-native-paper";
+import { Text, Surface } from "react-native-paper";
 
 export default Home = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser !== null ? myBase.auth().currentUser.uid : null;

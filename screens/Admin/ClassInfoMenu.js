@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from "react";
-import { ScrollView, Text, TouchableOpacity, View } from "react-native";
-import { Surface } from "react-native-paper";
+import { ScrollView, TouchableOpacity, View } from "react-native";
+import { Text, Surface } from "react-native-paper";
 import myBase, { db } from "../../config/MyBase";
 import { MyStyles, TextSize, theme } from "../../css/MyStyles";
 import { AuthContext } from "../Auth";

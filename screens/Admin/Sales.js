@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { Animated, FlatList, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { Animated, FlatList, StyleSheet, TouchableOpacity, View } from "react-native";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import {
     widthPercentageToDP as wp,
@@ -14,7 +14,7 @@ import { Text as SvgText } from "react-native-svg";
 import { db } from "../../config/MyBase";
 import { TextSize, theme } from "../../css/MyStyles";
 import { DataContext } from "../Auth";
-import { ActivityIndicator, Surface } from "react-native-paper";
+import { Text, ActivityIndicator, Surface } from "react-native-paper";
 
 export default Sales = ({ navigation, route }) => {
     const today = new Date();

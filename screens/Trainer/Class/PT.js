@@ -1,6 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
-    Text,
     View,
     TouchableOpacity,
     FlatList,
@@ -20,14 +19,14 @@ import { MaterialIcons } from "@expo/vector-icons";
 import { pushNotificationsToPerson } from "../../../config/MyExpo";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { getHoliday } from "../../../config/hooks";
-import { TextSize, theme } from "../../../css/MyStyles";
+import { TextFamily, TextSize, theme } from "../../../css/MyStyles";
 import Modal from "react-native-modal";
 import RadioForm, {
     RadioButton,
     RadioButtonInput,
     RadioButtonLabel,
 } from "react-native-simple-radio-button";
-import { ActivityIndicator, Badge, Button, Surface } from "react-native-paper";
+import { ActivityIndicator, Badge, Button, Surface, Text } from "react-native-paper";
 
 export default PT = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -1461,10 +1460,13 @@ export default PT = ({ navigation, route }) => {
                                                 setRadioSelect(option.value);
                                                 option.func();
                                             }}
-                                            labelStyle={{
-                                                fontSize: RFPercentage(2.2),
-                                                marginLeft: 5,
-                                            }}
+                                            labelStyle={[
+                                                TextFamily.NanumRegular,
+                                                {
+                                                    fontSize: RFPercentage(2.2),
+                                                    marginLeft: 5,
+                                                },
+                                            ]}
                                         />
                                     </RadioButton>
                                 </View>

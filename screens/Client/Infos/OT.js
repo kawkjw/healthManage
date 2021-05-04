@@ -6,7 +6,6 @@ import {
     Platform,
     ScrollView,
     StyleSheet,
-    Text,
     TouchableOpacity,
     View,
 } from "react-native";
@@ -22,7 +21,7 @@ import { getHoliday } from "../../../config/hooks";
 import { TextSize, theme } from "../../../css/MyStyles";
 import Modal from "react-native-modal";
 import { RFPercentage } from "react-native-responsive-fontsize";
-import { ActivityIndicator, Button, Colors, Surface } from "react-native-paper";
+import { ActivityIndicator, Button, Colors, Surface, Text } from "react-native-paper";
 import moment from "moment";
 import * as Notifications from "expo-notifications";
 

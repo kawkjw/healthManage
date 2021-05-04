@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, TouchableOpacity, ScrollView } from "react-native";
+import { View, TouchableOpacity, ScrollView } from "react-native";
 import { MyStyles, TextSize, theme } from "../../../css/MyStyles";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
-import { Surface } from "react-native-paper";
+import { Surface, Text } from "react-native-paper";
 
 export default SelectDate = ({ navigation, route }) => {
     const { classname } = route.params;

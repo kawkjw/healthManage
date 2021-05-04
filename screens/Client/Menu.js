@@ -1,6 +1,6 @@
 import React from "react";
-import { Text, TouchableOpacity, ScrollView, Alert, View } from "react-native";
-import { Surface } from "react-native-paper";
+import { TouchableOpacity, ScrollView, Alert, View } from "react-native";
+import { Surface, Text } from "react-native-paper";
 import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,

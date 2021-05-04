@@ -1,13 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-    Alert,
-    FlatList,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
-} from "react-native";
+import { Alert, FlatList, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
@@ -17,7 +9,7 @@ import myBase, { arrayUnion, db } from "../../../config/MyBase";
 import moment from "moment";
 import { getHoliday } from "../../../config/hooks";
 import Modal from "react-native-modal";
-import { ActivityIndicator, Button, Colors, Surface } from "react-native-paper";
+import { ActivityIndicator, Button, Colors, Surface, Text } from "react-native-paper";
 import * as Notifications from "expo-notifications";
 
 export default GX = ({ navigation, route }) => {

@@ -8,6 +8,7 @@ import { TextSize } from "./css/MyStyles";
 import { Provider as PaperProvider } from "react-native-paper";
 import { theme } from "./css/MyStyles";
 import * as SplashScreen from "expo-splash-screen";
+import * as Font from "expo-font";
 
 SplashScreen.preventAutoHideAsync().catch((error) => {
     console.log(error);
@@ -29,6 +30,12 @@ export default function App() {
 
     const [showUpdates, setShowUpdates] = useState(false);
     useEffect(() => {
+        (async () => {
+            await Font.loadAsync({
+                NanumFontR: require("./assets/fonts/NanumSquareRoundR.ttf"),
+                NanumFontB: require("./assets/fonts/NanumSquareRoundB.ttf"),
+            });
+        })();
         Updates.checkForUpdateAsync().then((update) => {
             if (update.isAvailable) {
                 setShowUpdates(true);

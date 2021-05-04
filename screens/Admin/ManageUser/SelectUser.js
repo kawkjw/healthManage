@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FlatList, StyleSheet, Text, View } from "react-native";
+import { FlatList, StyleSheet, View } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import { db } from "../../../config/MyBase";
 import {
@@ -7,7 +7,7 @@ import {
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { TextSize, theme } from "../../../css/MyStyles";
-import { ActivityIndicator, Surface } from "react-native-paper";
+import { Text, ActivityIndicator, Surface } from "react-native-paper";
 
 export default SelectUser = ({ navigation, route }) => {
     const [findUsers, setFindUsers] = useState([]);

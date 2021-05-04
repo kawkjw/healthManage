@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, View, FlatList, Text, TouchableOpacity, Alert } from "react-native";
+import { StyleSheet, View, FlatList, TouchableOpacity, Alert } from "react-native";
 import { db, fieldDelete } from "../../config/MyBase";
 import {
     widthPercentageToDP as wp,
@@ -14,6 +14,7 @@ import {
     Portal,
     ActivityIndicator,
     Badge,
+    Text,
 } from "react-native-paper";
 import moment from "moment";
 

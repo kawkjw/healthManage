@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Keyboard, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
-import { Button, RadioButton, Surface, TextInput } from "react-native-paper";
-import { MyStyles, TextSize, theme } from "../../../css/MyStyles";
+import { View, Keyboard, TouchableOpacity, ScrollView, StyleSheet } from "react-native";
+import { Button, RadioButton, Surface, TextInput, Text } from "react-native-paper";
+import { MyStyles, TextFamily, TextSize, theme } from "../../../css/MyStyles";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 export default Calculator = ({ navigation, route }) => {
@@ -94,7 +94,7 @@ export default Calculator = ({ navigation, route }) => {
                                         justifyContent: "center",
                                     }}
                                 >
-                                    <Text style={[TextSize.normalSize, { fontWeight: "bold" }]}>
+                                    <Text style={[TextSize.normalSize, TextFamily.NanumBold]}>
                                         성별
                                     </Text>
                                 </View>
@@ -156,7 +156,7 @@ export default Calculator = ({ navigation, route }) => {
                                         justifyContent: "center",
                                     }}
                                 >
-                                    <Text style={[TextSize.normalSize, { fontWeight: "bold" }]}>
+                                    <Text style={[TextSize.normalSize, TextFamily.NanumBold]}>
                                         키
                                     </Text>
                                 </View>
@@ -182,7 +182,7 @@ export default Calculator = ({ navigation, route }) => {
                                         justifyContent: "center",
                                     }}
                                 >
-                                    <Text style={[TextSize.normalSize, { fontWeight: "bold" }]}>
+                                    <Text style={[TextSize.normalSize, TextFamily.NanumBold]}>
                                         몸무게
                                     </Text>
                                 </View>
@@ -208,7 +208,7 @@ export default Calculator = ({ navigation, route }) => {
                                         justifyContent: "center",
                                     }}
                                 >
-                                    <Text style={[TextSize.normalSize, { fontWeight: "bold" }]}>
+                                    <Text style={[TextSize.normalSize, TextFamily.NanumBold]}>
                                         나이
                                     </Text>
                                 </View>
@@ -237,13 +237,8 @@ export default Calculator = ({ navigation, route }) => {
                                     alignItems: "center",
                                 }}
                             >
-                                <View style={{ flex: 1, alignItems: "flex-end" }}>
-                                    <Text
-                                        style={[
-                                            TextSize.normalSize,
-                                            { fontWeight: "bold", paddingRight: 10 },
-                                        ]}
-                                    >
+                                <View style={{ flex: 1, alignItems: "flex-end", marginRight: 10 }}>
+                                    <Text style={[TextSize.normalSize, TextFamily.NanumBold]}>
                                         표준체중
                                     </Text>
                                 </View>
@@ -260,13 +255,8 @@ export default Calculator = ({ navigation, route }) => {
                                     alignItems: "center",
                                 }}
                             >
-                                <View style={{ flex: 1, alignItems: "flex-end" }}>
-                                    <Text
-                                        style={[
-                                            TextSize.normalSize,
-                                            { fontWeight: "bold", paddingRight: 10 },
-                                        ]}
-                                    >
+                                <View style={{ flex: 1, alignItems: "flex-end", marginRight: 10 }}>
+                                    <Text style={[TextSize.normalSize, TextFamily.NanumBold]}>
                                         비만도(%)
                                     </Text>
                                 </View>
@@ -309,13 +299,8 @@ export default Calculator = ({ navigation, route }) => {
                                     alignItems: "center",
                                 }}
                             >
-                                <View style={{ flex: 1, alignItems: "flex-end" }}>
-                                    <Text
-                                        style={[
-                                            TextSize.normalSize,
-                                            { fontWeight: "bold", paddingRight: 10 },
-                                        ]}
-                                    >
+                                <View style={{ flex: 1, alignItems: "flex-end", marginRight: 10 }}>
+                                    <Text style={[TextSize.normalSize, TextFamily.NanumBold]}>
                                         BMI(신체질량지수)
                                     </Text>
                                 </View>
@@ -360,13 +345,8 @@ export default Calculator = ({ navigation, route }) => {
                                     alignItems: "center",
                                 }}
                             >
-                                <View style={{ flex: 1, alignItems: "flex-end" }}>
-                                    <Text
-                                        style={[
-                                            TextSize.normalSize,
-                                            { fontWeight: "bold", paddingRight: 10 },
-                                        ]}
-                                    >
+                                <View style={{ flex: 1, alignItems: "flex-end", marginRight: 10 }}>
+                                    <Text style={[TextSize.normalSize, TextFamily.NanumBold]}>
                                         기초대사량
                                     </Text>
                                 </View>
@@ -381,7 +361,7 @@ export default Calculator = ({ navigation, route }) => {
                             <View style={{ flexDirection: "row" }}>
                                 <View style={{ flex: 1 }}>
                                     <View style={[styles.marginBottom5, { alignItems: "center" }]}>
-                                        <Text style={[TextSize.normalSize, { fontWeight: "bold" }]}>
+                                        <Text style={[TextSize.normalSize, TextFamily.NanumBold]}>
                                             브로카지수 구분
                                         </Text>
                                     </View>
@@ -429,7 +409,7 @@ export default Calculator = ({ navigation, route }) => {
                                 <View style={{ borderRightWidth: 1, borderRightColor: "grey" }} />
                                 <View style={{ flex: 1 }}>
                                     <View style={[styles.marginBottom5, { alignItems: "center" }]}>
-                                        <Text style={[TextSize.normalSize, { fontWeight: "bold" }]}>
+                                        <Text style={[TextSize.normalSize, TextFamily.NanumBold]}>
                                             BMI 지수 구분
                                         </Text>
                                     </View>
