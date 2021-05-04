@@ -61,6 +61,7 @@ export default Sales = ({ navigation, route }) => {
     const [statsData, setStatsData] = useState({});
 
     const [chart, setChart] = useState([]);
+    const [maxPrice, setMaxPrice] = useState(0);
     const [label, setLabel] = useState([
         "Test 1",
         "Test 2",
@@ -340,6 +341,11 @@ export default Sales = ({ navigation, route }) => {
                         chart.push(temp[key].price);
                     }
                 });
+                setMaxPrice(
+                    chart.reduce((pre, cur) => {
+                        return pre > cur ? pre : cur;
+                    })
+                );
                 setStatsData(obj);
                 setChart(chart);
             });
@@ -567,16 +573,18 @@ export default Sales = ({ navigation, route }) => {
             <SvgText
                 key={index}
                 x={x(index) + bandwidth / 2}
-                y={value < 100000 ? y(value) - 10 : y(value) + 15}
+                y={value < Math.floor(maxPrice / 2) ? y(value) - 10 : y(value) + 15}
                 fontSize={RFPercentage(1.9)}
-                fill={value >= 20 ? "white" : "black"}
+                fill={value >= Math.floor(maxPrice / 2) ? "white" : "black"}
                 alignmentBaseline={"middle"}
                 textAnchor={"middle"}
             >
-                {Number(value) !== 0
+                {Number(value) >= 10000
                     ? Number(value)
                           .toString()
                           .substr(0, Number(value).toString().length - 4) + "만"
+                    : Number(value) !== 0
+                    ? Number(value).toString()
                     : 0}
             </SvgText>
         ));
@@ -1221,57 +1229,71 @@ export default Sales = ({ navigation, route }) => {
                                     ) : (
                                         <View>
                                             {renderStats()}
-                                            <View
-                                                style={{ flexDirection: "row", height: hp("45%") }}
-                                            >
-                                                <YAxis
-                                                    data={chart}
-                                                    contentInset={{ top: 13, bottom: 13 }}
-                                                    svg={{
-                                                        fill: "black",
-                                                        fontSize: RFPercentage(1.9),
+                                            {maxPrice !== 0 && (
+                                                <View
+                                                    style={{
+                                                        flexDirection: "row",
+                                                        height: hp("45%"),
                                                     }}
-                                                    numberOfTicks={10}
-                                                    formatLabel={(value) =>
-                                                        Number(value) !== 0
-                                                            ? Number(value)
-                                                                  .toString()
-                                                                  .substr(
-                                                                      0,
-                                                                      Number(value).toString()
-                                                                          .length - 4
-                                                                  ) + "만"
-                                                            : 0
-                                                    }
-                                                    min={0}
-                                                    style={{ marginBottom: 20, width: wp("9%") }}
-                                                />
-                                                <View style={{ flex: 1 }}>
-                                                    <BarChart
+                                                >
+                                                    <YAxis
                                                         data={chart}
-                                                        style={{ flex: 1, marginLeft: 10 }}
-                                                        svg={{ fill: theme.colors.accent }}
                                                         contentInset={{ top: 13, bottom: 13 }}
-                                                        gridMin={0}
-                                                    >
-                                                        <Grid />
-                                                        <Labels />
-                                                    </BarChart>
-                                                    <XAxis
-                                                        data={chart}
-                                                        formatLabel={(value, index) => label[index]}
                                                         svg={{
-                                                            fontSize: RFPercentage(1.9),
                                                             fill: "black",
+                                                            fontSize: RFPercentage(1.9),
                                                         }}
-                                                        contentInset={{ left: 40, right: 30 }}
+                                                        numberOfTicks={
+                                                            maxPrice < 100000
+                                                                ? maxPrice / 10000
+                                                                : maxPrice / 100000
+                                                        }
+                                                        formatLabel={(value) =>
+                                                            Number(value) !== 0
+                                                                ? Number(value)
+                                                                      .toString()
+                                                                      .substr(
+                                                                          0,
+                                                                          Number(value).toString()
+                                                                              .length - 4
+                                                                      ) + "만"
+                                                                : 0
+                                                        }
+                                                        min={0}
                                                         style={{
-                                                            height: 20,
-                                                            width: "100%",
+                                                            marginBottom: 20,
+                                                            width: wp("9%"),
                                                         }}
                                                     />
+                                                    <View style={{ flex: 1 }}>
+                                                        <BarChart
+                                                            data={chart}
+                                                            style={{ flex: 1, marginLeft: 10 }}
+                                                            svg={{ fill: theme.colors.accent }}
+                                                            contentInset={{ top: 13, bottom: 13 }}
+                                                            gridMin={0}
+                                                        >
+                                                            <Grid />
+                                                            <Labels />
+                                                        </BarChart>
+                                                        <XAxis
+                                                            data={chart}
+                                                            formatLabel={(value, index) =>
+                                                                label[index]
+                                                            }
+                                                            svg={{
+                                                                fontSize: RFPercentage(1.9),
+                                                                fill: "black",
+                                                            }}
+                                                            contentInset={{ left: 40, right: 30 }}
+                                                            style={{
+                                                                height: 20,
+                                                                width: "100%",
+                                                            }}
+                                                        />
+                                                    </View>
                                                 </View>
-                                            </View>
+                                            )}
                                         </View>
                                     )}
                                 </View>
