@@ -921,7 +921,8 @@ export default Sales = ({ navigation, route }) => {
                                             >
                                                 <View
                                                     style={
-                                                        today.getMonth() + 1 === item.id
+                                                        today.getMonth() + 1 === item.id &&
+                                                        today.getFullYear() === monthYear
                                                             ? {
                                                                   backgroundColor: "#99ddff",
                                                                   borderRadius: 40,
@@ -1126,7 +1127,8 @@ export default Sales = ({ navigation, route }) => {
                                             >
                                                 <View
                                                     style={
-                                                        today.getMonth() + 1 === item.id
+                                                        today.getMonth() + 1 === item.id &&
+                                                        today.getFullYear() === statsYear
                                                             ? {
                                                                   backgroundColor: "#99ddff",
                                                                   borderRadius: 40,
