@@ -29,6 +29,7 @@ import { TextFamily, TextSize, theme } from "../../css/MyStyles";
 import { displayedAt, checkBatchimEnding } from "../../config/hooks";
 import { Text, Badge, Button, Card } from "react-native-paper";
 import Calculate from "./Calculate";
+import GenQR from "../../config/GenQR";
 
 const Stack = createStackNavigator();
 export const WrongNumContext = createContext();
@@ -509,6 +510,14 @@ const MyStack = () => {
                         component={Calculate}
                         options={({ navigation }) => ({
                             headerTitle: "PT 정산",
+                            headerLeft: () => renderGoBackButton(navigation),
+                        })}
+                    />
+                    <Stack.Screen
+                        name="GenQR"
+                        component={GenQR}
+                        options={({ navigation }) => ({
+                            headerTitle: "입장 코드 생성",
                             headerLeft: () => renderGoBackButton(navigation),
                         })}
                     />

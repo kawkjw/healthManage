@@ -380,6 +380,7 @@ export default Profile = ({ navigation }) => {
         });
         return () => {
             AppState.removeEventListener("change", changeAppState);
+            resetRandom();
         };
     }, [change]);
 

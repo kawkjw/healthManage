@@ -20,6 +20,7 @@ import { TextFamily, TextSize, theme } from "../../css/MyStyles";
 import { displayedAt, checkBatchimEnding } from "../../config/hooks";
 import { Badge, Button, Card, Text } from "react-native-paper";
 import ClientInfo from "./ClientInfo";
+import GenQR from "../../config/GenQR";
 
 const Stack = createStackNavigator();
 const MyStack = () => {
@@ -428,6 +429,14 @@ const MyStack = () => {
                 component={ClientInfo}
                 options={({ navigation }) => ({
                     title: "고객 정보",
+                    headerLeft: () => renderGoBackButton(navigation),
+                })}
+            />
+            <Stack.Screen
+                name="GenQR"
+                component={GenQR}
+                options={({ navigation }) => ({
+                    title: "입장 코드 생성",
                     headerLeft: () => renderGoBackButton(navigation),
                 })}
             />

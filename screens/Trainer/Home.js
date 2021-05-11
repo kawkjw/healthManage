@@ -137,6 +137,14 @@ export default Home = ({ navigation, route }) => {
                 <Surface style={MyStyles.surface}>
                     <TouchableOpacity
                         style={MyStyles.menu}
+                        onPress={() => navigation.navigate("GenQR")}
+                    >
+                        <Text style={TextSize.largeSize}>입장 코드 생성</Text>
+                    </TouchableOpacity>
+                </Surface>
+                <Surface style={MyStyles.surface}>
+                    <TouchableOpacity
+                        style={MyStyles.menu}
                         onPress={() => navigation.navigate("Profile")}
                     >
                         <Text style={TextSize.largeSize}>내 정보</Text>
