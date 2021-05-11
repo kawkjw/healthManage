@@ -217,62 +217,61 @@ export default GX = ({ navigation, route }) => {
                 const sub = (start.toDate().getTime() - reserveDate.getTime()) / 60000;
                 if (currentClient >= maxClient) {
                     return Promise.reject("No Remain Reserve");
+                } else if (classname === "spinning") {
+                    if (sub > 60 || sub < 0) {
+                        return Promise.reject("Spinning Time Out");
+                    }
                 } else if (sub <= 60) {
                     return Promise.reject("Time Out");
-                } else {
-                    return await transaction
-                        .get(classInDB.collection("clients").doc(uid))
-                        .then((clientDoc) => {
-                            if (!clientDoc.exists) {
-                                if (classname === "spinning") {
-                                    transaction.set(classInDB.collection("clients").doc(uid), {
-                                        uid: uid,
-                                        num: num,
-                                    });
-                                } else {
-                                    transaction.set(classInDB.collection("clients").doc(uid), {
-                                        uid: uid,
-                                    });
-                                }
-                                transaction.update(classInDB, {
-                                    currentClient: currentClient + 1,
-                                });
-                                let tempInfo = {
-                                    classId: cid,
-                                    start: start,
-                                    end: end,
-                                    trainer: trainer,
-                                    className: classname,
-                                };
-                                if (classname === "spinning") {
-                                    tempInfo["num"] = num;
-                                }
-                                transaction.set(
-                                    db
-                                        .collection("users")
-                                        .doc(uid)
-                                        .collection("reservation")
-                                        .doc(date)
-                                        .collection(selectDate.toString())
-                                        .doc(cid),
-                                    tempInfo
-                                );
-                                transaction.update(
-                                    db
-                                        .collection("users")
-                                        .doc(uid)
-                                        .collection("reservation")
-                                        .doc(date),
-                                    {
-                                        date: arrayUnion(selectDate.toString()),
-                                    }
-                                );
-                                return [true, start];
-                            } else {
-                                return Promise.reject("Already Reserved");
-                            }
-                        });
                 }
+                return await transaction
+                    .get(classInDB.collection("clients").doc(uid))
+                    .then((clientDoc) => {
+                        if (!clientDoc.exists) {
+                            if (classname === "spinning") {
+                                transaction.set(classInDB.collection("clients").doc(uid), {
+                                    uid: uid,
+                                    num: num,
+                                });
+                            } else {
+                                transaction.set(classInDB.collection("clients").doc(uid), {
+                                    uid: uid,
+                                });
+                            }
+                            transaction.update(classInDB, {
+                                currentClient: currentClient + 1,
+                            });
+                            let tempInfo = {
+                                classId: cid,
+                                start: start,
+                                end: end,
+                                trainer: trainer,
+                                className: classname,
+                            };
+                            if (classname === "spinning") {
+                                tempInfo["num"] = num;
+                            }
+                            transaction.set(
+                                db
+                                    .collection("users")
+                                    .doc(uid)
+                                    .collection("reservation")
+                                    .doc(date)
+                                    .collection(selectDate.toString())
+                                    .doc(cid),
+                                tempInfo
+                            );
+                            transaction.update(
+                                db.collection("users").doc(uid).collection("reservation").doc(date),
+                                {
+                                    date: arrayUnion(selectDate.toString()),
+                                }
+                            );
+                            return [true, start];
+                        } else {
+                            return Promise.reject("Already Reserved");
+                        }
+                    });
             });
         })
             .then(async (datas) => {
@@ -280,12 +279,12 @@ export default GX = ({ navigation, route }) => {
                     await Notifications.scheduleNotificationAsync({
                         content: {
                             title: "수업 예약 미리 알림",
-                            body: "예약하신 수업 시작까지 2시간 남았습니다.",
+                            body: "예약하신 수업 시작까지 1시간 남았습니다.",
                             sound: "default",
                             badge: 1,
                         },
-                        trigger: new Date(datas[1].toDate().getTime() - 120 * 60 * 1000),
-                    });
+                        trigger: new Date(datas[1].toDate().getTime() - 60 * 60 * 1000),
+                    }).catch((error) => console.log(error));
                     Alert.alert(
                         "성공",
                         "예약되었습니다.",
@@ -307,6 +306,20 @@ export default GX = ({ navigation, route }) => {
                     Alert.alert(
                         "경고",
                         "예약 가능한 자리가 없습니다.",
+                        [
+                            {
+                                text: "확인",
+                                onPress: () => {
+                                    setModalClass(false);
+                                },
+                            },
+                        ],
+                        { cancelable: false }
+                    );
+                } else if (error === "Spinning Time Out") {
+                    Alert.alert(
+                        "경고",
+                        "수업 시작 1시간전부터 예약 가능합니다.",
                         [
                             {
                                 text: "확인",
@@ -460,9 +473,18 @@ export default GX = ({ navigation, route }) => {
                                 key={index}
                                 style={[
                                     MyStyles.surface,
-                                    moment
-                                        .duration(moment(c.startDate).diff(moment(today)))
-                                        .asHours() < 3 && { backgroundColor: "lightgrey" },
+                                    classname === "spinning"
+                                        ? moment
+                                              .duration(moment(c.startDate).diff(moment(today)))
+                                              .asHours() > 1 ||
+                                          moment
+                                              .duration(moment(c.startDate).diff(moment(today)))
+                                              .asHours() < 0
+                                            ? { backgroundColor: "lightgrey" }
+                                            : undefined
+                                        : moment
+                                              .duration(moment(c.startDate).diff(moment(today)))
+                                              .asHours() < 1 && { backgroundColor: "lightgrey" },
                                 ]}
                             >
                                 <TouchableOpacity
@@ -501,18 +523,44 @@ export default GX = ({ navigation, route }) => {
                                         }
                                     }}
                                     disabled={
-                                        moment
-                                            .duration(moment(c.startDate).diff(moment(today)))
-                                            .asHours() < 3
+                                        classname === "spinning"
+                                            ? moment
+                                                  .duration(moment(c.startDate).diff(moment(today)))
+                                                  .asHours() > 1 ||
+                                              moment
+                                                  .duration(moment(c.startDate).diff(moment(today)))
+                                                  .asHours() < 0
+                                            : moment
+                                                  .duration(moment(c.startDate).diff(moment(today)))
+                                                  .asHours() < 1
                                     }
                                 >
                                     <Text
                                         style={[
                                             TextSize.largeSize,
                                             { marginBottom: 5 },
-                                            moment
-                                                .duration(moment(c.startDate).diff(moment(today)))
-                                                .asHours() < 3 && { color: "dimgrey" },
+                                            classname === "spinning"
+                                                ? moment
+                                                      .duration(
+                                                          moment(c.startDate).diff(moment(today))
+                                                      )
+                                                      .asHours() > 1 ||
+                                                  moment
+                                                      .duration(
+                                                          moment(c.startDate).diff(moment(today))
+                                                      )
+                                                      .asHours() < 0
+                                                    ? {
+                                                          color: "dimgrey",
+                                                      }
+                                                    : undefined
+                                                : moment
+                                                      .duration(
+                                                          moment(c.startDate).diff(moment(today))
+                                                      )
+                                                      .asHours() < 1 && {
+                                                      color: "dimgrey",
+                                                  },
                                         ]}
                                     >
                                         {selectDate}일 {c.start}~{c.end} ({c.currentClient}/
@@ -521,9 +569,28 @@ export default GX = ({ navigation, route }) => {
                                     <Text
                                         style={[
                                             TextSize.largeSize,
-                                            moment
-                                                .duration(moment(c.startDate).diff(moment(today)))
-                                                .asHours() < 3 && { color: "dimgrey" },
+                                            classname === "spinning"
+                                                ? moment
+                                                      .duration(
+                                                          moment(c.startDate).diff(moment(today))
+                                                      )
+                                                      .asHours() > 1 ||
+                                                  moment
+                                                      .duration(
+                                                          moment(c.startDate).diff(moment(today))
+                                                      )
+                                                      .asHours() < 0
+                                                    ? {
+                                                          color: "dimgrey",
+                                                      }
+                                                    : undefined
+                                                : moment
+                                                      .duration(
+                                                          moment(c.startDate).diff(moment(today))
+                                                      )
+                                                      .asHours() < 1 && {
+                                                      color: "dimgrey",
+                                                  },
                                         ]}
                                     >
                                         트레이너 : {c.trainer}
