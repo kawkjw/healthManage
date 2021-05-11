@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, StyleSheet, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { Surface } from "react-native-paper";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { TextSize } from "../css/MyStyles";
@@ -54,7 +54,17 @@ export default GxSeat = ({
                                       v === 1 && { backgroundColor: "lightgrey" },
                                       v === 2 && { backgroundColor: "lightskyblue" },
                                   ]}
-                                  onPress={() => onPress(cid, i + 1)}
+                                  onPress={() => {
+                                      Alert.alert(
+                                          `${i + 1}번 자리`,
+                                          "확실합니까?",
+                                          [
+                                              { text: "취소" },
+                                              { text: "확인", onPress: () => onPress(cid, i + 1) },
+                                          ],
+                                          { cancelable: false }
+                                      );
+                                  }}
                                   disabled={v !== 0}
                               >
                                   <Text style={TextSize.normalSize}>{i + 1}</Text>
@@ -75,7 +85,17 @@ export default GxSeat = ({
                                       v === 1 && { backgroundColor: "lightgrey" },
                                       v === 2 && { backgroundColor: "lightskyblue" },
                                   ]}
-                                  onPress={() => onPress(cid, i + 7)}
+                                  onPress={() => {
+                                      Alert.alert(
+                                          `${i + 7}번 자리`,
+                                          "확실합니까?",
+                                          [
+                                              { text: "취소" },
+                                              { text: "확인", onPress: () => onPress(cid, i + 7) },
+                                          ],
+                                          { cancelable: false }
+                                      );
+                                  }}
                                   disabled={v !== 0}
                               >
                                   <Text style={TextSize.normalSize}>{i + 7}</Text>
@@ -96,7 +116,17 @@ export default GxSeat = ({
                                       v === 1 && { backgroundColor: "lightgrey" },
                                       v === 2 && { backgroundColor: "lightskyblue" },
                                   ]}
-                                  onPress={() => onPress(cid, i + 11)}
+                                  onPress={() => {
+                                      Alert.alert(
+                                          `${i + 11}번 자리`,
+                                          "확실합니까?",
+                                          [
+                                              { text: "취소" },
+                                              { text: "확인", onPress: () => onPress(cid, i + 11) },
+                                          ],
+                                          { cancelable: false }
+                                      );
+                                  }}
                                   disabled={v !== 0}
                               >
                                   <Text style={TextSize.normalSize}>{i + 11}</Text>
@@ -116,7 +146,17 @@ export default GxSeat = ({
                                       v === 1 && { backgroundColor: "lightgrey" },
                                       v === 2 && { backgroundColor: "lightskyblue" },
                                   ]}
-                                  onPress={() => nPress(cid, i + 17)}
+                                  onPress={() => {
+                                      Alert.alert(
+                                          `${i + 17}번 자리`,
+                                          "확실합니까?",
+                                          [
+                                              { text: "취소" },
+                                              { text: "확인", onPress: () => onPress(cid, i + 17) },
+                                          ],
+                                          { cancelable: false }
+                                      );
+                                  }}
                                   disabled={v !== 0}
                               >
                                   <Text style={TextSize.normalSize}>{i + 17}</Text>
@@ -136,7 +176,17 @@ export default GxSeat = ({
                                       v === 1 && { backgroundColor: "lightgrey" },
                                       v === 2 && { backgroundColor: "lightskyblue" },
                                   ]}
-                                  onPress={() => onPress(cid, i + 22)}
+                                  onPress={() => {
+                                      Alert.alert(
+                                          `${i + 22}번 자리`,
+                                          "확실합니까?",
+                                          [
+                                              { text: "취소" },
+                                              { text: "확인", onPress: () => onPress(cid, i + 22) },
+                                          ],
+                                          { cancelable: false }
+                                      );
+                                  }}
                                   disabled={v !== 0}
                               >
                                   <Text style={TextSize.normalSize}>{i + 22}</Text>
@@ -158,7 +208,17 @@ export default GxSeat = ({
                                       v === 1 && { backgroundColor: "lightgrey" },
                                       v === 2 && { backgroundColor: "lightskyblue" },
                                   ]}
-                                  onPress={() => onPress(cid, i + 27)}
+                                  onPress={() => {
+                                      Alert.alert(
+                                          `${i + 27}번 자리`,
+                                          "확실합니까?",
+                                          [
+                                              { text: "취소" },
+                                              { text: "확인", onPress: () => onPress(cid, i + 27) },
+                                          ],
+                                          { cancelable: false }
+                                      );
+                                  }}
                                   disabled={v !== 0}
                               >
                                   <Text style={TextSize.normalSize}>{i + 27}</Text>
