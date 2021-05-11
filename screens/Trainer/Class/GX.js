@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { FlatList, View, TouchableOpacity, StyleSheet, Linking } from "react-native";
+import { FlatList, View, TouchableOpacity, StyleSheet, Linking, ScrollView } from "react-native";
 import myBase, { db } from "../../../config/MyBase";
 import {
     heightPercentageToDP as hp,
@@ -14,6 +14,7 @@ import { TextSize, theme } from "../../../css/MyStyles";
 import Modal from "react-native-modal";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { Text, ActivityIndicator, Button, Surface } from "react-native-paper";
+import GxSeat from "../../../config/GxSeat";
 
 export default GX = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
@@ -37,6 +38,7 @@ export default GX = ({ navigation, route }) => {
     const [loading, setLoading] = useState(true);
     const [modalClientInfo, setModalClientInfo] = useState(false);
     const [clientList, setClientList] = useState([]);
+    const [isSpinning, setIsSpinning] = useState(false);
 
     useEffect(() => {
         const showCalendar = async () => {
@@ -166,20 +168,40 @@ export default GX = ({ navigation, route }) => {
                                 .get()
                                 .then(async (clients) => {
                                     let clientUids = [];
-                                    clients.forEach((client) => {
-                                        clientUids.push(client.data().uid);
-                                    });
                                     let clientList = [];
-                                    const clientPromise = clientUids.map(async (uid) => {
-                                        const { name, phoneNumber } = (
-                                            await db.collection("users").doc(uid).get()
-                                        ).data();
-                                        clientList.push({ name, phoneNumber });
-                                    });
-                                    await Promise.all(clientPromise);
-                                    clientList.sort((a, b) => {
-                                        return a.name - b.name;
-                                    });
+                                    if (className === "spinning") {
+                                        clients.forEach((client) => {
+                                            clientUids.push({
+                                                uid: client.data().uid,
+                                                num: client.data().num,
+                                            });
+                                        });
+                                        const clientPromise = clientUids.map(async (value) => {
+                                            const { name, phoneNumber } = (
+                                                await db.collection("users").doc(value.uid).get()
+                                            ).data();
+                                            clientList.push({ name, phoneNumber, num: value.num });
+                                        });
+                                        await Promise.all(clientPromise);
+                                        clientList.sort((a, b) => {
+                                            return a.num - b.num;
+                                        });
+                                    } else {
+                                        clients.forEach((client) => {
+                                            clientUids.push(client.data().uid);
+                                        });
+                                        const clientPromise = clientUids.map(async (uid) => {
+                                            const { name, phoneNumber } = (
+                                                await db.collection("users").doc(uid).get()
+                                            ).data();
+                                            clientList.push({ name, phoneNumber });
+                                        });
+                                        await Promise.all(clientPromise);
+                                        clientList.sort((a, b) => {
+                                            return a.name - b.name;
+                                        });
+                                    }
+
                                     classInfo["clients"] = clientList;
                                 });
                             if (classInfo.info !== undefined) {
@@ -414,6 +436,7 @@ export default GX = ({ navigation, route }) => {
                                                 style={styles.item}
                                                 onPress={() => {
                                                     setClientList(item.clients);
+                                                    setIsSpinning(className === "spinning");
                                                     setModalClientInfo(true);
                                                 }}
                                             >
@@ -442,21 +465,23 @@ export default GX = ({ navigation, route }) => {
                 <Modal
                     isVisible={modalClientInfo}
                     style={{ justifyContent: "flex-end", margin: 0 }}
-                    onBackdropPress={() => setModalClientInfo(false)}
-                    onBackButtonPress={() => setModalClientInfo(false)}
+                    onBackdropPress={() => {
+                        setModalClientInfo(false);
+                        setIsSpinning(false);
+                    }}
+                    onBackButtonPress={() => {
+                        setModalClientInfo(false);
+                        setIsSpinning(false);
+                    }}
                 >
-                    <View
-                        style={{
-                            height: hp("90%"),
-                            backgroundColor: "white",
-                        }}
-                    >
+                    <View style={{ height: hp("90%"), backgroundColor: "white" }}>
                         <View
                             style={{ flexDirection: "row", backgroundColor: theme.colors.primary }}
                         >
                             <Button
                                 onPress={() => {
                                     setModalClientInfo(false);
+                                    setIsSpinning(false);
                                 }}
                                 labelStyle={[TextSize.largeSize, { color: "white" }]}
                             >
@@ -471,7 +496,7 @@ export default GX = ({ navigation, route }) => {
                             </View>
                             <View style={{ flex: 1 }} />
                         </View>
-                        <View style={{ paddingHorizontal: 10, marginTop: 10 }}>
+                        <ScrollView style={{ paddingHorizontal: 10, marginTop: 10, flex: 1 }}>
                             {clientList.length === 0 ? (
                                 <Text
                                     style={[
@@ -495,12 +520,14 @@ export default GX = ({ navigation, route }) => {
                                     >
                                         <View
                                             style={{
-                                                width: wp("4%"),
+                                                width: isSpinning ? wp("6%") : wp("4%"),
                                                 alignItems: "flex-end",
                                             }}
                                         >
                                             <Text style={TextSize.normalSize}>
-                                                {(index + 1).toString() + ". "}
+                                                {isSpinning
+                                                    ? client.num + "번 "
+                                                    : (index + 1).toString() + ". "}
                                             </Text>
                                         </View>
                                         <View
@@ -530,7 +557,20 @@ export default GX = ({ navigation, route }) => {
                                     </View>
                                 ))
                             )}
-                        </View>
+                            {isSpinning && (
+                                <View
+                                    style={{
+                                        borderTopWidth: 1,
+                                        borderTopColor: "grey",
+                                        flex: 1,
+                                        marginTop: 10,
+                                    }}
+                                >
+                                    <GxSeat permit="trainer" clientList={clientList} />
+                                    <View style={{ height: hp("10%") }} />
+                                </View>
+                            )}
+                        </ScrollView>
                     </View>
                 </Modal>
             </Modal>

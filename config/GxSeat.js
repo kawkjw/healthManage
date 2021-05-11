@@ -10,6 +10,31 @@ export default GxSeat = ({
     onPress = () => {},
     cid = "",
 }) => {
+    const renderForTrainer = (start, end) => {
+        const num = end - start + 1;
+        const arr = Array(num)
+            .fill(start)
+            .map((v, i) => v + i);
+        return arr.map((n, index) => {
+            const idx = clientList.findIndex((client) => client.num === n);
+            if (idx >= 0) {
+                return (
+                    <Surface
+                        key={index}
+                        style={[styles.elemView, { backgroundColor: "lightskyblue" }]}
+                    >
+                        <Text style={TextSize.normalSize}>{n}</Text>
+                        <Text style={TextSize.smallSize}>{clientList[idx].name}</Text>
+                    </Surface>
+                );
+            }
+            return (
+                <Surface key={index} style={styles.elemView}>
+                    <Text style={TextSize.normalSize}>{n}</Text>
+                </Surface>
+            );
+        });
+    };
     return (
         <View style={{ flex: 1 }}>
             <View style={styles.rowView}>
@@ -20,92 +45,128 @@ export default GxSeat = ({
                 <View style={{ flex: 2 }} />
             </View>
             <View style={styles.rowView}>
-                {clientList.slice(0, 6).map((v, i) => (
-                    <Surface key={i} style={styles.elemView}>
-                        <TouchableOpacity
-                            style={[styles.button, v !== 0 && { backgroundColor: "red" }]}
-                            onPress={() => onPress(cid, i + 1)}
-                            disabled={permit === "trainer" || v !== 0}
-                        >
-                            <Text style={TextSize.normalSize}>{i + 1}</Text>
-                            {v === 2 && <Text style={TextSize.smallSize}>나</Text>}
-                        </TouchableOpacity>
-                    </Surface>
-                ))}
+                {permit === "client"
+                    ? clientList.slice(0, 6).map((v, i) => (
+                          <Surface key={i} style={styles.elemView}>
+                              <TouchableOpacity
+                                  style={[
+                                      styles.button,
+                                      v === 1 && { backgroundColor: "lightgrey" },
+                                      v === 2 && { backgroundColor: "lightskyblue" },
+                                  ]}
+                                  onPress={() => onPress(cid, i + 1)}
+                                  disabled={v !== 0}
+                              >
+                                  <Text style={TextSize.normalSize}>{i + 1}</Text>
+                                  {v === 2 && <Text style={TextSize.smallSize}>나</Text>}
+                              </TouchableOpacity>
+                          </Surface>
+                      ))
+                    : renderForTrainer(1, 6)}
             </View>
             <View style={styles.rowView}>
                 <View style={styles.blankView} />
-                {clientList.slice(6, 10).map((v, i) => (
-                    <Surface key={i} style={styles.elemView}>
-                        <TouchableOpacity
-                            style={[styles.button, v !== 0 && { backgroundColor: "red" }]}
-                            onPress={() => onPress(cid, i + 7)}
-                            disabled={permit === "trainer" || v !== 0}
-                        >
-                            <Text style={TextSize.normalSize}>{i + 7}</Text>
-                            {v === 2 && <Text style={TextSize.smallSize}>나</Text>}
-                        </TouchableOpacity>
-                    </Surface>
-                ))}
+                {permit === "client"
+                    ? clientList.slice(6, 10).map((v, i) => (
+                          <Surface key={i} style={styles.elemView}>
+                              <TouchableOpacity
+                                  style={[
+                                      styles.button,
+                                      v === 1 && { backgroundColor: "lightgrey" },
+                                      v === 2 && { backgroundColor: "lightskyblue" },
+                                  ]}
+                                  onPress={() => onPress(cid, i + 7)}
+                                  disabled={v !== 0}
+                              >
+                                  <Text style={TextSize.normalSize}>{i + 7}</Text>
+                                  {v === 2 && <Text style={TextSize.smallSize}>나</Text>}
+                              </TouchableOpacity>
+                          </Surface>
+                      ))
+                    : renderForTrainer(7, 10)}
                 <View style={styles.blankView} />
             </View>
             <View style={styles.rowView}>
-                {clientList.slice(10, 16).map((v, i) => (
-                    <Surface key={i} style={styles.elemView}>
-                        <TouchableOpacity
-                            style={[styles.button, v !== 0 && { backgroundColor: "red" }]}
-                            onPress={() => onPress(cid, i + 11)}
-                            disabled={permit === "trainer" || v !== 0}
-                        >
-                            <Text style={TextSize.normalSize}>{i + 11}</Text>
-                            {v === 2 && <Text style={TextSize.smallSize}>나</Text>}
-                        </TouchableOpacity>
-                    </Surface>
-                ))}
+                {permit === "client"
+                    ? clientList.slice(10, 16).map((v, i) => (
+                          <Surface key={i} style={styles.elemView}>
+                              <TouchableOpacity
+                                  style={[
+                                      styles.button,
+                                      v === 1 && { backgroundColor: "lightgrey" },
+                                      v === 2 && { backgroundColor: "lightskyblue" },
+                                  ]}
+                                  onPress={() => onPress(cid, i + 11)}
+                                  disabled={v !== 0}
+                              >
+                                  <Text style={TextSize.normalSize}>{i + 11}</Text>
+                                  {v === 2 && <Text style={TextSize.smallSize}>나</Text>}
+                              </TouchableOpacity>
+                          </Surface>
+                      ))
+                    : renderForTrainer(11, 16)}
             </View>
             <View style={[styles.rowView, { marginHorizontal: 30 }]}>
-                {clientList.slice(16, 21).map((v, i) => (
-                    <Surface key={i} style={styles.elemView}>
-                        <TouchableOpacity
-                            style={[styles.button, v !== 0 && { backgroundColor: "red" }]}
-                            onPress={() => nPress(cid, i + 17)}
-                            disabled={permit === "trainer" || v !== 0}
-                        >
-                            <Text style={TextSize.normalSize}>{i + 17}</Text>
-                            {v === 2 && <Text style={TextSize.smallSize}>나</Text>}
-                        </TouchableOpacity>
-                    </Surface>
-                ))}
+                {permit === "client"
+                    ? clientList.slice(16, 21).map((v, i) => (
+                          <Surface key={i} style={styles.elemView}>
+                              <TouchableOpacity
+                                  style={[
+                                      styles.button,
+                                      v === 1 && { backgroundColor: "lightgrey" },
+                                      v === 2 && { backgroundColor: "lightskyblue" },
+                                  ]}
+                                  onPress={() => nPress(cid, i + 17)}
+                                  disabled={v !== 0}
+                              >
+                                  <Text style={TextSize.normalSize}>{i + 17}</Text>
+                                  {v === 2 && <Text style={TextSize.smallSize}>나</Text>}
+                              </TouchableOpacity>
+                          </Surface>
+                      ))
+                    : renderForTrainer(17, 21)}
             </View>
             <View style={[styles.rowView, { marginHorizontal: 30 }]}>
-                {clientList.slice(21, 26).map((v, i) => (
-                    <Surface key={i} style={styles.elemView}>
-                        <TouchableOpacity
-                            style={[styles.button, v !== 0 && { backgroundColor: "red" }]}
-                            onPress={() => onPress(cid, i + 22)}
-                            disabled={permit === "trainer" || v !== 0}
-                        >
-                            <Text style={TextSize.normalSize}>{i + 22}</Text>
-                            {v === 2 && <Text style={TextSize.smallSize}>나</Text>}
-                        </TouchableOpacity>
-                    </Surface>
-                ))}
+                {permit === "client"
+                    ? clientList.slice(21, 26).map((v, i) => (
+                          <Surface key={i} style={styles.elemView}>
+                              <TouchableOpacity
+                                  style={[
+                                      styles.button,
+                                      v === 1 && { backgroundColor: "lightgrey" },
+                                      v === 2 && { backgroundColor: "lightskyblue" },
+                                  ]}
+                                  onPress={() => onPress(cid, i + 22)}
+                                  disabled={v !== 0}
+                              >
+                                  <Text style={TextSize.normalSize}>{i + 22}</Text>
+                                  {v === 2 && <Text style={TextSize.smallSize}>나</Text>}
+                              </TouchableOpacity>
+                          </Surface>
+                      ))
+                    : renderForTrainer(22, 26)}
             </View>
             <View style={styles.rowView}>
                 <View style={styles.blankView} />
                 <View style={styles.blankView} />
-                {clientList.slice(26).map((v, i) => (
-                    <Surface key={i} style={styles.elemView}>
-                        <TouchableOpacity
-                            style={[styles.button, v !== 0 && { backgroundColor: "red" }]}
-                            onPress={() => onPress(cid, i + 27)}
-                            disabled={permit === "trainer" || v !== 0}
-                        >
-                            <Text style={TextSize.normalSize}>{i + 27}</Text>
-                            {v === 2 && <Text style={TextSize.smallSize}>나</Text>}
-                        </TouchableOpacity>
-                    </Surface>
-                ))}
+                {permit === "client"
+                    ? clientList.slice(26).map((v, i) => (
+                          <Surface key={i} style={styles.elemView}>
+                              <TouchableOpacity
+                                  style={[
+                                      styles.button,
+                                      v === 1 && { backgroundColor: "lightgrey" },
+                                      v === 2 && { backgroundColor: "lightskyblue" },
+                                  ]}
+                                  onPress={() => onPress(cid, i + 27)}
+                                  disabled={v !== 0}
+                              >
+                                  <Text style={TextSize.normalSize}>{i + 27}</Text>
+                                  {v === 2 && <Text style={TextSize.smallSize}>나</Text>}
+                              </TouchableOpacity>
+                          </Surface>
+                      ))
+                    : renderForTrainer(27, 28)}
                 <View style={styles.blankView} />
                 <View style={styles.blankView} />
             </View>
