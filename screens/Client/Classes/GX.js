@@ -11,6 +11,7 @@ import { getHoliday } from "../../../config/hooks";
 import Modal from "react-native-modal";
 import { ActivityIndicator, Button, Colors, Surface, Text } from "react-native-paper";
 import * as Notifications from "expo-notifications";
+import GxSeat from "../../../config/GxSeat";
 
 export default GX = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
@@ -22,6 +23,9 @@ export default GX = ({ navigation, route }) => {
     const [classList, setClassList] = useState([]);
     const [availReserve, setAvailReserve] = useState(false);
     const [cloading, setCloading] = useState(true);
+    const [modalSeat, setModalSeat] = useState(false);
+    const [clientsForSeat, setClientsForSeat] = useState([]);
+    const [selectClass, setSelectClass] = useState("");
 
     useEffect(() => {
         const showCalendar = async () => {
@@ -129,7 +133,6 @@ export default GX = ({ navigation, route }) => {
                 }
             }
             setAvailReserve(avail);
-            let list = [];
             await db
                 .collection("classes")
                 .doc(classname)
@@ -138,7 +141,8 @@ export default GX = ({ navigation, route }) => {
                 .collection(selectDate.toString())
                 .orderBy("start", "asc")
                 .get()
-                .then((snapshots) => {
+                .then(async (snapshots) => {
+                    let list = [];
                     snapshots.forEach((snapshot) => {
                         let c = {};
                         const data = snapshot.data();
@@ -152,10 +156,33 @@ export default GX = ({ navigation, route }) => {
                         c["startDate"] = start;
                         c["end"] = moment(end).format("HH:mm");
                         c["isToday"] = today.getDate() === selectDate;
+                        c["ref"] = snapshot.ref;
                         list.push(c);
                     });
+                    if (classname === "spinning") {
+                        const promises = list.map(async (c, i) => {
+                            let clients = Array(28).fill(0);
+                            await c.ref
+                                .collection("clients")
+                                .get()
+                                .then((docs) => {
+                                    docs.forEach((doc) => {
+                                        if (doc.id === uid) {
+                                            clients[Number(doc.data().num) - 1] = 2;
+                                        } else {
+                                            clients[Number(doc.data().num) - 1] = 1;
+                                        }
+                                    });
+                                });
+                            list[i]["clients"] = clients;
+                        });
+                        await Promise.all(promises);
+                    }
+                    return list;
+                })
+                .then((list) => {
+                    setClassList(list);
                 });
-            setClassList(list);
         };
         if (selectDate !== 0) {
             getClass();
@@ -164,7 +191,7 @@ export default GX = ({ navigation, route }) => {
         }
     }, [selectDate]);
 
-    const reserveClass = async (cid) => {
+    const reserveClass = async (cid, num = -1) => {
         const reserveDate = new Date();
         const classInDB = db
             .collection("classes")
@@ -197,12 +224,29 @@ export default GX = ({ navigation, route }) => {
                         .get(classInDB.collection("clients").doc(uid))
                         .then((clientDoc) => {
                             if (!clientDoc.exists) {
-                                transaction.set(classInDB.collection("clients").doc(uid), {
-                                    uid: uid,
-                                });
+                                if (classname === "spinning") {
+                                    transaction.set(classInDB.collection("clients").doc(uid), {
+                                        uid: uid,
+                                        num: num,
+                                    });
+                                } else {
+                                    transaction.set(classInDB.collection("clients").doc(uid), {
+                                        uid: uid,
+                                    });
+                                }
                                 transaction.update(classInDB, {
                                     currentClient: currentClient + 1,
                                 });
+                                let tempInfo = {
+                                    classId: cid,
+                                    start: start,
+                                    end: end,
+                                    trainer: trainer,
+                                    className: classname,
+                                };
+                                if (classname === "spinning") {
+                                    tempInfo["num"] = num;
+                                }
                                 transaction.set(
                                     db
                                         .collection("users")
@@ -211,13 +255,7 @@ export default GX = ({ navigation, route }) => {
                                         .doc(date)
                                         .collection(selectDate.toString())
                                         .doc(cid),
-                                    {
-                                        classId: cid,
-                                        start: start,
-                                        end: end,
-                                        trainer: trainer,
-                                        className: classname,
-                                    }
+                                    tempInfo
                                 );
                                 transaction.update(
                                     db
@@ -282,7 +320,7 @@ export default GX = ({ navigation, route }) => {
                 } else if (error === "Time Out") {
                     Alert.alert(
                         "경고",
-                        "수업 시작 3시간전까지만 예약 가능합니다.",
+                        "수업 시작 1시간전까지만 예약 가능합니다.",
                         [
                             {
                                 text: "확인",
@@ -431,22 +469,28 @@ export default GX = ({ navigation, route }) => {
                                     style={MyStyles.menu}
                                     onPress={() => {
                                         if (availReserve) {
-                                            Alert.alert(
-                                                selectDate.toString() +
-                                                    "일 " +
-                                                    c.start +
-                                                    "~" +
-                                                    c.end,
-                                                "확실합니까?",
-                                                [
-                                                    { text: "취소" },
-                                                    {
-                                                        text: "확인",
-                                                        onPress: () => reserveClass(c.cid),
-                                                    },
-                                                ],
-                                                { cancelable: false }
-                                            );
+                                            if (classname === "spinning") {
+                                                setSelectClass(c.cid);
+                                                setClientsForSeat(c.clients);
+                                                setModalSeat(true);
+                                            } else {
+                                                Alert.alert(
+                                                    selectDate.toString() +
+                                                        "일 " +
+                                                        c.start +
+                                                        "~" +
+                                                        c.end,
+                                                    "확실합니까?",
+                                                    [
+                                                        { text: "취소" },
+                                                        {
+                                                            text: "확인",
+                                                            onPress: () => reserveClass(c.cid),
+                                                        },
+                                                    ],
+                                                    { cancelable: false }
+                                                );
+                                            }
                                         } else {
                                             Alert.alert(
                                                 "경고",
@@ -492,6 +536,39 @@ export default GX = ({ navigation, route }) => {
                         ) : undefined}
                     </ScrollView>
                 </View>
+                <Modal
+                    isVisible={modalSeat}
+                    style={{ justifyContent: "flex-end", margin: 0 }}
+                    onBackdropPress={() => setModalClass(false)}
+                    onBackButtonPress={() => setModalClass(false)}
+                >
+                    <View
+                        style={{
+                            height: hp("80%"),
+                            backgroundColor: "rgb(250, 250, 250)",
+                        }}
+                    >
+                        <View
+                            style={{ flexDirection: "row", backgroundColor: theme.colors.primary }}
+                        >
+                            <Button
+                                onPress={() => {
+                                    setModalSeat(false);
+                                }}
+                                labelStyle={[TextSize.largeSize, { color: "white" }]}
+                            >
+                                닫기
+                            </Button>
+                            <View style={{ flex: 7 }} />
+                        </View>
+                        <GxSeat
+                            permit="client"
+                            clientList={clientsForSeat}
+                            onPress={reserveClass}
+                            cid={selectClass}
+                        />
+                    </View>
+                </Modal>
             </Modal>
         </View>
     );

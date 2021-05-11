@@ -68,6 +68,7 @@ export const MyStyles = StyleSheet.create({
 });
 
 export const TextSize = StyleSheet.create({
+    smallSize: { fontSize: RFPercentage(1.6) },
     normalSize: { fontSize: RFPercentage(1.9) },
     largeSize: { fontSize: RFPercentage(2.2) },
     largerSize: { fontSize: RFPercentage(2.5) },
