@@ -174,11 +174,20 @@ export default Class = ({ navigation }) => {
             );
         } else {
             if (classname === "pt") {
-                navigation.navigate("PT", {
-                    ptName: "pt",
-                    trainerName: ptTrainerInfo.name,
-                    trainerUid: ptTrainerInfo.uid,
-                });
+                if (ptTrainerInfo.name !== "" && ptTrainerInfo.uid !== "") {
+                    navigation.navigate("PT", {
+                        ptName: "pt",
+                        trainerName: ptTrainerInfo.name,
+                        trainerUid: ptTrainerInfo.uid,
+                    });
+                } else {
+                    Alert.alert(
+                        "경고",
+                        "담당 트레이너 계정이 삭제되었습니다.\n관리자에게 문의해주세요.",
+                        [{ text: "확인" }],
+                        { cancelable: false }
+                    );
+                }
             } else {
                 navigation.navigate("SelectDate", { classname: classname });
             }

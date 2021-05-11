@@ -15,11 +15,23 @@ export default SelectSquashKind = ({ navigation, route }) => {
                         style={MyStyles.menu}
                         onPress={() => {
                             if (availPt) {
-                                navigation.navigate("PT", {
-                                    ptName: "squash",
-                                    trainerName: route.params.trainerName,
-                                    trainerUid: route.params.trainerUid,
-                                });
+                                if (
+                                    route.params.trainerName !== "" &&
+                                    route.params.trainerUid !== ""
+                                ) {
+                                    navigation.navigate("PT", {
+                                        ptName: "squash",
+                                        trainerName: route.params.trainerName,
+                                        trainerUid: route.params.trainerUid,
+                                    });
+                                } else {
+                                    Alert.alert(
+                                        "경고",
+                                        "담당 트레이너 계정이 삭제되었습니다.\n관리자에게 문의해주세요.",
+                                        [{ text: "확인" }],
+                                        { cancelable: false }
+                                    );
+                                }
                             } else {
                                 Alert.alert(
                                     "경고",
