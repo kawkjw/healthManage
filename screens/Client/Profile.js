@@ -300,6 +300,9 @@ export default Profile = ({ navigation }) => {
                                     ) {
                                         c["confirm"] = data.confirm;
                                     }
+                                    if (data.className === "spinning") {
+                                        c["num"] = data.num;
+                                    }
                                     reserved.push(c);
                                 });
                             });
@@ -343,6 +346,9 @@ export default Profile = ({ navigation }) => {
                                     data.className === "ot"
                                 ) {
                                     c["confirm"] = data.confirm;
+                                }
+                                if (data.className === "spinning") {
+                                    c["num"] = data.num;
                                 }
                                 reserved.push(c);
                             });
@@ -782,6 +788,9 @@ export default Profile = ({ navigation }) => {
                                                             ? " (승인O)"
                                                             : " (승인X)"
                                                         : null}
+                                                    {reservedClass.className === "spinning"
+                                                        ? ` (${reservedClass.num}번)`
+                                                        : null}
                                                 </Text>
                                             </View>
                                         </View>
@@ -861,6 +870,9 @@ export default Profile = ({ navigation }) => {
                                                         ? reservedClass.confirm
                                                             ? " (승인O)"
                                                             : " (승인X)"
+                                                        : null}
+                                                    {reservedClass.className === "spinning"
+                                                        ? ` (${reservedClass.num}번)`
                                                         : null}
                                                 </Text>
                                             </View>
