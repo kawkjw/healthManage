@@ -677,7 +677,7 @@ export default OT = ({ navigation, route }) => {
                                             ) : availTime.isToday ? (
                                                 (availTime.date.getTime() - today.getTime()) /
                                                     60000 <=
-                                                180 ? null : (
+                                                60 ? null : (
                                                     <Surface
                                                         style={{
                                                             flex: 1,

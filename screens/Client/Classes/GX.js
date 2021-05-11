@@ -217,7 +217,7 @@ export default GX = ({ navigation, route }) => {
                 const sub = (start.toDate().getTime() - reserveDate.getTime()) / 60000;
                 if (currentClient >= maxClient) {
                     return Promise.reject("No Remain Reserve");
-                } else if (sub <= 180) {
+                } else if (sub <= 60) {
                     return Promise.reject("Time Out");
                 } else {
                     return await transaction
