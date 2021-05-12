@@ -618,17 +618,13 @@ export default ClassInfo = ({ navigation }) => {
                                     <View
                                         key={index}
                                         style={{
-                                            paddingLeft: 10,
+                                            paddingHorizontal: 10,
                                             flexDirection: "row",
                                         }}
                                     >
                                         <View
                                             style={{
-                                                marginRight: 5,
-                                                width:
-                                                    selectedClass.className === "spinning"
-                                                        ? wp("6%")
-                                                        : wp("4%"),
+                                                flex: 1,
                                                 alignItems: "flex-end",
                                             }}
                                         >
@@ -640,14 +636,14 @@ export default ClassInfo = ({ navigation }) => {
                                         </View>
                                         <View
                                             style={{
-                                                marginRight: 5,
-                                                width: wp("11%"),
+                                                flex: 2,
                                                 alignItems: "center",
                                             }}
                                         >
                                             <Text style={TextSize.normalSize}>{client.name}</Text>
                                         </View>
                                         <TouchableOpacity
+                                            style={{ flex: 8 }}
                                             onPress={() =>
                                                 Linking.openURL(`tel:${client.phoneNumber}`)
                                             }

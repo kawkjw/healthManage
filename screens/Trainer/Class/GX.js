@@ -79,7 +79,14 @@ export default GX = ({ navigation, route }) => {
             const holidayList = await getHoliday(selectedYear, selectedMonth);
             for (let i = 1; i <= endDate.getDate(); i++) {
                 const d = new Date(yearMonthStr + "-" + (i < 10 ? "0" + i : i));
-                let item = { id: i.toString(), pressable: true };
+                let item = {
+                    id: i.toString(),
+                    pressable: true,
+                    isToday:
+                        i === today.getDate() &&
+                        selectedMonth === today.getMonth() + 1 &&
+                        selectedYear === today.getFullYear(),
+                };
                 if (d.getDay() === 0) {
                     item["color"] = "red";
                 } else if (holidayList[i]) {
@@ -331,18 +338,33 @@ export default GX = ({ navigation, route }) => {
                             }}
                             disabled={!item.pressable}
                         >
-                            <Text
-                                style={[
-                                    TextSize.largeSize,
-                                    item.color === "black"
-                                        ? { color: "black" }
-                                        : item.color === "blue"
-                                        ? { color: "blue" }
-                                        : { color: "red" },
-                                ]}
+                            <View
+                                style={
+                                    item.isToday
+                                        ? {
+                                              backgroundColor: "#99ddff",
+                                              borderRadius: 50,
+                                              width: wp("8%"),
+                                              height: wp("8%"),
+                                              alignItems: "center",
+                                              justifyContent: "center",
+                                          }
+                                        : undefined
+                                }
                             >
-                                {item.id}
-                            </Text>
+                                <Text
+                                    style={[
+                                        TextSize.largeSize,
+                                        item.color === "black"
+                                            ? { color: "black" }
+                                            : item.color === "blue"
+                                            ? { color: "blue" }
+                                            : { color: "red" },
+                                    ]}
+                                >
+                                    {item.id}
+                                </Text>
+                            </View>
                         </TouchableOpacity>
                     </Surface>
                 )}
@@ -515,12 +537,12 @@ export default GX = ({ navigation, route }) => {
                                         key={index}
                                         style={{
                                             flexDirection: "row",
-                                            paddingLeft: 10,
+                                            paddingHorizontal: 10,
                                         }}
                                     >
                                         <View
                                             style={{
-                                                width: isSpinning ? wp("6%") : wp("4%"),
+                                                flex: 1,
                                                 alignItems: "flex-end",
                                             }}
                                         >
@@ -532,13 +554,14 @@ export default GX = ({ navigation, route }) => {
                                         </View>
                                         <View
                                             style={{
-                                                width: wp("15%"),
+                                                flex: 2,
                                                 alignItems: "center",
                                             }}
                                         >
                                             <Text style={TextSize.normalSize}>{client.name}</Text>
                                         </View>
                                         <TouchableOpacity
+                                            style={{ flex: 8 }}
                                             onPress={() =>
                                                 Linking.openURL(`tel:${client.phoneNumber}`)
                                             }
@@ -547,7 +570,7 @@ export default GX = ({ navigation, route }) => {
                                                 style={[
                                                     TextSize.normalSize,
                                                     {
-                                                        color: "blue",
+                                                        color: "deepskyblue",
                                                     },
                                                 ]}
                                             >
@@ -557,19 +580,16 @@ export default GX = ({ navigation, route }) => {
                                     </View>
                                 ))
                             )}
-                            {isSpinning && (
-                                <View
-                                    style={{
-                                        borderTopWidth: 1,
-                                        borderTopColor: "grey",
-                                        flex: 1,
-                                        marginTop: 10,
-                                    }}
-                                >
-                                    <GxSeat permit="trainer" clientList={clientList} />
-                                    <View style={{ height: hp("10%") }} />
-                                </View>
-                            )}
+                            <View
+                                style={{
+                                    borderTopWidth: 1,
+                                    borderTopColor: "grey",
+                                    flex: 1,
+                                    marginTop: 10,
+                                }}
+                            >
+                                {isSpinning && <GxSeat permit="trainer" clientList={clientList} />}
+                            </View>
                         </ScrollView>
                     </View>
                 </Modal>
