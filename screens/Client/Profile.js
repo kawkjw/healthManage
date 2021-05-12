@@ -256,6 +256,15 @@ export default Profile = ({ navigation }) => {
                                         confirmExtend: doc.data().confirm,
                                     });
                                 });
+                            } else {
+                                docs.forEach((doc) => {
+                                    if (doc.data().confirm) {
+                                        setExtendBool({
+                                            hasExtend: true,
+                                            confirmExtend: doc.data().confirm,
+                                        });
+                                    }
+                                });
                             }
                         });
                     }
