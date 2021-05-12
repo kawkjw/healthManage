@@ -1,12 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import {
-    TouchableOpacity,
-    SafeAreaView,
-    Keyboard,
-    KeyboardAvoidingView,
-    Alert,
-    View,
-} from "react-native";
+import { TouchableOpacity, Keyboard, KeyboardAvoidingView, Alert, View } from "react-native";
 import myBase from "../../config/MyBase";
 import firebase from "firebase";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
@@ -156,14 +149,19 @@ export default ResetPw = ({ navigation }) => {
     };
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
             <FirebaseRecaptchaVerifierModal
                 ref={appVerifier}
                 firebaseConfig={myBase.options}
                 cancelLabel="취소"
             />
             <TouchableOpacity
-                style={{ alignItems: "center", justifyContent: "center", paddingHorizontal: 30 }}
+                style={{
+                    flex: 1,
+                    alignItems: "center",
+                    justifyContent: "center",
+                    paddingHorizontal: 30,
+                }}
                 onPress={Keyboard.dismiss}
                 accessible={false}
                 activeOpacity={1}
@@ -254,7 +252,9 @@ export default ResetPw = ({ navigation }) => {
                     </View>
                 </KeyboardAvoidingView>
             </TouchableOpacity>
-
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
             <Modal
                 isVisible={modalChangePw}
                 style={{ justifyContent: "flex-end", margin: 0 }}
@@ -349,6 +349,6 @@ export default ResetPw = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
             </Modal>
-        </SafeAreaView>
+        </View>
     );
 };

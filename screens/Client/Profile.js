@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import {
-    SafeAreaView,
     TouchableOpacity,
     View,
     Image,
@@ -485,261 +484,339 @@ export default Profile = ({ navigation }) => {
     };
 
     return (
-        <SafeAreaView style={[MyStyles.container, { justifyContent: "center" }]}>
-            <View style={{ justifyContent: "center", alignItems: "center" }}>
-                <Surface style={{ elevation: 6, borderRadius: 20, marginBottom: 15 }}>
-                    <TouchableOpacity
-                        style={[
-                            {
-                                aspectRatio: 1,
-                                alignItems: "center",
-                                justifyContent: "center",
-                                paddingVertical: 20,
-                            },
-                            width >= 800
-                                ? { width: wp("54%") }
-                                : width >= 550
-                                ? { width: wp("64%") }
-                                : { width: wp("90%") },
-                        ]}
-                        onPress={() => {
-                            if (canGenQR) {
-                                setIsRun(!isRun);
-                                setCount(15);
-                            } else {
-                                Alert.alert("경고", "회원권이 없습니다.", [{ text: "확인" }], {
-                                    cancelable: false,
-                                });
-                            }
-                        }}
-                    >
-                        {isRun ? (
-                            <>
-                                <View
-                                    style={{
-                                        alignItems: "center",
-                                    }}
-                                >
-                                    {data.length > 0 ? (
-                                        <QRCode
-                                            value={data}
-                                            size={
-                                                width >= 800
-                                                    ? wp("44%")
-                                                    : width >= 550
-                                                    ? wp("52%")
-                                                    : wp("70%")
-                                            }
-                                            bgColor="#000000"
-                                            fgColor="#FFFFFF"
-                                        />
-                                    ) : undefined}
-
-                                    <Text style={[TextSize.largeSize, { marginTop: 10 }]}>
-                                        유효시간 {isRun ? count : 0}초
-                                    </Text>
-                                </View>
-                            </>
-                        ) : (
-                            <>
-                                <Text style={TextSize.largeSize}>입장 코드 생성</Text>
-                                <Image
-                                    style={[MyStyles.image, { width: wp("80%"), aspectRatio: 1 }]}
-                                    source={require("../../assets/qrcode-test.png")}
-                                />
-                            </>
-                        )}
-                    </TouchableOpacity>
-                </Surface>
-                <Surface
-                    style={[
-                        { borderRadius: 20, elevation: 6 },
-                        width >= 800
-                            ? { width: wp("54%"), height: hp("34%") }
-                            : width >= 550
-                            ? { width: wp("64%"), height: hp("34%") }
-                            : { width: wp("90%"), height: hp("35%") },
-                    ]}
-                >
-                    {loading ? (
-                        <View
-                            style={{
-                                flex: 1,
-                                alignItems: "center",
-                                justifyContent: "center",
+        <View style={[MyStyles.container, { justifyContent: "center" }]}>
+            <View style={{ flex: 1, justifyContent: "center" }}>
+                <View style={{ alignItems: "center" }}>
+                    <Surface style={{ elevation: 6, borderRadius: 20, marginBottom: 15 }}>
+                        <TouchableOpacity
+                            style={[
+                                {
+                                    aspectRatio: 1,
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    paddingVertical: 20,
+                                },
+                                width >= 800
+                                    ? { width: wp("54%") }
+                                    : width >= 550
+                                    ? { width: wp("64%") }
+                                    : { width: wp("90%") },
+                            ]}
+                            onPress={() => {
+                                if (canGenQR) {
+                                    setIsRun(!isRun);
+                                    setCount(15);
+                                } else {
+                                    Alert.alert("경고", "회원권이 없습니다.", [{ text: "확인" }], {
+                                        cancelable: false,
+                                    });
+                                }
                             }}
                         >
-                            <ActivityIndicator animating={true} size="large" color="black" />
-                        </View>
-                    ) : (
-                        <View style={{ paddingBottom: 15 }}>
-                            <ScrollView
-                                style={{ padding: 15 }}
-                                showsVerticalScrollIndicator={false}
-                            >
-                                <Text style={MyStyles.profileText}>이름 : {name}</Text>
-                                <View style={{ flexDirection: "row" }}>
-                                    <Text style={[MyStyles.profileText, { flex: 9 }]}>
-                                        휴대폰번호 : {phoneNumber}
-                                    </Text>
-                                    <TouchableOpacity
-                                        style={{ flex: 1 }}
-                                        onPress={() => {
-                                            setModalPhoneVisible(true);
+                            {isRun ? (
+                                <>
+                                    <View
+                                        style={{
+                                            alignItems: "center",
                                         }}
                                     >
+                                        {data.length > 0 ? (
+                                            <QRCode
+                                                value={data}
+                                                size={
+                                                    width >= 800
+                                                        ? wp("44%")
+                                                        : width >= 550
+                                                        ? wp("52%")
+                                                        : wp("70%")
+                                                }
+                                                bgColor="#000000"
+                                                fgColor="#FFFFFF"
+                                            />
+                                        ) : undefined}
+
+                                        <Text style={[TextSize.largeSize, { marginTop: 10 }]}>
+                                            유효시간 {isRun ? count : 0}초
+                                        </Text>
+                                    </View>
+                                </>
+                            ) : (
+                                <>
+                                    <Text style={TextSize.largeSize}>입장 코드 생성</Text>
+                                    <Image
+                                        style={[
+                                            MyStyles.image,
+                                            { width: wp("80%"), aspectRatio: 1 },
+                                        ]}
+                                        source={require("../../assets/qrcode-test.png")}
+                                    />
+                                </>
+                            )}
+                        </TouchableOpacity>
+                    </Surface>
+                    <Surface
+                        style={[
+                            { borderRadius: 20, elevation: 6 },
+                            width >= 800
+                                ? { width: wp("54%"), height: hp("34%") }
+                                : width >= 550
+                                ? { width: wp("64%"), height: hp("34%") }
+                                : { width: wp("90%"), height: hp("35%") },
+                        ]}
+                    >
+                        {loading ? (
+                            <View
+                                style={{
+                                    flex: 1,
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                }}
+                            >
+                                <ActivityIndicator animating={true} size="large" color="black" />
+                            </View>
+                        ) : (
+                            <View style={{ paddingBottom: 15 }}>
+                                <ScrollView
+                                    style={{ padding: 15 }}
+                                    showsVerticalScrollIndicator={false}
+                                >
+                                    <Text style={MyStyles.profileText}>이름 : {name}</Text>
+                                    <View style={{ flexDirection: "row" }}>
+                                        <Text style={[MyStyles.profileText, { flex: 9 }]}>
+                                            휴대폰번호 : {phoneNumber}
+                                        </Text>
+                                        <TouchableOpacity
+                                            style={{ flex: 1 }}
+                                            onPress={() => {
+                                                setModalPhoneVisible(true);
+                                            }}
+                                        >
+                                            <Text
+                                                style={[
+                                                    MyStyles.profileText,
+                                                    {
+                                                        textAlign: "right",
+                                                        color: "#1e90ff",
+                                                    },
+                                                ]}
+                                            >
+                                                변경
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </View>
+                                    <Text style={MyStyles.profileText}>
+                                        아이디 :{" "}
+                                        {myBase.auth().currentUser !== null &&
+                                            myBase.auth().currentUser.email.split("@")[0]}
+                                    </Text>
+                                    <Text style={MyStyles.profileText}>
+                                        보관함 번호 :{" "}
+                                        {locker !== undefined
+                                            ? locker.lockerNumber === 0
+                                                ? locker.expired
+                                                    ? "없음"
+                                                    : "결제 완료(미배정)"
+                                                : `${locker.lockerNumber}번` +
+                                                  (locker.expired
+                                                      ? "(만료됨)"
+                                                      : `(${moment(locker.end.toDate()).format(
+                                                            "YY. MM. DD."
+                                                        )} 까지)`)
+                                            : "없음"}
+                                    </Text>
+                                    <Text style={MyStyles.profileText}>
+                                        운동복 이용 :{" "}
+                                        {clothes !== undefined
+                                            ? clothes.expired
+                                                ? "만료됨"
+                                                : `${moment(clothes.end.toDate()).format(
+                                                      "YY. MM. DD."
+                                                  )} 까지`
+                                            : "안함"}
+                                    </Text>
+                                    <Text
+                                        style={[
+                                            MyStyles.profileText,
+                                            TextSize.largeSize,
+                                            TextFamily.NanumBold,
+                                        ]}
+                                    >
+                                        회원권 정보
+                                        {hasExtend
+                                            ? confirmExtend
+                                                ? undefined
+                                                : "(연장 승인 대기중)"
+                                            : undefined}
+                                    </Text>
+                                    {membershipInfo.split("\n").map((info, index) => (
+                                        <View
+                                            key={index}
+                                            style={{
+                                                flexDirection: "row",
+                                                alignItems: "center",
+                                                marginBottom: 1,
+                                            }}
+                                        >
+                                            {info === "회원권이 없습니다." ? (
+                                                <>
+                                                    <MaterialCommunityIcons
+                                                        name="close-circle-outline"
+                                                        size={20}
+                                                        color="black"
+                                                    />
+                                                    <Text
+                                                        style={[
+                                                            TextSize.normalSize,
+                                                            {
+                                                                marginLeft: 3,
+                                                            },
+                                                        ]}
+                                                    >
+                                                        {info}
+                                                    </Text>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <MaterialCommunityIcons
+                                                        name="check-circle-outline"
+                                                        size={20}
+                                                        color="black"
+                                                        style={{ marginRight: 3 }}
+                                                    />
+                                                    {info.split(":").map((s, i) => (
+                                                        <View
+                                                            key={i}
+                                                            style={[
+                                                                i === 0
+                                                                    ? textWidth !== 0
+                                                                        ? {
+                                                                              width: textWidth,
+                                                                              alignItems:
+                                                                                  "flex-end",
+                                                                          }
+                                                                        : undefined
+                                                                    : undefined,
+                                                            ]}
+                                                            onLayout={({
+                                                                nativeEvent: {
+                                                                    layout: { width },
+                                                                },
+                                                            }) => {
+                                                                if (i === 0) {
+                                                                    if (textWidth < width)
+                                                                        setTextWidth(width);
+                                                                }
+                                                            }}
+                                                        >
+                                                            <Text style={TextSize.normalSize}>
+                                                                {(i === 1 ? ": " : "") + s}
+                                                            </Text>
+                                                        </View>
+                                                    ))}
+                                                </>
+                                            )}
+                                        </View>
+                                    ))}
+                                    <View style={{ marginTop: 3 }}>
                                         <Text
                                             style={[
                                                 MyStyles.profileText,
-                                                {
-                                                    textAlign: "right",
-                                                    color: "#1e90ff",
-                                                },
+                                                TextSize.largeSize,
+                                                TextFamily.NanumBold,
                                             ]}
                                         >
-                                            변경
+                                            이번 달 수업 예약 정보
                                         </Text>
-                                    </TouchableOpacity>
-                                </View>
-                                <Text style={MyStyles.profileText}>
-                                    아이디 :{" "}
-                                    {myBase.auth().currentUser !== null &&
-                                        myBase.auth().currentUser.email.split("@")[0]}
-                                </Text>
-                                <Text style={MyStyles.profileText}>
-                                    보관함 번호 :{" "}
-                                    {locker !== undefined
-                                        ? locker.lockerNumber === 0
-                                            ? locker.expired
-                                                ? "없음"
-                                                : "결제 완료(미배정)"
-                                            : `${locker.lockerNumber}번` +
-                                              (locker.expired
-                                                  ? "(만료됨)"
-                                                  : `(${moment(locker.end.toDate()).format(
-                                                        "YY. MM. DD."
-                                                    )} 까지)`)
-                                        : "없음"}
-                                </Text>
-                                <Text style={MyStyles.profileText}>
-                                    운동복 이용 :{" "}
-                                    {clothes !== undefined
-                                        ? clothes.expired
-                                            ? "만료됨"
-                                            : `${moment(clothes.end.toDate()).format(
-                                                  "YY. MM. DD."
-                                              )} 까지`
-                                        : "안함"}
-                                </Text>
-                                <Text
-                                    style={[
-                                        MyStyles.profileText,
-                                        TextSize.largeSize,
-                                        TextFamily.NanumBold,
-                                    ]}
-                                >
-                                    회원권 정보
-                                    {hasExtend
-                                        ? confirmExtend
-                                            ? undefined
-                                            : "(연장 승인 대기중)"
-                                        : undefined}
-                                </Text>
-                                {membershipInfo.split("\n").map((info, index) => (
-                                    <View
-                                        key={index}
-                                        style={{
-                                            flexDirection: "row",
-                                            alignItems: "center",
-                                            marginBottom: 1,
-                                        }}
-                                    >
-                                        {info === "회원권이 없습니다." ? (
-                                            <>
-                                                <MaterialCommunityIcons
-                                                    name="close-circle-outline"
+                                        {reservedClasses.length === 0 ? (
+                                            <View
+                                                style={{
+                                                    flexDirection: "row",
+                                                    alignItems: "center",
+                                                }}
+                                            >
+                                                <Ionicons
+                                                    name="close-circle-sharp"
                                                     size={20}
                                                     color="black"
+                                                    style={{ marginRight: 4 }}
                                                 />
-                                                <Text
-                                                    style={[
-                                                        TextSize.normalSize,
-                                                        {
-                                                            marginLeft: 3,
-                                                        },
-                                                    ]}
-                                                >
-                                                    {info}
+                                                <Text style={TextSize.normalSize}>
+                                                    예약된 수업이 없습니다.
                                                 </Text>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <MaterialCommunityIcons
-                                                    name="check-circle-outline"
-                                                    size={20}
-                                                    color="black"
-                                                    style={{ marginRight: 3 }}
-                                                />
-                                                {info.split(":").map((s, i) => (
-                                                    <View
-                                                        key={i}
+                                            </View>
+                                        ) : null}
+                                        {reservedClasses.map((reservedClass, index) => (
+                                            <View key={index}>
+                                                <View
+                                                    style={{
+                                                        flexDirection: "row",
+                                                        alignItems: "center",
+                                                    }}
+                                                >
+                                                    <Ionicons
+                                                        name="checkmark-circle"
+                                                        size={20}
+                                                        color="black"
+                                                        style={{ marginRight: 4 }}
+                                                    />
+                                                    <Text style={TextSize.normalSize}>
+                                                        {(classNames[reservedClass.className] !==
+                                                        undefined
+                                                            ? classNames[reservedClass.className]
+                                                                  .miniKo
+                                                            : "Error") +
+                                                            "(강사 " +
+                                                            reservedClass.trainer +
+                                                            ")"}
+                                                    </Text>
+                                                </View>
+                                                <View
+                                                    style={{ flexDirection: "row", paddingLeft: 7 }}
+                                                >
+                                                    <Ionicons
+                                                        name="return-down-forward-sharp"
+                                                        size={RFPercentage(2)}
+                                                        color="black"
+                                                        style={{ marginRight: 4 }}
+                                                    />
+                                                    <Text
                                                         style={[
-                                                            i === 0
-                                                                ? textWidth !== 0
-                                                                    ? {
-                                                                          width: textWidth,
-                                                                          alignItems: "flex-end",
-                                                                      }
-                                                                    : undefined
-                                                                : undefined,
-                                                        ]}
-                                                        onLayout={({
-                                                            nativeEvent: {
-                                                                layout: { width },
+                                                            TextSize.normalSize,
+                                                            {
+                                                                marginBottom: 3,
                                                             },
-                                                        }) => {
-                                                            if (i === 0) {
-                                                                if (textWidth < width)
-                                                                    setTextWidth(width);
-                                                            }
-                                                        }}
+                                                        ]}
                                                     >
-                                                        <Text style={TextSize.normalSize}>
-                                                            {(i === 1 ? ": " : "") + s}
-                                                        </Text>
-                                                    </View>
-                                                ))}
-                                            </>
-                                        )}
+                                                        {reservedClass.classDate}{" "}
+                                                        {reservedClass.startTime +
+                                                            "~" +
+                                                            reservedClass.endTime}
+                                                        {reservedClass.className === "pt" ||
+                                                        reservedClass.className === "squashpt" ||
+                                                        reservedClass.className === "ot"
+                                                            ? reservedClass.confirm
+                                                                ? " (승인O)"
+                                                                : " (승인X)"
+                                                            : null}
+                                                        {reservedClass.className === "spinning"
+                                                            ? ` (${reservedClass.num}번)`
+                                                            : null}
+                                                    </Text>
+                                                </View>
+                                            </View>
+                                        ))}
                                     </View>
-                                ))}
-                                <View style={{ marginTop: 3 }}>
-                                    <Text
-                                        style={[
-                                            MyStyles.profileText,
-                                            TextSize.largeSize,
-                                            TextFamily.NanumBold,
-                                        ]}
-                                    >
-                                        이번 달 수업 예약 정보
-                                    </Text>
-                                    {reservedClasses.length === 0 ? (
-                                        <View
-                                            style={{ flexDirection: "row", alignItems: "center" }}
+                                    <View style={{ marginTop: 3 }}>
+                                        <Text
+                                            style={[
+                                                MyStyles.profileText,
+                                                TextSize.largeSize,
+                                                TextFamily.NanumBold,
+                                            ]}
                                         >
-                                            <Ionicons
-                                                name="close-circle-sharp"
-                                                size={20}
-                                                color="black"
-                                                style={{ marginRight: 4 }}
-                                            />
-                                            <Text style={TextSize.normalSize}>
-                                                예약된 수업이 없습니다.
-                                            </Text>
-                                        </View>
-                                    ) : null}
-                                    {reservedClasses.map((reservedClass, index) => (
-                                        <View key={index}>
+                                            다음 달 수업 예약 정보
+                                        </Text>
+                                        {nextReservedClasses.length === 0 ? (
                                             <View
                                                 style={{
                                                     flexDirection: "row",
@@ -747,144 +824,87 @@ export default Profile = ({ navigation }) => {
                                                 }}
                                             >
                                                 <Ionicons
-                                                    name="checkmark-circle"
+                                                    name="close-circle-sharp"
                                                     size={20}
                                                     color="black"
                                                     style={{ marginRight: 4 }}
                                                 />
                                                 <Text style={TextSize.normalSize}>
-                                                    {(classNames[reservedClass.className] !==
-                                                    undefined
-                                                        ? classNames[reservedClass.className].miniKo
-                                                        : "Error") +
-                                                        "(강사 " +
-                                                        reservedClass.trainer +
-                                                        ")"}
+                                                    예약된 수업이 없습니다.
                                                 </Text>
                                             </View>
-                                            <View style={{ flexDirection: "row", paddingLeft: 7 }}>
-                                                <Ionicons
-                                                    name="return-down-forward-sharp"
-                                                    size={RFPercentage(2)}
-                                                    color="black"
-                                                    style={{ marginRight: 4 }}
-                                                />
-                                                <Text
-                                                    style={[
-                                                        TextSize.normalSize,
-                                                        {
-                                                            marginBottom: 3,
-                                                        },
-                                                    ]}
+                                        ) : null}
+                                        {nextReservedClasses.map((reservedClass, index) => (
+                                            <View key={index}>
+                                                <View
+                                                    style={{
+                                                        flexDirection: "row",
+                                                        alignItems: "center",
+                                                    }}
                                                 >
-                                                    {reservedClass.classDate}{" "}
-                                                    {reservedClass.startTime +
-                                                        "~" +
-                                                        reservedClass.endTime}
-                                                    {reservedClass.className === "pt" ||
-                                                    reservedClass.className === "squashpt" ||
-                                                    reservedClass.className === "ot"
-                                                        ? reservedClass.confirm
-                                                            ? " (승인O)"
-                                                            : " (승인X)"
-                                                        : null}
-                                                    {reservedClass.className === "spinning"
-                                                        ? ` (${reservedClass.num}번)`
-                                                        : null}
-                                                </Text>
-                                            </View>
-                                        </View>
-                                    ))}
-                                </View>
-                                <View style={{ marginTop: 3 }}>
-                                    <Text
-                                        style={[
-                                            MyStyles.profileText,
-                                            TextSize.largeSize,
-                                            TextFamily.NanumBold,
-                                        ]}
-                                    >
-                                        다음 달 수업 예약 정보
-                                    </Text>
-                                    {nextReservedClasses.length === 0 ? (
-                                        <View
-                                            style={{ flexDirection: "row", alignItems: "center" }}
-                                        >
-                                            <Ionicons
-                                                name="close-circle-sharp"
-                                                size={20}
-                                                color="black"
-                                                style={{ marginRight: 4 }}
-                                            />
-                                            <Text style={TextSize.normalSize}>
-                                                예약된 수업이 없습니다.
-                                            </Text>
-                                        </View>
-                                    ) : null}
-                                    {nextReservedClasses.map((reservedClass, index) => (
-                                        <View key={index}>
-                                            <View
-                                                style={{
-                                                    flexDirection: "row",
-                                                    alignItems: "center",
-                                                }}
-                                            >
-                                                <Ionicons
-                                                    name="checkmark-circle"
-                                                    size={20}
-                                                    color="black"
-                                                    style={{ marginRight: 4 }}
-                                                />
-                                                <Text style={TextSize.normalSize}>
-                                                    {(classNames[reservedClass.className] !==
-                                                    undefined
-                                                        ? classNames[reservedClass.className].miniKo
-                                                        : "Error") +
-                                                        "(강사 " +
-                                                        reservedClass.trainer +
-                                                        ")"}
-                                                </Text>
-                                            </View>
-                                            <View style={{ flexDirection: "row", paddingLeft: 7 }}>
-                                                <Ionicons
-                                                    name="return-down-forward-sharp"
-                                                    size={RFPercentage(2)}
-                                                    color="black"
-                                                    style={{ marginRight: 4 }}
-                                                />
-                                                <Text
-                                                    style={[
-                                                        TextSize.normalSize,
-                                                        {
-                                                            marginBottom: 3,
-                                                        },
-                                                    ]}
+                                                    <Ionicons
+                                                        name="checkmark-circle"
+                                                        size={20}
+                                                        color="black"
+                                                        style={{ marginRight: 4 }}
+                                                    />
+                                                    <Text style={TextSize.normalSize}>
+                                                        {(classNames[reservedClass.className] !==
+                                                        undefined
+                                                            ? classNames[reservedClass.className]
+                                                                  .miniKo
+                                                            : "Error") +
+                                                            "(강사 " +
+                                                            reservedClass.trainer +
+                                                            ")"}
+                                                    </Text>
+                                                </View>
+                                                <View
+                                                    style={{ flexDirection: "row", paddingLeft: 7 }}
                                                 >
-                                                    {reservedClass.classDate}{" "}
-                                                    {reservedClass.startTime +
-                                                        "~" +
-                                                        reservedClass.endTime}
-                                                    {reservedClass.className === "pt" ||
-                                                    reservedClass.className === "squashpt" ||
-                                                    reservedClass.className === "ot"
-                                                        ? reservedClass.confirm
-                                                            ? " (승인O)"
-                                                            : " (승인X)"
-                                                        : null}
-                                                    {reservedClass.className === "spinning"
-                                                        ? ` (${reservedClass.num}번)`
-                                                        : null}
-                                                </Text>
+                                                    <Ionicons
+                                                        name="return-down-forward-sharp"
+                                                        size={RFPercentage(2)}
+                                                        color="black"
+                                                        style={{ marginRight: 4 }}
+                                                    />
+                                                    <Text
+                                                        style={[
+                                                            TextSize.normalSize,
+                                                            {
+                                                                marginBottom: 3,
+                                                            },
+                                                        ]}
+                                                    >
+                                                        {reservedClass.classDate}{" "}
+                                                        {reservedClass.startTime +
+                                                            "~" +
+                                                            reservedClass.endTime}
+                                                        {reservedClass.className === "pt" ||
+                                                        reservedClass.className === "squashpt" ||
+                                                        reservedClass.className === "ot"
+                                                            ? reservedClass.confirm
+                                                                ? " (승인O)"
+                                                                : " (승인X)"
+                                                            : null}
+                                                        {reservedClass.className === "spinning"
+                                                            ? ` (${reservedClass.num}번)`
+                                                            : null}
+                                                    </Text>
+                                                </View>
                                             </View>
-                                        </View>
-                                    ))}
-                                </View>
-                                <View style={{ height: 30 }}></View>
-                            </ScrollView>
-                        </View>
-                    )}
-                </Surface>
+                                        ))}
+                                    </View>
+                                    <View style={{ height: 30 }}></View>
+                                </ScrollView>
+                            </View>
+                        )}
+                    </Surface>
+                </View>
             </View>
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
             <Modal
                 isVisible={modalPhoneVisible}
                 style={{ justifyContent: "flex-end", margin: 0 }}
@@ -1026,6 +1046,6 @@ export default Profile = ({ navigation }) => {
                     </TouchableOpacity>
                 </View>
             </Modal>
-        </SafeAreaView>
+        </View>
     );
 };

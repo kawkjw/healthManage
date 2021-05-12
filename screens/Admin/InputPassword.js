@@ -46,7 +46,7 @@ export default InputPassword = ({ navigation, route }) => {
     return (
         <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
             <TouchableOpacity
-                style={{ alignSelf: "stretch" }}
+                style={{ flex: 1, alignSelf: "stretch" }}
                 onPress={Keyboard.dismiss}
                 activeOpacity={1}
                 accessible={false}

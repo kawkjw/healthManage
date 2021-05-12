@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, View, TouchableOpacity, ScrollView } from "react-native";
+import { View, TouchableOpacity, ScrollView } from "react-native";
 import { db } from "../../../config/MyBase";
-import { MyStyles, TextSize } from "../../../css/MyStyles";
+import { MyStyles, TextSize, theme } from "../../../css/MyStyles";
 import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
@@ -70,7 +70,7 @@ export default ClientInfo = ({ navigation, route }) => {
     }, [letterIndex]);
 
     return (
-        <SafeAreaView style={MyStyles.container}>
+        <View style={MyStyles.container}>
             <View style={{ flexDirection: "row" }}>
                 {koList.slice(0, 7).map((letter, index) => (
                     <Surface
@@ -177,6 +177,9 @@ export default ClientInfo = ({ navigation, route }) => {
                     )}
                 </ScrollView>
             )}
-        </SafeAreaView>
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
+        </View>
     );
 };

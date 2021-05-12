@@ -1,14 +1,6 @@
 import React, { useEffect } from "react";
-import {
-    Image,
-    SafeAreaView,
-    View,
-    TouchableOpacity,
-    Linking,
-    StatusBar,
-    Dimensions,
-} from "react-native";
-import { MyStyles, TextSize } from "../../css/MyStyles";
+import { Image, View, TouchableOpacity, Linking, StatusBar, Dimensions } from "react-native";
+import { MyStyles, TextSize, theme } from "../../css/MyStyles";
 import * as Notifications from "expo-notifications";
 import {
     heightPercentageToDP as hp,
@@ -61,9 +53,9 @@ export default Home = ({ navigation, route }) => {
     }, []);
 
     return (
-        <SafeAreaView style={[MyStyles.container, { justifyContent: "center" }]}>
+        <View style={MyStyles.container}>
             <StatusBar barStyle="light-content" />
-            <View style={{ alignItems: "center" }}>
+            <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
                 <Surface style={MyStyles.surface}>
                     <TouchableOpacity
                         style={MyStyles.menuRatio1}
@@ -117,6 +109,9 @@ export default Home = ({ navigation, route }) => {
                     </TouchableOpacity>
                 </Surface>
             </View>
-        </SafeAreaView>
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
+        </View>
     );
 };

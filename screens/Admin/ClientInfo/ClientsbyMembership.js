@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, ScrollView, TouchableOpacity, View } from "react-native";
+import { ScrollView, TouchableOpacity, View } from "react-native";
 import { Text, ActivityIndicator, Surface } from "react-native-paper";
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
 import { db } from "../../../config/MyBase";
-import { MyStyles, TextSize } from "../../../css/MyStyles";
+import { MyStyles, TextSize, theme } from "../../../css/MyStyles";
 
 export default ClientbyMembership = ({ navigation, route }) => {
     const [clientInfos, setClientInfos] = useState([]);
@@ -140,7 +140,7 @@ export default ClientbyMembership = ({ navigation, route }) => {
     }, [letterIndex]);
 
     return (
-        <SafeAreaView style={MyStyles.container}>
+        <View style={MyStyles.container}>
             <View style={{ flexDirection: "row" }}>
                 {koList.slice(0, 7).map((letter, index) => (
                     <Surface
@@ -257,6 +257,9 @@ export default ClientbyMembership = ({ navigation, route }) => {
                     )}
                 </ScrollView>
             )}
-        </SafeAreaView>
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
+        </View>
     );
 };

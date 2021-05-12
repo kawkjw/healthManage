@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-import { View, TouchableOpacity, SafeAreaView, Keyboard, Alert, Platform } from "react-native";
+import { View, TouchableOpacity, Keyboard, Alert, Platform } from "react-native";
 import { AuthContext } from "../Auth";
 import myBase, { db } from "../../config/MyBase";
 import firebase from "firebase";
@@ -235,7 +235,7 @@ export default SignUp = ({ navigation }) => {
     };
 
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
             <FirebaseRecaptchaVerifierModal
                 ref={appVerifier}
                 firebaseConfig={myBase.options}
@@ -633,6 +633,9 @@ export default SignUp = ({ navigation }) => {
                 toolbarBackgroundColor={theme.colors.primary}
                 confirmTextColor="white"
             />
-        </SafeAreaView>
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
+        </View>
     );
 };

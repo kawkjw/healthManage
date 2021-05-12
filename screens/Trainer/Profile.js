@@ -1,8 +1,8 @@
 import React, { useContext, useEffect, useState } from "react";
-import { Alert, Keyboard, Linking, SafeAreaView, TouchableOpacity, View } from "react-native";
+import { Alert, Keyboard, Linking, TouchableOpacity, View } from "react-native";
 import myBase, { arrayUnion, db } from "../../config/MyBase";
 import { AuthContext, DataContext } from "../Auth";
-import { MyStyles, TextSize } from "../../css/MyStyles";
+import { MyStyles, TextSize, theme } from "../../css/MyStyles";
 import {
     heightPercentageToDP as hp,
     widthPercentageToDP as wp,
@@ -442,8 +442,10 @@ export default Profile = ({ navigation, route }) => {
     };
 
     return (
-        <SafeAreaView style={[MyStyles.container, { justifyContent: "center" }]}>
-            <Surface style={{ elevation: 6, borderRadius: 20, padding: 15 }}>
+        <View style={[MyStyles.container, { justifyContent: "center" }]}>
+            <Surface
+                style={{ flex: 1, elevation: 6, borderRadius: 20, padding: 15, marginVertical: 20 }}
+            >
                 <View style={{ width: wp("85%"), height: hp("80%") }}>
                     <Text style={MyStyles.profileText}>이름 : {name}</Text>
                     <Text style={MyStyles.profileText}>아이디 : {id}</Text>
@@ -940,6 +942,9 @@ export default Profile = ({ navigation, route }) => {
                     )}
                 </View>
             </Surface>
-        </SafeAreaView>
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
+        </View>
     );
 };

@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { SafeAreaView, TouchableOpacity, StatusBar, View, Alert } from "react-native";
-import { MyStyles, TextSize } from "../../css/MyStyles";
+import { TouchableOpacity, StatusBar, View, Alert } from "react-native";
+import { MyStyles, TextSize, theme } from "../../css/MyStyles";
 import * as Notifications from "expo-notifications";
 import myBase, { db } from "../../config/MyBase";
 import { Surface, Text } from "react-native-paper";
+import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
 export default Home = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
@@ -131,9 +132,9 @@ export default Home = ({ navigation, route }) => {
     };
 
     return (
-        <SafeAreaView style={MyStyles.container}>
+        <View style={MyStyles.container}>
             <StatusBar barStyle="light-content" />
-            <View style={{ marginTop: 10 }}>
+            <View style={{ flex: 1, marginTop: 10 }}>
                 <Surface style={MyStyles.surface}>
                     <TouchableOpacity
                         style={MyStyles.menu}
@@ -168,6 +169,9 @@ export default Home = ({ navigation, route }) => {
                     </Surface>
                 ) : null}
             </View>
-        </SafeAreaView>
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
+        </View>
     );
 };

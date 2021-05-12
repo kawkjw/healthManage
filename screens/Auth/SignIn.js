@@ -140,6 +140,9 @@ export default SignIn = ({ navigation }) => {
                     </View>
                 </TouchableOpacity>
             </KeyboardAwareScrollView>
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
         </View>
     );
 };
