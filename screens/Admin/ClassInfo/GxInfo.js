@@ -22,6 +22,7 @@ import { TextSize, theme } from "../../../css/MyStyles";
 import Modal from "react-native-modal";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { Text, ActivityIndicator, Button, Surface } from "react-native-paper";
+import GxSeat from "../../../config/GxSeat";
 
 export default ClassInfo = ({ navigation }) => {
     const { width } = Dimensions.get("screen");
@@ -184,22 +185,53 @@ export default ClassInfo = ({ navigation }) => {
                                     .get()
                                     .then(async (clients) => {
                                         let uidList = [];
-                                        clients.forEach((client) => {
-                                            uidList.push(client.data().uid);
-                                        });
-                                        const infoPromises = uidList.map(async (clientUid) => {
-                                            await db
-                                                .collection("users")
-                                                .doc(clientUid)
-                                                .get()
-                                                .then((doc) => {
-                                                    temp[index]["clients"].push({
-                                                        name: doc.data().name,
-                                                        phoneNumber: doc.data().phoneNumber,
-                                                    });
+                                        if (gxName === "spinning") {
+                                            clients.forEach((client) => {
+                                                uidList.push({
+                                                    uid: client.data().uid,
+                                                    num: client.data().num,
                                                 });
-                                        });
-                                        await Promise.all(infoPromises);
+                                            });
+                                            const infoPromises = uidList.map(async (v) => {
+                                                await db
+                                                    .collection("users")
+                                                    .doc(v.uid)
+                                                    .get()
+                                                    .then((doc) => {
+                                                        temp[index]["clients"].push({
+                                                            name: doc.data().name,
+                                                            phoneNumber: doc.data().phoneNumber,
+                                                            num: v.num,
+                                                        });
+                                                    });
+                                            });
+                                            await Promise.all(infoPromises);
+                                            temp[index]["clients"].sort((a, b) => {
+                                                return a.num - b.num;
+                                            });
+                                        } else {
+                                            clients.forEach((client) => {
+                                                uidList.push(client.data().uid);
+                                            });
+                                            const infoPromises = uidList.map(async (clientUid) => {
+                                                await db
+                                                    .collection("users")
+                                                    .doc(clientUid)
+                                                    .get()
+                                                    .then((doc) => {
+                                                        temp[index]["clients"].push({
+                                                            name: doc.data().name,
+                                                            phoneNumber: doc.data().phoneNumber,
+                                                        });
+                                                    });
+                                            });
+                                            await Promise.all(infoPromises);
+                                            temp[index]["clients"].sort((a, b) => {
+                                                if (a.name > b.name) return 1;
+                                                if (a.name < b.name) return -1;
+                                                return 0;
+                                            });
+                                        }
                                     });
                             }
                         });
@@ -491,6 +523,7 @@ export default ClassInfo = ({ navigation }) => {
                                                                       end: moment(
                                                                           value.end.toDate()
                                                                       ).format("HH:mm"),
+                                                                      className: gxName,
                                                                   });
                                                                   setModalClientsInfo(true);
                                                               }}
@@ -533,8 +566,6 @@ export default ClassInfo = ({ navigation }) => {
                 <Modal
                     isVisible={modalClientsInfo}
                     style={{ justifyContent: "flex-end", margin: 0 }}
-                    swipeDirection={["down"]}
-                    onSwipeComplete={() => setModalClientsInfo(false)}
                     onBackdropPress={() => setModalClientsInfo(false)}
                     onBackButtonPress={() => setModalClientsInfo(false)}
                 >
@@ -553,7 +584,7 @@ export default ClassInfo = ({ navigation }) => {
                                 }}
                                 labelStyle={[TextSize.largeSize, { color: "white" }]}
                             >
-                                <Text style={TextSize.largeSize}>닫기</Text>
+                                닫기
                             </Button>
                             <View
                                 style={{ flex: 6, alignItems: "center", justifyContent: "center" }}
@@ -564,7 +595,7 @@ export default ClassInfo = ({ navigation }) => {
                             </View>
                             <View style={{ flex: 1 }} />
                         </View>
-                        <View style={{ padding: 10 }}>
+                        <ScrollView style={{ padding: 10 }}>
                             <Text style={TextSize.largeSize}>
                                 {selectedDate}일 {selectedClass.start} ~ {selectedClass.end} (강사{" "}
                                 {selectedClass.trainer})
@@ -594,12 +625,17 @@ export default ClassInfo = ({ navigation }) => {
                                         <View
                                             style={{
                                                 marginRight: 5,
-                                                width: wp("4%"),
+                                                width:
+                                                    selectedClass.className === "spinning"
+                                                        ? wp("6%")
+                                                        : wp("4%"),
                                                 alignItems: "flex-end",
                                             }}
                                         >
                                             <Text style={TextSize.normalSize}>
-                                                {(index + 1).toString() + ". "}
+                                                {selectedClass.className === "spinning"
+                                                    ? client.num + "번"
+                                                    : (index + 1).toString() + ". "}
                                             </Text>
                                         </View>
                                         <View
@@ -630,7 +666,19 @@ export default ClassInfo = ({ navigation }) => {
                                     </View>
                                 ))
                             )}
-                        </View>
+                            <View
+                                style={{
+                                    flex: 1,
+                                    marginTop: 10,
+                                    borderTopWidth: 1,
+                                    borderTopColor: "grey",
+                                }}
+                            >
+                                {selectedClass.className === "spinning" && (
+                                    <GxSeat permit="trainer" clientList={selectedClass.clients} />
+                                )}
+                            </View>
+                        </ScrollView>
                     </View>
                 </Modal>
             </Modal>
