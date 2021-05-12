@@ -22,6 +22,13 @@ Notifications.setNotificationHandler({
     }),
 });
 
+(async () => {
+    await Font.loadAsync({
+        NanumFontR: require("./assets/fonts/NanumSquareRoundR.ttf"),
+        NanumFontB: require("./assets/fonts/NanumSquareRoundB.ttf"),
+    });
+})();
+
 export default function App() {
     Text.defaultProps = Text.defaultProps || {};
     Text.defaultProps.allowFontScaling = false;
@@ -30,12 +37,6 @@ export default function App() {
 
     const [showUpdates, setShowUpdates] = useState(false);
     useEffect(() => {
-        (async () => {
-            await Font.loadAsync({
-                NanumFontR: require("./assets/fonts/NanumSquareRoundR.ttf"),
-                NanumFontB: require("./assets/fonts/NanumSquareRoundB.ttf"),
-            });
-        })();
         Updates.checkForUpdateAsync().then((update) => {
             if (update.isAvailable) {
                 setShowUpdates(true);
