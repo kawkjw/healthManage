@@ -98,7 +98,7 @@ export default SelectTrainer = ({ navigation, route }) => {
                 setTrainers(temp);
             });
         })();
-    });
+    }, []);
 
     return (
         <View style={MyStyles.container}>
