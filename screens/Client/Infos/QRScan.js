@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { View, Button, Text, StyleSheet, Linking, Alert } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
 import base64 from "base-64";
+import ToHome from "../../../components/ToHome";
 
 export default QRScan = ({ navigation }) => {
     const [hasPermission, setHasPermission] = useState(null);
@@ -73,6 +74,7 @@ export default QRScan = ({ navigation }) => {
 
     return (
         <View style={{ flex: 1, justifyContent: "flex-end" }}>
+            <ToHome navigation={navigation} />
             <BarCodeScanner
                 onBarCodeScanned={scanned ? undefined : handleCodeScanned}
                 style={StyleSheet.absoluteFillObject}

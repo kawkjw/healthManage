@@ -12,7 +12,7 @@ export default SelectSquashKind = ({ navigation, route }) => {
                     <TouchableOpacity
                         style={MyStyles.menu}
                         onPress={() =>
-                            navigation.navigate("PT", {
+                            navigation.replace("PT", {
                                 ptName: "squash",
                                 limit: route.params.limit,
                             })
@@ -25,7 +25,7 @@ export default SelectSquashKind = ({ navigation, route }) => {
                     <TouchableOpacity
                         style={MyStyles.menu}
                         onPress={() =>
-                            navigation.navigate("GX", {
+                            navigation.replace("GX", {
                                 className: ["squash"],
                             })
                         }

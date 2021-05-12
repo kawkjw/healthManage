@@ -11,6 +11,7 @@ import SegmentedPicker from "react-native-segmented-picker";
 import { DataContext } from "../../Auth";
 import { ActivityIndicator, Colors, Surface, Text, TextInput } from "react-native-paper";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
+import ToHome from "../../../components/ToHome";
 
 export default ExtendDate = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
@@ -199,6 +200,7 @@ export default ExtendDate = ({ navigation, route }) => {
 
     return (
         <View style={{ flex: 1, alignItems: "center" }}>
+            <ToHome navigation={navigation} />
             {loading ? (
                 <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
                     <ActivityIndicator animating={true} size="large" color={Colors.black} />

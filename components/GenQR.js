@@ -2,13 +2,13 @@ import React, { useEffect, useState } from "react";
 import { View, Text, AppState, TouchableOpacity, Image, Dimensions } from "react-native";
 import { Surface } from "react-native-paper";
 import QRCode from "react-native-qrcode-svg";
-import myBase, { db } from "./MyBase";
+import myBase, { db } from "../config/MyBase";
 import { MyStyles, TextSize, theme } from "../css/MyStyles";
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
-import { useInterval } from "./hooks";
+import { useInterval } from "../config/hooks";
 
 export default GenQR = () => {
     const { width } = Dimensions.get("screen");

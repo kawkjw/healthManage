@@ -5,6 +5,7 @@ import myBase, { db } from "../../../config/MyBase";
 import { DataContext } from "../../Auth";
 import { Surface, Text } from "react-native-paper";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
+import ToHome from "../../../components/ToHome";
 
 export default Class = ({ navigation }) => {
     const [memberships, setMemberships] = useState([]);
@@ -196,6 +197,7 @@ export default Class = ({ navigation }) => {
 
     return (
         <View style={MyStyles.container}>
+            <ToHome navigation={navigation} />
             <ScrollView
                 style={{
                     flex: 1,

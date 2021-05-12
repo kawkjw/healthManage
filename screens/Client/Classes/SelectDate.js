@@ -3,6 +3,7 @@ import { View, TouchableOpacity, ScrollView } from "react-native";
 import { MyStyles, TextSize, theme } from "../../../css/MyStyles";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { Surface, Text } from "react-native-paper";
+import ToHome from "../../../components/ToHome";
 
 export default SelectDate = ({ navigation, route }) => {
     const { classname } = route.params;
@@ -30,6 +31,7 @@ export default SelectDate = ({ navigation, route }) => {
 
     return (
         <View style={MyStyles.container}>
+            <ToHome navigation={navigation} />
             <ScrollView
                 style={{
                     flex: 1,

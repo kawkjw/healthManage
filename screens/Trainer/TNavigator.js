@@ -20,7 +20,7 @@ import { TextFamily, TextSize, theme } from "../../css/MyStyles";
 import { displayedAt, checkBatchimEnding } from "../../config/hooks";
 import { Badge, Button, Card, Text } from "react-native-paper";
 import ClientInfo from "./ClientInfo";
-import GenQR from "../../config/GenQR";
+import GenQR from "../../components/GenQR";
 
 const Stack = createStackNavigator();
 const MyStack = () => {

@@ -29,7 +29,7 @@ import { TextFamily, TextSize, theme } from "../../css/MyStyles";
 import { displayedAt, checkBatchimEnding } from "../../config/hooks";
 import { Text, Badge, Button, Card } from "react-native-paper";
 import Calculate from "./Calculate";
-import GenQR from "../../config/GenQR";
+import GenQR from "../../components/GenQR";
 
 const Stack = createStackNavigator();
 export const WrongNumContext = createContext();

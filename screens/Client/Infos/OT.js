@@ -24,6 +24,7 @@ import { RFPercentage } from "react-native-responsive-fontsize";
 import { ActivityIndicator, Button, Colors, Surface, Text } from "react-native-paper";
 import moment from "moment";
 import * as Notifications from "expo-notifications";
+import ToHome from "../../../components/ToHome";
 
 export default OT = ({ navigation, route }) => {
     const { width } = Dimensions.get("screen");
@@ -421,6 +422,7 @@ export default OT = ({ navigation, route }) => {
 
     return (
         <View style={{ flex: 1 }}>
+            <ToHome navigation={navigation} />
             <View style={{ flexDirection: "row", height: hp("5%") }}>
                 <View
                     style={{

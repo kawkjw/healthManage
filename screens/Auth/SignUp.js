@@ -22,7 +22,7 @@ import {
 import moment from "moment";
 import { TextFamily, theme } from "../../css/MyStyles";
 import Constants from "expo-constants";
-import PostCode from "../../config/PostCode";
+import PostCode from "../../components/PostCode";
 
 export default SignUp = ({ navigation }) => {
     const appVerifier = useRef(null);

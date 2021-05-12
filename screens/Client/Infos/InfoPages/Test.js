@@ -1,10 +1,14 @@
 import React from "react";
-import { Text, SafeAreaView, View, ScrollView } from "react-native";
+import { Text, View, ScrollView } from "react-native";
 import { WebView } from "react-native-webview";
+import ToHome from "../../../../components/ToHome";
+import { theme } from "../../../../css/MyStyles";
+import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 
-export default Test = () => {
+export default Test = ({ navigation }) => {
     return (
-        <SafeAreaView style={{ flex: 1 }}>
+        <View style={{ flex: 1 }}>
+            <ToHome navigation={navigation} />
             <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
                 <View style={{ height: 250 }}>
                     <WebView
@@ -59,6 +63,9 @@ export default Test = () => {
                     </Text>
                 </View>
             </ScrollView>
-        </SafeAreaView>
+            <View
+                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
+            />
+        </View>
     );
 };

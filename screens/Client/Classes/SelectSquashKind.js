@@ -3,12 +3,14 @@ import { Alert, View, TouchableOpacity } from "react-native";
 import { Surface, Text } from "react-native-paper";
 import { MyStyles, TextSize, theme } from "../../../css/MyStyles";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
+import ToHome from "../../../components/ToHome";
 
 export default SelectSquashKind = ({ navigation, route }) => {
     const { availPt, availGroup } = route.params;
 
     return (
         <View style={MyStyles.container}>
+            <ToHome navigation={navigation} />
             <View style={{ flex: 1, marginTop: 20 }}>
                 <Surface style={MyStyles.surface}>
                     <TouchableOpacity

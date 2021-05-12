@@ -3,6 +3,7 @@ import { View, Keyboard, TouchableOpacity, ScrollView, StyleSheet } from "react-
 import { Button, RadioButton, Surface, TextInput, Text } from "react-native-paper";
 import { MyStyles, TextFamily, TextSize, theme } from "../../../css/MyStyles";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
+import ToHome from "../../../components/ToHome";
 
 export default Calculator = ({ navigation, route }) => {
     const [sexSelected, setSexSelected] = useState(-1);
@@ -71,6 +72,7 @@ export default Calculator = ({ navigation, route }) => {
 
     return (
         <View style={{ flex: 1 }}>
+            <ToHome navigation={navigation} />
             <ScrollView>
                 <TouchableOpacity
                     style={{ height: hp("90%"), paddingHorizontal: 10 }}

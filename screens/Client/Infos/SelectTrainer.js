@@ -5,6 +5,7 @@ import myBase, { db } from "../../../config/MyBase";
 import { Surface, Text } from "react-native-paper";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { useFocusEffect } from "@react-navigation/core";
+import ToHome from "../../../components/ToHome";
 
 export default SelectTrainer = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
@@ -102,6 +103,7 @@ export default SelectTrainer = ({ navigation, route }) => {
 
     return (
         <View style={MyStyles.container}>
+            <ToHome navigation={navigation} />
             <ScrollView
                 style={{
                     flex: 1,

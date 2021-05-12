@@ -22,7 +22,7 @@ import { TextSize, theme } from "../../../css/MyStyles";
 import Modal from "react-native-modal";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { Text, ActivityIndicator, Button, Surface } from "react-native-paper";
-import GxSeat from "../../../config/GxSeat";
+import GxSeat from "../../../components/GxSeat";
 
 export default ClassInfo = ({ navigation }) => {
     const { width } = Dimensions.get("screen");

@@ -7,13 +7,13 @@ import {
 import SegmentedPicker from "react-native-segmented-picker";
 import { MaterialIcons } from "@expo/vector-icons";
 import { db } from "../../../config/MyBase";
-import TimeTable from "../../../config/TimeTable";
 import { DataContext } from "../../Auth";
 import { getHoliday } from "../../../config/hooks";
 import { TextSize, theme } from "../../../css/MyStyles";
 import Modal from "react-native-modal";
 import { RFPercentage } from "react-native-responsive-fontsize";
 import { Text, ActivityIndicator, Button, Surface } from "react-native-paper";
+import TimeTable from "../../../components/TimeTable";
 
 export default ClassInfo = ({ navigation, route }) => {
     const { classNames } = useContext(DataContext);

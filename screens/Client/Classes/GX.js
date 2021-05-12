@@ -11,7 +11,8 @@ import { getHoliday } from "../../../config/hooks";
 import Modal from "react-native-modal";
 import { ActivityIndicator, Button, Colors, Surface, Text } from "react-native-paper";
 import * as Notifications from "expo-notifications";
-import GxSeat from "../../../config/GxSeat";
+import GxSeat from "../../../components/GxSeat";
+import ToHome from "../../../components/ToHome";
 
 export default GX = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
@@ -370,6 +371,7 @@ export default GX = ({ navigation, route }) => {
 
     return (
         <View style={{ flex: 1 }}>
+            <ToHome navigation={navigation} />
             {cloading ? (
                 <View style={{ flex: 1, justifyContent: "center" }}>
                     <ActivityIndicator animating={true} size="large" color={Colors.black} />
