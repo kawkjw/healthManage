@@ -10,6 +10,36 @@ export default GxSeat = ({
     onPress = () => {},
     cid = "",
 }) => {
+    const renderForClient = (start, end) => {
+        const num = end - start + 1;
+        const arr = Array(num)
+            .fill(start)
+            .map((v, i) => v + i);
+        return arr.map((n, index) => (
+            <Surface key={index} style={styles.elemView}>
+                <TouchableOpacity
+                    style={[
+                        styles.button,
+                        clientList[n - 1] === 1 && { backgroundColor: "lightgrey" },
+                        clientList[n - 1] === 2 && { backgroundColor: "lightskyblue" },
+                    ]}
+                    onPress={() => {
+                        Alert.alert(
+                            `${n}번 자리`,
+                            "확실합니까?",
+                            [{ text: "취소" }, { text: "확인", onPress: () => onPress(cid, n) }],
+                            { cancelable: false }
+                        );
+                    }}
+                    disabled={clientList[n - 1] !== 0}
+                >
+                    <Text style={TextSize.normalSize}>{n}</Text>
+                    {clientList[n - 1] === 2 && <Text style={TextSize.smallSize}>나</Text>}
+                </TouchableOpacity>
+            </Surface>
+        ));
+    };
+
     const renderForTrainer = (start, end) => {
         const num = end - start + 1;
         const arr = Array(num)
@@ -35,6 +65,7 @@ export default GxSeat = ({
             );
         });
     };
+
     return (
         <View style={{ flex: 1 }}>
             <View style={styles.rowView}>
@@ -45,188 +76,26 @@ export default GxSeat = ({
                 <View style={{ flex: 2 }} />
             </View>
             <View style={styles.rowView}>
-                {permit === "client"
-                    ? clientList.slice(0, 6).map((v, i) => (
-                          <Surface key={i} style={styles.elemView}>
-                              <TouchableOpacity
-                                  style={[
-                                      styles.button,
-                                      v === 1 && { backgroundColor: "lightgrey" },
-                                      v === 2 && { backgroundColor: "lightskyblue" },
-                                  ]}
-                                  onPress={() => {
-                                      Alert.alert(
-                                          `${i + 1}번 자리`,
-                                          "확실합니까?",
-                                          [
-                                              { text: "취소" },
-                                              { text: "확인", onPress: () => onPress(cid, i + 1) },
-                                          ],
-                                          { cancelable: false }
-                                      );
-                                  }}
-                                  disabled={v !== 0}
-                              >
-                                  <Text style={TextSize.normalSize}>{i + 1}</Text>
-                                  {v === 2 && <Text style={TextSize.smallSize}>나</Text>}
-                              </TouchableOpacity>
-                          </Surface>
-                      ))
-                    : renderForTrainer(1, 6)}
+                {permit === "client" ? renderForClient(1, 6) : renderForTrainer(1, 6)}
             </View>
             <View style={styles.rowView}>
                 <View style={styles.blankView} />
-                {permit === "client"
-                    ? clientList.slice(6, 10).map((v, i) => (
-                          <Surface key={i} style={styles.elemView}>
-                              <TouchableOpacity
-                                  style={[
-                                      styles.button,
-                                      v === 1 && { backgroundColor: "lightgrey" },
-                                      v === 2 && { backgroundColor: "lightskyblue" },
-                                  ]}
-                                  onPress={() => {
-                                      Alert.alert(
-                                          `${i + 7}번 자리`,
-                                          "확실합니까?",
-                                          [
-                                              { text: "취소" },
-                                              { text: "확인", onPress: () => onPress(cid, i + 7) },
-                                          ],
-                                          { cancelable: false }
-                                      );
-                                  }}
-                                  disabled={v !== 0}
-                              >
-                                  <Text style={TextSize.normalSize}>{i + 7}</Text>
-                                  {v === 2 && <Text style={TextSize.smallSize}>나</Text>}
-                              </TouchableOpacity>
-                          </Surface>
-                      ))
-                    : renderForTrainer(7, 10)}
+                {permit === "client" ? renderForClient(7, 10) : renderForTrainer(7, 10)}
                 <View style={styles.blankView} />
             </View>
             <View style={styles.rowView}>
-                {permit === "client"
-                    ? clientList.slice(10, 16).map((v, i) => (
-                          <Surface key={i} style={styles.elemView}>
-                              <TouchableOpacity
-                                  style={[
-                                      styles.button,
-                                      v === 1 && { backgroundColor: "lightgrey" },
-                                      v === 2 && { backgroundColor: "lightskyblue" },
-                                  ]}
-                                  onPress={() => {
-                                      Alert.alert(
-                                          `${i + 11}번 자리`,
-                                          "확실합니까?",
-                                          [
-                                              { text: "취소" },
-                                              { text: "확인", onPress: () => onPress(cid, i + 11) },
-                                          ],
-                                          { cancelable: false }
-                                      );
-                                  }}
-                                  disabled={v !== 0}
-                              >
-                                  <Text style={TextSize.normalSize}>{i + 11}</Text>
-                                  {v === 2 && <Text style={TextSize.smallSize}>나</Text>}
-                              </TouchableOpacity>
-                          </Surface>
-                      ))
-                    : renderForTrainer(11, 16)}
+                {permit === "client" ? renderForClient(11, 16) : renderForTrainer(11, 16)}
             </View>
             <View style={[styles.rowView, { marginHorizontal: 30 }]}>
-                {permit === "client"
-                    ? clientList.slice(16, 21).map((v, i) => (
-                          <Surface key={i} style={styles.elemView}>
-                              <TouchableOpacity
-                                  style={[
-                                      styles.button,
-                                      v === 1 && { backgroundColor: "lightgrey" },
-                                      v === 2 && { backgroundColor: "lightskyblue" },
-                                  ]}
-                                  onPress={() => {
-                                      Alert.alert(
-                                          `${i + 17}번 자리`,
-                                          "확실합니까?",
-                                          [
-                                              { text: "취소" },
-                                              { text: "확인", onPress: () => onPress(cid, i + 17) },
-                                          ],
-                                          { cancelable: false }
-                                      );
-                                  }}
-                                  disabled={v !== 0}
-                              >
-                                  <Text style={TextSize.normalSize}>{i + 17}</Text>
-                                  {v === 2 && <Text style={TextSize.smallSize}>나</Text>}
-                              </TouchableOpacity>
-                          </Surface>
-                      ))
-                    : renderForTrainer(17, 21)}
+                {permit === "client" ? renderForClient(17, 21) : renderForTrainer(17, 21)}
             </View>
             <View style={[styles.rowView, { marginHorizontal: 30 }]}>
-                {permit === "client"
-                    ? clientList.slice(21, 26).map((v, i) => (
-                          <Surface key={i} style={styles.elemView}>
-                              <TouchableOpacity
-                                  style={[
-                                      styles.button,
-                                      v === 1 && { backgroundColor: "lightgrey" },
-                                      v === 2 && { backgroundColor: "lightskyblue" },
-                                  ]}
-                                  onPress={() => {
-                                      Alert.alert(
-                                          `${i + 22}번 자리`,
-                                          "확실합니까?",
-                                          [
-                                              { text: "취소" },
-                                              { text: "확인", onPress: () => onPress(cid, i + 22) },
-                                          ],
-                                          { cancelable: false }
-                                      );
-                                  }}
-                                  disabled={v !== 0}
-                              >
-                                  <Text style={TextSize.normalSize}>{i + 22}</Text>
-                                  {v === 2 && <Text style={TextSize.smallSize}>나</Text>}
-                              </TouchableOpacity>
-                          </Surface>
-                      ))
-                    : renderForTrainer(22, 26)}
+                {permit === "client" ? renderForClient(22, 26) : renderForTrainer(22, 26)}
             </View>
             <View style={styles.rowView}>
                 <View style={styles.blankView} />
                 <View style={styles.blankView} />
-                {permit === "client"
-                    ? clientList.slice(26).map((v, i) => (
-                          <Surface key={i} style={styles.elemView}>
-                              <TouchableOpacity
-                                  style={[
-                                      styles.button,
-                                      v === 1 && { backgroundColor: "lightgrey" },
-                                      v === 2 && { backgroundColor: "lightskyblue" },
-                                  ]}
-                                  onPress={() => {
-                                      Alert.alert(
-                                          `${i + 27}번 자리`,
-                                          "확실합니까?",
-                                          [
-                                              { text: "취소" },
-                                              { text: "확인", onPress: () => onPress(cid, i + 27) },
-                                          ],
-                                          { cancelable: false }
-                                      );
-                                  }}
-                                  disabled={v !== 0}
-                              >
-                                  <Text style={TextSize.normalSize}>{i + 27}</Text>
-                                  {v === 2 && <Text style={TextSize.smallSize}>나</Text>}
-                              </TouchableOpacity>
-                          </Surface>
-                      ))
-                    : renderForTrainer(27, 28)}
+                {permit === "client" ? renderForClient(27, 28) : renderForTrainer(27, 28)}
                 <View style={styles.blankView} />
                 <View style={styles.blankView} />
             </View>

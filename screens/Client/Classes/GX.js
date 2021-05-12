@@ -292,6 +292,7 @@ export default GX = ({ navigation, route }) => {
                             {
                                 text: "확인",
                                 onPress: () => {
+                                    setModalSeat(false);
                                     setModalClass(false);
                                     setSelectDate(0);
                                 },
@@ -310,6 +311,7 @@ export default GX = ({ navigation, route }) => {
                             {
                                 text: "확인",
                                 onPress: () => {
+                                    setModalSeat(false);
                                     setModalClass(false);
                                 },
                             },
@@ -324,6 +326,7 @@ export default GX = ({ navigation, route }) => {
                             {
                                 text: "확인",
                                 onPress: () => {
+                                    setModalSeat(false);
                                     setModalClass(false);
                                 },
                             },
@@ -352,6 +355,7 @@ export default GX = ({ navigation, route }) => {
                             {
                                 text: "확인",
                                 onPress: () => {
+                                    setModalSeat(false);
                                     setModalClass(false);
                                     setSelectDate(0);
                                 },
@@ -606,8 +610,8 @@ export default GX = ({ navigation, route }) => {
                 <Modal
                     isVisible={modalSeat}
                     style={{ justifyContent: "flex-end", margin: 0 }}
-                    onBackdropPress={() => setModalClass(false)}
-                    onBackButtonPress={() => setModalClass(false)}
+                    onBackdropPress={() => setModalSeat(false)}
+                    onBackButtonPress={() => setModalSeat(false)}
                 >
                     <View
                         style={{
