@@ -189,6 +189,19 @@ export default Class = ({ navigation }) => {
                         { cancelable: false }
                     );
                 }
+            } else if (classname === "spinning") {
+                Alert.alert(
+                    "주의사항",
+                    "스피닝 예약은\n수업 시작 1시간전부터 가능합니다.",
+                    [
+                        {
+                            text: "확인",
+                            onPress: () =>
+                                navigation.navigate("SelectDate", { classname: classname }),
+                        },
+                    ],
+                    { cancelable: false }
+                );
             } else {
                 navigation.navigate("SelectDate", { classname: classname });
             }
