@@ -769,6 +769,7 @@ export default PT = ({ navigation, route }) => {
                                     </View>
                                 </View>
                             ))}
+                            <View style={{ height: hp("5%") }} />
                         </ScrollView>
                     )}
                 </View>
