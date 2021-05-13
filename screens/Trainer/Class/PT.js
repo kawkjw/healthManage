@@ -1247,7 +1247,7 @@ export default PT = ({ navigation, route }) => {
                                                                 </TouchableOpacity>
                                                             </Surface>
                                                         )
-                                                    ) : availTime.notEditable ? null : (
+                                                    ) : (
                                                         <>
                                                             <Surface
                                                                 style={{
