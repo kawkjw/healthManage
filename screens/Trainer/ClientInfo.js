@@ -119,7 +119,10 @@ export default ClientInfo = ({ navigation, route }) => {
                                             .where("clientUid", "==", info.uid)
                                             .get()
                                             .then((docs) => {
-                                                if (docs.size > 0) {
+                                                if (
+                                                    docs.size > 0 &&
+                                                    infos[idx]["lastClassDate"] === undefined
+                                                ) {
                                                     infos[idx]["lastClassDate"] = new Date(
                                                         date.split("-")[0],
                                                         Number(date.split("-")[1]) - 1,
