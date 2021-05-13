@@ -204,7 +204,9 @@ export default ExtendDate = ({ navigation, route }) => {
             {loading ? (
                 <View style={{ flex: 1, alignItems: "center", justifyContent: "center" }}>
                     <ActivityIndicator animating={true} size="large" color={Colors.black} />
-                    <Text style={TextSize.normalSize}>연장 가능한 이용권을 가져오는 중입니다.</Text>
+                    <Text style={[TextSize.normalSize, { marginTop: 15 }]}>
+                        연장 가능한 이용권을 가져오는 중입니다.
+                    </Text>
                 </View>
             ) : (
                 <KeyboardAwareScrollView
