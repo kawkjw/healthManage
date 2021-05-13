@@ -494,98 +494,105 @@ export default Profile = ({ navigation }) => {
 
     return (
         <View style={[MyStyles.container, { justifyContent: "center" }]}>
-            <ScrollView style={{ flex: 1, alignSelf: "stretch" }}>
-                <View style={{ height: hp("1.5%") }} />
-                <View style={{ alignItems: "center" }}>
-                    <Surface style={{ elevation: 6, borderRadius: 20, marginBottom: 15 }}>
-                        <TouchableOpacity
+            {loading ? (
+                <View
+                    style={[
+                        {
+                            flex: 1,
+                            alignItems: "center",
+                            justifyContent: "center",
+                        },
+                    ]}
+                >
+                    <ActivityIndicator animating={true} size="large" color="black" />
+                    <Text style={[TextSize.largeSize, { margin: 15 }]}>로딩 중...</Text>
+                </View>
+            ) : (
+                <ScrollView style={{ flex: 1, alignSelf: "stretch" }}>
+                    <View style={{ height: hp("1.5%") }} />
+                    <View style={{ alignItems: "center" }}>
+                        <Surface style={{ elevation: 6, borderRadius: 20, marginBottom: 15 }}>
+                            <TouchableOpacity
+                                style={[
+                                    {
+                                        aspectRatio: 1,
+                                        alignItems: "center",
+                                        justifyContent: "center",
+                                        paddingVertical: 20,
+                                    },
+                                    width >= 800
+                                        ? { width: wp("54%") }
+                                        : width >= 550
+                                        ? { width: wp("64%") }
+                                        : { width: wp("90%") },
+                                ]}
+                                onPress={() => {
+                                    if (canGenQR) {
+                                        setIsRun(!isRun);
+                                        setCount(15);
+                                    } else {
+                                        Alert.alert(
+                                            "경고",
+                                            "회원권이 없습니다.",
+                                            [{ text: "확인" }],
+                                            {
+                                                cancelable: false,
+                                            }
+                                        );
+                                    }
+                                }}
+                            >
+                                {isRun ? (
+                                    <>
+                                        <View
+                                            style={{
+                                                alignItems: "center",
+                                            }}
+                                        >
+                                            {data.length > 0 ? (
+                                                <QRCode
+                                                    value={data}
+                                                    size={
+                                                        width >= 800
+                                                            ? wp("44%")
+                                                            : width >= 550
+                                                            ? wp("52%")
+                                                            : wp("70%")
+                                                    }
+                                                    bgColor="#000000"
+                                                    fgColor="#FFFFFF"
+                                                />
+                                            ) : undefined}
+
+                                            <Text style={[TextSize.largeSize, { marginTop: 10 }]}>
+                                                유효시간 {isRun ? count : 0}초
+                                            </Text>
+                                        </View>
+                                    </>
+                                ) : (
+                                    <>
+                                        <Text style={TextSize.largeSize}>입장 코드 생성</Text>
+                                        <Image
+                                            style={[
+                                                MyStyles.image,
+                                                { width: wp("80%"), aspectRatio: 1 },
+                                            ]}
+                                            source={require("../../assets/qrcode-test.png")}
+                                        />
+                                    </>
+                                )}
+                            </TouchableOpacity>
+                        </Surface>
+                        <Surface
                             style={[
-                                {
-                                    aspectRatio: 1,
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    paddingVertical: 20,
-                                },
+                                { borderRadius: 20, elevation: 6 },
                                 width >= 800
                                     ? { width: wp("54%") }
                                     : width >= 550
                                     ? { width: wp("64%") }
                                     : { width: wp("90%") },
                             ]}
-                            onPress={() => {
-                                if (canGenQR) {
-                                    setIsRun(!isRun);
-                                    setCount(15);
-                                } else {
-                                    Alert.alert("경고", "회원권이 없습니다.", [{ text: "확인" }], {
-                                        cancelable: false,
-                                    });
-                                }
-                            }}
                         >
-                            {isRun ? (
-                                <>
-                                    <View
-                                        style={{
-                                            alignItems: "center",
-                                        }}
-                                    >
-                                        {data.length > 0 ? (
-                                            <QRCode
-                                                value={data}
-                                                size={
-                                                    width >= 800
-                                                        ? wp("44%")
-                                                        : width >= 550
-                                                        ? wp("52%")
-                                                        : wp("70%")
-                                                }
-                                                bgColor="#000000"
-                                                fgColor="#FFFFFF"
-                                            />
-                                        ) : undefined}
-
-                                        <Text style={[TextSize.largeSize, { marginTop: 10 }]}>
-                                            유효시간 {isRun ? count : 0}초
-                                        </Text>
-                                    </View>
-                                </>
-                            ) : (
-                                <>
-                                    <Text style={TextSize.largeSize}>입장 코드 생성</Text>
-                                    <Image
-                                        style={[
-                                            MyStyles.image,
-                                            { width: wp("80%"), aspectRatio: 1 },
-                                        ]}
-                                        source={require("../../assets/qrcode-test.png")}
-                                    />
-                                </>
-                            )}
-                        </TouchableOpacity>
-                    </Surface>
-                    <Surface
-                        style={[
-                            { borderRadius: 20, elevation: 6 },
-                            width >= 800
-                                ? { width: wp("54%") }
-                                : width >= 550
-                                ? { width: wp("64%") }
-                                : { width: wp("90%") },
-                            loading && { height: hp("30%") },
-                        ]}
-                    >
-                        {loading ? (
-                            <View
-                                style={{
-                                    flex: 1,
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                }}
-                            >
-                                <ActivityIndicator animating={true} size="large" color="black" />
-                            </View>
-                        ) : (
                             <View style={{ paddingBottom: 15 }}>
                                 <View style={{ padding: 15 }}>
                                     <Text style={MyStyles.profileText}>이름 : {name}</Text>
@@ -779,7 +786,10 @@ export default Profile = ({ navigation }) => {
                                                     </Text>
                                                 </View>
                                                 <View
-                                                    style={{ flexDirection: "row", paddingLeft: 7 }}
+                                                    style={{
+                                                        flexDirection: "row",
+                                                        paddingLeft: 7,
+                                                    }}
                                                 >
                                                     <Ionicons
                                                         name="return-down-forward-sharp"
@@ -868,7 +878,10 @@ export default Profile = ({ navigation }) => {
                                                     </Text>
                                                 </View>
                                                 <View
-                                                    style={{ flexDirection: "row", paddingLeft: 7 }}
+                                                    style={{
+                                                        flexDirection: "row",
+                                                        paddingLeft: 7,
+                                                    }}
                                                 >
                                                     <Ionicons
                                                         name="return-down-forward-sharp"
@@ -905,11 +918,11 @@ export default Profile = ({ navigation }) => {
                                     </View>
                                 </View>
                             </View>
-                        )}
-                    </Surface>
-                </View>
-                <View style={{ height: hp("3%") }} />
-            </ScrollView>
+                        </Surface>
+                    </View>
+                    <View style={{ height: hp("3%") }} />
+                </ScrollView>
+            )}
             <View
                 style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
             />
