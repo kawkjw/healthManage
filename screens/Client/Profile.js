@@ -494,7 +494,8 @@ export default Profile = ({ navigation }) => {
 
     return (
         <View style={[MyStyles.container, { justifyContent: "center" }]}>
-            <View style={{ flex: 1, justifyContent: "center" }}>
+            <ScrollView style={{ flex: 1, alignSelf: "stretch" }}>
+                <View style={{ height: hp("1.5%") }} />
                 <View style={{ alignItems: "center" }}>
                     <Surface style={{ elevation: 6, borderRadius: 20, marginBottom: 15 }}>
                         <TouchableOpacity
@@ -567,10 +568,11 @@ export default Profile = ({ navigation }) => {
                         style={[
                             { borderRadius: 20, elevation: 6 },
                             width >= 800
-                                ? { width: wp("54%"), height: hp("34%") }
+                                ? { width: wp("54%") }
                                 : width >= 550
-                                ? { width: wp("64%"), height: hp("34%") }
-                                : { width: wp("90%"), height: hp("35%") },
+                                ? { width: wp("64%") }
+                                : { width: wp("90%") },
+                            loading && { height: hp("30%") },
                         ]}
                     >
                         {loading ? (
@@ -585,10 +587,7 @@ export default Profile = ({ navigation }) => {
                             </View>
                         ) : (
                             <View style={{ paddingBottom: 15 }}>
-                                <ScrollView
-                                    style={{ padding: 15 }}
-                                    showsVerticalScrollIndicator={false}
-                                >
+                                <View style={{ padding: 15 }}>
                                     <Text style={MyStyles.profileText}>이름 : {name}</Text>
                                     <View style={{ flexDirection: "row" }}>
                                         <Text style={[MyStyles.profileText, { flex: 9 }]}>
@@ -904,13 +903,13 @@ export default Profile = ({ navigation }) => {
                                             </View>
                                         ))}
                                     </View>
-                                    <View style={{ height: 30 }}></View>
-                                </ScrollView>
+                                </View>
                             </View>
                         )}
                     </Surface>
                 </View>
-            </View>
+                <View style={{ height: hp("3%") }} />
+            </ScrollView>
             <View
                 style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
             />
