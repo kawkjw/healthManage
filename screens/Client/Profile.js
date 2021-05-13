@@ -508,7 +508,10 @@ export default Profile = ({ navigation }) => {
                     <Text style={[TextSize.largeSize, { margin: 15 }]}>로딩 중...</Text>
                 </View>
             ) : (
-                <ScrollView style={{ flex: 1, alignSelf: "stretch" }}>
+                <ScrollView
+                    style={{ flex: 1, alignSelf: "stretch" }}
+                    showsVerticalScrollIndicator={false}
+                >
                     <View style={{ height: hp("1.5%") }} />
                     <View style={{ alignItems: "center" }}>
                         <Surface style={{ elevation: 6, borderRadius: 20, marginBottom: 15 }}>
