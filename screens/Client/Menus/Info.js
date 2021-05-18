@@ -1,5 +1,5 @@
 import React from "react";
-import { TouchableOpacity, ScrollView, View } from "react-native";
+import { TouchableOpacity, ScrollView, View, Alert } from "react-native";
 import { MyStyles, TextSize, theme } from "../../../css/MyStyles";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import { Surface, Text } from "react-native-paper";
@@ -20,7 +20,8 @@ export default Info = ({ navigation }) => {
                 <Surface style={MyStyles.surface}>
                     <TouchableOpacity
                         style={MyStyles.menu}
-                        onPress={() => navigation.navigate("QRScan")}
+                        onPress={() => Alert.alert("추후에 공개 예정입니다.")}
+                        //onPress={() => navigation.navigate("QRScan")}
                     >
                         <Text style={TextSize.largeSize}>QR 코드 스캔</Text>
                     </TouchableOpacity>
@@ -37,72 +38,12 @@ export default Info = ({ navigation }) => {
                     <TouchableOpacity
                         style={MyStyles.menu}
                         onPress={() => navigation.navigate("Test")}
+                        disabled={true}
                     >
-                        <Text style={TextSize.largeSize}>Test 1</Text>
-                    </TouchableOpacity>
-                </Surface>
-                <Surface style={MyStyles.surface}>
-                    <TouchableOpacity
-                        style={MyStyles.menu}
-                        onPress={() => navigation.navigate("Test")}
-                    >
-                        <Text style={TextSize.largeSize}>Test 2</Text>
-                    </TouchableOpacity>
-                </Surface>
-                <Surface style={MyStyles.surface}>
-                    <TouchableOpacity
-                        style={MyStyles.menu}
-                        onPress={() => navigation.navigate("Test")}
-                    >
-                        <Text style={TextSize.largeSize}>Test 3</Text>
-                    </TouchableOpacity>
-                </Surface>
-                <Surface style={MyStyles.surface}>
-                    <TouchableOpacity
-                        style={MyStyles.menu}
-                        onPress={() => navigation.navigate("Test")}
-                    >
-                        <Text style={TextSize.largeSize}>Test 4</Text>
-                    </TouchableOpacity>
-                </Surface>
-                <Surface style={MyStyles.surface}>
-                    <TouchableOpacity
-                        style={MyStyles.menu}
-                        onPress={() => navigation.navigate("Test")}
-                    >
-                        <Text style={TextSize.largeSize}>Test 5</Text>
-                    </TouchableOpacity>
-                </Surface>
-                <Surface style={MyStyles.surface}>
-                    <TouchableOpacity
-                        style={MyStyles.menu}
-                        onPress={() => navigation.navigate("Test")}
-                    >
-                        <Text style={TextSize.largeSize}>Test 6</Text>
-                    </TouchableOpacity>
-                </Surface>
-                <Surface style={MyStyles.surface}>
-                    <TouchableOpacity
-                        style={MyStyles.menu}
-                        onPress={() => navigation.navigate("Test")}
-                    >
-                        <Text style={TextSize.largeSize}>Test 7</Text>
-                    </TouchableOpacity>
-                </Surface>
-                <Surface style={MyStyles.surface}>
-                    <TouchableOpacity
-                        style={MyStyles.menu}
-                        onPress={() => navigation.navigate("Test")}
-                    >
-                        <Text style={TextSize.largeSize}>Test 8</Text>
-                    </TouchableOpacity>
-                </Surface>
-                <Surface style={MyStyles.surface}>
-                    <TouchableOpacity
-                        style={MyStyles.menu}
-                        onPress={() => navigation.navigate("Test")}
-                    >
-                        <Text style={TextSize.largeSize}>Test 9</Text>
+                        <Text style={[TextSize.largeSize, { marginBottom: 3 }]}>
+                            기구 이용 정보 서비스는
+                        </Text>
+                        <Text style={TextSize.largeSize}>추후에 공개 예정입니다.</Text>
                     </TouchableOpacity>
                 </Surface>
                 <View style={{ height: hp("2%") }} />
