@@ -393,8 +393,14 @@ export default ClassInfo = ({ navigation, route }) => {
             <Modal
                 isVisible={modalClassInfo}
                 style={{ justifyContent: "flex-end", margin: 0 }}
-                onBackdropPress={() => setModalClassInfo(false)}
-                onBackButtonPress={() => setModalClassInfo(false)}
+                onBackdropPress={() => {
+                    setModalClassInfo(false);
+                    setSelectedDate(0);
+                }}
+                onBackButtonPress={() => {
+                    setModalClassInfo(false);
+                    setSelectedDate(0);
+                }}
             >
                 <View
                     style={{

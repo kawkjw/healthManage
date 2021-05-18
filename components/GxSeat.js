@@ -1,7 +1,8 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { Surface } from "react-native-paper";
 import { heightPercentageToDP as hp } from "react-native-responsive-screen";
+import { db } from "../config/MyBase";
 import { TextSize } from "../css/MyStyles";
 
 export default GxSeat = ({
@@ -10,6 +11,30 @@ export default GxSeat = ({
     onPress = () => {},
     cid = "",
 }) => {
+    const [brokenSeats, setBrokenSeats] = useState(Array(28).fill(true));
+
+    const getBrokenSeats = async () => {
+        await db
+            .collection("classes")
+            .doc("spinning")
+            .get()
+            .then((doc) => {
+                const data = doc.data();
+                if (data.seatAvailability !== undefined) {
+                    return data.seatAvailability;
+                } else {
+                    return Array(28).fill(false);
+                }
+            })
+            .then((seats) => {
+                setBrokenSeats(seats);
+            });
+    };
+
+    useEffect(() => {
+        getBrokenSeats();
+    }, []);
+
     const renderForClient = (start, end) => {
         const num = end - start + 1;
         const arr = Array(num)
@@ -20,8 +45,12 @@ export default GxSeat = ({
                 <TouchableOpacity
                     style={[
                         styles.button,
-                        clientList[n - 1] === 1 && { backgroundColor: "lightgrey" },
-                        clientList[n - 1] === 2 && { backgroundColor: "lightskyblue" },
+                        brokenSeats[n - 1]
+                            ? clientList[n - 1] === 1 && { backgroundColor: "lightgrey" }
+                            : { backgroundColor: "red" },
+                        brokenSeats[n - 1]
+                            ? clientList[n - 1] === 2 && { backgroundColor: "lightskyblue" }
+                            : { backgroundColor: "red" },
                     ]}
                     onPress={() => {
                         Alert.alert(
@@ -31,7 +60,7 @@ export default GxSeat = ({
                             { cancelable: false }
                         );
                     }}
-                    disabled={clientList[n - 1] !== 0}
+                    disabled={clientList[n - 1] !== 0 || brokenSeats[n - 1] === false}
                 >
                     <Text style={TextSize.normalSize}>{n}</Text>
                     {clientList[n - 1] === 2 && <Text style={TextSize.smallSize}>나</Text>}
@@ -51,7 +80,12 @@ export default GxSeat = ({
                 return (
                     <Surface
                         key={index}
-                        style={[styles.elemView, { backgroundColor: "lightskyblue" }]}
+                        style={[
+                            styles.elemView,
+                            brokenSeats[n - 1]
+                                ? { backgroundColor: "lightskyblue" }
+                                : { backgroundColor: "red" },
+                        ]}
                     >
                         <Text style={TextSize.normalSize}>{n}</Text>
                         <Text style={TextSize.smallSize}>{clientList[idx].name}</Text>
@@ -59,7 +93,13 @@ export default GxSeat = ({
                 );
             }
             return (
-                <Surface key={index} style={styles.elemView}>
+                <Surface
+                    key={index}
+                    style={[
+                        styles.elemView,
+                        brokenSeats[n - 1] === false && { backgroundColor: "red" },
+                    ]}
+                >
                     <Text style={TextSize.normalSize}>{n}</Text>
                 </Surface>
             );

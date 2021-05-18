@@ -932,8 +932,16 @@ export default Profile = ({ navigation }) => {
             <Modal
                 isVisible={modalPhoneVisible}
                 style={{ justifyContent: "flex-end", margin: 0 }}
-                onBackdropPress={() => setModalPhoneVisible(false)}
-                onBackButtonPress={() => setModalPhoneVisible(false)}
+                onBackdropPress={() => {
+                    setChangePhone("");
+                    setVerifyCode("");
+                    setModalPhoneVisible(!modalPhoneVisible);
+                }}
+                onBackButtonPress={() => {
+                    setChangePhone("");
+                    setVerifyCode("");
+                    setModalPhoneVisible(!modalPhoneVisible);
+                }}
                 avoidKeyboard={true}
             >
                 <View

@@ -559,8 +559,14 @@ export default OT = ({ navigation, route }) => {
             <Modal
                 isVisible={modalTimeTable}
                 style={{ justifyContent: "flex-end", margin: 0 }}
-                onBackdropPress={() => setModalTimeTable(false)}
-                onBackButtonPress={() => setModalTimeTable(false)}
+                onBackdropPress={() => {
+                    setModalTimeTable(false);
+                    setSelectedDate(0);
+                }}
+                onBackButtonPress={() => {
+                    setModalTimeTable(false);
+                    setSelectedDate(0);
+                }}
             >
                 <View
                     style={{

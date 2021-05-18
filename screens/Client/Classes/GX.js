@@ -27,6 +27,7 @@ export default GX = ({ navigation, route }) => {
     const [modalSeat, setModalSeat] = useState(false);
     const [clientsForSeat, setClientsForSeat] = useState([]);
     const [selectClass, setSelectClass] = useState("");
+    const [selectClassString, setSelectClassString] = useState("");
 
     useEffect(() => {
         const showCalendar = async () => {
@@ -445,8 +446,14 @@ export default GX = ({ navigation, route }) => {
             <Modal
                 isVisible={modalClass}
                 style={{ justifyContent: "flex-end", margin: 0 }}
-                onBackdropPress={() => setModalClass(false)}
-                onBackButtonPress={() => setModalClass(false)}
+                onBackdropPress={() => {
+                    setModalClass(false);
+                    setSelectDate(0);
+                }}
+                onBackButtonPress={() => {
+                    setModalClass(false);
+                    setSelectDate(0);
+                }}
             >
                 <View
                     style={{
@@ -500,6 +507,9 @@ export default GX = ({ navigation, route }) => {
                                             if (classname === "spinning") {
                                                 setSelectClass(c.cid);
                                                 setClientsForSeat(c.clients);
+                                                setSelectClassString(
+                                                    `${selectDate}일 ${c.start}~${c.end}`
+                                                );
                                                 setModalSeat(true);
                                             } else {
                                                 Alert.alert(
@@ -612,8 +622,14 @@ export default GX = ({ navigation, route }) => {
                 <Modal
                     isVisible={modalSeat}
                     style={{ justifyContent: "flex-end", margin: 0 }}
-                    onBackdropPress={() => setModalSeat(false)}
-                    onBackButtonPress={() => setModalSeat(false)}
+                    onBackdropPress={() => {
+                        setModalSeat(false);
+                        setSelectClassString("");
+                    }}
+                    onBackButtonPress={() => {
+                        setModalSeat(false);
+                        setSelectClassString("");
+                    }}
                 >
                     <View
                         style={{
@@ -627,12 +643,20 @@ export default GX = ({ navigation, route }) => {
                             <Button
                                 onPress={() => {
                                     setModalSeat(false);
+                                    setSelectClassString("");
                                 }}
                                 labelStyle={[TextSize.largeSize, { color: "white" }]}
                             >
                                 닫기
                             </Button>
-                            <View style={{ flex: 7 }} />
+                            <View
+                                style={{ flex: 6, alignItems: "center", justifyContent: "center" }}
+                            >
+                                <Text style={[TextSize.largeSize, { color: "white" }]}>
+                                    {selectClassString}
+                                </Text>
+                            </View>
+                            <View style={{ flex: 1 }} />
                         </View>
                         <GxSeat
                             permit="client"
