@@ -715,7 +715,7 @@ export default PT = ({ navigation, route }) => {
                                     count = doc.data().count;
                                     docRef = doc.ref;
                                 });
-                                await docRef.update({ count: count + 1 });
+                                await docRef.update({ count: count < 0 ? 1 : count + 1 });
                             });
                     }
                     let data = { cancel: true };
