@@ -102,7 +102,7 @@ export default Home = ({ navigation, route }) => {
                                 : undefined,
                         ]}
                         onPress={() => {
-                            Linking.openURL("tel:12345678");
+                            Linking.openURL("tel:0313744554");
                         }}
                     >
                         <Text style={TextSize.largeSize}>전화 연결</Text>
