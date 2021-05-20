@@ -12,6 +12,7 @@ export default Class = ({ navigation }) => {
     const [ptTrainerInfo, setPtTrainerInfo] = useState({ name: "", uid: "" });
     const [squashPtTrainerInfo, setSquashPtTrainerInfo] = useState({ name: "", uid: "" });
     const { classNames } = useContext(DataContext);
+    const [endDate, setEndDate] = useState(undefined);
 
     useEffect(() => {
         const getMemberships = async () => {
@@ -47,6 +48,7 @@ export default Class = ({ navigation }) => {
                         );
                     } else {
                         let availabeClass = [];
+                        let endDateForClass = {};
                         const promises = list.map(async (kind) => {
                             await db
                                 .collection("users")
@@ -77,6 +79,7 @@ export default Class = ({ navigation }) => {
                                                 }
                                             } else if (today < end) {
                                                 availabeClass.push(kind);
+                                                endDateForClass[kind] = doc.data().end;
                                             }
                                         }
                                     });
@@ -116,6 +119,7 @@ export default Class = ({ navigation }) => {
                         });
                         await Promise.all(promises);
                         setMemberships(availabeClass);
+                        setEndDate(endDateForClass);
                     }
                 })
                 .catch((error) => {
@@ -132,7 +136,10 @@ export default Class = ({ navigation }) => {
                     cancelable: false,
                 });
             } else {
-                navigation.navigate("SelectDate", { classname: classname });
+                navigation.navigate("SelectDate", {
+                    classname: classname,
+                    end: endDate[classname],
+                });
             }
         } else if (classname === "pilates") {
             if (memberships.indexOf("pilates2") === -1 && memberships.indexOf("pilates3") === -1) {
@@ -143,6 +150,10 @@ export default Class = ({ navigation }) => {
                 navigation.navigate("SelectDate", {
                     classname: classname,
                     week: memberships.indexOf("pilates3") > -1 ? 3 : 2,
+                    end:
+                        memberships.indexOf("pilates3") > -1
+                            ? endDate["pilates3"]
+                            : endDate["pilates2"],
                 });
             }
         } else if (classname === "squash") {
@@ -162,6 +173,7 @@ export default Class = ({ navigation }) => {
                     availGroup: memberships.indexOf("squashgroup") > -1,
                     trainerName: squashPtTrainerInfo.name,
                     trainerUid: squashPtTrainerInfo.uid,
+                    end: endDate["squashgroup"],
                 });
             }
         } else if (memberships.indexOf(classname) === -1) {
@@ -197,13 +209,19 @@ export default Class = ({ navigation }) => {
                         {
                             text: "확인",
                             onPress: () =>
-                                navigation.navigate("SelectDate", { classname: classname }),
+                                navigation.navigate("SelectDate", {
+                                    classname: classname,
+                                    end: endDate[classname],
+                                }),
                         },
                     ],
                     { cancelable: false }
                 );
             } else {
-                navigation.navigate("SelectDate", { classname: classname });
+                navigation.navigate("SelectDate", {
+                    classname: classname,
+                    end: endDate[classname],
+                });
             }
         }
     };

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { Alert, FlatList, ScrollView, StyleSheet, TouchableOpacity, View } from "react-native";
 import {
     heightPercentageToDP as hp,
@@ -16,7 +16,7 @@ import ToHome from "../../../components/ToHome";
 
 export default GX = ({ navigation, route }) => {
     const uid = myBase.auth().currentUser.uid;
-    const { classname, date } = route.params;
+    const { classname, date, end } = route.params;
     const today = new Date();
     const [data, setData] = useState([]);
     const [modalClass, setModalClass] = useState(false);
@@ -28,6 +28,7 @@ export default GX = ({ navigation, route }) => {
     const [clientsForSeat, setClientsForSeat] = useState([]);
     const [selectClass, setSelectClass] = useState("");
     const [selectClassString, setSelectClassString] = useState("");
+    const [gloading, setGloading] = useState(false);
 
     useEffect(() => {
         const showCalendar = async () => {
@@ -72,7 +73,8 @@ export default GX = ({ navigation, route }) => {
                 let item = {
                     id: i.toString(),
                     pressable:
-                        d >= new Date(today.getFullYear(), today.getMonth(), today.getDate()),
+                        d >= new Date(today.getFullYear(), today.getMonth(), today.getDate()) &&
+                        moment.duration(moment(end.toDate()).diff(moment(d))).asDays() >= 0,
                     isToday:
                         i === today.getDate() &&
                         Number(date.split("-")[1]) === today.getMonth() + 1 &&
@@ -104,88 +106,91 @@ export default GX = ({ navigation, route }) => {
         showCalendar();
     }, []);
 
-    useEffect(() => {
-        const getClass = async () => {
-            let avail = true;
-            if (classname === "pilates" || classname === "squash") {
-                const weekDayDates = [...Array(5).keys()].map((x) =>
-                    moment(new Date(date + "-" + (selectDate < 10 ? "0" + selectDate : selectDate)))
-                        .weekday(x + 1)
-                        .toDate()
-                        .getDate()
-                        .toString()
-                );
-                let hasReservation = 0;
-                const promises = weekDayDates.map(async (d) => {
-                    await db
-                        .collection("users")
-                        .doc(uid)
-                        .collection("reservation")
-                        .doc(date)
-                        .collection(d)
-                        .where("className", "==", classname)
-                        .get()
-                        .then((docs) => {
-                            hasReservation = hasReservation + docs.size;
-                        });
-                });
-                await Promise.all(promises);
-                if (hasReservation >= route.params.week) {
-                    avail = false;
-                }
-            }
-            setAvailReserve(avail);
-            await db
-                .collection("classes")
-                .doc(classname)
-                .collection("class")
-                .doc(date)
-                .collection(selectDate.toString())
-                .orderBy("start", "asc")
-                .get()
-                .then(async (snapshots) => {
-                    let list = [];
-                    snapshots.forEach((snapshot) => {
-                        let c = {};
-                        const data = snapshot.data();
-                        const start = data.start.toDate();
-                        const end = data.end.toDate();
-                        c["cid"] = snapshot.id;
-                        c["trainer"] = data.trainer;
-                        c["currentClient"] = data.currentClient;
-                        c["maxClient"] = data.maxClient;
-                        c["start"] = moment(start).format("HH:mm");
-                        c["startDate"] = start;
-                        c["end"] = moment(end).format("HH:mm");
-                        c["isToday"] = today.getDate() === selectDate;
-                        c["ref"] = snapshot.ref;
-                        list.push(c);
+    const getClass = useCallback(async () => {
+        setGloading(true);
+        let avail = true;
+        if (classname === "pilates" || classname === "squash") {
+            const weekDayDates = [...Array(5).keys()].map((x) =>
+                moment(new Date(date + "-" + (selectDate < 10 ? "0" + selectDate : selectDate)))
+                    .weekday(x + 1)
+                    .toDate()
+                    .getDate()
+                    .toString()
+            );
+            let hasReservation = 0;
+            const promises = weekDayDates.map(async (d) => {
+                await db
+                    .collection("users")
+                    .doc(uid)
+                    .collection("reservation")
+                    .doc(date)
+                    .collection(d)
+                    .where("className", "==", classname)
+                    .get()
+                    .then((docs) => {
+                        hasReservation = hasReservation + docs.size;
                     });
-                    if (classname === "spinning") {
-                        const promises = list.map(async (c, i) => {
-                            let clients = Array(28).fill(0);
-                            await c.ref
-                                .collection("clients")
-                                .get()
-                                .then((docs) => {
-                                    docs.forEach((doc) => {
-                                        if (doc.id === uid) {
-                                            clients[Number(doc.data().num) - 1] = 2;
-                                        } else {
-                                            clients[Number(doc.data().num) - 1] = 1;
-                                        }
-                                    });
-                                });
-                            list[i]["clients"] = clients;
-                        });
-                        await Promise.all(promises);
-                    }
-                    return list;
-                })
-                .then((list) => {
-                    setClassList(list);
+            });
+            await Promise.all(promises);
+            if (hasReservation >= route.params.week) {
+                avail = false;
+            }
+        }
+        setAvailReserve(avail);
+        await db
+            .collection("classes")
+            .doc(classname)
+            .collection("class")
+            .doc(date)
+            .collection(selectDate.toString())
+            .orderBy("start", "asc")
+            .get()
+            .then(async (snapshots) => {
+                let list = [];
+                snapshots.forEach((snapshot) => {
+                    let c = {};
+                    const data = snapshot.data();
+                    const start = data.start.toDate();
+                    const end = data.end.toDate();
+                    c["cid"] = snapshot.id;
+                    c["trainer"] = data.trainer;
+                    c["currentClient"] = data.currentClient;
+                    c["maxClient"] = data.maxClient;
+                    c["start"] = moment(start).format("HH:mm");
+                    c["startDate"] = start;
+                    c["end"] = moment(end).format("HH:mm");
+                    c["isToday"] = today.getDate() === selectDate;
+                    c["ref"] = snapshot.ref;
+                    list.push(c);
                 });
-        };
+                if (classname === "spinning") {
+                    const promises = list.map(async (c, i) => {
+                        let clients = Array(28).fill(0);
+                        await c.ref
+                            .collection("clients")
+                            .get()
+                            .then((docs) => {
+                                docs.forEach((doc) => {
+                                    if (doc.id === uid) {
+                                        clients[Number(doc.data().num) - 1] = 2;
+                                    } else {
+                                        clients[Number(doc.data().num) - 1] = 1;
+                                    }
+                                });
+                            });
+                        list[i]["clients"] = clients;
+                    });
+                    await Promise.all(promises);
+                }
+                return list;
+            })
+            .then((list) => {
+                setClassList(list);
+                setGloading(false);
+            });
+    }, [selectDate]);
+
+    useEffect(() => {
         if (selectDate !== 0) {
             getClass();
         } else {
@@ -481,142 +486,196 @@ export default GX = ({ navigation, route }) => {
                         }}
                         contentContainerStyle={{ alignItems: "center" }}
                     >
-                        {classList.map((c, index) => (
-                            <Surface
-                                key={index}
-                                style={[
-                                    MyStyles.surface,
-                                    classname === "spinning"
-                                        ? moment
-                                              .duration(moment(c.startDate).diff(moment(today)))
-                                              .asHours() > 1 ||
-                                          moment
-                                              .duration(moment(c.startDate).diff(moment(today)))
-                                              .asHours() < 0
-                                            ? { backgroundColor: "lightgrey" }
-                                            : undefined
-                                        : moment
-                                              .duration(moment(c.startDate).diff(moment(today)))
-                                              .asHours() < 1 && { backgroundColor: "lightgrey" },
-                                ]}
+                        {gloading ? (
+                            <View
+                                style={{
+                                    height: hp("80%"),
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                }}
                             >
-                                <TouchableOpacity
-                                    style={MyStyles.menu}
-                                    onPress={() => {
-                                        if (availReserve) {
-                                            if (classname === "spinning") {
-                                                setSelectClass(c.cid);
-                                                setClientsForSeat(c.clients);
-                                                setSelectClassString(
-                                                    `${selectDate}일 ${c.start}~${c.end}`
-                                                );
-                                                setModalSeat(true);
-                                            } else {
-                                                Alert.alert(
-                                                    selectDate.toString() +
-                                                        "일 " +
-                                                        c.start +
-                                                        "~" +
-                                                        c.end,
-                                                    "확실합니까?",
-                                                    [
-                                                        { text: "취소" },
-                                                        {
-                                                            text: "확인",
-                                                            onPress: () => reserveClass(c.cid),
-                                                        },
-                                                    ],
-                                                    { cancelable: false }
-                                                );
+                                <ActivityIndicator color="black" size="large" />
+                            </View>
+                        ) : (
+                            <>
+                                {classname === "spinning" && (
+                                    <View style={{ marginBottom: 10 }}>
+                                        <Text style={TextSize.normalSize}>
+                                            수업 시작 1시간전부터 예약 가능합니다.
+                                        </Text>
+                                    </View>
+                                )}
+                                {classList.map((c, index) => (
+                                    <Surface
+                                        key={index}
+                                        style={[
+                                            MyStyles.surface,
+                                            classname === "spinning"
+                                                ? moment
+                                                      .duration(
+                                                          moment(c.startDate).diff(moment(today))
+                                                      )
+                                                      .asHours() > 1 ||
+                                                  moment
+                                                      .duration(
+                                                          moment(c.startDate).diff(moment(today))
+                                                      )
+                                                      .asHours() < 0
+                                                    ? { backgroundColor: "lightgrey" }
+                                                    : undefined
+                                                : moment
+                                                      .duration(
+                                                          moment(c.startDate).diff(moment(today))
+                                                      )
+                                                      .asHours() < 1 && {
+                                                      backgroundColor: "lightgrey",
+                                                  },
+                                        ]}
+                                    >
+                                        <TouchableOpacity
+                                            style={MyStyles.menu}
+                                            onPress={() => {
+                                                if (availReserve) {
+                                                    if (classname === "spinning") {
+                                                        setSelectClass(c.cid);
+                                                        setClientsForSeat(c.clients);
+                                                        setSelectClassString(
+                                                            `${selectDate}일 ${c.start}~${c.end}`
+                                                        );
+                                                        setModalSeat(true);
+                                                    } else {
+                                                        Alert.alert(
+                                                            selectDate.toString() +
+                                                                "일 " +
+                                                                c.start +
+                                                                "~" +
+                                                                c.end,
+                                                            "확실합니까?",
+                                                            [
+                                                                { text: "취소" },
+                                                                {
+                                                                    text: "확인",
+                                                                    onPress: () =>
+                                                                        reserveClass(c.cid),
+                                                                },
+                                                            ],
+                                                            { cancelable: false }
+                                                        );
+                                                    }
+                                                } else {
+                                                    Alert.alert(
+                                                        "경고",
+                                                        `이미 주${route.params.week}회 예약하셨습니다.`,
+                                                        [{ text: "확인" }],
+                                                        { cancelable: false }
+                                                    );
+                                                }
+                                            }}
+                                            disabled={
+                                                classname === "spinning"
+                                                    ? moment
+                                                          .duration(
+                                                              moment(c.startDate).diff(
+                                                                  moment(today)
+                                                              )
+                                                          )
+                                                          .asHours() > 1 ||
+                                                      moment
+                                                          .duration(
+                                                              moment(c.startDate).diff(
+                                                                  moment(today)
+                                                              )
+                                                          )
+                                                          .asHours() < 0
+                                                    : moment
+                                                          .duration(
+                                                              moment(c.startDate).diff(
+                                                                  moment(today)
+                                                              )
+                                                          )
+                                                          .asHours() < 1
                                             }
-                                        } else {
-                                            Alert.alert(
-                                                "경고",
-                                                `이미 주${route.params.week}회 예약하셨습니다.`,
-                                                [{ text: "확인" }],
-                                                { cancelable: false }
-                                            );
-                                        }
-                                    }}
-                                    disabled={
-                                        classname === "spinning"
-                                            ? moment
-                                                  .duration(moment(c.startDate).diff(moment(today)))
-                                                  .asHours() > 1 ||
-                                              moment
-                                                  .duration(moment(c.startDate).diff(moment(today)))
-                                                  .asHours() < 0
-                                            : moment
-                                                  .duration(moment(c.startDate).diff(moment(today)))
-                                                  .asHours() < 1
-                                    }
-                                >
-                                    <Text
-                                        style={[
-                                            TextSize.largeSize,
-                                            { marginBottom: 5 },
-                                            classname === "spinning"
-                                                ? moment
-                                                      .duration(
-                                                          moment(c.startDate).diff(moment(today))
-                                                      )
-                                                      .asHours() > 1 ||
-                                                  moment
-                                                      .duration(
-                                                          moment(c.startDate).diff(moment(today))
-                                                      )
-                                                      .asHours() < 0
-                                                    ? {
-                                                          color: "dimgrey",
-                                                      }
-                                                    : undefined
-                                                : moment
-                                                      .duration(
-                                                          moment(c.startDate).diff(moment(today))
-                                                      )
-                                                      .asHours() < 1 && {
-                                                      color: "dimgrey",
-                                                  },
-                                        ]}
-                                    >
-                                        {selectDate}일 {c.start}~{c.end} ({c.currentClient}/
-                                        {c.maxClient})
-                                    </Text>
-                                    <Text
-                                        style={[
-                                            TextSize.largeSize,
-                                            classname === "spinning"
-                                                ? moment
-                                                      .duration(
-                                                          moment(c.startDate).diff(moment(today))
-                                                      )
-                                                      .asHours() > 1 ||
-                                                  moment
-                                                      .duration(
-                                                          moment(c.startDate).diff(moment(today))
-                                                      )
-                                                      .asHours() < 0
-                                                    ? {
-                                                          color: "dimgrey",
-                                                      }
-                                                    : undefined
-                                                : moment
-                                                      .duration(
-                                                          moment(c.startDate).diff(moment(today))
-                                                      )
-                                                      .asHours() < 1 && {
-                                                      color: "dimgrey",
-                                                  },
-                                        ]}
-                                    >
-                                        트레이너 : {c.trainer}
-                                    </Text>
-                                </TouchableOpacity>
-                            </Surface>
-                        ))}
-                        {classList.length === 0 ? (
-                            <Text style={TextSize.largeSize}>수업이 없습니다.</Text>
-                        ) : undefined}
+                                        >
+                                            <Text
+                                                style={[
+                                                    TextSize.largeSize,
+                                                    { marginBottom: 5 },
+                                                    classname === "spinning"
+                                                        ? moment
+                                                              .duration(
+                                                                  moment(c.startDate).diff(
+                                                                      moment(today)
+                                                                  )
+                                                              )
+                                                              .asHours() > 1 ||
+                                                          moment
+                                                              .duration(
+                                                                  moment(c.startDate).diff(
+                                                                      moment(today)
+                                                                  )
+                                                              )
+                                                              .asHours() < 0
+                                                            ? {
+                                                                  color: "dimgrey",
+                                                              }
+                                                            : undefined
+                                                        : moment
+                                                              .duration(
+                                                                  moment(c.startDate).diff(
+                                                                      moment(today)
+                                                                  )
+                                                              )
+                                                              .asHours() < 1 && {
+                                                              color: "dimgrey",
+                                                          },
+                                                ]}
+                                            >
+                                                {selectDate}일 {c.start}~{c.end} ({c.currentClient}/
+                                                {c.maxClient})
+                                            </Text>
+                                            <Text
+                                                style={[
+                                                    TextSize.largeSize,
+                                                    classname === "spinning"
+                                                        ? moment
+                                                              .duration(
+                                                                  moment(c.startDate).diff(
+                                                                      moment(today)
+                                                                  )
+                                                              )
+                                                              .asHours() > 1 ||
+                                                          moment
+                                                              .duration(
+                                                                  moment(c.startDate).diff(
+                                                                      moment(today)
+                                                                  )
+                                                              )
+                                                              .asHours() < 0
+                                                            ? {
+                                                                  color: "dimgrey",
+                                                              }
+                                                            : undefined
+                                                        : moment
+                                                              .duration(
+                                                                  moment(c.startDate).diff(
+                                                                      moment(today)
+                                                                  )
+                                                              )
+                                                              .asHours() < 1 && {
+                                                              color: "dimgrey",
+                                                          },
+                                                ]}
+                                            >
+                                                트레이너 : {c.trainer}
+                                            </Text>
+                                        </TouchableOpacity>
+                                    </Surface>
+                                ))}
+                                {classList.length === 0 ? (
+                                    <Text style={TextSize.largeSize}>수업이 없습니다.</Text>
+                                ) : undefined}
+                            </>
+                        )}
                     </ScrollView>
                 </View>
                 <Modal

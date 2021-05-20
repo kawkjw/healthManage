@@ -6,7 +6,7 @@ import { Surface, Text } from "react-native-paper";
 import ToHome from "../../../components/ToHome";
 
 export default SelectDate = ({ navigation, route }) => {
-    const { classname } = route.params;
+    const { classname, end } = route.params;
     const [sixDate, setSixDate] = useState([]);
 
     const getDateString = (year, month) => {
@@ -51,11 +51,13 @@ export default SelectDate = ({ navigation, route }) => {
                                             classname: classname,
                                             date: d,
                                             week: route.params.week,
+                                            end: end,
                                         });
                                     } else {
                                         navigation.navigate("GX", {
                                             classname: classname,
                                             date: d,
+                                            end: end,
                                         });
                                     }
                                 }}
