@@ -318,9 +318,9 @@ export default Sales = ({ navigation, route }) => {
                                         const { price } = doc.data();
                                         const name = classNames[doc.ref.parent.id].minien;
                                         if (temp[name] === undefined) {
-                                            temp[name] = { price: price, num: 1 };
+                                            temp[name] = { price: Number(price), num: 1 };
                                         } else {
-                                            temp[name].price += price;
+                                            temp[name].price += Number(price);
                                             temp[name].num += 1;
                                         }
                                     }
