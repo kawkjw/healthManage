@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import Auth from "./screens/Auth";
 import "./config/fixtimer";
 import * as Notifications from "expo-notifications";
-import { SafeAreaView, Text, TextInput } from "react-native";
+import { Alert, SafeAreaView, Text, TextInput } from "react-native";
 import * as Updates from "expo-updates";
 import { TextSize } from "./css/MyStyles";
 import { Provider as PaperProvider } from "react-native-paper";
@@ -39,17 +39,22 @@ export default function App() {
 
     const [showUpdates, setShowUpdates] = useState(false);
     useEffect(() => {
-        Updates.checkForUpdateAsync().then((update) => {
-            if (update.isAvailable) {
-                setShowUpdates(true);
-                SplashScreen.hideAsync().then((value) => {
-                    console.log(value);
-                    Updates.fetchUpdateAsync().then(async () => {
-                        await Updates.reloadAsync();
+        Updates.checkForUpdateAsync()
+            .then((update) => {
+                if (update.isAvailable) {
+                    setShowUpdates(true);
+                    SplashScreen.hideAsync().then((value) => {
+                        console.log(value);
+                        Updates.fetchUpdateAsync().then(async () => {
+                            await Updates.reloadAsync();
+                        });
                     });
-                });
-            }
-        });
+                }
+            })
+            .catch((error) => {
+                Alert.alert("Error", error);
+                setShowUpdates(false);
+            });
     }, []);
 
     return (
