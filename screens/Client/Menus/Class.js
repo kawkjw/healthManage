@@ -138,7 +138,7 @@ export default Class = ({ navigation }) => {
             } else {
                 navigation.navigate("SelectDate", {
                     classname: classname,
-                    end: endDate[classname],
+                    end: endDate["gx"],
                 });
             }
         } else if (classname === "pilates") {
