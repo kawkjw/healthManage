@@ -19,12 +19,12 @@
         },
         "assetBundlePatterns": ["**/*"],
         "ios": {
-            "bundleIdentifier": "com.test.healthmanage",
+            "bundleIdentifier": "com.thekklrimx.smartfitness",
             "supportsTablet": false,
             "googleServicesFile": "./GoogleService-Info.plist"
         },
         "android": {
-            "package": "com.test.healthmanage",
+            "package": "com.thekklrimx.smartfitness",
             "googleServicesFile": "./google-services.json",
             "softwareKeyboardLayoutMode": "pan",
             "adaptiveIcon": {
