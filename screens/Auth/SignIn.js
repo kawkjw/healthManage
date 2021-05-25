@@ -7,6 +7,7 @@ import {
     Image,
     Platform,
     Dimensions,
+    Text,
 } from "react-native";
 import { AuthContext } from "../Auth";
 import {
@@ -141,8 +142,16 @@ export default SignIn = ({ navigation }) => {
                 </TouchableOpacity>
             </KeyboardAwareScrollView>
             <View
-                style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
-            />
+                style={{
+                    backgroundColor: theme.colors.primary,
+                    height: hp("6%"),
+                    width: "100%",
+                    alignItems: "flex-end",
+                    justifyContent: "center",
+                }}
+            >
+                <Text style={{ marginRight: 10, color: "#374862" }}>Made by jinookawk</Text>
+            </View>
         </View>
     );
 };

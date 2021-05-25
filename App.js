@@ -10,6 +10,8 @@ import { theme } from "./css/MyStyles";
 import * as SplashScreen from "expo-splash-screen";
 import * as Font from "expo-font";
 
+/* Made By JinooKawk */
+
 SplashScreen.preventAutoHideAsync().catch((error) => {
     console.log(error);
 });
