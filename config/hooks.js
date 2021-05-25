@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { SERVICE_KEY } from "@env";
+import { db } from "./MyBase";
 
 export const useInterval = (callback, delay) => {
     const savedCallBack = useRef();
@@ -20,49 +21,64 @@ export const useInterval = (callback, delay) => {
 };
 
 export const getHoliday = async (year, month) => {
-    const url = "http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo";
-    let queryParams = "?" + encodeURIComponent("ServiceKey") + "=" + SERVICE_KEY;
-    queryParams += "&" + encodeURIComponent("pageNo") + "=" + encodeURIComponent("1");
-    queryParams += "&" + encodeURIComponent("numOfRows") + "=" + encodeURIComponent("15");
-    queryParams += "&" + encodeURIComponent("solYear") + "=" + encodeURIComponent(year.toString());
-    queryParams +=
-        "&" +
-        encodeURIComponent("solMonth") +
-        "=" +
-        encodeURIComponent(month < 10 ? "0" + month : month.toString());
-    queryParams += "&" + encodeURIComponent("_type") + "=" + encodeURIComponent("json");
-
-    const endDate = new Date(year, month, 0);
-    let holidayJson = [];
-    await fetch(url + queryParams)
-        .then((response) => response.text())
-        .then((data) => {
-            const {
-                response: {
-                    body: {
-                        totalCount,
-                        items: { item },
-                    },
-                },
-            } = JSON.parse(data);
-            if (totalCount === 0) {
-                holidayJson = [];
-            } else if (totalCount === 1) {
-                holidayJson = [item];
+    const yearMonthStr = year + "-" + (month < 10 ? "0" + month : month);
+    return await db
+        .collection("holidays")
+        .doc(yearMonthStr)
+        .get()
+        .then(async (doc) => {
+            if (doc.exists) {
+                return doc.data().days;
             } else {
-                holidayJson = item;
+                const url =
+                    "http://apis.data.go.kr/B090041/openapi/service/SpcdeInfoService/getRestDeInfo";
+                let queryParams = "?" + encodeURIComponent("ServiceKey") + "=" + SERVICE_KEY;
+                queryParams += "&" + encodeURIComponent("pageNo") + "=" + encodeURIComponent("1");
+                queryParams +=
+                    "&" + encodeURIComponent("numOfRows") + "=" + encodeURIComponent("15");
+                queryParams +=
+                    "&" + encodeURIComponent("solYear") + "=" + encodeURIComponent(year.toString());
+                queryParams +=
+                    "&" +
+                    encodeURIComponent("solMonth") +
+                    "=" +
+                    encodeURIComponent(month < 10 ? "0" + month : month.toString());
+                queryParams += "&" + encodeURIComponent("_type") + "=" + encodeURIComponent("json");
+
+                const endDate = new Date(year, month, 0);
+                let holidayJson = [];
+                await fetch(url + queryParams)
+                    .then((response) => response.text())
+                    .then((data) => {
+                        const {
+                            response: {
+                                body: {
+                                    totalCount,
+                                    items: { item },
+                                },
+                            },
+                        } = JSON.parse(data);
+                        if (totalCount === 0) {
+                            holidayJson = [];
+                        } else if (totalCount === 1) {
+                            holidayJson = [item];
+                        } else {
+                            holidayJson = item;
+                        }
+                    })
+                    .catch((error) => {
+                        console.log("getholiday", error);
+                    });
+                let holidayList = Array(endDate.getDate() + 1).fill(false);
+                holidayJson.forEach((holiday) => {
+                    if (holiday.isHoliday === "Y") {
+                        holidayList[Number(holiday.locdate.toString().substr(-2))] = true;
+                    }
+                });
+                await db.collection("holidays").doc(yearMonthStr).set({ days: holidayList });
+                return holidayList;
             }
-        })
-        .catch((error) => {
-            console.log("getholiday", error);
         });
-    let holidayList = Array(endDate.getDate() + 1).fill(false);
-    holidayJson.forEach((holiday) => {
-        if (holiday.isHoliday === "Y") {
-            holidayList[Number(holiday.locdate.toString().substr(-2))] = true;
-        }
-    });
-    return holidayList;
 };
 
 export const displayedAt = (createdAt) => {

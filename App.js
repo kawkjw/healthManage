@@ -39,22 +39,22 @@ export default function App() {
 
     const [showUpdates, setShowUpdates] = useState(false);
     useEffect(() => {
-        Updates.checkForUpdateAsync()
-            .then((update) => {
-                if (update.isAvailable) {
-                    setShowUpdates(true);
-                    SplashScreen.hideAsync().then((value) => {
-                        console.log(value);
-                        Updates.fetchUpdateAsync().then(async () => {
+        Updates.checkForUpdateAsync().then((update) => {
+            if (update.isAvailable) {
+                setShowUpdates(true);
+                SplashScreen.hideAsync().then((value) => {
+                    console.log(value);
+                    Updates.fetchUpdateAsync()
+                        .then(async () => {
                             await Updates.reloadAsync();
+                        })
+                        .catch((error) => {
+                            Alert.alert("Error", error);
+                            setShowUpdates(false);
                         });
-                    });
-                }
-            })
-            .catch((error) => {
-                Alert.alert("Error", error);
-                setShowUpdates(false);
-            });
+                });
+            }
+        });
     }, []);
 
     return (
