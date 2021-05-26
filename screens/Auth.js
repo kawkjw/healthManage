@@ -270,6 +270,14 @@ export default Auth = () => {
                                             .doc(phoneId)
                                             .get()
                                             .then(async (temp) => {
+                                                if (temp.exists) {
+                                                    if (temp.data().memo !== undefined) {
+                                                        await db
+                                                            .collection("users")
+                                                            .doc(currentUser.id)
+                                                            .update({ memo: temp.data().memo });
+                                                    }
+                                                }
                                                 let classes = [];
                                                 await temp.ref
                                                     .collection("memberships")
