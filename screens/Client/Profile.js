@@ -574,11 +574,15 @@ export default Profile = ({ navigation }) => {
                                     </>
                                 ) : (
                                     <>
-                                        <Text style={TextSize.largeSize}>입장 코드 생성</Text>
                                         <Image
                                             style={[
                                                 MyStyles.image,
-                                                { width: wp("80%"), aspectRatio: 1 },
+                                                { borderRadius: 20 },
+                                                width >= 800
+                                                    ? { width: wp("54%"), height: wp("54%") }
+                                                    : width >= 550
+                                                    ? { width: wp("64%"), height: wp("64%") }
+                                                    : { width: wp("90%"), height: wp("90%") },
                                             ]}
                                             source={require("../../assets/qrcode-test.png")}
                                         />
