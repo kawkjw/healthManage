@@ -136,6 +136,15 @@ export default SignUp = ({ navigation }) => {
 
     const checkUsedId = async () => {
         if (id) {
+            if (id.length < 8) {
+                Alert.alert(
+                    "경고",
+                    "아이디는 8자 이상으로 해주시기 바랍니다.",
+                    [{ text: "확인" }],
+                    { cancelable: false }
+                );
+                return;
+            }
             await db
                 .collection("ids")
                 .where("id", "==", id)

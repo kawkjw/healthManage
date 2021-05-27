@@ -158,6 +158,15 @@ export default Auth = () => {
                     birthday,
                     address,
                 } = data;
+                if (userId.length < 8) {
+                    Alert.alert(
+                        "경고",
+                        "아이디는 8자 이상으로 해주시기 바랍니다.",
+                        [{ text: "확인" }],
+                        { cancelable: false }
+                    );
+                    return;
+                }
                 const adminDigest = await Crypto.digestStringAsync(
                     Crypto.CryptoDigestAlgorithm.SHA256,
                     adminCode
