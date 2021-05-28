@@ -159,7 +159,15 @@ export default GenQR = () => {
                         <>
                             <Text style={TextSize.largeSize}>입장 코드 생성</Text>
                             <Image
-                                style={[MyStyles.image, { width: wp("80%"), aspectRatio: 1 }]}
+                                style={[
+                                    MyStyles.image,
+                                    width >= 800
+                                        ? { width: wp("54%"), height: wp("54%") }
+                                        : width >= 550
+                                        ? { width: wp("64%"), height: wp("64%") }
+                                        : { width: wp("90%"), height: wp("90%") },
+                                    { borderRadius: 20 },
+                                ]}
                                 source={require("../assets/qrcode-test.png")}
                             />
                         </>
