@@ -199,6 +199,7 @@ export default Auth = () => {
                             phoneNumber: phoneNumber,
                             permission: isAdmin ? 0 : isTrainer ? 1 : 2,
                             address: address,
+                            createdDate: new Date(userCredential.user.metadata.creationTime),
                         };
 
                         const phoneCredential = firebase.auth.PhoneAuthProvider.credential(
@@ -238,6 +239,7 @@ export default Auth = () => {
                                         sex: sexSelected === 0 ? "남성" : "여성",
                                         address: currentUser.address,
                                         memo: "",
+                                        createdDate: currentUser.createdDate,
                                     };
                                     db.collection("users").doc(currentUser.id).set(data);
                                     db.collection("ids").doc(currentUser.id).set({
