@@ -227,6 +227,26 @@ export default ExtendDate = ({ navigation, route }) => {
                                 style={[{ marginVertical: 15, padding: 15 }, MyStyles.surface]}
                             >
                                 <Text style={TextSize.largeSize}>연장 가능한 이용권</Text>
+                                <View
+                                    style={{
+                                        flexDirection: "row",
+                                        alignItems: "center",
+                                        marginTop: 5,
+                                    }}
+                                >
+                                    <View style={{ flex: 3, alignItems: "center" }}>
+                                        <Text style={[TextSize.normalSize]}>회원권</Text>
+                                    </View>
+                                    <View style={{ flex: 3, alignItems: "center" }}>
+                                        <Text style={[TextSize.normalSize]}>개월 수</Text>
+                                    </View>
+                                    <View style={{ flex: 5, alignItems: "center" }}>
+                                        <Text style={[TextSize.normalSize]}>만료일</Text>
+                                    </View>
+                                    <View style={{ flex: 4, alignItems: "center" }}>
+                                        <Text style={[TextSize.normalSize]}>연장 가능 횟수</Text>
+                                    </View>
+                                </View>
                                 {availExtend.map((membership, index) => (
                                     <View
                                         key={index}
