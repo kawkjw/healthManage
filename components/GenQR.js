@@ -101,79 +101,79 @@ export default GenQR = () => {
     );
 
     return (
-        <View style={[MyStyles.container, { justifyContent: "center" }]}>
-            <Surface
-                style={{
-                    flex: 1,
-                    elevation: 6,
-                    borderRadius: 20,
-                    marginVertical: 30,
-                    justifyContent: "center",
-                }}
-            >
-                <TouchableOpacity
-                    style={[
-                        {
-                            alignItems: "center",
-                            justifyContent: "center",
-                        },
-                        width >= 800
-                            ? { width: wp("54%") }
-                            : width >= 550
-                            ? { width: wp("64%") }
-                            : { width: wp("90%") },
-                    ]}
-                    onPress={() => {
-                        setIsRun(!isRun);
-                        setCount(15);
+        <View style={[MyStyles.container]}>
+            <View style={{ flex: 1, justifyContent: "center" }}>
+                <Surface
+                    style={{
+                        elevation: 6,
+                        borderRadius: 20,
+                        justifyContent: "center",
                     }}
                 >
-                    {isRun ? (
-                        <>
-                            <View
-                                style={{
-                                    alignItems: "center",
-                                }}
-                            >
-                                {data.length > 0 ? (
-                                    <QRCode
-                                        value={data}
-                                        size={
-                                            width >= 800
-                                                ? wp("44%")
-                                                : width >= 550
-                                                ? wp("52%")
-                                                : wp("70%")
-                                        }
-                                        bgColor="#000000"
-                                        fgColor="#FFFFFF"
-                                    />
-                                ) : undefined}
+                    <TouchableOpacity
+                        style={[
+                            {
+                                aspectRatio: 1,
+                                alignItems: "center",
+                                justifyContent: "center",
+                            },
+                            width >= 800
+                                ? { width: wp("54%") }
+                                : width >= 550
+                                ? { width: wp("64%") }
+                                : { width: wp("90%") },
+                        ]}
+                        onPress={() => {
+                            setIsRun(!isRun);
+                            setCount(15);
+                        }}
+                    >
+                        {isRun ? (
+                            <>
+                                <View
+                                    style={{
+                                        alignItems: "center",
+                                    }}
+                                >
+                                    {data.length > 0 ? (
+                                        <QRCode
+                                            value={data}
+                                            size={
+                                                width >= 800
+                                                    ? wp("44%")
+                                                    : width >= 550
+                                                    ? wp("52%")
+                                                    : wp("70%")
+                                            }
+                                            bgColor="#000000"
+                                            fgColor="#FFFFFF"
+                                        />
+                                    ) : undefined}
 
-                                <Text style={[TextSize.largeSize, { marginTop: 10 }]}>
-                                    유효시간 {isRun ? count : 0}초
-                                </Text>
-                            </View>
-                        </>
-                    ) : (
-                        <>
-                            <Text style={TextSize.largeSize}>입장 코드 생성</Text>
-                            <Image
-                                style={[
-                                    MyStyles.image,
-                                    width >= 800
-                                        ? { width: wp("54%"), height: wp("54%") }
-                                        : width >= 550
-                                        ? { width: wp("64%"), height: wp("64%") }
-                                        : { width: wp("90%"), height: wp("90%") },
-                                    { borderRadius: 20 },
-                                ]}
-                                source={require("../assets/qrcode-test.png")}
-                            />
-                        </>
-                    )}
-                </TouchableOpacity>
-            </Surface>
+                                    <Text style={[TextSize.largeSize, { marginTop: 10 }]}>
+                                        유효시간 {isRun ? count : 0}초
+                                    </Text>
+                                </View>
+                            </>
+                        ) : (
+                            <>
+                                <Image
+                                    style={[
+                                        MyStyles.image,
+                                        width >= 800
+                                            ? { width: wp("54%"), height: wp("54%") }
+                                            : width >= 550
+                                            ? { width: wp("64%"), height: wp("64%") }
+                                            : { width: wp("90%"), height: wp("90%") },
+                                        { borderRadius: 20 },
+                                    ]}
+                                    source={require("../assets/qrcode-test.png")}
+                                />
+                            </>
+                        )}
+                    </TouchableOpacity>
+                </Surface>
+            </View>
             <View
                 style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
             />
