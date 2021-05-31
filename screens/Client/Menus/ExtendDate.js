@@ -268,7 +268,7 @@ export default ExtendDate = ({ navigation, route }) => {
                                                 : "Error"}
                                         </Text>
                                         <Text style={[TextSize.normalSize, { flex: 2 }]}>
-                                            {membership.month + "개월권"}
+                                            {membership.month + "개월"}
                                         </Text>
                                         <Text style={[TextSize.normalSize, { flex: 4 }]}>
                                             {moment(membership.end.toDate()).format(
