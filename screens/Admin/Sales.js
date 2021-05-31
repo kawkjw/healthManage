@@ -1244,9 +1244,13 @@ export default Sales = ({ navigation, route }) => {
                                                             fontSize: RFPercentage(1.9),
                                                         }}
                                                         numberOfTicks={
-                                                            maxPrice < 100000
-                                                                ? maxPrice / 10000
-                                                                : maxPrice / 100000
+                                                            maxPrice > 10000000
+                                                                ? maxPrice / 10000000
+                                                                : maxPrice > 1000000
+                                                                ? maxPrice / 1000000
+                                                                : maxPrice > 100000
+                                                                ? maxPrice / 100000
+                                                                : maxPrice / 10000
                                                         }
                                                         formatLabel={(value) =>
                                                             Number(value) !== 0
