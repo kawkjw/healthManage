@@ -2,7 +2,7 @@
     "expo": {
         "name": "더끌림 피트니스",
         "slug": "healthManage",
-        "version": "1.0.2",
+        "version": "1.0.3",
         "orientation": "portrait",
         "icon": "./assets/icon.png",
         "notification": {
@@ -24,7 +24,7 @@
             "googleServicesFile": "./GoogleService-Info.plist"
         },
         "android": {
-            "versionCode": 3,
+            "versionCode": 4,
             "package": "com.thekklrimx.smartfitness",
             "googleServicesFile": "./google-services.json",
             "softwareKeyboardLayoutMode": "pan",

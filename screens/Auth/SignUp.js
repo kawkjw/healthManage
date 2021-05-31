@@ -9,20 +9,8 @@ import {
     widthPercentageToDP as wp,
 } from "react-native-responsive-screen";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
-import SegmentedPicker from "react-native-segmented-picker";
-import Modal from "react-native-modal";
-import {
-    TextInput,
-    RadioButton,
-    Button,
-    HelperText,
-    IconButton,
-    Checkbox,
-} from "react-native-paper";
-import moment from "moment";
+import { TextInput, Button, HelperText, Checkbox } from "react-native-paper";
 import { TextFamily, theme } from "../../css/MyStyles";
-import Constants from "expo-constants";
-import PostCode from "../../components/PostCode";
 
 export default SignUp = ({ navigation }) => {
     const appVerifier = useRef(null);
@@ -38,33 +26,6 @@ export default SignUp = ({ navigation }) => {
     const [chkUsedId, setChkUsedId] = useState(false);
     const [checkPw, setCheckPw] = useState(false);
     const [correctPw, setCorrectPw] = useState(false);
-    const [sexSelected, setSexSelected] = useState(-1);
-    const today = new Date();
-    const picker = useRef();
-    const [birthday, setBirthday] = useState({
-        year: today.getFullYear().toString(),
-        month: (today.getMonth() + 1).toString(),
-        day: today.getDate().toString(),
-    });
-    const pickerBirthday = {
-        year: [...Array(today.getFullYear() - 1930 + 1).keys()].map((d) => ({
-            label: (d + 1930).toString(),
-            value: (d + 1930).toString(),
-            key: (d + 1930).toString(),
-        })),
-        month: [...Array(12).keys()].map((d) => ({
-            label: (d + 1).toString(),
-            value: (d + 1).toString(),
-            key: (d + 1).toString(),
-        })),
-        day: [...Array(31).keys()].map((d) => ({
-            label: (d + 1).toString(),
-            value: (d + 1).toString(),
-            key: (d + 1).toString(),
-        })),
-    };
-    const [address, setAddress] = useState("");
-    const [modalAddress, setModalAddress] = useState(false);
 
     const { signUp } = useContext(AuthContext);
     const [loading, setLoading] = useState(false);
@@ -211,9 +172,6 @@ export default SignUp = ({ navigation }) => {
             adminCode,
             verifyCode,
             verificationId,
-            sexSelected,
-            birthday,
-            address,
         })
             .then(() => {
                 navigation.goBack();
@@ -224,25 +182,6 @@ export default SignUp = ({ navigation }) => {
             });
     };
 
-    const generateOptions = () => {
-        const { year, month, day } = pickerBirthday;
-        const finalDate = new Date(birthday.year, birthday.month, 0).getDate();
-        return [
-            {
-                key: "year",
-                items: year,
-            },
-            {
-                key: "month",
-                items: month,
-            },
-            {
-                key: "day",
-                items: day.slice(0, finalDate),
-            },
-        ];
-    };
-
     return (
         <View style={{ flex: 1 }}>
             <FirebaseRecaptchaVerifierModal
@@ -250,53 +189,6 @@ export default SignUp = ({ navigation }) => {
                 firebaseConfig={myBase.options}
                 cancelLabel="취소"
             />
-            <Modal
-                isVisible={modalAddress}
-                style={{ justifyContent: "flex-end", margin: 0 }}
-                onBackdropPress={() => setModalAddress(false)}
-                onBackButtonPress={() => setModalAddress(false)}
-            >
-                <View
-                    style={{
-                        flex: 1,
-                        backgroundColor: "white",
-                    }}
-                >
-                    {Platform.OS === "ios" && (
-                        <View
-                            style={{
-                                height: Constants.statusBarHeight,
-                                backgroundColor: theme.colors.primary,
-                            }}
-                        />
-                    )}
-                    <View style={{ height: hp("5%"), backgroundColor: theme.colors.primary }}>
-                        <Button
-                            onPress={() => setModalAddress(false)}
-                            style={{ width: wp("10%") }}
-                            mode="text"
-                            labelStyle={[
-                                Platform.OS === "ios" ? { paddingVertical: 8 } : undefined,
-                                { color: "white" },
-                            ]}
-                        >
-                            닫기
-                        </Button>
-                    </View>
-                    <PostCode
-                        style={{ flex: 1 }}
-                        jsOptions={{ animation: true }}
-                        onSelected={(data) => {
-                            setAddress(
-                                data.autoJibunAddress === ""
-                                    ? data.jibunAddress
-                                    : data.autoJibunAddress
-                            );
-                            setModalAddress(false);
-                        }}
-                    />
-                </View>
-            </Modal>
             <View style={{ height: hp("2%") }}></View>
             <KeyboardAwareScrollView
                 contentContainerStyle={{ paddingHorizontal: -30 }}
@@ -315,55 +207,13 @@ export default SignUp = ({ navigation }) => {
                     activeOpacity={1}
                 >
                     <View style={{ marginBottom: 5 }}>
-                        <View style={{ flexDirection: "row", alignItems: "center" }}>
-                            <TextInput
-                                label="이름"
-                                style={{ flex: 1 }}
-                                dense={true}
-                                value={name}
-                                onChangeText={setName}
-                                mode="outlined"
-                            />
-                            <RadioButton.Group
-                                onValueChange={(value) => setSexSelected(value)}
-                                value={sexSelected}
-                            >
-                                <View style={{ flexDirection: "row", alignItems: "center" }}>
-                                    <View
-                                        style={{
-                                            flexDirection: "row",
-                                            alignItems: "center",
-                                        }}
-                                    >
-                                        <RadioButton.Android value={0} color="#374862" />
-                                        <Button
-                                            mode="text"
-                                            onPress={() => setSexSelected(0)}
-                                            labelStyle={{ marginHorizontal: 5, marginVertical: 5 }}
-                                            compact={true}
-                                        >
-                                            남
-                                        </Button>
-                                    </View>
-                                    <View
-                                        style={{
-                                            flexDirection: "row",
-                                            alignItems: "center",
-                                        }}
-                                    >
-                                        <RadioButton.Android value={1} color="#374862" />
-                                        <Button
-                                            mode="text"
-                                            onPress={() => setSexSelected(1)}
-                                            labelStyle={{ marginHorizontal: 5, marginVertical: 5 }}
-                                            compact={true}
-                                        >
-                                            여
-                                        </Button>
-                                    </View>
-                                </View>
-                            </RadioButton.Group>
-                        </View>
+                        <TextInput
+                            label="이름"
+                            mode="outlined"
+                            dense={true}
+                            value={name}
+                            onChangeText={setName}
+                        />
                     </View>
                     <View style={{ marginBottom: 5 }}>
                         <View style={{ flexDirection: "row" }}>
@@ -443,58 +293,6 @@ export default SignUp = ({ navigation }) => {
                                 비밀번호가 일치하지 않습니다.
                             </HelperText>
                         ) : null}
-                    </View>
-                    <View style={{ marginBottom: 5 }}>
-                        <View
-                            style={{
-                                flexDirection: "row",
-                            }}
-                        >
-                            <TextInput
-                                label="생년월일"
-                                value={moment(
-                                    [birthday.year, birthday.month, birthday.day].join(" "),
-                                    "YYYY M D"
-                                ).format("YYYY. MM. DD.")}
-                                editable={false}
-                                mode="outlined"
-                                style={{ flex: 1 }}
-                                dense={true}
-                            />
-                            <IconButton
-                                icon="calendar"
-                                size={28}
-                                color="#263143"
-                                onPress={() => {
-                                    Keyboard.dismiss();
-                                    picker.current.show();
-                                }}
-                                style={{ marginBottom: 0 }}
-                            />
-                        </View>
-                    </View>
-                    <View style={{ marginBottom: 5 }}>
-                        <View style={{ flexDirection: "row" }}>
-                            <TextInput
-                                label="주소 검색"
-                                value={address}
-                                editable={false}
-                                mode="outlined"
-                                onChangeText={setAddress}
-                                style={{ flex: 1 }}
-                                dense={true}
-                            />
-                            <IconButton
-                                icon="map-search-outline"
-                                size={28}
-                                color="#263143"
-                                onPress={() => {
-                                    Keyboard.dismiss();
-                                    setModalAddress(true);
-                                }}
-                                style={{ marginBottom: 0 }}
-                            />
-                        </View>
                     </View>
                     <View>
                         <View style={{ flexDirection: "row", alignItems: "center" }}>
@@ -599,10 +397,7 @@ export default SignUp = ({ navigation }) => {
                                 password !== chkPassword ||
                                 !correctPw ||
                                 !verifyCode ||
-                                !verificationId ||
-                                sexSelected === -1 ||
-                                Number(birthday.year) === today.getFullYear() ||
-                                !address
+                                !verificationId
                             }
                         >
                             회원가입
@@ -619,29 +414,6 @@ export default SignUp = ({ navigation }) => {
                     </View>
                 </TouchableOpacity>
             </KeyboardAwareScrollView>
-            <SegmentedPicker
-                ref={picker}
-                onValueChange={({ column, value }) => {
-                    if (column === "year") {
-                        setBirthday({ ...birthday, year: value });
-                    } else if (column === "month") {
-                        setBirthday({ ...birthday, month: value });
-                    } else {
-                        setBirthday({ ...birthday, day: value });
-                    }
-                }}
-                onCancel={(select) => {
-                    setBirthday({ year: select.year, month: select.month, day: select.day });
-                }}
-                onConfirm={(select) => {
-                    setBirthday({ year: select.year, month: select.month, day: select.day });
-                }}
-                confirmText="확인"
-                defaultSelections={birthday}
-                options={generateOptions()}
-                toolbarBackgroundColor={theme.colors.primary}
-                confirmTextColor="white"
-            />
             <View
                 style={{ backgroundColor: theme.colors.primary, height: hp("6%"), width: "100%" }}
             />

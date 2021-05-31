@@ -154,9 +154,6 @@ export default Auth = () => {
                     adminCode,
                     verificationId,
                     verifyCode,
-                    sexSelected,
-                    birthday,
-                    address,
                 } = data;
                 if (userId.length < 8) {
                     Alert.alert(
@@ -198,7 +195,6 @@ export default Auth = () => {
                             name: name,
                             phoneNumber: phoneNumber,
                             permission: isAdmin ? 0 : isTrainer ? 1 : 2,
-                            address: address,
                             createdDate: new Date(userCredential.user.metadata.creationTime),
                         };
 
@@ -231,13 +227,6 @@ export default Auth = () => {
                                         id: currentUser.userId,
                                         permission: currentUser.permission,
                                         random: " ",
-                                        birthday: {
-                                            year: birthday.year,
-                                            month: birthday.month,
-                                            day: birthday.day,
-                                        },
-                                        sex: sexSelected === 0 ? "남성" : "여성",
-                                        address: currentUser.address,
                                         memo: "",
                                         createdDate: currentUser.createdDate,
                                     };
