@@ -6,7 +6,7 @@ import { heightPercentageToDP as hp } from "react-native-responsive-screen";
 import ToHome from "../../../components/ToHome";
 
 export default SelectSquashKind = ({ navigation, route }) => {
-    const { availPt, availGroup } = route.params;
+    const { availPt, availGroup, end } = route.params;
 
     return (
         <View style={MyStyles.container}>
@@ -64,6 +64,7 @@ export default SelectSquashKind = ({ navigation, route }) => {
                                 navigation.navigate("SelectDate", {
                                     classname: "squash",
                                     week: 2,
+                                    end: end,
                                 });
                             } else {
                                 Alert.alert(
